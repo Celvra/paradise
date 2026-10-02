@@ -12,9 +12,13 @@ import '../l10n/x.dart';
 // One step of the model's work, drawn in the chat stream where it happened: a
 // stretch of reasoning, or a tool call with what it got back. The shape follows
 // Kelivo, which keeps both as collapsible timeline steps rather than burying
-// them in a debug panel, but the skin is Telegram: a soft rounded card, an
-// accent tinted glyph, a hairline rail that ties consecutive steps together and
+// them in a debug panel, but the skin is Telegram: a soft rounded card, a
+// hairline rail that ties consecutive steps together, a white glyph node and
 // the same chevron the settings rows use.
+//
+// Every piece of chrome on the row, rail, glyph, title, clock and chevron, is
+// painted the same white in both palettes. The theme only reaches the card the
+// step opens into, since that is a surface with text on it rather than a mark.
 //
 // Collapsed it is one line. While the step is still running it opens by itself
 // and follows the tail, so thinking is watchable without a single tap.
@@ -22,14 +26,22 @@ import '../l10n/x.dart';
 /// How tall the running preview is, roughly six lines of small text.
 const _previewH = 108.0;
 
+/// The rail, the glyph node, the step title, the clock and the chevron ignore
+/// the palette and stay white in both. Those are the timeline itself: the marks
+/// that say a run of steps belongs together and which step you are looking at.
+/// A themed divider on the day palette is too faint to read as a rail, so one
+/// constant paints white wherever it lands. The card a step opens into is left
+/// on the theme, it is a surface with text on it rather than a mark.
+const _white = Color(0xFFFFFFFF);
+
 /// dstIn masks for the running preview: flat while the text fits, faded at the
 /// bottom once there is more of it below the fold. A gradient needs two colours
 /// even when it is meant to be flat, one colour asserts during paint.
-const _flat = LinearGradient(colors: [Color(0xFFFFFFFF), Color(0xFFFFFFFF)]);
+const _flat = LinearGradient(colors: [_white, _white]);
 const _fade = LinearGradient(
   begin: Alignment.topCenter,
   end: Alignment.bottomCenter,
-  colors: [Color(0xFFFFFFFF), Color(0xFFFFFFFF), Color(0x00FFFFFF)],
+  colors: [_white, _white, Color(0x00FFFFFF)],
   stops: [0, .7, 1],
 );
 
@@ -153,14 +165,12 @@ class _TraceViewState extends State<TraceView> {
     final p = context.p;
     final body = _body;
     final open = _open;
-    final accent = _bad ? p.danger : p.accent;
-
     final meta = Row(mainAxisSize: MainAxisSize.min, children: [
-      if (_running) TypingDots(color: accent) else TgIcon(_bad ? Ic.info : Ic.check2, color: _bad ? p.danger : p.subtitle, size: 15, stroke: 2),
+      if (_running) TypingDots(color: _white) else TgIcon(_bad ? Ic.info : Ic.check2, color: _white, size: 15, stroke: 2),
       // the clock ticks in place, so the row never reflows while it thinks
       ValueListenableBuilder<int>(
         valueListenable: _pulse,
-        builder: (_, __, ___) => Text(_meta(), style: TextStyle(color: p.subtitle, fontSize: 12.5, height: 1.2, decoration: TextDecoration.none)),
+        builder: (_, __, ___) => Text(_meta(), style: TextStyle(color: _white, fontSize: 12.5, height: 1.2, decoration: TextDecoration.none)),
       ),
     ]);
 
@@ -176,15 +186,15 @@ class _TraceViewState extends State<TraceView> {
             SizedBox(
               width: 26,
               child: Column(mainAxisSize: MainAxisSize.min, children: [
-                if (widget.linkedAbove) Container(width: 1, height: 5, color: p.divider),
+                if (widget.linkedAbove) Container(width: 1, height: 5, color: _white),
                 Container(
                   width: 24,
                   height: 24,
                   alignment: Alignment.center,
-                  decoration: BoxDecoration(color: accent.withAlpha(_running ? 46 : 26), borderRadius: BorderRadius.circular(8)),
-                  child: TgIcon(_tool ? (_bad ? Ic.info : Ic.gear) : Ic.ai, color: accent, size: 15, stroke: 1.9),
+                  decoration: BoxDecoration(color: _white.withAlpha(_running ? 46 : 26), borderRadius: BorderRadius.circular(8)),
+                  child: TgIcon(_tool ? (_bad ? Ic.info : Ic.gear) : Ic.ai, color: _white, size: 15, stroke: 1.9),
                 ),
-                if (widget.linkedBelow) Container(width: 1, height: 5, color: p.divider),
+                if (widget.linkedBelow) Container(width: 1, height: 5, color: _white),
               ]),
             ),
             const SizedBox(width: 9),
@@ -200,7 +210,7 @@ class _TraceViewState extends State<TraceView> {
                   padding: const EdgeInsets.only(top: 3, bottom: 3),
                   child: Row(children: [
                     Expanded(
-                      child: Text(_title(), key: widget.titleKey, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(color: p.title, fontSize: 14.5, height: 1.25, fontWeight: FontWeight.w500, decoration: TextDecoration.none)),
+                      child: Text(_title(), key: widget.titleKey, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(color: _white, fontSize: 14.5, height: 1.25, fontWeight: FontWeight.w500, decoration: TextDecoration.none)),
                     ),
                     const SizedBox(width: 8),
                     meta,
@@ -210,7 +220,7 @@ class _TraceViewState extends State<TraceView> {
                         duration: const Duration(milliseconds: 220),
                         curve: TgCurves.easeOut,
                         turns: open ? .5 : 0,
-                        child: TgIcon(Ic.chevron, color: p.subtitle, size: 16, stroke: 2),
+                        child: TgIcon(Ic.chevron, color: _white, size: 16, stroke: 2),
                       ),
                     ],
                   ]),

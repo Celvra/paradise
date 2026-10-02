@@ -25,6 +25,7 @@ import 'profile_page.dart';
 import 'trace_view.dart';
 import 'user_persona.dart';
 import 'wallpaper.dart';
+import 'wallpaper_page.dart';
 
 class ChatPage extends StatefulWidget {
   const ChatPage({super.key, required this.chat, this.focusId, this.query, this.startSearch = false});
@@ -339,6 +340,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
       const MenuItem.gap(),
       // the chat lock, the per chat half of a SillyTavern persona connection
       MenuItem(l.headerMenuLockPersona, Ic.user, _openPersonaLock, sub: locked.name.trim().isEmpty ? locked.initial : locked.name.trim()),
+      MenuItem(l.wallpaperChatTitle, Ic.image, () => openWallpaperSheet(context, chat: chat), sub: chat.wallpaperPath == null ? null : l.wallpaperRow),
       MenuItem(l.headerMenuClearHistory, Ic.trash, () => _confirm(l.dialogClearHistoryHereTitle, l.dialogClearHistoryHereMessage, l.actionClear, () => _store.clearHistory(chat)), danger: true),
       MenuItem(l.headerMenuDeleteChat, Ic.close, () => _confirm(l.dialogDeleteChatHereTitle, l.dialogDeleteChatMessage(chat.persona.name), l.actionDelete, () {
             Navigator.of(context).pop();
@@ -443,7 +445,16 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
             Positioned.fill(
               child: AnimatedBuilder(
                 animation: _wall,
-                builder: (_, __) => CustomPaint(painter: WallPainter(colors: p.wall, phase: _phase - 1 + Curves.easeOut.transform(_wall.value))),
+                builder: (_, __) => ChatWallpaper(
+                  // a chat that picked its own picture wins over the global one.
+                  // Null has to mean follow the global setting, which is why the
+                  // model keeps the three states apart.
+                  path: chat.wallpaperPath ?? _store.wallpaperPath,
+                  blur: _store.wallpaperBlur,
+                  colors: p.wall,
+                  accent: p.accent,
+                  phase: _phase - 1 + Curves.easeOut.transform(_wall.value),
+                ),
               ),
             ),
             Positioned.fill(

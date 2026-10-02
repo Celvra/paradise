@@ -15,6 +15,9 @@ dependencies:
   characters: ^1.3.0
   http: ^1.2.2
   shared_preferences: ^2.3.2
+  # message history, which outgrew SharedPreferences: it rewrote the whole
+  # json blob on every message and lost everything if one record failed to parse
+  sqflite: ^2.4.1
   image_picker: ^1.1.2
   file_picker: ^13.1.0
   photo_manager: ^3.5.1
@@ -33,8 +36,11 @@ dependencies:
   url_launcher: ^6.3.2
 
 dev_dependencies:
+  file_picker_platform_interface: ^4.0.0
   flutter_test:
     sdk: flutter
+  path_provider_platform_interface: ^2.1.3
+  sqflite_common_ffi: ^2.4.3
 
 flutter:
   uses-material-design: true
@@ -43,3 +49,11 @@ flutter:
   assets:
     # provider logos, see core/provider_icons.dart
     - assets/providers/
+
+# The sqlite3 build hook downloads a prebuilt library, which this machine cannot
+# reach. System SQLite is only used by the ffi path that flutter test runs on;
+# on Android the plugin uses the platform library and this hook does nothing.
+hooks:
+  user_defines:
+    sqlite3:
+      source: system

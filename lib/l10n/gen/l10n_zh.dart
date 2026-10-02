@@ -581,13 +581,13 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get settingsAboutDeps =>
-      '依赖库:\n\naudioplayers 6.8.1 - 语音消息播放  (MIT)\nhttps://github.com/bluefireteam/audioplayers/tree/master/packages/audioplayers\ncharacters 1.4.1 - 字形簇，用于正确计算文本宽度  (BSD-3-Clause)\nhttps://github.com/dart-lang/core/tree/main/pkgs/characters\nfile_picker 13.1.0 - 文件与音频选择  (MIT)\nhttps://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker\nflutter_contacts 2.5.0 - 分享联系人名片  (MIT)\nhttps://github.com/QuisApp/flutter_contacts\nflutter_local_notifications 18.0.1 - 本地通知  (BSD-3-Clause)\nflutter_svg 2.3.0 - 服务商图标与矢量图标  (MIT)\nhttps://github.com/flutter/packages/tree/main/third_party/packages/flutter_svg\nflutter_tts 4.2.5 - 语音消息朗读  (MIT)\ngeolocator 13.0.4 - 位置附件  (MIT)\nhttps://github.com/baseflow/flutter-geolocator/tree/main/geolocator\nhttp 1.6.0 - OpenAI 兼容接口请求  (BSD-3-Clause)\nhttps://github.com/dart-lang/http/tree/master/pkgs/http\nimage_picker 1.2.3 - 相机与相册图片  (Apache-2.0)\nhttps://github.com/flutter/packages/tree/main/packages/image_picker/image_picker\nintl 0.20.3 - 日期与数字格式化  (BSD-3-Clause)\nhttps://github.com/dart-lang/i18n/tree/main/pkgs/intl\npath_provider 2.1.6 - 应用目录，用于表情与导出文件  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/path_provider/path_provider\nphoto_manager 3.12.0 - 相册访问，用于附件  (Apache-2.0)\nhttps://github.com/fluttercandies/flutter_photo_manager\nshared_preferences 2.5.5 - 设置与聊天记录存储  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/shared_preferences/shared_preferences\ntimezone 0.10.1 - 日程消息的时区数据  (BSD-2-Clause)\nhttps://github.com/srawlins/timezone\nurl_launcher 6.3.2 - 本弹窗中的交流群链接  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/url_launcher/url_launcher\nworkmanager 0.10.10 - 应用被杀后的后台送达  (MIT)\nhttps://github.com/fluttercommunity/flutter_workmanager';
+      '依赖库:\n\naudioplayers 6.8.1 - 语音消息播放  (MIT)\nhttps://github.com/bluefireteam/audioplayers/tree/master/packages/audioplayers\ncharacters 1.4.1 - 字形簇，用于正确计算文本宽度  (BSD-3-Clause)\nhttps://github.com/dart-lang/core/tree/main/pkgs/characters\nfile_picker 13.1.0 - 文件与音频选择  (MIT)\nhttps://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker\nflutter_contacts 2.5.0 - 分享联系人名片  (MIT)\nhttps://github.com/QuisApp/flutter_contacts\nflutter_local_notifications 18.0.1 - 本地通知  (BSD-3-Clause)\nflutter_svg 2.3.0 - 服务商图标与矢量图标  (MIT)\nhttps://github.com/flutter/packages/tree/main/third_party/packages/flutter_svg\nflutter_tts 4.2.5 - 语音消息朗读  (MIT)\ngeolocator 13.0.4 - 位置附件  (MIT)\nhttps://github.com/baseflow/flutter-geolocator/tree/main/geolocator\nhttp 1.6.0 - OpenAI 兼容接口请求  (BSD-3-Clause)\nhttps://github.com/dart-lang/http/tree/master/pkgs/http\nimage_picker 1.2.3 - 相机与相册图片  (Apache-2.0)\nhttps://github.com/flutter/packages/tree/main/packages/image_picker/image_picker\nintl 0.20.3 - 日期与数字格式化  (BSD-3-Clause)\nhttps://github.com/dart-lang/i18n/tree/main/pkgs/intl\npath_provider 2.1.6 - 应用目录，用于表情与导出文件  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/path_provider/path_provider\nphoto_manager 3.12.0 - 相册访问，用于附件  (Apache-2.0)\nhttps://github.com/fluttercandies/flutter_photo_manager\nshared_preferences 2.5.5 - 设置与聊天记录存储  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/shared_preferences/shared_preferences\nsqflite 2.4.4 - 消息历史与会话分页  (BSD-2-Clause)\nhttps://github.com/tekartik/sqflite/tree/master/sqflite\ntimezone 0.10.1 - 日程消息的时区数据  (BSD-2-Clause)\nhttps://github.com/srawlins/timezone\nurl_launcher 6.3.2 - 本弹窗中的交流群链接  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/url_launcher/url_launcher\nworkmanager 0.10.10 - 应用被杀后的后台送达  (MIT)\nhttps://github.com/fluttercommunity/flutter_workmanager';
 
   @override
   String get settingsAboutCommunityUrl => 'https://discord.gg/aQaNUHPsw';
 
   @override
-  String get settingsFooter => '彼岸双生';
+  String get settingsFooter => 'Developed by Celvra';
 
   @override
   String get previewSampleIncoming => '早上好！今天有什么可以帮你的？';
@@ -612,6 +612,63 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get appearanceTheme => '主题';
+
+  @override
+  String get wallpaperHeader => '聊天壁纸';
+
+  @override
+  String get wallpaperRow => '壁纸';
+
+  @override
+  String get wallpaperDefault => '默认';
+
+  @override
+  String get wallpaperChoose => '选择图片';
+
+  @override
+  String get wallpaperNone => '纯色渐变';
+
+  @override
+  String get wallpaperFollowGlobal => '跟随全局';
+
+  @override
+  String get wallpaperBlur => '模糊壁纸';
+
+  @override
+  String get wallpaperBlurSub => '让气泡在照片上依然清晰';
+
+  @override
+  String get wallpaperColorHeader => '壁纸取色';
+
+  @override
+  String get wallpaperColorFooter => '选一个颜色，用于强调色和你发出的气泡。';
+
+  @override
+  String get wallpaperColorNone => '默认';
+
+  @override
+  String get wallpaperNoColors => '这张图没有可取的颜色';
+
+  @override
+  String get wallpaperBubbleGrad => '气泡渐变';
+
+  @override
+  String get wallpaperBubbleGradSubtle => '轻微';
+
+  @override
+  String get wallpaperBubbleGradMedium => '适中';
+
+  @override
+  String get wallpaperBubbleGradStrong => '明显';
+
+  @override
+  String get wallpaperBubbleGradSub => '控制你发出的气泡从上到下的深浅跨度。';
+
+  @override
+  String get wallpaperRemoved => '已移除壁纸';
+
+  @override
+  String get wallpaperChatTitle => '本会话壁纸';
 
   @override
   String get appearanceNightMode => '夜间模式';
@@ -687,6 +744,29 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get dataClearAllMessage => '这会删除所有聊天里的每一条消息，人设会保留。';
+
+  @override
+  String get dataBackup => '备份';
+
+  @override
+  String get dataBackupExportSub => '会话、人格卡、表情与设置';
+
+  @override
+  String get dataBackupImportSub => '从之前导出的文件恢复';
+
+  @override
+  String dataBackupRestored(num chats, Object messages) {
+    return '$chats 个会话，$messages 条消息';
+  }
+
+  @override
+  String get dataBackupNothing => '这个文件里没有可恢复的内容';
+
+  @override
+  String get dataBackupSaved => '备份已保存';
+
+  @override
+  String get dataBackupSaveFailed => '无法保存文件';
 
   @override
   String get dayToday => '今天';
@@ -2959,13 +3039,13 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get settingsAboutDeps =>
-      '依賴庫:\n\naudioplayers 6.8.1 - 語音訊息播放  (MIT)\nhttps://github.com/bluefireteam/audioplayers/tree/master/packages/audioplayers\ncharacters 1.4.1 - 字形叢集，用於正確計算文字寬度  (BSD-3-Clause)\nhttps://github.com/dart-lang/core/tree/main/pkgs/characters\nfile_picker 13.1.0 - 檔案與音訊選擇  (MIT)\nhttps://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker\nflutter_contacts 2.5.0 - 分享聯絡人名片  (MIT)\nhttps://github.com/QuisApp/flutter_contacts\nflutter_local_notifications 18.0.1 - 本機通知  (BSD-3-Clause)\nflutter_svg 2.3.0 - 服務商圖示與向量圖示  (MIT)\nhttps://github.com/flutter/packages/tree/main/third_party/packages/flutter_svg\nflutter_tts 4.2.5 - 語音訊息朗讀  (MIT)\ngeolocator 13.0.4 - 位置附件  (MIT)\nhttps://github.com/baseflow/flutter-geolocator/tree/main/geolocator\nhttp 1.6.0 - OpenAI 相容介面請求  (BSD-3-Clause)\nhttps://github.com/dart-lang/http/tree/master/pkgs/http\nimage_picker 1.2.3 - 相機與相簿圖片  (Apache-2.0)\nhttps://github.com/flutter/packages/tree/main/packages/image_picker/image_picker\nintl 0.20.3 - 日期與數字格式化  (BSD-3-Clause)\nhttps://github.com/dart-lang/i18n/tree/main/pkgs/intl\npath_provider 2.1.6 - 應用程式目錄，用於表情與匯出檔案  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/path_provider/path_provider\nphoto_manager 3.12.0 - 相簿存取，用於附件  (Apache-2.0)\nhttps://github.com/fluttercandies/flutter_photo_manager\nshared_preferences 2.5.5 - 設定與對話紀錄儲存  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/shared_preferences/shared_preferences\ntimezone 0.10.1 - 排程訊息的時區資料  (BSD-2-Clause)\nhttps://github.com/srawlins/timezone\nurl_launcher 6.3.2 - 本彈出視窗中的交流群連結  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/url_launcher/url_launcher\nworkmanager 0.10.10 - 應用程式被關閉後的背景送達  (MIT)\nhttps://github.com/fluttercommunity/flutter_workmanager';
+      '依賴庫:\n\naudioplayers 6.8.1 - 語音訊息播放  (MIT)\nhttps://github.com/bluefireteam/audioplayers/tree/master/packages/audioplayers\ncharacters 1.4.1 - 字形叢集，用於正確計算文字寬度  (BSD-3-Clause)\nhttps://github.com/dart-lang/core/tree/main/pkgs/characters\nfile_picker 13.1.0 - 檔案與音訊選擇  (MIT)\nhttps://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker\nflutter_contacts 2.5.0 - 分享聯絡人名片  (MIT)\nhttps://github.com/QuisApp/flutter_contacts\nflutter_local_notifications 18.0.1 - 本機通知  (BSD-3-Clause)\nflutter_svg 2.3.0 - 服務商圖示與向量圖示  (MIT)\nhttps://github.com/flutter/packages/tree/main/third_party/packages/flutter_svg\nflutter_tts 4.2.5 - 語音訊息朗讀  (MIT)\ngeolocator 13.0.4 - 位置附件  (MIT)\nhttps://github.com/baseflow/flutter-geolocator/tree/main/geolocator\nhttp 1.6.0 - OpenAI 相容介面請求  (BSD-3-Clause)\nhttps://github.com/dart-lang/http/tree/master/pkgs/http\nimage_picker 1.2.3 - 相機與相簿圖片  (Apache-2.0)\nhttps://github.com/flutter/packages/tree/main/packages/image_picker/image_picker\nintl 0.20.3 - 日期與數字格式化  (BSD-3-Clause)\nhttps://github.com/dart-lang/i18n/tree/main/pkgs/intl\npath_provider 2.1.6 - 應用程式目錄，用於表情與匯出檔案  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/path_provider/path_provider\nphoto_manager 3.12.0 - 相簿存取，用於附件  (Apache-2.0)\nhttps://github.com/fluttercandies/flutter_photo_manager\nshared_preferences 2.5.5 - 設定與對話紀錄儲存  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/shared_preferences/shared_preferences\nsqflite 2.4.4 - 訊息歷史與對話分頁  (BSD-2-Clause)\nhttps://github.com/tekartik/sqflite/tree/master/sqflite\ntimezone 0.10.1 - 排程訊息的時區資料  (BSD-2-Clause)\nhttps://github.com/srawlins/timezone\nurl_launcher 6.3.2 - 本彈出視窗中的交流群連結  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/url_launcher/url_launcher\nworkmanager 0.10.10 - 應用程式被關閉後的背景送達  (MIT)\nhttps://github.com/fluttercommunity/flutter_workmanager';
 
   @override
   String get settingsAboutCommunityUrl => 'https://discord.gg/aQaNUHPsw';
 
   @override
-  String get settingsFooter => '彼岸雙生';
+  String get settingsFooter => 'Developed by Celvra';
 
   @override
   String get previewSampleIncoming => '早安！今天有什麼可以幫你的？';
@@ -2990,6 +3070,63 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get appearanceTheme => '主題';
+
+  @override
+  String get wallpaperHeader => '聊天壁紙';
+
+  @override
+  String get wallpaperRow => '壁紙';
+
+  @override
+  String get wallpaperDefault => '預設';
+
+  @override
+  String get wallpaperChoose => '選擇圖片';
+
+  @override
+  String get wallpaperNone => '純色漸層';
+
+  @override
+  String get wallpaperFollowGlobal => '跟隨全域';
+
+  @override
+  String get wallpaperBlur => '模糊壁紙';
+
+  @override
+  String get wallpaperBlurSub => '讓氣泡在照片上依然清晰';
+
+  @override
+  String get wallpaperColorHeader => '壁紙取色';
+
+  @override
+  String get wallpaperColorFooter => '選一個顏色，用於強調色和你發出的氣泡。';
+
+  @override
+  String get wallpaperColorNone => '預設';
+
+  @override
+  String get wallpaperNoColors => '這張圖沒有可取的顏色';
+
+  @override
+  String get wallpaperBubbleGrad => '氣泡漸層';
+
+  @override
+  String get wallpaperBubbleGradSubtle => '輕微';
+
+  @override
+  String get wallpaperBubbleGradMedium => '適中';
+
+  @override
+  String get wallpaperBubbleGradStrong => '明顯';
+
+  @override
+  String get wallpaperBubbleGradSub => '控制你發出的氣泡從上到下的深淺跨度。';
+
+  @override
+  String get wallpaperRemoved => '已移除壁紙';
+
+  @override
+  String get wallpaperChatTitle => '本對話壁紙';
 
   @override
   String get appearanceNightMode => '夜間模式';
@@ -3065,6 +3202,29 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get dataClearAllMessage => '這會刪除所有聊天裡的每一則訊息，人設會保留。';
+
+  @override
+  String get dataBackup => '備份';
+
+  @override
+  String get dataBackupExportSub => '對話、人格卡、表情與設定';
+
+  @override
+  String get dataBackupImportSub => '從之前匯出的檔案還原';
+
+  @override
+  String dataBackupRestored(num chats, Object messages) {
+    return '$chats 個對話，$messages 則訊息';
+  }
+
+  @override
+  String get dataBackupNothing => '這個檔案裡沒有可還原的內容';
+
+  @override
+  String get dataBackupSaved => '備份已儲存';
+
+  @override
+  String get dataBackupSaveFailed => '無法儲存檔案';
 
   @override
   String get dayToday => '今天';

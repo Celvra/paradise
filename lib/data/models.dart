@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 
 import '../l10n/x.dart';
 import 'human/human_models.dart';
+import 'observable.dart';
 
 class Persona {
   Persona({
@@ -207,7 +208,7 @@ class Msg {
   Msg({
     required this.id,
     required this.out,
-    required this.text,
+    required String text,
     required this.time,
     this.reply,
     bool read = false,
@@ -216,40 +217,127 @@ class Msg {
     this.streaming = false,
     this.kind = MsgKind.text,
     Map<String, dynamic>? data,
-    this.recalled = false,
-    this.recalledAfterRead = false,
-    this.recalledText = '',
-    this.edited = false,
+    bool recalled = false,
+    bool recalledAfterRead = false,
+    String recalledText = '',
+    bool edited = false,
     List<String>? edits,
-    this.pinned = false,
-    this.proactive = false,
-  })  : edits = edits ?? [],
-        state = state ?? (read ? St.read : St.sent),
-        data = data ?? {};
+    bool pinned = false,
+    bool proactive = false,
+  })  : _text = text,
+        _state = state ?? (read ? St.read : St.sent),
+        _data = data == null ? ObservableMap<String, dynamic>.of() : ObservableMap<String, dynamic>(data),
+        _recalled = recalled,
+        _recalledAfterRead = recalledAfterRead,
+        _recalledText = recalledText,
+        _edited = edited,
+        _edits = edits == null ? ObservableList<String>.of() : ObservableList<String>(edits),
+        _pinned = pinned,
+        _proactive = proactive {
+    _data.onChange = _changed;
+    _edits.onChange = _changed;
+  }
+
+  /// Reports that a persisted field changed, so storage can write the row back.
+  ///
+  /// Assigned by the storage layer. The alternative was a save call at each of
+  /// the call sites that touch a message, and there were enough of them, spread
+  /// across four files, that a missed one is a message which changes on screen
+  /// and reverts on the next launch.
+  ///
+  /// Streaming text arrives through here one chunk at a time, so the listener is
+  /// expected to coalesce rather than write on every call.
+  void Function(Msg msg)? onChange;
+
   final String id;
   final bool out;
-  String text;
   final int time;
   final String? reply;
-  int state;
   final bool service;
   bool streaming;
   final MsgKind kind;
-  final Map<String, dynamic> data;
+
+  String _text;
+  int _state;
+  late final ObservableMap<String, dynamic> _data;
+
+  String get text => _text;
+  set text(String v) {
+    if (_text == v) return;
+    _text = v;
+    onChange?.call(this);
+  }
+
+  int get state => _state;
+  set state(int v) {
+    if (_state == v) return;
+    _state = v;
+    onChange?.call(this);
+  }
+
+  Map<String, dynamic> get data => _data;
 
   /// recalled messages stay as a placeholder, the text is kept for the context
-  bool recalled;
-  bool recalledAfterRead;
-  String recalledText;
+  bool _recalled;
+  bool _recalledAfterRead;
+  String _recalledText;
+
+  bool get recalled => _recalled;
+  set recalled(bool v) {
+    if (_recalled == v) return;
+    _recalled = v;
+    onChange?.call(this);
+  }
+
+  bool get recalledAfterRead => _recalledAfterRead;
+  set recalledAfterRead(bool v) {
+    if (_recalledAfterRead == v) return;
+    _recalledAfterRead = v;
+    onChange?.call(this);
+  }
+
+  String get recalledText => _recalledText;
+  set recalledText(String v) {
+    if (_recalledText == v) return;
+    _recalledText = v;
+    onChange?.call(this);
+  }
 
   /// edit history, oldest first, the current text is not in it
-  bool edited;
-  final List<String> edits;
+  bool _edited;
+  late final ObservableList<String> _edits;
 
-  bool pinned;
+  bool get edited => _edited;
+  set edited(bool v) {
+    if (_edited == v) return;
+    _edited = v;
+    onChange?.call(this);
+  }
+
+  List<String> get edits => _edits;
+
+  bool _pinned;
+  bool get pinned => _pinned;
+  set pinned(bool v) {
+    if (_pinned == v) return;
+    _pinned = v;
+    onChange?.call(this);
+  }
 
   /// the assistant started this one on its own
-  bool proactive;
+  bool _proactive;
+  bool get proactive => _proactive;
+  set proactive(bool v) {
+    if (_proactive == v) return;
+    _proactive = v;
+    onChange?.call(this);
+  }
+
+  /// Hooks [data] and [edits] to this message's own change report.
+  ///
+  /// Called once after construction, since the collections are built before
+  /// there is an [onChange] to point them at.
+  void _changed() => onChange?.call(this);
 
   bool get read => state == St.read;
   set read(bool v) => state = v ? St.read : St.sent;
@@ -372,7 +460,7 @@ class Msg {
 
 // one dialog with an ai persona
 class Chat extends ChangeNotifier {
-  Chat({required this.id, required this.persona, List<Msg>? msgs, this.unread = 0, this.pinned = false, this.muted = false, this.draft = '', this.markedUnread = false, this.personaId}) : msgs = msgs ?? [];
+  Chat({required this.id, required this.persona, List<Msg>? msgs, this.unread = 0, this.pinned = false, this.muted = false, this.draft = '', this.markedUnread = false, this.personaId, this.wallpaperPath}) : msgs = msgs ?? [];
   final String id;
   Persona persona;
   final List<Msg> msgs;
@@ -382,6 +470,13 @@ class Chat extends ChangeNotifier {
   bool markedUnread;
   String draft;
   bool typing = false;
+
+  /// Wallpaper of this conversation. Null follows the global setting, an empty
+  /// string means this chat deliberately wants the plain gradient and a path is
+  /// a picture of its own. The three states are distinct on purpose: without
+  /// the empty string there would be no way to opt one chat out of a global
+  /// picture while the rest keep it.
+  String? wallpaperPath;
 
   /// status, mood, stage, schedule and character card of this conversation
   HumanState human = HumanState();
@@ -424,7 +519,7 @@ class Chat extends ChangeNotifier {
 
   void touch() => notifyListeners();
 
-  Map<String, dynamic> toJson() => {'id': id, 'persona': persona.toJson(), 'msgs': msgs.map((e) => e.toJson()).toList(), 'unread': unread, 'pinned': pinned, 'muted': muted, 'draft': draft, 'markedUnread': markedUnread, 'personaId': personaId, 'human': human.toJson()};
+  Map<String, dynamic> toJson() => {'id': id, 'persona': persona.toJson(), 'msgs': msgs.map((e) => e.toJson()).toList(), 'unread': unread, 'pinned': pinned, 'muted': muted, 'draft': draft, 'markedUnread': markedUnread, 'personaId': personaId, if (wallpaperPath != null) 'wallpaperPath': wallpaperPath, 'human': human.toJson()};
   factory Chat.fromJson(Map<String, dynamic> j) => Chat(
         id: j['id'] as String,
         persona: Persona.fromJson(j['persona'] as Map<String, dynamic>),
@@ -435,6 +530,7 @@ class Chat extends ChangeNotifier {
         draft: j['draft'] as String? ?? '',
         markedUnread: j['markedUnread'] as bool? ?? false,
         personaId: j['personaId'] as String?,
+        wallpaperPath: j['wallpaperPath'] as String?,
       )..human = j['human'] is Map ? HumanState.fromJson(Map<String, dynamic>.from(j['human'] as Map)) : HumanState();
 }
 

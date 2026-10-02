@@ -1,0 +1,15 @@
+# Copy to android/key.properties and fill in. That file and the keystore itself
+# are both gitignored; this example is the only part that is committed, so it
+# must never hold a real password.
+#
+# The release workflow does not read this file from the repository. It writes one
+# from repository secrets at build time. See .github/workflows/release.yml and
+# CONTRIBUTING.md.
+#
+# storeFile is resolved against android/app, so a bare filename means a keystore
+# sitting next to build.gradle.kts.
+
+storeFile=paradise-release.jks
+storePassword=
+keyAlias=MingXi
+keyPassword=

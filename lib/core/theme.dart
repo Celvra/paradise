@@ -1,5 +1,25 @@
+import 'dart:math' as math;
+
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
+
+/// How far the outgoing bubble gradients once a wallpaper has recoloured the
+/// accent.
+///
+/// The two stock palettes disagree here, day is one flat green and night runs
+/// blue to purple, so without a level the recoloured bubble would have to pick
+/// one of them arbitrarily. These span from barely distinguishable from flat to
+/// as wide as the night bubble gets.
+enum BubbleGrad {
+  /// A shade or two across the whole bubble.
+  subtle,
+
+  /// Reads as a gradient without competing with the text on it.
+  medium,
+
+  /// The widest run that still leaves the timestamp readable at the bottom.
+  strong,
+}
 
 // palette pulled from telegram android ThemeColors and darkblue.attheme
 class Pal {
@@ -52,7 +72,206 @@ class Pal {
   Color get sheet => c[48];
   Color get dateBold => c[49];
 
+  /// The persona cover gradient for tone [index], on this palette's accent.
+  List<Color> avatar(int index) => avatarGradient(accent, index);
+
   static Pal lerp(Pal a, Pal b, double t) => Pal([for (var i = 0; i < a.c.length; i++) Color.lerp(a.c[i], b.c[i], t)!], t > .5 ? b.dark : a.dark);
+
+  /// A copy of this palette recoloured from [seed], which is a colour pulled out
+  /// of the user's wallpaper.
+  ///
+  /// The whole scheme follows the seed, the way a Material You scheme is derived
+  /// from one colour, but by way of the [chroma] table rather than by rebuilding
+  /// the role list. Each slot keeps the relative luminance it already had and
+  /// only trades its hue and saturation for the seed's. That is what keeps this
+  /// safe: WCAG contrast is a function of the two luminances alone, so a pair
+  /// that read at 4.5:1 before still reads at 4.5:1 after, and no combination of
+  /// them can drift into illegibility the way a retuned brightness would.
+  ///
+  /// The luminance a role does get retuned, the accent and the outgoing bubble,
+  /// is solved for rather than set from an HSL lightness. HSL lightness is not
+  /// perceptual: yellow and blue at the same lightness differ by a factor of ten
+  /// in how bright they look, so a fixed lightness gives a readable bubble for
+  /// one seed and white on yellow for the next.
+  ///
+  /// [grad] picks how far the bubble's own gradient runs. It is not a free
+  /// choice: the clock, the ticks and the sender name ride on the bubble and the
+  /// bottom stop is the worst surface any of them get, so the day ink is solved
+  /// against that stop rather than picked.
+  Pal withAccent(Color seed, {BubbleGrad grad = BubbleGrad.medium}) {
+    final hsl = HSLColor.fromColor(seed);
+    final hue = hsl.hue;
+    final sat = hsl.saturation.clamp(0.30, 0.90);
+
+    final c2 = [...c];
+
+    // Re-hue every slot that has a share of the seed, at the luminance it
+    // already had and the alpha it already had. Alpha has to come along or the
+    // translucent surfaces turn solid.
+    for (var i = 0; i < c2.length; i++) {
+      final share = _chroma[i];
+      if (share == 0) continue;
+      final from = c[i];
+      final tinted = _tone(hue, sat * share, _relativeLuminance(from));
+      c2[i] = tinted.withValues(alpha: from.a);
+    }
+
+    // day sits on a white bar and carries black text, night is the reverse, so
+    // the two want opposite ends of the range for the same seed
+    final accent = _tone(hue, sat, dark ? 0.42 : 0.22);
+    c2[8] = accent;
+    c2[9] = accent;
+    c2[10] = accent;
+
+    // lightest stop first, which is the order BubblePainter hands them to its
+    // vertical gradient
+    final bubble = <Color>[
+      for (final target in (dark ? _nightStops : _dayStops)[grad.index]) _tone(hue, sat, target),
+    ];
+    c2[22] = bubble[0];
+    c2[23] = bubble[1];
+    c2[24] = bubble[2];
+    c2[25] = bubble[3];
+
+    if (!dark) {
+      // The clock, ticks and name ride on top of the bubble and the stock values
+      // are green. They follow the bubble's hue now or they would clash, and
+      // they are only allowed to be as dark as the darkest stop will carry, or
+      // the timestamp sinks into the bottom of a wide gradient.
+      final ink = _tone(hue, sat, math.min(0.12, _inkCeiling(bubble.last)));
+      c2[29] = ink; // time out
+      c2[30] = ink; // check out
+      c2[32] = ink; // line out
+      c2[34] = ink; // name out
+    }
+    // night needs no ink pass: its time, ticks, line and name are already pale
+    // stock values, and every stop up here stays far below the point where white
+    // text stops reading.
+    return Pal(c2, dark);
+  }
+
+  /// How much of the seed's saturation each slot takes, as a share of it.
+  ///
+  /// Material derives a whole scheme from one seed by stacking tonal palettes: the
+  /// primary roles carry the chroma, the secondary and tertiary roles step it
+  /// down, and the structural roles keep only a trace of the hue. A trace is
+  /// what gives a tinted surface rather than a coloured one, and it is why the
+  /// background, the bars and the dividers are in here at all.
+  ///
+  /// Zero leaves the slot on its stock value. That is either a pure overlay whose
+  /// colour has to depend on whatever is behind it, the selectors and the glass
+  /// hairlines, or a role where the colour is the message rather than the style,
+  /// which is why danger and draft stay red no matter what the wallpaper is.
+  ///
+  /// Indexed to the palette slots, so each entry sits under the same comment as
+  /// the colour it governs.
+  static const _chroma = <double>[
+    0.10, // bg, a trace so a white page reads as belonging to the accent
+    0.10, // gray
+    0.12, // bar
+    0.10, // title
+    0.22, // subtitle
+    0.10, // icon
+    0.10, // divider
+    0.00, // selector, black or white over whatever it lands on
+    0.00, // accent, solved rather than tinted
+    0.00, // send, solved
+    0.00, // unread, solved
+    0.35, // unread muted
+    0.10, // name
+    0.18, // msg
+    0.18, // date
+    0.00, // pinned bg, an alpha overlay
+    0.30, // pin icon
+    0.25, // mute icon
+    0.85, // sent check
+    0.00, // draft, red is the message
+    0.00, // danger, red is the message
+    0.10, // in bubble
+    0.00, // out 0, solved
+    0.00, // out 1, solved
+    0.00, // out 2, solved
+    0.00, // out 3, solved
+    0.00, // text in, body copy stays neutral
+    0.00, // text out, body copy stays neutral
+    0.22, // time in
+    0.00, // time out, solved in day and left pale at night
+    0.00, // check out, as above
+    0.85, // line in, the quote rule on an incoming bubble
+    0.00, // line out, solved
+    0.90, // name in, the sender name on an incoming bubble
+    0.00, // name out, solved
+    0.45, // service
+    0.28, // hint
+    0.12, // glass fill
+    0.00, // glass stroke, a hairline
+    0.35, // glass icon
+    1.00, // tab selected, the same family as the accent in stock
+    0.10, // tab unselected
+    0.75, // wall 0
+    0.75, // wall 1
+    0.75, // wall 2
+    0.75, // wall 3
+    0.00, // code in, an alpha overlay
+    0.00, // code out, an alpha overlay
+    0.10, // sheet
+    0.18, // date bold
+  ];
+
+  /// Luminance targets for the four bubble stops, one list per level, ordered
+  /// lightest first.
+  ///
+  /// Day sits high because black text rides on it. The subtle row barely
+  /// separates from flat, which is what the stock day bubble is; strong runs far
+  /// enough to read as a gradient without the bottom stop going muddy.
+  static const _dayStops = <List<double>>[
+    [0.78, 0.76, 0.74, 0.72], // subtle
+    [0.82, 0.77, 0.72, 0.67], // medium
+    [0.86, 0.76, 0.64, 0.52], // strong
+  ];
+
+  /// The same for night, where white text means the whole bubble stays dark.
+  static const _nightStops = <List<double>>[
+    [0.13, 0.115, 0.10, 0.085], // subtle
+    [0.12, 0.09, 0.07, 0.055], // medium
+    [0.16, 0.115, 0.07, 0.035], // strong
+  ];
+
+  /// The darkest ink that still clears 4.5:1 against [bubble], as a luminance
+  /// target for [_tone].
+  static double _inkCeiling(Color bubble) => (_relativeLuminance(bubble) + 0.05) / 4.5 - 0.05;
+
+  /// The colour at this hue and saturation whose relative luminance is as close
+  /// to [target] as it can get without going over it.
+  ///
+  /// Binary search over HSL lightness, which is monotonic in luminance for a
+  /// fixed hue and saturation. The loop keeps the invariant that [lo] is the
+  /// brightest candidate still under the target, and that is what it returns, so
+  /// callers that solve one tone against another can treat the target as a hard
+  /// ceiling. Returning the midpoint instead would land on either side of the
+  /// target, and two of those overshoots in opposite directions is how
+  /// [_inkCeiling] ended up a hair under the contrast it promises.
+  ///
+  /// 20 steps is well under a 1/255 step in the result and this runs a handful
+  /// of times when a wallpaper is applied, never in a frame.
+  static Color _tone(double hue, double sat, double target) {
+    var lo = 0.0, hi = 1.0;
+    for (var i = 0; i < 20; i++) {
+      final mid = (lo + hi) / 2;
+      if (_relativeLuminance(HSLColor.fromAHSL(1, hue, sat, mid).toColor()) < target) {
+        lo = mid;
+      } else {
+        hi = mid;
+      }
+    }
+    return HSLColor.fromAHSL(1, hue, sat, lo).toColor();
+  }
+
+  /// WCAG relative luminance.
+  static double _relativeLuminance(Color c) {
+    double ch(double v) => v <= 0.03928 ? v / 12.92 : math.pow((v + 0.055) / 1.055, 2.4).toDouble();
+    return 0.2126 * ch(c.r) + 0.7152 * ch(c.g) + 0.0722 * ch(c.b);
+  }
 
   static const day = Pal([
     Color(0xFFFFFFFF), // bg
@@ -170,6 +389,32 @@ class ThemeController extends ChangeNotifier {
   Duration? _start;
   int _gen = 0;
 
+  /// A colour lifted off the user's wallpaper, or null to keep the stock accent.
+  /// Held here rather than in the store so the palette stays the single source
+  /// of what the UI paints.
+  int? _accent;
+  int? get accent => _accent;
+
+  /// How wide the outgoing bubble gradients while [_accent] is set. Carries no
+  /// meaning without one, since the stock bubbles keep their own treatment.
+  BubbleGrad _grad = BubbleGrad.medium;
+  BubbleGrad get grad => _grad;
+
+  /// The palette the widgets actually read. Applying the accent here instead of
+  /// baking it into [pal] keeps the day and night animation below untouched:
+  /// the fade still runs between the two stock palettes and the accent is laid
+  /// over whatever the fade produced.
+  Pal get effective => _accent == null ? pal : pal.withAccent(Color(_accent!), grad: _grad);
+
+  /// Idempotent on purpose. main.dart calls this while it builds, and a setter
+  /// that notified on an unchanged value would trip the build-phase guard.
+  void setAccent(int? argb, [BubbleGrad grad = BubbleGrad.medium]) {
+    if (_accent == argb && _grad == grad) return;
+    _accent = argb;
+    _grad = grad;
+    notifyListeners();
+  }
+
   void setDark(bool v, {bool animate = true}) {
     if (v == dark) return;
     dark = v;
@@ -200,7 +445,7 @@ final ThemeController themeCtl = ThemeController();
 
 class ThemeScope extends InheritedNotifier<ThemeController> {
   const ThemeScope({super.key, required ThemeController controller, required super.child}) : super(notifier: controller);
-  static Pal of(BuildContext c) => c.dependOnInheritedWidgetOfExactType<ThemeScope>()!.notifier!.pal;
+  static Pal of(BuildContext c) => c.dependOnInheritedWidgetOfExactType<ThemeScope>()!.notifier!.effective;
 }
 
 extension PalX on BuildContext {
@@ -208,12 +453,51 @@ extension PalX on BuildContext {
 }
 
 // telegram avatar gradient pairs top to bottom
-const avatarColors = <List<Color>>[
-  [Color(0xFFFF845E), Color(0xFFD45246)],
-  [Color(0xFFFEBB5B), Color(0xFFF68136)],
-  [Color(0xFFB694F9), Color(0xFF6C61DF)],
-  [Color(0xFF9AD164), Color(0xFF46BA43)],
-  [Color(0xFF5BCBE3), Color(0xFF359AD4)],
-  [Color(0xFF5CAFFA), Color(0xFF408ACF)],
-  [Color(0xFFFF8AAC), Color(0xFFD95574)],
+/// How many cover gradients a persona can be assigned.
+const avatarColorCount = 7;
+
+/// The seven persona covers are spread down a lightness ladder rather than
+/// around the hue circle, top stop first.
+///
+/// Solving for a fixed relative luminance instead would collapse the ladder: a
+/// saturated blue cannot reach the brightness a saturated yellow can, so every
+/// step would clamp to the same blue and the picker would show seven identical
+/// swatches. Lightness is directly controllable, so every rung is distinct for
+/// every hue.
+///
+/// The band matches where the fixed gradients used to sit, so the covers keep
+/// their brightness character and the white name on top still reads as well as
+/// it did.
+/// The band the fixed gradients used to occupy, pulled down.
+///
+/// Their lightest cover was a yellow at 1.68:1 against white, which is where the
+/// white name on top of a cover already stopped being readable, so the ladder
+/// starts below that rather than at it.
+const _avatarLadder = <List<double>>[
+  [0.54, 0.38],
+  [0.50, 0.34],
+  [0.46, 0.30],
+  [0.42, 0.26],
+  [0.38, 0.22],
+  [0.34, 0.18],
+  [0.30, 0.14],
 ];
+
+/// The persona cover gradient for tone [index], on [accent]'s hue.
+///
+/// The covers used to be seven fixed hue pairs, which left them the one surface
+/// in the app that ignored the wallpaper accent. They follow it now, and the
+/// ladder keeps the seven telling each other apart.
+List<Color> avatarGradient(Color accent, int index) {
+  final hsl = HSLColor.fromColor(accent);
+  // The saturation cap is a legibility bound, not a style choice. A pure yellow
+  // at full chroma drives two channels to the top at once, so it is the brightest
+  // colour the ladder can be asked for and the first thing to wash out the white
+  // name. Capping here holds every hue to about 2:1 against white.
+  final sat = hsl.saturation.clamp(0.34, 0.55);
+  final rung = _avatarLadder[index % avatarColorCount];
+  return [
+    HSLColor.fromAHSL(1, hsl.hue, sat, rung[0]).toColor(),
+    HSLColor.fromAHSL(1, hsl.hue, sat, rung[1]).toColor(),
+  ];
+}

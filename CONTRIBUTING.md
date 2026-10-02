@@ -39,6 +39,49 @@ flutter run
 There is no code generation step to run by hand and no signing config to fill
 in for local work. `flutter run` on a debug build is enough.
 
+## Release signing
+
+A clone carries no keystore, and that is deliberate: `android/key.properties`
+and `*.jks` are gitignored, and `android/app/build.gradle.kts` falls back to the
+debug signing config when `key.properties` is absent, so `flutter run --release`
+still works locally without any of this.
+
+The release workflow does not read signing material from the repository. It
+rebuilds the keystore from repository secrets at build time, so no commit can
+leak one. Four secrets are required, under the repository's
+**Settings → Secrets and variables → Actions**:
+
+| Secret | What it holds |
+| --- | --- |
+| `ANDROID_KEYSTORE_BASE64` | `base64 -w0 android/app/paradise-release.jks` |
+| `ANDROID_KEYSTORE_PASSWORD` | the keystore's own password |
+| `ANDROID_KEY_ALIAS` | the key alias, `MingXi` |
+| `ANDROID_KEY_PASSWORD` | the key's password, distinct from the store's |
+
+To try a signed build locally, copy `android/key.properties.example` to
+`android/key.properties` and fill it in. The workflow fails with a named error
+if any of the four is missing, rather than falling back to the debug key and
+producing an APK that looks like a release and is not one.
+
+## Cutting a release
+
+Push a tag whose name is the pubspec version with a `v` in front. The workflow
+refuses to build otherwise, because a mismatch ships a `versionCode` that has
+already been used:
+
+```bash
+# bump version: in pubspec.yaml first, then
+git tag v1.0.0 && git push origin v1.0.0
+```
+
+It produces four APKs, `armeabi-v7a`, `arm64-v8a`, `x86_64` and a universal one,
+and attaches them to a **draft** release. Nothing is published until a human
+presses the button.
+
+Flutter ships three Android ABIs and there is no 32-bit x86 engine, so the file
+called `x86_64` is the only x86 there is. `--split-per-abi` also produces no
+universal APK, which is why the workflow invokes the build twice.
+
 ## Before you open a pull request
 
 ```bash

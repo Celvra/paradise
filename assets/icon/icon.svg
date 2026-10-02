@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="512" height="512" role="img" aria-label="Paradise">
+  <path d="M38 72 V28 H56 a14 14 0 0 1 0 28 H38"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="8"
+        stroke-linecap="round"
+        stroke-linejoin="round" />
+  <circle cx="72" cy="72" r="5" fill="currentColor" />
+</svg>

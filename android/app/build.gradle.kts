@@ -1,3 +1,16 @@
+import java.io.FileInputStream
+import java.util.Properties
+
+// Release signing material. The keystore and this file are both gitignored, so a
+// clone has neither and falls back to the debug signing config below, which
+// keeps `flutter run --release` working for a contributor who only wants to try
+// the build. CI writes the real thing from repository secrets before building.
+val keystoreProperties = Properties()
+val keystorePropertiesFile = rootProject.file("key.properties")
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+}
+
 plugins {
     id("com.android.application")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
@@ -33,11 +46,40 @@ android {
         versionName = flutter.versionName
     }
 
+    signingConfigs {
+        create("release") {
+            if (keystorePropertiesFile.exists()) {
+                keyAlias = keystoreProperties["keyAlias"] as String
+                keyPassword = keystoreProperties["keyPassword"] as String
+                storePassword = keystoreProperties["storePassword"] as String
+                // resolved against this module, so storeFile is relative to
+                // android/app rather than to wherever key.properties lives
+                storeFile = file(keystoreProperties["storeFile"] as String)
+            }
+            // v2 and v3 are what actually ship. apksigner on a real build
+            // reports v2 true, v3 true, v1 false, and that is the correct
+            // outcome rather than a setting that failed: JAR signing only exists
+            // for Android 6 and below, this app's minSdk is 24, so no device
+            // that can install it reads a v1 signature. enableV1Signing is kept
+            // so lowering minSdk does not silently ship an unverifiable package,
+            // but it is a no-op at 24.
+            //
+            // v3 is the reason this is worth stating rather than trusting the
+            // default: it is what allows a compromised key to be replaced
+            // without publishing under a new package id.
+            enableV1Signing = true
+            enableV2Signing = true
+            enableV3Signing = true
+        }
+    }
+
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = if (keystorePropertiesFile.exists()) {
+                signingConfigs.getByName("release")
+            } else {
+                signingConfigs.getByName("debug")
+            }
         }
     }
 }

@@ -1,4 +1,10 @@
+import 'dart:async' show unawaited;
+import 'dart:convert' show utf8;
+import 'dart:io';
+
 import 'package:url_launcher/url_launcher.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 import '../core/anim.dart';
@@ -11,6 +17,7 @@ import '../l10n/x.dart';
 import 'bubble.dart';
 import 'account_page.dart';
 import 'wallpaper.dart';
+import 'wallpaper_page.dart';
 import 'ai_model_picker.dart';
 import 'ai_reply_page.dart';
 import 'ai_settings_page.dart';
@@ -121,6 +128,7 @@ class SettingsTab extends StatelessWidget {
   List<Widget> _appearance(BuildContext context) {
     final st = context.store;
     final l = context.l;
+    final p = context.p;
     return [
       _Head(l.appearanceTheme),
       _Group(children: [
@@ -128,6 +136,60 @@ class SettingsTab extends StatelessWidget {
       ]),
       _Head(l.appearancePreview),
       const _Preview(),
+      _Head(l.wallpaperHeader),
+      _Group(children: [
+        _Cell(
+          icon: Ic.image,
+          colors: _blue,
+          title: l.wallpaperRow,
+          sub: st.wallpaperPath.isEmpty ? l.wallpaperNone : wallpaperFileName(st.wallpaperPath),
+          onTap: () => openWallpaperSheet(context),
+        ),
+        // the blur switch only means something once there is a picture behind
+        // it, and an always-on row that does nothing is worse than a hidden one
+        if (st.wallpaperPath.isNotEmpty)
+          _Cell(
+            icon: Ic.image,
+            colors: _gray,
+            title: l.wallpaperBlur,
+            sub: l.wallpaperBlurSub,
+            trailing: TgSwitch(value: st.wallpaperBlur, onChanged: st.setWallpaperBlur),
+            last: true,
+            onTap: () => st.setWallpaperBlur(!st.wallpaperBlur),
+          )
+        else
+          const SizedBox.shrink(),
+      ]),
+      if (st.wallpaperPath.isNotEmpty) ...[
+        _Head(l.wallpaperColorHeader),
+        _Group(children: [
+          WallpaperSwatches(path: st.wallpaperPath),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+            child: Text(l.wallpaperColorFooter, style: TextStyle(color: p.subtitle, fontSize: 13, height: 1.35, decoration: TextDecoration.none)),
+          ),
+          // Only once a seed has recoloured the bubble does it gradient at all,
+          // so putting this above the swatches would offer a control that cannot
+          // do anything yet.
+          if (st.wallpaperColor != null) ...[
+            Container(height: .5, color: p.divider),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text(l.wallpaperBubbleGrad, style: TextStyle(color: p.title, fontSize: 16, decoration: TextDecoration.none)),
+                const SizedBox(height: 10),
+                TgSegmented(
+                  labels: [l.wallpaperBubbleGradSubtle, l.wallpaperBubbleGradMedium, l.wallpaperBubbleGradStrong],
+                  index: st.wallpaperBubbleGrad,
+                  onChanged: st.setWallpaperBubbleGrad,
+                ),
+                const SizedBox(height: 10),
+                Text(l.wallpaperBubbleGradSub, style: TextStyle(color: p.subtitle, fontSize: 13, height: 1.35, decoration: TextDecoration.none)),
+              ]),
+            ),
+          ],
+        ]),
+      ],
       _Head(l.appearanceTextSize),
       _Group(children: [
         Padding(padding: const EdgeInsets.fromLTRB(16, 10, 16, 0), child: Row(children: [Expanded(child: Text(l.appearanceSize, style: TextStyle(color: context.p.title, fontSize: 16, decoration: TextDecoration.none, fontWeight: FontWeight.w400))), Text(L10n.number('#,##0').format(st.textSize.round()), style: TextStyle(color: context.p.accent, fontSize: 16, fontWeight: FontWeight.w500, decoration: TextDecoration.none))])),
@@ -190,7 +252,97 @@ class SettingsTab extends StatelessWidget {
         _Cell(icon: Ic.file, colors: _orange, title: l.dataClearMedia, onTap: () => ask(l.dataClearMediaTitle, l.dataClearMediaMessage, l.actionClear, st.clearMedia)),
         _Cell(icon: Ic.trash, colors: _red, title: l.dataClearAll, last: true, danger: true, onTap: () => ask(l.dataClearAllTitle, l.dataClearAllMessage, l.actionClear, st.clearAll)),
       ]),
+      _Head(l.dataBackup),
+      _Group(children: [
+        _Cell(icon: Ic.share, colors: _blue, title: l.humanExport, sub: l.dataBackupExportSub, onTap: () => _exportBackup(context)),
+        _Cell(icon: Ic.file, colors: _green, title: l.humanImportFile, sub: l.dataBackupImportSub, last: true, onTap: () => _importBackup(context)),
+      ]),
     ];
+  }
+
+  /// Hands the whole account to the system save dialog.
+  ///
+  /// Not the app's own exports directory: that is private storage, so a backup
+  /// written there is a file the user cannot reach, cannot attach to a message
+  /// and cannot put in a cloud drive. The save dialog puts it wherever they
+  /// choose, which is the only place a backup is actually a backup.
+  ///
+  /// The clipboard is only the fallback for when that dialog cannot be used at
+  /// all. It is not the primary route: a large history will not fit in a
+  /// clipboard, and the string has to be in memory twice to get there.
+  Future<void> _exportBackup(BuildContext context) async {
+    final st = context.store;
+    final l = context.l;
+    String json;
+    try {
+      json = st.exportBackupString();
+    } catch (_) {
+      if (context.mounted) showBulletin(context, l.dataBackupSaveFailed);
+      return;
+    }
+
+    try {
+      final saved = await FilePicker.saveFile(
+        fileName: 'paradise-${_stamp()}.json',
+        bytes: utf8.encode(json),
+        mimeType: 'application/json',
+        allowedExtensions: const ['json'],
+        dialogTitle: l.humanExport,
+      );
+      // null means the user backed out of the dialog, which is not a failure
+      if (saved == null) return;
+      if (context.mounted) showBulletin(context, l.dataBackupSaved);
+    } catch (_) {
+      try {
+        unawaited(Clipboard.setData(ClipboardData(text: json)));
+        if (context.mounted) showBulletin(context, l.humanCopiedClipboard);
+      } catch (_) {
+        if (context.mounted) showBulletin(context, l.dataBackupSaveFailed);
+      }
+    }
+  }
+
+  /// A filename a human can sort by, instead of a millisecond count.
+  static String _stamp() {
+    String p(int v) => v.toString().padLeft(2, '0');
+    final n = DateTime.now();
+    return '${n.year}${p(n.month)}${p(n.day)}-${p(n.hour)}${p(n.minute)}';
+  }
+
+  Future<void> _importBackup(BuildContext context) async {
+    final st = context.store;
+    final l = context.l;
+    final picked = await FilePicker.pickFiles(type: FileType.custom, allowedExtensions: ['json']);
+    final path = picked.firstOrNull?.path;
+    if (path == null || !context.mounted) return;
+
+    // asked before anything is read, because merge and replace are not
+    // recoverable once they have run
+    final overwrite = await showTgDialog<bool>(
+      context,
+      title: l.humanImportTitle,
+      message: l.humanImportFooter,
+      actions: [
+        DialogAction(l.actionCancel, null),
+        DialogAction(l.humanMerge, false),
+        DialogAction(l.humanOverwrite, true, danger: true),
+      ],
+    );
+    if (overwrite == null || !context.mounted) return;
+
+    try {
+      final report = st.importBackupString(await File(path).readAsString(), overwrite: overwrite);
+      if (!context.mounted) return;
+      // a file that parsed but held nothing this build can use is its own case,
+      // distinct from a failure and from a restore that did something
+      final touched = report.chats + report.messages + report.personas + report.stickers + report.memories + report.settings;
+      showBulletin(context, touched == 0 && !report.ai ? l.dataBackupNothing : l.dataBackupRestored(report.chats, report.messages));
+    } on FormatException catch (e) {
+      // the message says which file or which version, which is the useful part
+      if (context.mounted) showBulletin(context, e.message);
+    } catch (_) {
+      if (context.mounted) showBulletin(context, l.humanInvalidFile);
+    }
   }
 
   // language picker, the same mark on every card but the globe reads as settings
@@ -358,6 +510,7 @@ class _Preview extends StatelessWidget {
     final p = context.p;
     final now = DateTime.now().millisecondsSinceEpoch;
     final l = context.l;
+    final st = context.store;
     final a = Msg(id: 'pa', out: false, text: l.previewSampleIncoming, time: now, read: true);
     final b = Msg(id: 'pb', out: true, text: l.previewSampleOutgoing, time: now, read: true);
     // bubbles sit inside one unconstrained column that gets scaled down as a whole,
@@ -366,7 +519,9 @@ return SizedBox(
       height: 172,
       child: LayoutBuilder(builder: (context, box) {
         return Stack(fit: StackFit.expand, children: [
-          CustomPaint(painter: WallPainter(colors: p.wall, phase: 0)),
+          // the preview has to show the wallpaper too, otherwise setting one
+          // means picking blind and only seeing the result after backing out
+          ChatWallpaper(path: st.wallpaperPath, blur: st.wallpaperBlur, colors: p.wall, accent: p.accent, phase: 0),
           ClipRect(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(4, 14, 4, 0),

@@ -311,7 +311,7 @@ class Avatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final g = avatarColors[color % avatarColors.length];
+    final g = context.p.avatar(color);
     final ch = name.trim().isEmpty ? '?' : String.fromCharCodes(name.trim().runes.take(1)).toUpperCase();
     if (path.isNotEmpty) {
       return ClipOval(
@@ -408,6 +408,45 @@ class TgSwitch extends StatelessWidget {
           ]),
         ),
       ),
+    );
+  }
+}
+
+// a row of mutually exclusive choices, the pill sliding between them
+class TgSegmented extends StatelessWidget {
+  const TgSegmented({super.key, required this.labels, required this.index, required this.onChanged});
+
+  final List<String> labels;
+  final int index;
+  final ValueChanged<int> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = context.p;
+    final n = labels.length;
+    assert(n > 1, 'a segmented control needs something to choose between');
+    return Container(
+      height: 34,
+      padding: const EdgeInsets.all(2),
+      decoration: BoxDecoration(color: p.gray, borderRadius: BorderRadius.circular(9)),
+      child: Stack(fit: StackFit.expand, children: [
+        // AnimatedAlign slides the pill and FractionallySizedBox keeps it a
+        // third wide whatever the labels measure. Positioned will not do this:
+        // its left and width are logical pixels, not fractions of the parent, so
+        // the same arithmetic there hands back a pill a third of a pixel wide.
+        Positioned.fill(
+          child: AnimatedAlign(
+            alignment: Alignment(-1 + 2 * index / (n - 1), 0),
+            duration: const Duration(milliseconds: 180),
+            curve: TgCurves.easeOut,
+            child: FractionallySizedBox(widthFactor: 1 / n, heightFactor: 1, child: DecoratedBox(decoration: BoxDecoration(color: p.bar, borderRadius: BorderRadius.circular(7)))),
+          ),
+        ),
+        Row(children: [
+          for (var i = 0; i < n; i++)
+            Expanded(child: Tap(scale: .94, onTap: () => onChanged(i), child: Center(child: Text(labels[i], style: TextStyle(color: i == index ? p.accent : p.subtitle, fontSize: 13, fontWeight: i == index ? FontWeight.w600 : FontWeight.w400, decoration: TextDecoration.none))))),
+        ]),
+      ]),
     );
   }
 }

@@ -1,7 +1,60 @@
+import 'dart:io';
 import 'dart:math' as math;
+import 'dart:ui' as ui show ImageFilter;
 import 'dart:ui' show Vertices, VertexMode;
-
 import 'package:flutter/widgets.dart';
+
+// four corner mesh like MotionBackgroundDrawable colors rotate when a message is sent
+
+/// The chat backdrop: either the procedural gradient the app ships with, or a
+/// picture the user picked, optionally blurred.
+///
+/// A scrim sits over a picture because a blur alone does not guarantee that
+/// black text on a bright bubble still reads, and the scrim is never opaque
+/// since the wallpaper is meant to be seen.
+class ChatWallpaper extends StatelessWidget {
+  const ChatWallpaper({super.key, required this.path, required this.blur, required this.phase, required this.colors, this.accent});
+
+  /// Empty draws the gradient.
+  final String path;
+  final bool blur;
+
+  /// Drives the gradient's rotation when a message is sent. Unused by pictures.
+  final double phase;
+
+  /// The gradient's four corners, passed in rather than read here so this stays
+  /// a dumb widget and the caller keeps its dependency on the palette.
+  final List<Color> colors;
+
+  /// Tint of the scrim, following the accent the user picked.
+  final Color? accent;
+
+  bool get _hasPicture => path.isNotEmpty && File(path).existsSync();
+
+  @override
+  Widget build(BuildContext context) {
+    if (!_hasPicture) {
+      return CustomPaint(painter: WallPainter(colors: colors, phase: phase));
+    }
+    Widget img = Image.file(
+      File(path),
+      fit: BoxFit.cover,
+      gaplessPlayback: true,
+      errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+    );
+    if (blur) {
+      // 18 is where a photo stops competing with the bubbles but still reads as
+      // a photo rather than a wash
+      img = ImageFiltered(imageFilter: ui.ImageFilter.blur(sigmaX: 18, sigmaY: 18), child: img);
+    }
+    return Stack(fit: StackFit.expand, children: [
+      img,
+      // a blurred bright photo is still bright, so the blurred case takes the
+      // heavier scrim
+      ColoredBox(color: (accent ?? const Color(0xFF000000)).withAlpha(blur ? 58 : 38)),
+    ]);
+  }
+}
 
 // four corner mesh like MotionBackgroundDrawable colors rotate when a message is sent
 class WallPainter extends CustomPainter {

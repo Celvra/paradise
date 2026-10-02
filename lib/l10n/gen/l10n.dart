@@ -1158,7 +1158,7 @@ abstract class AppLocalizations {
   /// Direct dependencies with their licence, the transitive tree is in the lockfile
   ///
   /// In en, this message translates to:
-  /// **'Dependencies:\n\naudioplayers 6.8.1 - voice messages  (MIT)\nhttps://github.com/bluefireteam/audioplayers/tree/master/packages/audioplayers\ncharacters 1.4.1 - grapheme clusters for text measurement  (BSD-3-Clause)\nhttps://github.com/dart-lang/core/tree/main/pkgs/characters\nfile_picker 13.1.0 - picking documents and audio files  (MIT)\nhttps://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker\nflutter_contacts 2.5.0 - sharing a contact card  (MIT)\nhttps://github.com/QuisApp/flutter_contacts\nflutter_local_notifications 18.0.1 - local notifications  (BSD-3-Clause)\nflutter_svg 2.3.0 - provider logos and vector icons  (MIT)\nhttps://github.com/flutter/packages/tree/main/third_party/packages/flutter_svg\nflutter_tts 4.2.5 - reading voice messages aloud  (MIT)\ngeolocator 13.0.4 - location attachments  (MIT)\nhttps://github.com/baseflow/flutter-geolocator/tree/main/geolocator\nhttp 1.6.0 - OpenAI compatible endpoints  (BSD-3-Clause)\nhttps://github.com/dart-lang/http/tree/master/pkgs/http\nimage_picker 1.2.3 - camera and gallery photos  (Apache-2.0)\nhttps://github.com/flutter/packages/tree/main/packages/image_picker/image_picker\nintl 0.20.3 - date and number formatting  (BSD-3-Clause)\nhttps://github.com/dart-lang/i18n/tree/main/pkgs/intl\npath_provider 2.1.6 - app directory for stickers and exports  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/path_provider/path_provider\nphoto_manager 3.12.0 - album access for attachments  (Apache-2.0)\nhttps://github.com/fluttercandies/flutter_photo_manager\nshared_preferences 2.5.5 - settings and chat storage  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/shared_preferences/shared_preferences\ntimezone 0.10.1 - timezone data for scheduled messages  (BSD-2-Clause)\nhttps://github.com/srawlins/timezone\nurl_launcher 6.3.2 - the community link in this dialog  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/url_launcher/url_launcher\nworkmanager 0.10.10 - background delivery when the app is killed  (MIT)\nhttps://github.com/fluttercommunity/flutter_workmanager'**
+  /// **'Dependencies:\n\naudioplayers 6.8.1 - voice messages  (MIT)\nhttps://github.com/bluefireteam/audioplayers/tree/master/packages/audioplayers\ncharacters 1.4.1 - grapheme clusters for text measurement  (BSD-3-Clause)\nhttps://github.com/dart-lang/core/tree/main/pkgs/characters\nfile_picker 13.1.0 - picking documents and audio files  (MIT)\nhttps://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker\nflutter_contacts 2.5.0 - sharing a contact card  (MIT)\nhttps://github.com/QuisApp/flutter_contacts\nflutter_local_notifications 18.0.1 - local notifications  (BSD-3-Clause)\nflutter_svg 2.3.0 - provider logos and vector icons  (MIT)\nhttps://github.com/flutter/packages/tree/main/third_party/packages/flutter_svg\nflutter_tts 4.2.5 - reading voice messages aloud  (MIT)\ngeolocator 13.0.4 - location attachments  (MIT)\nhttps://github.com/baseflow/flutter-geolocator/tree/main/geolocator\nhttp 1.6.0 - OpenAI compatible endpoints  (BSD-3-Clause)\nhttps://github.com/dart-lang/http/tree/master/pkgs/http\nimage_picker 1.2.3 - camera and gallery photos  (Apache-2.0)\nhttps://github.com/flutter/packages/tree/main/packages/image_picker/image_picker\nintl 0.20.3 - date and number formatting  (BSD-3-Clause)\nhttps://github.com/dart-lang/i18n/tree/main/pkgs/intl\npath_provider 2.1.6 - app directory for stickers and exports  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/path_provider/path_provider\nphoto_manager 3.12.0 - album access for attachments  (Apache-2.0)\nhttps://github.com/fluttercandies/flutter_photo_manager\nshared_preferences 2.5.5 - settings and chat storage  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/shared_preferences/shared_preferences\nsqflite 2.4.4 - message history and per chat paging  (BSD-2-Clause)\nhttps://github.com/tekartik/sqflite/tree/master/sqflite\ntimezone 0.10.1 - timezone data for scheduled messages  (BSD-2-Clause)\nhttps://github.com/srawlins/timezone\nurl_launcher 6.3.2 - the community link in this dialog  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/url_launcher/url_launcher\nworkmanager 0.10.10 - background delivery when the app is killed  (MIT)\nhttps://github.com/fluttercommunity/flutter_workmanager'**
   String get settingsAboutDeps;
 
   /// Community link in the about dialog, identical in every language
@@ -1170,7 +1170,7 @@ abstract class AppLocalizations {
   /// Small print at the bottom of settings
   ///
   /// In en, this message translates to:
-  /// **'Paradise'**
+  /// **'Developed by Celvra'**
   String get settingsFooter;
 
   /// Incoming bubble text in the message preview on the appearance page
@@ -1220,6 +1220,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Theme'**
   String get appearanceTheme;
+
+  /// Settings section header for the wallpaper
+  ///
+  /// In en, this message translates to:
+  /// **'Chat Wallpaper'**
+  String get wallpaperHeader;
+
+  /// Settings row that opens the wallpaper picker
+  ///
+  /// In en, this message translates to:
+  /// **'Wallpaper'**
+  String get wallpaperRow;
+
+  /// Wallpaper picker entry that keeps the stock gradient
+  ///
+  /// In en, this message translates to:
+  /// **'Default'**
+  String get wallpaperDefault;
+
+  /// Wallpaper picker entry that opens the gallery
+  ///
+  /// In en, this message translates to:
+  /// **'Choose photo'**
+  String get wallpaperChoose;
+
+  /// Subtitle when no picture is chosen
+  ///
+  /// In en, this message translates to:
+  /// **'Plain gradient'**
+  String get wallpaperNone;
+
+  /// Per chat entry that uses the global wallpaper
+  ///
+  /// In en, this message translates to:
+  /// **'Follow global'**
+  String get wallpaperFollowGlobal;
+
+  /// Toggle that blurs the wallpaper
+  ///
+  /// In en, this message translates to:
+  /// **'Blur wallpaper'**
+  String get wallpaperBlur;
+
+  /// Toggle subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Keeps the bubbles readable over a photo'**
+  String get wallpaperBlurSub;
+
+  /// Section header above the extracted colour swatches
+  ///
+  /// In en, this message translates to:
+  /// **'Accent from wallpaper'**
+  String get wallpaperColorHeader;
+
+  /// Note under the colour swatches
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a colour to recolour the accent and your own bubbles.'**
+  String get wallpaperColorFooter;
+
+  /// Swatch that clears the extracted accent
+  ///
+  /// In en, this message translates to:
+  /// **'Default'**
+  String get wallpaperColorNone;
+
+  /// Shown when extraction found nothing
+  ///
+  /// In en, this message translates to:
+  /// **'This photo has no colour to take'**
+  String get wallpaperNoColors;
+
+  /// Title of the outgoing bubble gradient picker
+  ///
+  /// In en, this message translates to:
+  /// **'Bubble gradient'**
+  String get wallpaperBubbleGrad;
+
+  /// Weakest outgoing bubble gradient
+  ///
+  /// In en, this message translates to:
+  /// **'Subtle'**
+  String get wallpaperBubbleGradSubtle;
+
+  /// Middle outgoing bubble gradient
+  ///
+  /// In en, this message translates to:
+  /// **'Medium'**
+  String get wallpaperBubbleGradMedium;
+
+  /// Widest outgoing bubble gradient
+  ///
+  /// In en, this message translates to:
+  /// **'Strong'**
+  String get wallpaperBubbleGradStrong;
+
+  /// Note under the gradient picker
+  ///
+  /// In en, this message translates to:
+  /// **'How far your own bubbles fade from top to bottom.'**
+  String get wallpaperBubbleGradSub;
+
+  /// Bulletin after clearing a wallpaper
+  ///
+  /// In en, this message translates to:
+  /// **'Wallpaper removed'**
+  String get wallpaperRemoved;
+
+  /// Title of the per chat wallpaper sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Wallpaper of this chat'**
+  String get wallpaperChatTitle;
 
   /// Toggle row
   ///
@@ -1370,6 +1484,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This deletes every message in every chat. Personas stay.'**
   String get dataClearAllMessage;
+
+  /// Section header above the backup rows
+  ///
+  /// In en, this message translates to:
+  /// **'Backup'**
+  String get dataBackup;
+
+  /// Subtitle of the export row
+  ///
+  /// In en, this message translates to:
+  /// **'Conversations, cards, stickers and settings'**
+  String get dataBackupExportSub;
+
+  /// Subtitle of the import row
+  ///
+  /// In en, this message translates to:
+  /// **'From a file you exported before'**
+  String get dataBackupImportSub;
+
+  /// Bulletin after a restore that changed something
+  ///
+  /// In en, this message translates to:
+  /// **'{chats, plural, =1{1 conversation} other{{chats} conversations}} and {messages} messages'**
+  String dataBackupRestored(num chats, Object messages);
+
+  /// Bulletin after a restore that found nothing to do
+  ///
+  /// In en, this message translates to:
+  /// **'There was nothing in that file to restore'**
+  String get dataBackupNothing;
+
+  /// Bulletin after the backup is written where the user chose
+  ///
+  /// In en, this message translates to:
+  /// **'Backup saved'**
+  String get dataBackupSaved;
+
+  /// Bulletin when the save dialog could not be used
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save the file'**
+  String get dataBackupSaveFailed;
 
   /// Date separator for messages from today
   ///

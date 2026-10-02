@@ -595,13 +595,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsAboutDeps =>
-      'Dependencies:\n\naudioplayers 6.8.1 - voice messages  (MIT)\nhttps://github.com/bluefireteam/audioplayers/tree/master/packages/audioplayers\ncharacters 1.4.1 - grapheme clusters for text measurement  (BSD-3-Clause)\nhttps://github.com/dart-lang/core/tree/main/pkgs/characters\nfile_picker 13.1.0 - picking documents and audio files  (MIT)\nhttps://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker\nflutter_contacts 2.5.0 - sharing a contact card  (MIT)\nhttps://github.com/QuisApp/flutter_contacts\nflutter_local_notifications 18.0.1 - local notifications  (BSD-3-Clause)\nflutter_svg 2.3.0 - provider logos and vector icons  (MIT)\nhttps://github.com/flutter/packages/tree/main/third_party/packages/flutter_svg\nflutter_tts 4.2.5 - reading voice messages aloud  (MIT)\ngeolocator 13.0.4 - location attachments  (MIT)\nhttps://github.com/baseflow/flutter-geolocator/tree/main/geolocator\nhttp 1.6.0 - OpenAI compatible endpoints  (BSD-3-Clause)\nhttps://github.com/dart-lang/http/tree/master/pkgs/http\nimage_picker 1.2.3 - camera and gallery photos  (Apache-2.0)\nhttps://github.com/flutter/packages/tree/main/packages/image_picker/image_picker\nintl 0.20.3 - date and number formatting  (BSD-3-Clause)\nhttps://github.com/dart-lang/i18n/tree/main/pkgs/intl\npath_provider 2.1.6 - app directory for stickers and exports  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/path_provider/path_provider\nphoto_manager 3.12.0 - album access for attachments  (Apache-2.0)\nhttps://github.com/fluttercandies/flutter_photo_manager\nshared_preferences 2.5.5 - settings and chat storage  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/shared_preferences/shared_preferences\ntimezone 0.10.1 - timezone data for scheduled messages  (BSD-2-Clause)\nhttps://github.com/srawlins/timezone\nurl_launcher 6.3.2 - the community link in this dialog  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/url_launcher/url_launcher\nworkmanager 0.10.10 - background delivery when the app is killed  (MIT)\nhttps://github.com/fluttercommunity/flutter_workmanager';
+      'Dependencies:\n\naudioplayers 6.8.1 - voice messages  (MIT)\nhttps://github.com/bluefireteam/audioplayers/tree/master/packages/audioplayers\ncharacters 1.4.1 - grapheme clusters for text measurement  (BSD-3-Clause)\nhttps://github.com/dart-lang/core/tree/main/pkgs/characters\nfile_picker 13.1.0 - picking documents and audio files  (MIT)\nhttps://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker\nflutter_contacts 2.5.0 - sharing a contact card  (MIT)\nhttps://github.com/QuisApp/flutter_contacts\nflutter_local_notifications 18.0.1 - local notifications  (BSD-3-Clause)\nflutter_svg 2.3.0 - provider logos and vector icons  (MIT)\nhttps://github.com/flutter/packages/tree/main/third_party/packages/flutter_svg\nflutter_tts 4.2.5 - reading voice messages aloud  (MIT)\ngeolocator 13.0.4 - location attachments  (MIT)\nhttps://github.com/baseflow/flutter-geolocator/tree/main/geolocator\nhttp 1.6.0 - OpenAI compatible endpoints  (BSD-3-Clause)\nhttps://github.com/dart-lang/http/tree/master/pkgs/http\nimage_picker 1.2.3 - camera and gallery photos  (Apache-2.0)\nhttps://github.com/flutter/packages/tree/main/packages/image_picker/image_picker\nintl 0.20.3 - date and number formatting  (BSD-3-Clause)\nhttps://github.com/dart-lang/i18n/tree/main/pkgs/intl\npath_provider 2.1.6 - app directory for stickers and exports  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/path_provider/path_provider\nphoto_manager 3.12.0 - album access for attachments  (Apache-2.0)\nhttps://github.com/fluttercandies/flutter_photo_manager\nshared_preferences 2.5.5 - settings and chat storage  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/shared_preferences/shared_preferences\nsqflite 2.4.4 - message history and per chat paging  (BSD-2-Clause)\nhttps://github.com/tekartik/sqflite/tree/master/sqflite\ntimezone 0.10.1 - timezone data for scheduled messages  (BSD-2-Clause)\nhttps://github.com/srawlins/timezone\nurl_launcher 6.3.2 - the community link in this dialog  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/url_launcher/url_launcher\nworkmanager 0.10.10 - background delivery when the app is killed  (MIT)\nhttps://github.com/fluttercommunity/flutter_workmanager';
 
   @override
   String get settingsAboutCommunityUrl => 'https://discord.gg/aQaNUHPsw';
 
   @override
-  String get settingsFooter => 'Paradise';
+  String get settingsFooter => 'Developed by Celvra';
 
   @override
   String get previewSampleIncoming => 'Good morning! How can I help today?';
@@ -626,6 +626,65 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get appearanceTheme => 'Theme';
+
+  @override
+  String get wallpaperHeader => 'Chat Wallpaper';
+
+  @override
+  String get wallpaperRow => 'Wallpaper';
+
+  @override
+  String get wallpaperDefault => 'Default';
+
+  @override
+  String get wallpaperChoose => 'Choose photo';
+
+  @override
+  String get wallpaperNone => 'Plain gradient';
+
+  @override
+  String get wallpaperFollowGlobal => 'Follow global';
+
+  @override
+  String get wallpaperBlur => 'Blur wallpaper';
+
+  @override
+  String get wallpaperBlurSub => 'Keeps the bubbles readable over a photo';
+
+  @override
+  String get wallpaperColorHeader => 'Accent from wallpaper';
+
+  @override
+  String get wallpaperColorFooter =>
+      'Pick a colour to recolour the accent and your own bubbles.';
+
+  @override
+  String get wallpaperColorNone => 'Default';
+
+  @override
+  String get wallpaperNoColors => 'This photo has no colour to take';
+
+  @override
+  String get wallpaperBubbleGrad => 'Bubble gradient';
+
+  @override
+  String get wallpaperBubbleGradSubtle => 'Subtle';
+
+  @override
+  String get wallpaperBubbleGradMedium => 'Medium';
+
+  @override
+  String get wallpaperBubbleGradStrong => 'Strong';
+
+  @override
+  String get wallpaperBubbleGradSub =>
+      'How far your own bubbles fade from top to bottom.';
+
+  @override
+  String get wallpaperRemoved => 'Wallpaper removed';
+
+  @override
+  String get wallpaperChatTitle => 'Wallpaper of this chat';
 
   @override
   String get appearanceNightMode => 'Night Mode';
@@ -704,6 +763,36 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get dataClearAllMessage =>
       'This deletes every message in every chat. Personas stay.';
+
+  @override
+  String get dataBackup => 'Backup';
+
+  @override
+  String get dataBackupExportSub =>
+      'Conversations, cards, stickers and settings';
+
+  @override
+  String get dataBackupImportSub => 'From a file you exported before';
+
+  @override
+  String dataBackupRestored(num chats, Object messages) {
+    String _temp0 = intl.Intl.pluralLogic(
+      chats,
+      locale: localeName,
+      other: '$chats conversations',
+      one: '1 conversation',
+    );
+    return '$_temp0 and $messages messages';
+  }
+
+  @override
+  String get dataBackupNothing => 'There was nothing in that file to restore';
+
+  @override
+  String get dataBackupSaved => 'Backup saved';
+
+  @override
+  String get dataBackupSaveFailed => 'Could not save the file';
 
   @override
   String get dayToday => 'Today';

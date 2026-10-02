@@ -156,7 +156,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget _header(Pal p, double t, double w, double top, double h) {
-    final g = avatarColors[_color % avatarColors.length];
+    final g = p.avatar(_color);
     // avatar geometry from AvatarImage.dispatchDraw
     final cx = _l3(85, w / 2, w / 2, t);
     final cy = _l3(28, 59, h / 2, t);

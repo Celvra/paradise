@@ -23,6 +23,7 @@ import 'ai/adapter.dart';
 import 'ai_client.dart';
 import 'ai/tool_wire.dart';
 import 'ai_config.dart';
+import 'backup.dart';
 import 'human/br_parser.dart';
 import 'human/hub.dart';
 import 'human/human_models.dart';
@@ -35,6 +36,7 @@ import 'models.dart';
 
 part 'store_human.dart';
 part 'store_agent.dart';
+part 'backup_store.dart';
 
 class _Run {
   final AiCancel token = AiCancel();
@@ -146,6 +148,23 @@ class Store extends ChangeNotifier {
   bool dark = false;
   double textSize = 16;
   double bubbleRadius = 17;
+
+  /// Global chat wallpaper. Empty draws the plain procedural gradient, the
+  /// default. A conversation can override this in either direction.
+  String wallpaperPath = '';
+
+  /// Whether that wallpaper is blurred. Photos behind text are hard to read,
+  /// so this defaults on.
+  bool wallpaperBlur = true;
+
+  /// Accent lifted out of the wallpaper, ARGB, or null to keep the stock one.
+  int? wallpaperColor;
+
+  /// Which outgoing bubble gradient to draw when [wallpaperColor] is set, as an
+  /// index into [BubbleGrad.values]. Stored as an int rather than a name so an
+  /// older build reading a newer value cannot fall over on an unknown string.
+  int wallpaperBubbleGrad = BubbleGrad.medium.index;
+
   String? openId;
   List<String> recentEmoji = [];
   List<String> recentStickers = [];
@@ -185,6 +204,13 @@ class Store extends ChangeNotifier {
     s.dark = s._sp.getBool('dark') ?? false;
     s.textSize = s._sp.getDouble('textSize') ?? 16;
     s.bubbleRadius = s._sp.getDouble('radius') ?? 17;
+    s.wallpaperPath = s._sp.getString('wallpaper') ?? '';
+    s.wallpaperBlur = s._sp.getBool('wallpaperBlur') ?? true;
+    final wc = s._sp.getInt('wallpaperColor');
+    s.wallpaperColor = wc == null || wc == 0 ? null : wc;
+    // clamped rather than trusted: a value written by a build with more levels
+    // than this one would otherwise index off the end of BubbleGrad.values
+    s.wallpaperBubbleGrad = (s._sp.getInt('wallpaperBubbleGrad') ?? BubbleGrad.medium.index).clamp(0, BubbleGrad.values.length - 1);
     s.recentEmoji = s._sp.getStringList('recentEmoji') ?? [];
     s.recentStickers = s._sp.getStringList('recentStickers') ?? [];
     s.recentSearch = s._sp.getStringList('recentSearch') ?? s._sp.getStringList('recentSearches') ?? [];
@@ -305,6 +331,15 @@ class Store extends ChangeNotifier {
   void _scheduleSave() {
     _saveTimer?.cancel();
     _saveTimer = Timer(const Duration(milliseconds: 400), _save);
+  }
+
+  /// Says the chat list itself changed, rather than the contents of one chat.
+  ///
+  /// Public because the backup restore is an extension and an extension cannot
+  /// reach notifyListeners.
+  void chatsChanged() {
+    notifyListeners();
+    _scheduleSave();
   }
 
   void _save() {
@@ -446,7 +481,7 @@ class Store extends ChangeNotifier {
   String? _firstLockFor(String charName) => charLocks[charName]?.firstWhere((id) => _byId(id) != null, orElse: () => '');
 
   UserPersona createPersonaCard({String name = '', String description = ''}) {
-    final card = UserPersona(id: _pid(), name: name.trim(), description: description.trim(), color: personas.length % avatarColors.length);
+    final card = UserPersona(id: _pid(), name: name.trim(), description: description.trim(), color: personas.length % avatarColorCount);
     // a fresh card becomes the one in hand, that is what the user just touched
     personas.add(card);
     _activePersonaId = card.id;
@@ -611,6 +646,66 @@ class Store extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setWallpaper(String path) {
+    final changed = wallpaperPath != path;
+    wallpaperPath = path;
+    if (path.isEmpty) {
+      _sp.remove('wallpaper');
+    } else {
+      _sp.setString('wallpaper', path);
+    }
+    // The accent was read off whichever picture was set before, so it describes
+    // an image that is no longer on screen. Left behind it would tint the whole
+    // app from a wallpaper the user has just put away, and on a fresh pick it
+    // would be a colour lifted from the old photo sitting under the new one.
+    if (changed && wallpaperColor != null) {
+      setWallpaperColor(null);
+      return; // that already notified
+    }
+    notifyListeners();
+  }
+
+  void setWallpaperBlur(bool v) {
+    wallpaperBlur = v;
+    _sp.setBool('wallpaperBlur', v);
+    notifyListeners();
+  }
+
+  /// Picks one of the three outgoing bubble gradients, as an index into
+  /// [BubbleGrad.values].
+  ///
+  /// Only has a visible effect while [wallpaperColor] is set: that is the only
+  /// case where the bubble is repainted at all, and with no seed the stock
+  /// bubbles keep the treatment the palettes shipped with.
+  void setWallpaperBubbleGrad(int index) {
+    final v = index.clamp(0, BubbleGrad.values.length - 1);
+    if (wallpaperBubbleGrad == v) return;
+    wallpaperBubbleGrad = v;
+    _sp.setInt('wallpaperBubbleGrad', v);
+    themeCtl.setAccent(wallpaperColor, BubbleGrad.values[v]);
+    notifyListeners();
+  }
+
+  void setWallpaperColor(int? argb) {
+    wallpaperColor = argb;
+    if (argb == null) {
+      _sp.remove('wallpaperColor');
+    } else {
+      _sp.setInt('wallpaperColor', argb);
+    }
+    themeCtl.setAccent(argb, BubbleGrad.values[wallpaperBubbleGrad]);
+    notifyListeners();
+  }
+
+  /// Sets or clears the wallpaper of one conversation. Null hands the chat back
+  /// to the global choice, an empty string opts it out to the plain gradient.
+  void setChatWallpaper(Chat c, String? path) {
+    c.wallpaperPath = path;
+    c.touch();
+    _save();
+    notifyListeners();
+  }
+
   /// The language the user picked, or null to follow the device. MaterialApp
   /// takes this straight through, and the arb lookup handles the zh_Hant
   /// script on its own.
@@ -668,7 +763,7 @@ class Store extends ChangeNotifier {
   }
 
   Chat createChat(String name, String prompt, {String bio = '', String greeting = '', String emoji = '', String avatarPath = '', int? color, String modelProvider = '', String modelId = '', bool modelFallback = true, bool? thinking, bool? agent}) {
-    final c = Chat(id: _id(), persona: Persona(name: name, prompt: prompt, color: color ?? name.hashCode.abs() % avatarColors.length, bio: bio, greeting: greeting, emoji: emoji, avatarPath: avatarPath, modelProvider: modelProvider, modelId: modelId, modelFallback: modelFallback, thinking: thinking, agent: agent));
+    final c = Chat(id: _id(), persona: Persona(name: name, prompt: prompt, color: color ?? name.hashCode.abs() % avatarColorCount, bio: bio, greeting: greeting, emoji: emoji, avatarPath: avatarPath, modelProvider: modelProvider, modelId: modelId, modelFallback: modelFallback, thinking: thinking, agent: agent));
     if (greeting.trim().isNotEmpty) c.msgs.add(Msg(id: _id(), out: false, text: greeting.trim(), time: DateTime.now().millisecondsSinceEpoch));
     c.addListener(_onChat);
     chats.add(c);
@@ -1369,3 +1464,4 @@ class StoreScope extends InheritedNotifier<Store> {
 extension StoreX on BuildContext {
   Store get store => Store.of(this);
 }
+

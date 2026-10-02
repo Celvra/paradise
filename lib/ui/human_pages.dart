@@ -1,10 +1,10 @@
+import 'dart:async' show unawaited;
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:path_provider/path_provider.dart';
 
 import '../core/anim.dart';
 import '../core/overlays.dart';
@@ -389,24 +389,37 @@ class HumanVoicePage extends StatelessWidget {
 
 // ------------------------------------------------------------------ backup
 
-Future<String> _exportDir() async {
-  final base = await getApplicationDocumentsDirectory();
-  final d = Directory('${base.path}/exports');
-  if (!d.existsSync()) d.createSync(recursive: true);
-  return d.path;
-}
-
 class HumanBackupPage extends StatelessWidget {
   const HumanBackupPage({super.key});
 
+  /// A filename a human can sort by, instead of a millisecond count.
+  static String _stamp() {
+    String p(int v) => v.toString().padLeft(2, '0');
+    final n = DateTime.now();
+    return '${n.year}${p(n.month)}${p(n.day)}-${p(n.hour)}${p(n.minute)}';
+  }
+
+  /// Hands the document to the system save dialog.
+  ///
+  /// It used to be written into the app's own exports directory, which is
+  /// private storage: a backup the user cannot open, cannot attach and cannot
+  /// sync is not a backup. The clipboard still gets a copy, because these two
+  /// documents are small and pasting one into another app is a real thing people
+  /// do, but the file the dialog produces is the one that matters.
   Future<void> _export(BuildContext c, String name, String json) async {
     final l = c.l;
-    Clipboard.setData(ClipboardData(text: json));
+    unawaited(Clipboard.setData(ClipboardData(text: json)));
     try {
-      final dir = await _exportDir();
-      final f = File('$dir/$name-${DateTime.now().millisecondsSinceEpoch}.json');
-      await f.writeAsString(json);
-      if (c.mounted) showBulletin(c, '${l.humanSavedCopied}: ${f.path}');
+      final saved = await FilePicker.saveFile(
+        fileName: '$name-${_stamp()}.json',
+        bytes: utf8.encode(json),
+        mimeType: 'application/json',
+        allowedExtensions: const ['json'],
+        dialogTitle: l.humanExport,
+      );
+      // null is the user backing out, not a failure worth a bulletin
+      if (saved == null) return;
+      if (c.mounted) showBulletin(c, l.humanSavedCopied);
     } catch (_) {
       if (c.mounted) showBulletin(c, l.humanCopiedClipboard);
     }

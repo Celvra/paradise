@@ -19,6 +19,13 @@ Future<void> main() async {
   final store = await Store.load();
   final ai = await AiConfig.load();
   store.attachAi(ai);
+  // The wallpaper accent lives in the store but colours the palette, so the two
+  // are kept in step here rather than either reaching into the other: once at
+  // startup for the saved value, then on every store change. setAccent is a
+  // no-op when the value has not moved, so the other notifications this listens
+  // to cost nothing.
+  themeCtl.setAccent(store.wallpaperColor, BubbleGrad.values[store.wallpaperBubbleGrad]);
+  store.addListener(() => themeCtl.setAccent(store.wallpaperColor, BubbleGrad.values[store.wallpaperBubbleGrad]));
   // humanized layer: notifications, the tool permission dialog, the scheduler
   // heartbeat and the periodic background job for killed-app delivery
   await Notifier.instance.init();

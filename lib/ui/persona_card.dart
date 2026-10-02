@@ -341,7 +341,7 @@ class _PersonaCardPageState extends State<PersonaCardPage> {
                   clipBehavior: Clip.antiAlias,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: avatarColors[_color % avatarColors.length]),
+                    gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: p.avatar(_color)),
                   ),
                   child: _avatar.isEmpty
                       ? Center(child: Text(_name.text.trim().isEmpty ? '?' : _name.text.trim().characters.first.toUpperCase(), style: const TextStyle(color: Color(0xFFFFFFFF), fontSize: 25, fontWeight: FontWeight.w500, decoration: TextDecoration.none)))
@@ -373,7 +373,7 @@ class _PersonaCardPageState extends State<PersonaCardPage> {
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
             child: LayoutBuilder(builder: (_, box) {
-              final n = avatarColors.length;
+              final n = avatarColorCount;
               final d = ((box.maxWidth - (n - 1) * 8) / n).clamp(28.0, 44.0);
               return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                 for (var i = 0; i < n; i++)
@@ -383,7 +383,7 @@ class _PersonaCardPageState extends State<PersonaCardPage> {
                     child: Container(
                       width: d,
                       height: d,
-                      decoration: BoxDecoration(shape: BoxShape.circle, gradient: LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: avatarColors[i])),
+                      decoration: BoxDecoration(shape: BoxShape.circle, gradient: LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: p.avatar(i))),
                       child: AnimatedScale(
                         duration: const Duration(milliseconds: 220),
                         curve: TgCurves.easeOutBack,
@@ -476,7 +476,7 @@ class _PersonaCardPageState extends State<PersonaCardPage> {
 
   // coloured profile cover with the emoji pattern, the avatar and the name
   Widget _preview(Pal p, double top, double height) {
-    final g = avatarColors[_color % avatarColors.length];
+    final g = p.avatar(_color);
     return TweenAnimationBuilder<List<Color>>(
       tween: _GradTween(end: g),
       duration: const Duration(milliseconds: 380),
