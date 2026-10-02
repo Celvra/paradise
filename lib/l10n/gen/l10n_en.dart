@@ -2367,6 +2367,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get attachTabGallery => 'Gallery';
 
   @override
+  String get attachCamera => 'Camera';
+
+  @override
   String get attachLoading => 'Loading...';
 
   @override

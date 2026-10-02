@@ -119,8 +119,14 @@ void main() {
     });
 
     test('inside a code fence the tag is text', () {
+      // the point is that a tag written inside a fence is never interpreted.
+      // The newline after the closing fence is a break like any other, so the
+      // line that follows lands as its own bubble.
       final segs = feed(['```\n<i-br_800>\n```\n真的']);
-      expect(texts(segs), ['```\n<i-br_800>\n```\n真的']);
+      expect(texts(segs), ['```\n<i-br_800>\n```', '真的']);
+      // and the fence itself kept the tag verbatim rather than cutting on it
+      expect(segs.first.text, contains('<i-br_800>'));
+      expect(segs.first.delayMs, 600);
     });
 
     test('two tags in a row add their pauses onto the next bubble', () {

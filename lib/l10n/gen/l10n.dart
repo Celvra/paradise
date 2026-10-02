@@ -4323,6 +4323,12 @@ abstract class AppLocalizations {
   /// **'Gallery'**
   String get attachTabGallery;
 
+  /// Label of the camera tile at the top of the gallery grid
+  ///
+  /// In en, this message translates to:
+  /// **'Camera'**
+  String get attachCamera;
+
   /// Shown while the album is being read
   ///
   /// In en, this message translates to:

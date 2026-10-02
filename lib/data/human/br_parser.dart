@@ -13,10 +13,12 @@
 //    the bubble as text, which is what used to swallow the rest of a turn.
 //  * A tag that stops being a possible `<i-br...` prefix is released as text at
 //    once, so "a < b" is never held back.
-//  * A line break is a break, with the default pause. Models separate messages
-//    with a plain newline far more often than they write the tag, so refusing
-//    to split on one left whole replies inside a single bubble. An empty line
-//    needs no rule of its own, the second newline finds nothing left to cut.
+//  * A line break is a break, and an empty line always is. Models separate
+//    messages with a plain newline far more often than they write the tag, so
+//    refusing to split on one left whole replies inside a single bubble. A
+//    newline that arrives before enough text has piled up to stand as a bubble
+//    is kept as text instead, otherwise short lines would each become their own
+//    bubble.
 //  * A model that writes no tag and no blank line at all used to land as one
 //    giant bubble. [autoSplitChars] is the fallback: once that much text has
 //    piled up with no break in it, the bubble is cut at the nearest sentence or
@@ -93,6 +95,10 @@ class BrParser {
   var _aborted = false;
   var _carryDelay = 0;
   var _carryExplicit = false;
+
+  /// newlines seen with nothing but blanks between them. The second one closes
+  /// the empty line and that pair is a break.
+  var _nlRun = 0;
 
   bool get aborted => _aborted;
 
@@ -215,21 +221,36 @@ class BrParser {
     _resolveTicks();
     if (c == '\n' && !_fence) _inline = false;
 
-    // A line break is a break. Models separate messages with a plain newline far
-    // more often than they write the tag, and refusing to split on a newline
-    // left whole replies inside one bubble with three lines in it, which reads
-    // as a wall of text no matter how the model meant it. An empty line needs
-    // no special case any more, the second newline finds nothing to cut and is
-    // swallowed by the trim.
+    // A line break is a break, and an empty line always is. Models separate
+    // messages with a plain newline far more often than they write the tag, and
+    // refusing to split on a newline left whole replies inside one bubble with
+    // three lines in it.
+    //
+    // The one exception is a newline arriving while too little text has piled
+    // up to stand as a bubble of its own. Cutting there would carve off a
+    // fragment like "喵" on its own, so the newline is kept as text and the
+    // lines stay together. Keeping it matters: dropping it would join two lines
+    // the reader can plainly see were two.
     if (enabled && !inCode && c == '\n') {
+      if (_nlRun > 0) {
+        // an empty line, or blanks between two of them. This is the form a
+        // model reaches for when it forgets the tag entirely, so it cuts
+        // whatever is there, however short.
+        _nlRun = 0;
+        _cut(defaultDelayMs, false, out);
+        return;
+      }
+      _nlRun = 1;
       if (_trimSegment(_text.toString()).length >= _minBreak) {
         _cut(defaultDelayMs, false, out);
+        return;
       }
-      // the newline itself never lands inside a bubble, and a segment too short
-      // to stand on its own merges into the next one instead of becoming a
-      // one character bubble
+      _text.write(c);
       return;
     }
+    // spaces, tabs and carriage returns between two newlines are still that one
+    // empty line, anything else ends the run
+    if (c != ' ' && c != '\t' && c != '\r') _nlRun = 0;
 
     if (c == '<' && enabled && !inCode) {
       _tag = '<';

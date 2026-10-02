@@ -226,10 +226,36 @@ class _GalleryState extends State<_Gallery> {
   bool _denied = false;
   final Map<String, Future<Uint8List?>> _thumbs = {};
 
+  /// The album is read in pages as the grid scrolls. Asking for a fixed
+  /// 150 items meant anyone with a real camera library simply never saw
+  /// anything older than their last few hundred shots, and there was no way to
+  /// reach the rest from the UI.
+  pm.AssetPathEntity? _album;
+  final _scroll = ScrollController();
+  static const _pageSize = 120;
+  var _page = 0;
+  var _loadingMore = false;
+  var _reachedEnd = false;
+
   @override
   void initState() {
     super.initState();
+    _scroll.addListener(_onScroll);
     _load();
+  }
+
+  @override
+  void dispose() {
+    _scroll.removeListener(_onScroll);
+    _scroll.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (!_scroll.hasClients || _loadingMore || _reachedEnd) return;
+    // a screen and a half ahead of the thumb, so the next page is usually
+    // already there by the time the reader gets to it
+    if (_scroll.position.pixels >= _scroll.position.maxScrollExtent - 400) _loadMore();
   }
 
   Future<void> _load() async {
@@ -240,12 +266,70 @@ class _GalleryState extends State<_Gallery> {
         return;
       }
       final paths = await pm.PhotoManager.getAssetPathList(type: pm.RequestType.image, onlyAll: true);
-      final list = paths.isEmpty ? <pm.AssetEntity>[] : await paths.first.getAssetListPaged(page: 0, size: 150);
-      if (mounted) setState(() => _assets = list);
+      if (paths.isEmpty) {
+        if (mounted) setState(() => _reachedEnd = true);
+        return;
+      }
+      // the "all" album should be the only one, but its position is not
+      // guaranteed across OEM skins, so take whichever holds the most
+      final album = await _biggest(paths);
+      if (album == null) {
+        if (mounted) setState(() => _reachedEnd = true);
+        return;
+      }
+      _album = album;
+      final list = await album.getAssetListPaged(page: 0, size: _pageSize);
+      _page = 1;
+      if (!mounted) return;
+      setState(() {
+        _assets = list;
+        // a short first page means there is nothing behind it
+        _reachedEnd = list.length < _pageSize;
+      });
     } catch (_) {
       if (mounted) setState(() => _denied = true);
     } finally {
       if (mounted) setState(() => _loading = false);
+    }
+  }
+
+  /// Picks the album holding the most assets. photo_manager exposes the count
+  /// only as a future, so this cannot be a reduce over a synchronous getter.
+  Future<pm.AssetPathEntity?> _biggest(List<pm.AssetPathEntity> paths) async {
+    pm.AssetPathEntity? best;
+    var bestCount = -1;
+    for (final p in paths) {
+      try {
+        final n = await p.assetCountAsync;
+        if (n > bestCount) {
+          bestCount = n;
+          best = p;
+        }
+      } catch (_) {
+        // an album that cannot be counted is not worth showing
+      }
+    }
+    return best ?? (paths.isEmpty ? null : paths.first);
+  }
+
+  Future<void> _loadMore() async {
+    final album = _album;
+    if (album == null || _loadingMore || _reachedEnd) return;
+    setState(() => _loadingMore = true);
+    try {
+      final list = await album.getAssetListPaged(page: _page, size: _pageSize);
+      if (!mounted) return;
+      setState(() {
+        _assets.addAll(list);
+        _page++;
+        if (list.length < _pageSize) _reachedEnd = true;
+      });
+    } catch (_) {
+      // a failed page must not spin forever, stop here and let the reader pick
+      // from what already arrived
+      if (mounted) setState(() => _reachedEnd = true);
+    } finally {
+      if (mounted) setState(() => _loadingMore = false);
     }
   }
 
@@ -290,9 +374,12 @@ class _GalleryState extends State<_Gallery> {
               );
             }
             return GridView.builder(
+              controller: _scroll,
               padding: const EdgeInsets.fromLTRB(2, 0, 2, 2),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3, mainAxisSpacing: 2, crossAxisSpacing: 2),
-              itemCount: _assets.length + 1,
+              // the trailing slot is the page spinner, so the camera tile keeps
+              // index 0 and the assets shift by one exactly as before
+              itemCount: _assets.length + 1 + (_loadingMore ? 1 : 0),
               itemBuilder: (_, i) {
                 if (i == 0) {
                   return Tap(
@@ -303,10 +390,13 @@ class _GalleryState extends State<_Gallery> {
                       child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
                         TgIcon(Ic.camera, color: p.accent, size: 34, stroke: 1.6),
                         const SizedBox(height: 6),
-                        Text('Camera', style: TextStyle(color: p.subtitle, fontSize: 13, decoration: TextDecoration.none, fontWeight: FontWeight.w400)),
+                        Text(l.attachCamera, style: TextStyle(color: p.subtitle, fontSize: 13, decoration: TextDecoration.none, fontWeight: FontWeight.w400)),
                       ]),
                     ),
                   );
+                }
+                if (i > _assets.length) {
+                  return Center(child: Text(l.attachLoading, style: TextStyle(color: p.hint, fontSize: 12, decoration: TextDecoration.none, fontWeight: FontWeight.w400)));
                 }
                 return _tile(p, _assets[i - 1]);
               },
@@ -329,13 +419,29 @@ class _GalleryState extends State<_Gallery> {
           curve: TgCurves.easeOut,
           scale: on ? .86 : 1,
           child: FutureBuilder<Uint8List?>(
-            future: _thumbs[a.id] ??= a.thumbnailDataWithSize(const pm.ThumbnailSize.square(260)),
+            future: _thumb(a),
             builder: (_, s) => s.data == null ? const SizedBox.shrink() : Image.memory(s.data!, fit: BoxFit.cover, gaplessPlayback: true),
           ),
         ),
         Positioned(top: 6, right: 6, child: _Check(n: on ? idx + 1 : null)),
       ]),
     );
+  }
+
+  /// Thumbnails are cached by asset id so a rebuild does not re-read them, but
+  /// paging through a long library would otherwise keep every page's bytes
+  /// alive at once. Oldest entries go first, which is what the reader is
+  /// furthest away from, and anything still on screen is refetched if it comes
+  /// back around.
+  static const _thumbCap = 600;
+
+  Future<Uint8List?> _thumb(pm.AssetEntity a) {
+    final hit = _thumbs[a.id];
+    if (hit != null) return hit;
+    if (_thumbs.length >= _thumbCap) {
+      _thumbs.remove(_thumbs.keys.first);
+    }
+    return _thumbs[a.id] = a.thumbnailDataWithSize(const pm.ThumbnailSize.square(260));
   }
 }
 

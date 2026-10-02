@@ -1425,6 +1425,8 @@
   "@attachLocating": { "description": "" },
   "attachTabGallery": "相册",
   "@attachTabGallery": { "description": "" },
+  "attachCamera": "相机",
+  "@attachCamera": { "description": "相册网格顶部相机入口的文案" },
   "attachPollQuestionLabel": "问题",
   "@attachPollQuestionLabel": { "description": "" },
   "attachPollOptionsLabel": "选项",

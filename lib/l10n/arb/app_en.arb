@@ -1376,6 +1376,8 @@
   "@attachPollCreate": { "description": "Button that sends the poll" },
   "attachTabGallery": "Gallery",
   "@attachTabGallery": { "description": "Title of the attachment sheet tab" },
+  "attachCamera": "Camera",
+  "@attachCamera": { "description": "Label of the camera tile at the top of the gallery grid" },
   "attachLoading": "Loading...",
   "@attachLoading": { "description": "Shown while the album is being read" },
   "attachSelected": "{count} selected",

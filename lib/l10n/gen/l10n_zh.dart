@@ -2318,6 +2318,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get attachTabGallery => '相册';
 
   @override
+  String get attachCamera => '相机';
+
+  @override
   String get attachLoading => '正在加载…';
 
   @override
@@ -4691,6 +4694,9 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get attachTabGallery => '相簿';
+
+  @override
+  String get attachCamera => '相機';
 
   @override
   String get attachLoading => '正在載入…';
