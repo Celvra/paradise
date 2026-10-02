@@ -1,0 +1,5 @@
+# analyzer only, no lint pack installed
+analyzer:
+  exclude:
+    - build/**
+    - android/**

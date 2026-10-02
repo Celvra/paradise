@@ -1,0 +1,105 @@
+name: Bug report
+description: Something does not work the way it should
+title: "[Bug] "
+labels: ["bug", "needs triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting it. The two fields below are the ones that actually
+        speed things up: what you expected, and what happened. They are different
+        sentences, and writing them as one costs a round trip.
+
+        Do not paste API keys, an endpoint URL with a credential in it, or a chat
+        transcript you would rather not publish. A redacted screenshot is better
+        than a pasted log.
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect to happen?
+      description: The behaviour you were relying on.
+      placeholder: Tapping the send button again while it is replying sends a new message.
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: What happened instead?
+      placeholder: The button stayed grey and nothing was sent.
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      description: Numbered, starting from a fresh launch if that works.
+      placeholder: |
+        1. Settings > Language > 简体中文
+        2. Open any chat
+        3. Send a message
+        4. The reply stays in one bubble
+      render: text
+
+  - type: dropdown
+    id: where
+    attributes:
+      label: Where in the app?
+      multiple: true
+      options:
+        - Chat list
+        - A chat, the message bubbles
+        - A chat, the composer
+        - Profile
+        - My Account
+        - Settings > AI
+        - Settings > AI replies
+        - Settings > Humanize
+        - Emoji panel or sticker library
+        - About
+        - Somewhere else
+    validations:
+      required: true
+
+  - type: dropdown
+    id: language
+    attributes:
+      label: Which language is the app in?
+      options:
+        - English
+        - 简体中文
+        - 繁體中文
+        - System default
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Version or build
+      description: The About screen shows it, or the commit you are running.
+      placeholder: 1.0.0
+    validations:
+      required: true
+
+  - type: textarea
+    id: switches
+    attributes:
+      label: Anything switched on?
+      description: >
+        Only if it is not obvious. Worth naming: humanize, agent mode, the two
+        reply switches, and whether a persona card overrides them. Most wrong
+        strings trace back to one of these.
+    validations:
+      required: false
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs or a redacted screenshot
+      description: Crash trace or a screenshot with anything personal covered.
+      render: text
+    validations:
+      required: false

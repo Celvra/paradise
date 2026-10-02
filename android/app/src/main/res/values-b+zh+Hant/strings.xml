@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- b+zh+Hant covers Taiwan, Hong Kong and Macau in one qualifier. The
+         legacy values-zh-rTW would miss the HK and MO readers. -->
+    <string name="app_name">彼岸雙生</string>
+</resources>

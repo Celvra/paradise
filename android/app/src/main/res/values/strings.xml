@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Launcher label. Android picks the best match for the device locale, so
+         the Chinese builds below carry 彼岸双生 / 彼岸雙生. Keep this in step
+         with appTitle in lib/l10n/arb, which drives the task switcher title. -->
+    <string name="app_name">Paradise</string>
+</resources>

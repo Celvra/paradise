@@ -1,0 +1,60 @@
+name: Feature request
+description: Something the app should be able to do
+title: "[Feature] "
+labels: ["enhancement", "needs triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Describe the situation, not the solution. Knowing what you were trying to
+        do when the app got in the way is worth more than a patch description,
+        and it often arrives with a better answer than the one you had in mind.
+
+  - type: textarea
+    id: situation
+    attributes:
+      label: What were you trying to do?
+      description: The goal, in a sentence or two.
+    validations:
+      required: true
+
+  - type: textarea
+    id: friction
+    attributes:
+      label: What got in the way?
+      description: What you had to do instead, or why you could not.
+      placeholder: I have to paste the pause number by hand because the tag is not suggested anywhere.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What you think should happen
+      description: >
+        Optional. If you are unsure whether your idea fits how this app works,
+        leave it blank and let the discussion work it out.
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Does this touch any of these?
+      description: >
+        Tick whatever applies. It does not decide the outcome, it tells the
+        reviewer which parts of the codebase are involved.
+      options:
+        - label: The humanize layer (bubbles, pacing, recall, memory)
+        - label: The model chain or providers
+        - label: Localisation
+        - label: Android build or packaging
+        - label: None of these
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Workarounds you found
+      description: Anything that works today, however clumsy.
+    validations:
+      required: false

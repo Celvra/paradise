@@ -1,0 +1,75 @@
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.build/
+.buildlog/
+.history
+.svn/
+.swiftpm/
+migrate_working_dir/
+
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# The .vscode folder contains launch configuration and tasks you configure in
+# VS Code which you may wish to be included in version control, so this line
+# is commented out by default.
+#.vscode/
+
+# Flutter/Dart/Pub related
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.dart_tool/
+.flutter-plugins-dependencies
+.flutter-plugins
+.pub-cache/
+.pub/
+/build/
+/coverage/
+
+# pubspec.lock is committed on purpose. It is an application, not a library, so
+# the exact versions it shipped with are part of the build and must not float
+# when someone clones it.
+
+# Symbolication related
+app.*.symbols
+
+# Obfuscation related
+app.*.map.json
+
+# Android Studio will place build artifacts here
+/android/app/debug
+/android/app/profile
+/android/app/release
+
+# Gradle and the Android build tree. The template only covers /build/ at the
+# project root, but Gradle writes a second one inside android/ and that is by
+# far the largest thing that would otherwise get committed.
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+*.iml
+
+# Signing material. The release block currently reuses the debug signing config
+# so there is no keystore checked in yet, but the moment a real one is added it
+# must not be one commit away from being published.
+*.jks
+*.keystore
+key.properties
+google-services.json
+
+# Source drops and scratch space. These are working copies of code that already
+# lives in lib/, not sources of their own.
+tmp/
+*.zip
+
+# Widget Preview related
+.widget_preview/
