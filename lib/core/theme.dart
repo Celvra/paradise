@@ -23,9 +23,14 @@ enum BubbleGrad {
 
 // palette pulled from telegram android ThemeColors and darkblue.attheme
 class Pal {
-  const Pal(this.c, this.dark);
+  const Pal(this.c, this.dark, {this.seed});
   final List<Color> c;
   final bool dark;
+
+  /// The wallpaper colour this palette was derived from, null for the two stock
+  /// palettes. Widgets that replace a stock colour read this rather than guessing
+  /// from [accent], which is set whether or not a colour was ever picked.
+  final Color? seed;
 
   Color get bg => c[0];
   Color get gray => c[1];
@@ -74,6 +79,22 @@ class Pal {
 
   /// The persona cover gradient for tone [index], on this palette's accent.
   List<Color> avatar(int index) => avatarGradient(accent, index);
+
+  /// Gradient icon tile, on the wallpaper colour once one is set.
+  List<Color> iconTile(List<Color> stock) => seed == null ? stock : iconGradient(accent);
+
+  /// Flat fill behind every icon block on the AI pages, so the header disc, the
+  /// row tiles and the provider avatars are one colour. Grey when [ready] is
+  /// false and no wallpaper colour has been picked.
+  Color aiIcon({required bool ready}) => seed == null ? (ready ? const Color(0xFF5A9EE8) : const Color(0xFF6E8397)) : accent;
+
+  /// Bulletin pill. The accent itself will not do, it is solved to read against
+  /// the page and leaves white at 2.2:1, so the hue is pushed down to 0.15.
+  Color get toastBg {
+    if (seed == null) return const Color(0xF2263340);
+    final hsl = HSLColor.fromColor(accent);
+    return _tone(hsl.hue, hsl.saturation.clamp(0.30, 0.90), 0.15);
+  }
 
   static Pal lerp(Pal a, Pal b, double t) => Pal([for (var i = 0; i < a.c.length; i++) Color.lerp(a.c[i], b.c[i], t)!], t > .5 ? b.dark : a.dark);
 
@@ -147,7 +168,7 @@ class Pal {
     // night needs no ink pass: its time, ticks, line and name are already pale
     // stock values, and every stop up here stays far below the point where white
     // text stops reading.
-    return Pal(c2, dark);
+    return Pal(c2, dark, seed: seed);
   }
 
   /// How much of the seed's saturation each slot takes, as a share of it.
@@ -501,3 +522,7 @@ List<Color> avatarGradient(Color accent, int index) {
     HSLColor.fromAHSL(1, hsl.hue, sat, rung[1]).toColor(),
   ];
 }
+
+/// Second rung of the cover ladder, which is where the icon tiles take their
+/// gradient from: brighter than a cover, so the white glyph keeps its margin.
+List<Color> iconGradient(Color accent) => avatarGradient(accent, 1);

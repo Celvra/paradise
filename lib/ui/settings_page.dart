@@ -474,7 +474,7 @@ class _Cell extends StatelessWidget {
         Container(
           width: 30,
           height: 30,
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: colors)),
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: p.iconTile(colors))),
           child: Center(child: TgIcon(icon, color: const Color(0xFFFFFFFF), size: 19, stroke: 1.7)),
         ),
         const SizedBox(width: 16),
@@ -514,8 +514,8 @@ class _Preview extends StatelessWidget {
     final a = Msg(id: 'pa', out: false, text: l.previewSampleIncoming, time: now, read: true);
     final b = Msg(id: 'pb', out: true, text: l.previewSampleOutgoing, time: now, read: true);
     // bubbles sit inside one unconstrained column that gets scaled down as a whole,
-// so the outgoing one still lands hard against the right edge of the frame
-return SizedBox(
+    // so the outgoing one still lands hard against the right edge of the frame
+    return SizedBox(
       height: 172,
       child: LayoutBuilder(builder: (context, box) {
         return Stack(fit: StackFit.expand, children: [

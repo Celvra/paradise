@@ -7,16 +7,12 @@ import '../core/ui_kit.dart';
 import '../l10n/x.dart';
 import 'ai_model_picker.dart';
 
-// gradient pairs for the ai settings rows
-const aiRowColors = [Color(0xFF8B7BDB), Color(0xFF6A5ACD)];
-
-/// Shared row shape for the AI screens: gradient icon, title, subtitle, optional
+/// Shared row shape for the AI screens: icon tile, title, subtitle, optional
 /// trailing value or switch, chevron when tappable.
 class AiRow extends StatelessWidget {
   const AiRow({
     super.key,
     required this.icon,
-    required this.iconColors,
     required this.title,
     this.subtitle,
     this.value,
@@ -27,7 +23,6 @@ class AiRow extends StatelessWidget {
   });
 
   final Ic icon;
-  final List<Color> iconColors;
   final String title;
   final String? subtitle;
   final String? value;
@@ -49,7 +44,7 @@ class AiRow extends StatelessWidget {
         Container(
           width: 30,
           height: 30,
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: iconColors)),
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: p.aiIcon(ready: context.ai.ready)),
           child: Center(child: TgIcon(icon, color: const Color(0xFFFFFFFF), size: 19, stroke: 1.7)),
         ),
         const SizedBox(width: 16),

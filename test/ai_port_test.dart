@@ -107,6 +107,12 @@ void main() {
       expect(classify(402, '').retryable, isFalse);
     });
 
+    test('an empty response is retryable', () {
+      // A model that put its whole answer in the reasoning block leaves nothing
+      // visible. It has to cost a retry instead of ending the node.
+      expect(AiError(AiErrorKind.empty, 'The model returned nothing').retryable, isTrue);
+    });
+
     test('a 400 that mentions context becomes an overflow', () {
       expect(classify(400, '{"error":{"message":"maximum context length is 8192 tokens"}}').kind, AiErrorKind.contextOverflow);
     });

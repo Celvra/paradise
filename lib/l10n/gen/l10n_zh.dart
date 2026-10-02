@@ -1454,12 +1454,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String chatWalletOpened(String amount) {
-    return '已拆开 ¥$amount · 虚拟货币';
+    return '已拆开 ¥$amount';
   }
 
   @override
   String chatWalletReceived(String amount) {
-    return '已收到 ¥$amount · 虚拟货币';
+    return '已收到 ¥$amount';
   }
 
   @override
@@ -3912,12 +3912,12 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String chatWalletOpened(String amount) {
-    return '已拆開 ¥$amount · 虛擬貨幣';
+    return '已拆開 ¥$amount';
   }
 
   @override
   String chatWalletReceived(String amount) {
-    return '已收到 ¥$amount · 虛擬貨幣';
+    return '已收到 ¥$amount';
   }
 
   @override

@@ -121,35 +121,30 @@ class _ProviderDetailPageState extends State<ProviderDetailPage> {
                   else
                     AiRow(
                       icon: Ic.pencil,
-                      iconColors: const [Color(0xFF5A9EE8), Color(0xFF3C7FC4)],
                       title: l.provName,
                       subtitle: provider.name,
                       onTap: () => setState(() => _editingName = true),
                     ),
                   AiRow(
                     icon: Ic.ai,
-                    iconColors: aiRowColors,
                     title: l.provProtocol,
                     subtitle: providerKindLabel(provider.kind),
                     onTap: () => _pickKind(provider, cfg),
                   ),
                   AiRow(
                     icon: Ic.key,
-                    iconColors: const [Color(0xFF55CA47), Color(0xFF27B434)],
                     title: l.provApiKey,
                     subtitle: _mask(cfg.keyOf(provider.id)),
                     onTap: () => _editKey(provider, cfg),
                   ),
                   AiRow(
                     icon: Ic.globe,
-                    iconColors: const [Color(0xFF32C0CE), Color(0xFF1D9CC6)],
                     title: l.provBaseUrl,
                     subtitle: provider.baseUrl.isEmpty ? l.provBaseUrlEmpty : provider.baseUrl,
                     onTap: () => _editText(provider, cfg, l.provBaseUrl, provider.baseUrl, 'https://api.example.com/v1', (v) => cfg.patchProvider(provider.id, (x) => x.baseUrl = v.trim())),
                   ),
                   AiRow(
                     icon: Ic.file,
-                    iconColors: const [Color(0xFF8699AA), Color(0xFF6E8397)],
                     title: l.provChatPath,
                     subtitle: pathIsEditable(provider.kind) ? provider.chatPath : l.provChatPathFixed,
                     last: true,
@@ -162,7 +157,6 @@ class _ProviderDetailPageState extends State<ProviderDetailPage> {
                 children: [
                   AiRow(
                     icon: Ic.storage,
-                    iconColors: const [Color(0xFF5A9EE8), Color(0xFF3C7FC4)],
                     title: l.provFetchModels,
                     subtitle: _busy
                         ? l.provFetchBusy
@@ -173,7 +167,6 @@ class _ProviderDetailPageState extends State<ProviderDetailPage> {
                   ),
                   AiRow(
                     icon: Ic.check2,
-                    iconColors: const [Color(0xFF55CA47), Color(0xFF27B434)],
                     title: l.provTest,
                     subtitle: _testFail != null
                         ? l.provTestFailed(_testFail!)
@@ -182,7 +175,6 @@ class _ProviderDetailPageState extends State<ProviderDetailPage> {
                   ),
                   AiRow(
                     icon: Ic.pencil,
-                    iconColors: const [Color(0xFFD97172), Color(0xFFCE5A5B)],
                     title: l.provAddManual,
                     subtitle: l.provAddManualSub,
                     last: true,

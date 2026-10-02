@@ -125,7 +125,8 @@ class _BubbleViewState extends State<BubbleView> {
     // a transfer or a red packet repaints the whole bubble, so its clock and
     // ticks have to leave the normal bubble colours behind too
     final wallet = isFullBleed(m);
-    final timeStyle = TextStyle(color: wallet ? walletClock : (out ? p.timeOut : p.timeIn), fontSize: 12, height: 1, decoration: TextDecoration.none, fontWeight: FontWeight.w400);
+    final ink = wallet ? walletInk(p) : null;
+    final timeStyle = TextStyle(color: wallet ? ink!.clock : (out ? p.timeOut : p.timeIn), fontSize: 12, height: 1, decoration: TextDecoration.none, fontWeight: FontWeight.w400);
     Widget wrap(Widget child) => widget.onLongPress == null
         ? child
         : GestureDetector(
@@ -163,7 +164,7 @@ class _BubbleViewState extends State<BubbleView> {
     final spacer = tp.width + (out ? 25 : 8);
     final time = Row(mainAxisSize: MainAxisSize.min, children: [
       Text(stamp, style: timeStyle),
-      if (out) ...[const SizedBox(width: 4), status(wallet ? const Color(0xFFFFFFFF) : p.checkOut)],
+      if (out) ...[const SizedBox(width: 4), status(wallet ? ink!.ink : p.checkOut)],
     ]);
     final pill = Container(
       padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
@@ -211,7 +212,7 @@ class _BubbleViewState extends State<BubbleView> {
         // a transfer or a red packet repaints the entire bubble, tail and
         // corners included, so the card above only has to place ink on the fill
         colors: wallet
-            ? walletFill(red: m.data['kind'] == 'redpacket', done: '${m.data['status'] ?? 'pending'}' != 'pending')
+            ? walletFill(p, red: m.data['kind'] == 'redpacket', done: '${m.data['status'] ?? 'pending'}' != 'pending')
             : (out ? p.outGrad : [p.inBubble]),
         keyOf: _gk,
         screenH: MediaQuery.of(context).size.height,

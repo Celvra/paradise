@@ -356,4 +356,77 @@ void main() {
     expect(p.accent, isNot(Pal.day.accent));
     expect(contrast(p.textOut, p.outGrad.first), greaterThan(4.5));
   });
+
+  test('every icon tile takes one wallpaper gradient, and only once there is one', () {
+    // Eight unrelated hues collapsed onto one gradient, and left alone without a
+    // wallpaper colour.
+    final pairs = <List<Color>>[
+      [const Color(0xFF1CA5ED), const Color(0xFF1488E1)],
+      [const Color(0xFFF09F1B), const Color(0xFFE18A11)],
+      [const Color(0xFFF45255), const Color(0xFFDF3955)],
+      [const Color(0xFF8699AA), const Color(0xFF6E8397)],
+      [const Color(0xFF34B3A0), const Color(0xFF1E9184)],
+    ];
+    for (final seed in seeds) {
+      for (final stock in [Pal.day, Pal.night]) {
+        final p = stock.withAccent(seed);
+        final one = p.iconTile(pairs.first);
+        expect(one, isNot(pairs.first), reason: 'the tile kept its stock hue for ${seed.toARGB32().toRadixString(16)}');
+        for (final pair in pairs) {
+          expect(p.iconTile(pair), one, reason: 'tile ${pair.first.toARGB32().toRadixString(16)} kept its own hue');
+        }
+        // and it is on the accent's hue, the same argument the covers make
+        for (final stop in one) {
+          expect(hueGap(HSLColor.fromColor(stop).hue, HSLColor.fromColor(p.accent).hue), lessThan(3.0),
+              reason: 'a tile stop sits off the seed hue for ${seed.toARGB32().toRadixString(16)}');
+          // the glyph on it is white, the same bar the covers were measured at
+          expect(contrast(const Color(0xFFFFFFFF), stop), greaterThan(1.68));
+        }
+      }
+    }
+    for (final stock in [Pal.day, Pal.night]) {
+      for (final pair in pairs) {
+        expect(stock.iconTile(pair), pair, reason: 'a stock palette lost its tiles');
+        expect(stock.seed, isNull);
+      }
+    }
+  });
+
+  test('the toast takes the wallpaper colour, and white still reads on it', () {
+    // No wallpaper colour means no theme colour, so the stock slab stays.
+    for (final stock in [Pal.day, Pal.night]) {
+      expect(stock.toastBg, const Color(0xF2263340));
+    }
+    for (final seed in seeds) {
+      for (final stock in [Pal.day, Pal.night]) {
+        final p = stock.withAccent(seed);
+        final bg = p.toastBg;
+        final where = stock.dark ? 'night' : 'day';
+        expect(bg, isNot(const Color(0xF2263340)), reason: 'the pill stayed the stock slab in $where');
+        expect(hueGap(HSLColor.fromColor(bg).hue, HSLColor.fromColor(p.accent).hue), lessThan(2.0),
+            reason: 'the pill sits off the seed hue in $where for ${seed.toARGB32().toRadixString(16)}');
+        final c = contrast(const Color(0xFFFFFFFF), bg);
+        expect(c, greaterThan(4.5), reason: 'white on the pill is $c:1 in $where for ${seed.toARGB32().toRadixString(16)}');
+      }
+    }
+  });
+
+  test('every AI page icon block is one flat colour', () {
+    // The header disc, the row tiles and the provider avatars all read this, so
+    // one value covers the whole screen.
+    const blue = Color(0xFF5A9EE8);
+    const grey = Color(0xFF6E8397);
+    for (final stock in [Pal.day, Pal.night]) {
+      expect(stock.aiIcon(ready: true), blue);
+      expect(stock.aiIcon(ready: false), grey);
+    }
+    for (final seed in seeds) {
+      for (final stock in [Pal.day, Pal.night]) {
+        final p = stock.withAccent(seed);
+        // the raw theme colour, and readiness stops mattering once it is there
+        expect(p.aiIcon(ready: true), p.accent);
+        expect(p.aiIcon(ready: false), p.accent);
+      }
+    }
+  });
 }

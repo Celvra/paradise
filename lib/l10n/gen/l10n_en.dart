@@ -1495,12 +1495,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String chatWalletOpened(String amount) {
-    return 'Opened ¥$amount · pretend money';
+    return 'Opened ¥$amount';
   }
 
   @override
   String chatWalletReceived(String amount) {
-    return 'Received ¥$amount · pretend money';
+    return 'Received ¥$amount';
   }
 
   @override

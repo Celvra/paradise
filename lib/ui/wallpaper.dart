@@ -96,38 +96,70 @@ class WallPainter extends CustomPainter {
 
   // faint tiled doodles stand in for the pattern image
   void _doodles(Canvas canvas, Size size) {
-    final rnd = math.Random(7);
     final p = Paint()
       ..color = const Color(0x14000000)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.4
       ..strokeCap = StrokeCap.round;
-    const cell = 64.0;
-    for (var y = 0.0; y < size.height; y += cell) {
-      for (var x = 0.0; x < size.width; x += cell) {
-        final c = Offset(x + 12 + rnd.nextDouble() * 40, y + 12 + rnd.nextDouble() * 40);
-        final s = 5 + rnd.nextDouble() * 4;
-        switch (rnd.nextInt(4)) {
-          case 0:
-            canvas.drawCircle(c, s, p);
-          case 1:
-            canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromCenter(center: c, width: s * 2, height: s * 2), const Radius.circular(3)), p);
-          case 2:
-            canvas.drawPath(
-                Path()
-                  ..moveTo(c.dx - s, c.dy + s * .7)
-                  ..lineTo(c.dx, c.dy - s)
-                  ..lineTo(c.dx + s, c.dy + s * .7)
-                  ..close(),
-                p);
-          default:
-            canvas.drawLine(Offset(c.dx - s, c.dy), Offset(c.dx + s, c.dy), p);
-            canvas.drawLine(Offset(c.dx, c.dy - s), Offset(c.dx, c.dy + s), p);
-        }
+    for (final d in pattern(size)) {
+      final c = d.at;
+      final s = d.s;
+      switch (d.kind) {
+        case 0:
+          canvas.drawCircle(c, s, p);
+        case 1:
+          canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromCenter(center: c, width: s * 2, height: s * 2), const Radius.circular(3)), p);
+        case 2:
+          canvas.drawPath(
+              Path()
+                ..moveTo(c.dx - s, c.dy + s * .7)
+                ..lineTo(c.dx, c.dy - s)
+                ..lineTo(c.dx + s, c.dy + s * .7)
+                ..close(),
+              p);
+        default:
+          canvas.drawLine(Offset(c.dx - s, c.dy), Offset(c.dx + s, c.dy), p);
+          canvas.drawLine(Offset(c.dx, c.dy - s), Offset(c.dx, c.dy + s), p);
       }
     }
   }
 
+  /// The default pattern's doodles laid out for a box of [size], every one inside
+  /// it. Separate from the painting so that rule can be asserted on.
+  static List<Doodle> pattern(Size size) {
+    final rnd = math.Random(7);
+    final out = <Doodle>[];
+    const cell = 64.0;
+    for (var y = 0.0; y < size.height; y += cell) {
+      for (var x = 0.0; x < size.width; x += cell) {
+        final jx = x + 12 + rnd.nextDouble() * 40;
+        final jy = y + 12 + rnd.nextDouble() * 40;
+        final s = 5 + rnd.nextDouble() * 4;
+        // Clamped rather than skipped: the jitter runs off the last row and
+        // column by up to half a cell, and the short preview frame in the
+        // settings page cut those doodles in half. Skipping them would leave a
+        // blank margin instead. A doodle the box cannot hold at all is dropped,
+        // since clamping to crossed limits throws.
+        if (s * 2 > size.width || s * 2 > size.height) continue;
+        out.add(Doodle(Offset(jx.clamp(s, size.width - s), jy.clamp(s, size.height - s)), s, rnd.nextInt(4)));
+      }
+    }
+    return out;
+  }
+
   @override
   bool shouldRepaint(WallPainter o) => o.phase != phase || o.colors != colors;
+}
+
+/// One shape in the default wallpaper pattern.
+class Doodle {
+  const Doodle(this.at, this.s, this.kind);
+
+  final Offset at;
+
+  /// The radius. Every shape stays within it of [at], so it is also the reach.
+  final double s;
+
+  /// 0 circle, 1 rounded square, 2 triangle, 3 cross.
+  final int kind;
 }

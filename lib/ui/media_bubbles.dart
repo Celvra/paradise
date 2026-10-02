@@ -108,22 +108,26 @@ bool isFullBleed(Msg m) => isWallet(m);
 /// short of it rather than trusted not to reach.
 const _clockGutter = 56.0;
 
-/// The fill handed to the bubble painter. A transfer is telegram blue, a red
-/// packet is telegram red, and anything already settled goes grey. Declared
-/// const so the identical list is reused every build, shouldRepaint compares
-/// the list by identity and a freshly built one would repaint every frame.
-List<Color> walletFill({required bool red, required bool done}) {
+/// The fill handed to the bubble painter. A settled card goes grey, a pending
+/// one takes the outgoing bubble's own gradient once a wallpaper colour is set,
+/// since every glyph on the card is white. With no wallpaper colour it stays
+/// telegram blue, or telegram red, the red being the point of a red packet.
+List<Color> walletFill(Pal p, {required bool red, required bool done}) {
   if (done) return const [Color(0xFFA5A8AC), Color(0xFF9A9DA1), Color(0xFF8F9296), Color(0xFF84878B)];
+  if (p.seed != null) return p.outGrad;
   return red
       ? const [Color(0xFFEE5F53), Color(0xFFDF4639), Color(0xFFD1382C), Color(0xFFC13025)]
       : const [Color(0xFF3AA3E0), Color(0xFF2494D8), Color(0xFF1B86CB), Color(0xFF1479BE)];
 }
 
-/// The clock and the delivery ticks sit on a saturated fill, where the muted
-/// blue grey of the normal bubble clock would be unreadable.
-const walletClock = Color(0xCCFFFFFF);
-const _ink = Color(0xFFFFFFFF);
-const _inkSoft = Color(0xB3FFFFFF);
+/// The ink on a wallet card, as body, faded and clock. White on the telegram
+/// fills, and the bubble's own ink once the card takes the wallpaper colour,
+/// since that fill is light in day and a day card would drown in white.
+typedef WalletInk = ({Color ink, Color soft, Color clock});
+
+WalletInk walletInk(Pal p) => p.seed == null
+    ? (ink: const Color(0xFFFFFFFF), soft: const Color(0xB3FFFFFF), clock: const Color(0xCCFFFFFF))
+    : (ink: p.textOut, soft: p.textOut.withAlpha(0xB3), clock: p.textOut.withAlpha(0xCC));
 
 /// pending, accepted or declined, with the wording each side should see and the
 /// glyph that goes with it.
@@ -152,8 +156,9 @@ class WalletCard extends StatelessWidget {
     final note = '${msg.data['note'] ?? ''}'.trim();
     final (label, footIcon) = _footState(msg);
     final amount = L10n.number('#,##0.00').format(((msg.data['amount'] as num?) ?? 0).toDouble());
+    final ink = walletInk(context.p);
     // a settled card is grey, so its ink has to step back with it
-    final soft = done ? _inkSoft : _ink;
+    final soft = done ? ink.soft : ink.ink;
     return GestureDetector(
       onTap: done || msg.out ? null : onTap,
       behavior: HitTestBehavior.opaque,
@@ -168,7 +173,7 @@ class WalletCard extends StatelessWidget {
             const SizedBox(width: 10),
             Expanded(
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
-                Text(red ? l.walletRedPacket : l.walletTransfer, style: const TextStyle(color: _ink, fontSize: 15, fontWeight: FontWeight.w500, height: 1.2, decoration: TextDecoration.none)),
+                Text(red ? l.walletRedPacket : l.walletTransfer, style: TextStyle(color: ink.ink, fontSize: 15, fontWeight: FontWeight.w500, height: 1.2, decoration: TextDecoration.none)),
                 const SizedBox(height: 1),
                 // the sender's line rides under the title, a bare packet wishes well
                 Text(note.isEmpty ? (red ? l.walletBestWishes : l.walletNoNote) : note, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(color: soft, fontSize: 12.5, height: 1.2, decoration: TextDecoration.none)),

@@ -318,8 +318,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
   }
 
   /// Tapping a transfer or a red packet takes the money straight away. The card
-  /// is the affordance on its own and a confirmation step only got in the way,
-  /// so the bulletin is what carries the pretend money note instead.
+  /// is the affordance on its own and a confirmation step only got in the way.
   void _openWallet(Msg m) {
     if (m.out || '${m.data['status'] ?? 'pending'}' != 'pending') return;
     final l = L10n.current;

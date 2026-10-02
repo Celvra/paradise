@@ -4,8 +4,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 /// The brands the app can show, covering the providers it ships with plus the
 /// ones a custom endpoint is most likely to be pointed at.
 ///
-/// Every logo is a monochrome svg with fill="currentColor", so the tile
-/// supplies the brand colour and the glyph is tinted to match.
+/// Every logo is a monochrome svg tinted to the tile colour, so the tile
+/// supplies the ink and the glyph goes with it.
 enum Prov {
   openai,
   anthropic,
@@ -93,41 +93,21 @@ String _hostOf(String? url) {
 /// [Prov.name] and not the enum itself, interpolation would give Prov.openai.
 String provAsset(Prov p) => 'assets/providers/${p.name}.svg';
 
-/// The two gradient stops behind each logo, so the tile carries the brand
-/// colour the monochrome glyph is drawn in.
-List<Color> provTile(Prov p) => switch (p) {
-      Prov.openai => const [Color(0xFF10A37F), Color(0xFF0D8A6B)],
-      Prov.anthropic => const [Color(0xFFD97757), Color(0xFFC15F3C)],
-      Prov.gemini => const [Color(0xFF4285F4), Color(0xFF9B72CB)],
-      Prov.deepseek => const [Color(0xFF4D6BFE), Color(0xFF3B5BDB)],
-      Prov.openrouter => const [Color(0xFF6467F2), Color(0xFF4F46E5)],
-      Prov.siliconflow => const [Color(0xFF6C5CE7), Color(0xFF00B4D8)],
-      Prov.mistral => const [Color(0xFFFAB700), Color(0xFFFF8800)],
-      Prov.groq => const [Color(0xFFF55036), Color(0xFFD0342C)],
-      Prov.ollama => const [Color(0xFF3A3A3A), Color(0xFF1A1A1A)],
-      Prov.github => const [Color(0xFF6E5494), Color(0xFF24292E)],
-      Prov.cloudflare => const [Color(0xFFF6821F), Color(0xFFFA8D3D)],
-      Prov.xai => const [Color(0xFF2A2A2A), Color(0xFF000000)],
-      Prov.cohere => const [Color(0xFF39594D), Color(0xFF2A4238)],
-      Prov.zhipu => const [Color(0xFF3864FF), Color(0xFF2B54E8)],
-      Prov.qwen => const [Color(0xFF6A4CFF), Color(0xFF8C5BFF)],
-      Prov.moonshot => const [Color(0xFF2F2F2F), Color(0xFF111111)],
-      Prov.vertex => const [Color(0xFF4285F4), Color(0xFF34A853)],
-    };
-
-/// Ink for the fallback tile, which stands in for every provider with no logo.
-const provFallback = [Color(0xFF8B7BDB), Color(0xFF6A5ACD)];
-
-/// The provider logo on a rounded tile, matching the gradient block the
-/// provider cards and rows already use. Falls back to the first character of
-/// the name when no logo matches.
+/// The provider logo on a flat tile. Falls back to the first character of the
+/// name when no logo matches.
+///
+/// The fill comes in as a plain colour rather than being derived here: the AI
+/// pages want the header disc, the row tiles and these on one colour, and a
+/// brand gradient apiece is what stopped them reading as one screen.
 class ProviderAvatar extends StatelessWidget {
-  const ProviderAvatar({super.key, required this.name, this.baseUrl = '', this.size = 34, this.radius = 10});
+  const ProviderAvatar({super.key, required this.name, required this.color, this.baseUrl = '', this.size = 34, this.radius = 10});
 
   final String name;
   final String baseUrl;
   final double size;
   final double radius;
+
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
@@ -137,20 +117,13 @@ class ProviderAvatar extends StatelessWidget {
       width: size,
       height: size,
       alignment: Alignment.center,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(radius),
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: prov == null ? provFallback : provTile(prov),
-        ),
-      ),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(radius), color: color),
       child: prov == null
           ? Text(
               initial,
               style: TextStyle(color: const Color(0xFFFFFFFF), fontSize: size * .44, fontWeight: FontWeight.w600, decoration: TextDecoration.none),
             )
-          // every bundled logo is monochrome, the tile colour carries the brand
+          // every bundled logo is monochrome, the tile colour carries it
           : SvgPicture.asset(
               provAsset(prov),
               width: size * .62,

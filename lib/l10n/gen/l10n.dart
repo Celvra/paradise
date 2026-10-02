@@ -2694,13 +2694,13 @@ abstract class AppLocalizations {
   /// Bulletin after taking a red packet
   ///
   /// In en, this message translates to:
-  /// **'Opened ¥{amount} · pretend money'**
+  /// **'Opened ¥{amount}'**
   String chatWalletOpened(String amount);
 
   /// Bulletin after taking a transfer
   ///
   /// In en, this message translates to:
-  /// **'Received ¥{amount} · pretend money'**
+  /// **'Received ¥{amount}'**
   String chatWalletReceived(String amount);
 
   /// Title of a red packet card

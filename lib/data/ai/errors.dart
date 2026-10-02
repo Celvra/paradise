@@ -11,6 +11,11 @@ const _retryable = {
   AiErrorKind.network,
   AiErrorKind.contextOverflow,
   AiErrorKind.unknown,
+  // A model that streams its whole answer into the reasoning block and never
+  // closes it leaves nothing visible, which looks like a failure but is a
+  // glitch a second attempt does not repeat. Without this the chain treated it
+  // as terminal and gave up on the node however many retries it was given.
+  AiErrorKind.empty,
 };
 
 class AiError implements Exception {

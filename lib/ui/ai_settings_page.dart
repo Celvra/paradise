@@ -157,10 +157,7 @@ class _ProvidersTab extends StatelessWidget {
             Container(
               width: 76,
               height: 76,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: ready ? const Color(0xFF5A9EE8) : const Color(0xFF6E8397),
-              ),
+              decoration: BoxDecoration(shape: BoxShape.circle, color: p.aiIcon(ready: ready)),
               child: const Center(child: TgIcon(Ic.ai, color: Color(0xFFFFFFFF), size: 40, stroke: 2)),
             ),
             const SizedBox(height: 14),
@@ -220,7 +217,7 @@ class _ProviderCell extends StatelessWidget {
       if (models > 0) l.aiProviderModels(models),
     ];
     return TgTextCell(
-      leading: ProviderAvatar(name: provider.name, baseUrl: provider.baseUrl, size: 42, radius: 21),
+      leading: ProviderAvatar(name: provider.name, baseUrl: provider.baseUrl, color: p.aiIcon(ready: cfg.ready), size: 42, radius: 21),
       title: provider.name,
       subtitle: parts.join(' · '),
       subtitleColor: hasKey ? p.accent : p.subtitle,

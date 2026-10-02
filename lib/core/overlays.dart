@@ -493,6 +493,10 @@ class _BulletinState extends State<_Bulletin> with SingleTickerProviderStateMixi
   @override
   Widget build(BuildContext context) {
     final mq = MediaQuery.of(context);
+    // the pill takes the wallpaper colour once there is one, and stays the stock
+    // dark slab until then. White text is the only ink on either, because both
+    // surfaces are solved or fixed at a luminance it reads on
+    final bg = context.p.toastBg;
     return Positioned(
       left: 16,
       right: 16,
@@ -509,7 +513,7 @@ class _BulletinState extends State<_Bulletin> with SingleTickerProviderStateMixi
                 child: Center(
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
-                    decoration: BoxDecoration(color: const Color(0xF2263340), borderRadius: BorderRadius.circular(12)),
+                    decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(12)),
                     child: Text(widget.text, style: const TextStyle(color: Color(0xFFFFFFFF), fontSize: 15, decoration: TextDecoration.none, fontWeight: FontWeight.w400)),
                   ),
                 ),

@@ -250,7 +250,7 @@ class _PickerPageState extends State<_PickerPage> {
                     subtitle: [o.providerName, o.model.reasoning ? 'reasoning' : null, o.model.vision ? 'vision' : null]
                         .whereType<String>()
                         .join(' · '),
-                    avatar: ProviderAvatar(name: o.providerName, baseUrl: o.baseUrl, size: 30, radius: 9),
+                    avatar: ProviderAvatar(name: o.providerName, baseUrl: o.baseUrl, color: p.aiIcon(ready: context.ai.ready), size: 30, radius: 9),
                     onTap: () => Navigator.of(context).pop((providerId: o.providerId, modelId: o.model.id)),
                   );
                 },

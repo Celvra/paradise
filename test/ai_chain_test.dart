@@ -276,6 +276,47 @@ void main() {
       expect(outcome.text, 'real answer');
     });
 
+    test('an answer that landed in the reasoning block is retried, not given up on', () async {
+      // A model that streams fast can leave its whole answer inside the think
+      // block and never close it, so nothing visible ever arrives. That reads as
+      // an empty response and has to cost a retry rather than end the node.
+      currentFake = _FakeAdapter([
+        [const StreamChunk.reasoning('here is the answer you asked for')],
+        [const StreamChunk.reasoning('still thinking')],
+        [const StreamChunk.text('the real answer')],
+      ]);
+
+      const node = ChainNode(id: 'a', providerId: 'p1', modelId: 'm', retries: 2);
+      final outcome = await _run(_settings(const [node]), const [node], onChunk: (_) {}, backoff: const [1, 1]);
+
+      expect(currentFake.attempt, 3);
+      expect(outcome.text, 'the real answer');
+      expect(outcome.reports.length, 3);
+      expect(outcome.reports.first.error?.kind, AiErrorKind.empty);
+      expect(outcome.reports.last.ok, isTrue);
+    });
+
+    test('an empty stream still falls through to the next node once retries run out', () async {
+      currentFake = _FakeAdapter([
+        <StreamChunk>[],
+        <StreamChunk>[],
+        <StreamChunk>[],
+        <StreamChunk>[],
+      ]);
+
+      const nodes = [
+        ChainNode(id: 'a', providerId: 'p1', modelId: 'm', retries: 2),
+        ChainNode(id: 'b', providerId: 'p2', modelId: 'm'),
+      ];
+      final outcome = await _run(_settings(nodes), nodes, onChunk: (_) {}, backoff: const [1, 1]);
+
+      expect(outcome.error?.kind, AiErrorKind.empty);
+      expect(outcome.servedBy, isNull);
+      // the whole retry budget went to the first node, then the chain moved on
+      expect(outcome.reports.where((r) => r.node.id == 'a').length, 3);
+      expect(outcome.reports.where((r) => r.node.id == 'b').length, 1);
+    });
+
     test('reasoning with no text after it is dropped', () async {
       currentFake = _FakeAdapter([
         [
