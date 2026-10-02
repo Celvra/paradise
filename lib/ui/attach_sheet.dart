@@ -265,7 +265,14 @@ class _GalleryState extends State<_Gallery> {
         if (mounted) setState(() => _denied = true);
         return;
       }
-      final paths = await pm.PhotoManager.getAssetPathList(type: pm.RequestType.image, onlyAll: true);
+      // The order has to be asked for. photo_manager leaves `orders` empty by
+      // default, which hands the decision to the platform, and the platforms do
+      // not agree: the same call came back oldest first here. A picker is
+      // always newest first, so say so rather than hope.
+      final filter = pm.FilterOptionGroup(
+        orders: [const pm.OrderOption(type: pm.OrderOptionType.createDate, asc: false)],
+      );
+      final paths = await pm.PhotoManager.getAssetPathList(type: pm.RequestType.image, onlyAll: true, filterOption: filter);
       if (paths.isEmpty) {
         if (mounted) setState(() => _reachedEnd = true);
         return;
