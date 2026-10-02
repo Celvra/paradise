@@ -29,6 +29,8 @@ log.
 You need the Flutter SDK. The project is pinned to a recent stable:
 
 ```bash
+git clone git@github.com:Celvra/paradise.git
+cd paradise
 flutter --version   # 3.47.5 stable was used for the current state
 flutter pub get
 flutter run

@@ -580,14 +580,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsAboutLicense =>
-      'Developer: 殘月. This project belongs to the Project Xyle organization. It is distributed under the AGPL 3.0 open source licence, which means you may not redistribute or commercialise it without also publishing its source code. Violations will be handled in accordance with the law.';
+      'Developer: 殘月. It is distributed under the AGPL 3.0 open source licence, which means you may not redistribute or commercialise it without publishing its source code. Violations will be handled in accordance with the law.';
 
   @override
   String get settingsAboutCommunity => 'Join the community:';
 
   @override
   String get settingsAboutRepo =>
-      'Project address:\nhttps://github.com/project-xyle/paradise';
+      'Project address:\nhttps://github.com/Celvra/paradise';
 
   @override
   String get settingsAboutThanks =>

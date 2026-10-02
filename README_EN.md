@@ -4,6 +4,10 @@
 
 An immersive AI chat app in the style of Telegram.
 
+[![CI](https://github.com/Celvra/paradise/actions/workflows/ci.yml/badge.svg)](https://github.com/Celvra/paradise/actions/workflows/ci.yml)
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](LICENSE)
+[![Platform: Android](https://img.shields.io/badge/Platform-Android-3DDC84.svg)](https://developer.android.com)
+
 [中文](README.md)
 
 </div>
@@ -57,7 +61,7 @@ Please see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 GNU Affero General Public License v3.0, that is, AGPL v3.
 
-This project belongs to the Project Xyle organization. Developer: 殘月. You may not redistribute or commercialise it without publishing the source. Full terms in [LICENSE](LICENSE).
+Developer: 殘月. You may not redistribute or commercialise it without publishing the source. Full terms in [LICENSE](LICENSE).
 
 ## Community
 

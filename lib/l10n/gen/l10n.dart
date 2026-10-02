@@ -1134,7 +1134,7 @@ abstract class AppLocalizations {
   /// Licence and ownership notice in the about dialog
   ///
   /// In en, this message translates to:
-  /// **'Developer: 殘月. This project belongs to the Project Xyle organization. It is distributed under the AGPL 3.0 open source licence, which means you may not redistribute or commercialise it without also publishing its source code. Violations will be handled in accordance with the law.'**
+  /// **'Developer: 殘月. It is distributed under the AGPL 3.0 open source licence, which means you may not redistribute or commercialise it without publishing its source code. Violations will be handled in accordance with the law.'**
   String get settingsAboutLicense;
 
   /// Label in front of the community link in the about dialog
@@ -1146,7 +1146,7 @@ abstract class AppLocalizations {
   /// Repository link in the about dialog
   ///
   /// In en, this message translates to:
-  /// **'Project address:\nhttps://github.com/project-xyle/paradise'**
+  /// **'Project address:\nhttps://github.com/Celvra/paradise'**
   String get settingsAboutRepo;
 
   /// Acknowledgements to the projects this one was modelled on

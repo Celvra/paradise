@@ -4,6 +4,10 @@
 
 一个 Telegram 风格的沉浸式 AI 聊天应用.
 
+[![CI](https://github.com/Celvra/paradise/actions/workflows/ci.yml/badge.svg)](https://github.com/Celvra/paradise/actions/workflows/ci.yml)
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](LICENSE)
+[![Platform: Android](https://img.shields.io/badge/Platform-Android-3DDC84.svg)](https://developer.android.com)
+
 [English](README_EN.md)
 
 </div>
@@ -57,7 +61,7 @@
 
 GNU Affero General Public License v3.0，即 AGPL v3.
 
-本项目归属 Project Xyle 组织，开发者殘月。您不得在不开源代码的前提下二次分发和商业化本项目。完整条款见 [LICENSE](LICENSE)。
+开发者殘月。您不得在不开源代码的前提下二次分发和商业化本项目。完整条款见 [LICENSE](LICENSE)。
 
 ## 社区
 

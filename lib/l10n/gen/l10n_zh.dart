@@ -567,14 +567,13 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get settingsAboutLicense =>
-      '开发者: 殘月，本项目归属 Project Xyle 组织。请遵守 AGPL 3.0 开源许可证，这意味着您不得在不开源代码的前提下二次分发和商业化本项目，若违反，我们将依法处理。';
+      '开发者: 殘月。请遵守 AGPL 3.0 开源许可证，这意味着您不得在不开源代码的前提下二次分发和商业化本项目，若违反，我们将依法处理。';
 
   @override
   String get settingsAboutCommunity => '加入交流群:';
 
   @override
-  String get settingsAboutRepo =>
-      '本项目地址:\nhttps://github.com/project-xyle/paradise';
+  String get settingsAboutRepo => '本项目地址:\nhttps://github.com/Celvra/paradise';
 
   @override
   String get settingsAboutThanks =>
@@ -2943,14 +2942,13 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get settingsAboutLicense =>
-      '開發者: 殘月，本項目歸屬 Project Xyle 組織。請遵守 AGPL 3.0 開源授權，這意味著您不得在閉源的前提下二次分發和商業化本項目，若違反，我們將依法處理。';
+      '開發者: 殘月。請遵守 AGPL 3.0 開源授權，這意味著您不得在閉源的前提下二次分發和商業化本項目，若違反，我們將依法處理。';
 
   @override
   String get settingsAboutCommunity => '加入交流群:';
 
   @override
-  String get settingsAboutRepo =>
-      '本項目地址:\nhttps://github.com/project-xyle/paradise';
+  String get settingsAboutRepo => '本項目地址:\nhttps://github.com/Celvra/paradise';
 
   @override
   String get settingsAboutThanks =>
