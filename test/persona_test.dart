@@ -575,24 +575,35 @@ group('card persistence shape', () {    test('an unknown position or role falls 
     await t.tap(find.text(AppLocalizationsEn().cardCreate));
     await settle(t, 800);
 
-    // two cards already saved, the strip lists both
+    // two cards saved, only the one in hand is named on the page
     store.updatePersonaCard(store.activePersona.id, (p) => p.name = 'Ada');
     store.createPersonaCard(name: 'Blaze');
     await settle(t, 400);
-    expect(find.text('Ada'), findsWidgets);
+    expect(find.text('Ada'), findsNothing);
     expect(find.text('Blaze'), findsWidgets);
 
-    // tapping the strip switches the card in hand and the whole identity with it
+    // the current card row opens the sheet, which lists both, and picking from
+    // it switches the card in hand and the whole identity with it
+    final l = AppLocalizationsEn();
     expect(store.userName, 'Blaze');
-    await t.tap(find.text('Ada').first);
-    await settle(t, 700);
+    await t.tap(find.text(l.cardCurrentLabel));
+    await settle(t, 800);
+    expect(find.text(l.cardPickTitle), findsOneWidget);
+    expect(find.text('Ada'), findsOneWidget);
+    expect(find.text('Blaze'), findsWidgets, reason: 'the sheet lists it, the row behind names it too');
+    await t.tap(find.text('Ada').last);
+    await settle(t, 800);
     expect(store.activePersona.name, 'Ada');
     expect(store.userName, 'Ada');
-    expect(find.text(AppLocalizationsEn().cardEditing), findsOneWidget);
+    expect(find.text(l.cardEditing), findsOneWidget);
+    // the row now names the card in hand, and the editors hold its text
+    expect(find.text('Ada'), findsWidgets);
 
     // and back again
-    await t.tap(find.text('Blaze').first);
-    await settle(t, 700);
+    await t.tap(find.text(l.cardCurrentLabel));
+    await settle(t, 800);
+    await t.tap(find.text('Blaze').last);
+    await settle(t, 800);
     expect(store.userName, 'Blaze');
   });
 

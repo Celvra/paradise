@@ -1499,6 +1499,14 @@
   "@cardCharacterLabel": { "description": "" },
   "cardPositionLabel": "位置",
   "@cardPositionLabel": { "description": "" },
+  "cardCurrentLabel": "目前卡片",
+  "@cardCurrentLabel": { "description": "Row that shows which persona card is in hand" },
+  "cardPickTitle": "選擇人設卡片",
+  "@cardPickTitle": { "description": "Title of the sheet that picks the card in hand" },
+  "cardSetPhoto": "設定頭像",
+  "@cardSetPhoto": { "description": "Link under the card avatar that picks a photo" },
+  "cardRemovePhoto": "頭像已移除",
+  "@cardRemovePhoto": { "description": "Shown after the card avatar photo is cleared" },
   "msgRecalledAnonymous": "有一則訊息被收回",
   "@msgRecalledAnonymous": { "description": "Same stamp when the sender name is not known" }
 }

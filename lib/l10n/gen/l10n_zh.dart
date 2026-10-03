@@ -2459,6 +2459,18 @@ class AppLocalizationsZh extends AppLocalizations {
   String get cardSave => '保存卡片';
 
   @override
+  String get cardCurrentLabel => '当前卡片';
+
+  @override
+  String get cardPickTitle => '选择人设卡片';
+
+  @override
+  String get cardSetPhoto => '设置头像';
+
+  @override
+  String get cardRemovePhoto => '头像已移除';
+
+  @override
   String get msgRecalledAnonymous => '有一条消息被撤回';
 }
 
@@ -4915,6 +4927,18 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get cardSave => '儲存卡片';
+
+  @override
+  String get cardCurrentLabel => '目前卡片';
+
+  @override
+  String get cardPickTitle => '選擇人設卡片';
+
+  @override
+  String get cardSetPhoto => '設定頭像';
+
+  @override
+  String get cardRemovePhoto => '頭像已移除';
 
   @override
   String get msgRecalledAnonymous => '有一則訊息被收回';

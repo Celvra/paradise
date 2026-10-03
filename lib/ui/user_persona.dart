@@ -12,6 +12,7 @@ import '../data/models.dart';
 import '../data/store.dart';
 import '../l10n/x.dart';
 import 'ai_widgets.dart';
+import 'tg_cells.dart';
 
 // crown, the default persona marker, drawn on the same 24 grid as every TgIcon
 const _crown = Color(0xFFFFC107);
@@ -59,8 +60,13 @@ const _avatarPalette = <List<Color>>[
   [Color(0xFFFF8AAC), Color(0xFFD95574)],
 ];
 
-/// My own persona cards, the user side of a SillyTavern persona. Sits inside
-/// My Account between the bio and the footer.
+/// My own persona cards, the user side of a SillyTavern persona.
+///
+/// Laid out like the rest of My Account: white blocks separated by the 12 tall
+/// shadow gap, accent header cells, plain rows with a value on the right, bare
+/// inputs with no box around them, and centred text actions at the bottom. No
+/// rounded cards, no filled or outlined buttons, nothing to break the run of
+/// blocks the page is made of.
 class PersonaCardsSection extends StatefulWidget {
   const PersonaCardsSection({super.key});
 
@@ -91,20 +97,26 @@ class _PersonaCardsSectionState extends State<PersonaCardsSection> {
       _name = TextEditingController(text: _card.name);
       _title = TextEditingController(text: _card.title);
       _desc = TextEditingController(text: _card.description);
+      // typing never reaches the section on its own, and the save row decides
+      // whether it is armed by reading the three controllers. Without these the
+      // row stayed asleep after an edit, so the text could not be stored at all
+      _name.addListener(_refresh);
+      _title.addListener(_refresh);
+      _desc.addListener(_refresh);
       _name0 = _card.name;
       _title0 = _card.title;
       _desc0 = _card.description;
       _loaded = true;
       return;
     }
-    // a switch from the strip or from a chat lock repoints the editors
+    // a switch from the picker or from a chat lock repoints the editors
     if (_card.id != _st.activePersona.id) {
       setState(_sync);
     }
   }
 
   /// Repoint the editors at the card the store now considers active. A switch
-  /// can come from the strip, from a chat lock, or from a card deleted
+  /// can come from the picker, from a chat lock, or from a card deleted
   /// elsewhere, and committing a stale controller would write the old card's
   /// text over whatever is selected now.
   void _sync() {
@@ -116,6 +128,11 @@ class _PersonaCardsSectionState extends State<PersonaCardsSection> {
     _name0 = next.name;
     _title0 = next.title;
     _desc0 = next.description;
+  }
+
+  /// a key stroke in any of the three editors, the save row reads them
+  void _refresh() {
+    if (mounted) setState(() {});
   }
 
   /// a lock or a selection moved outside this widget, catch up and repaint
@@ -158,32 +175,16 @@ class _PersonaCardsSectionState extends State<PersonaCardsSection> {
     setState(() {});
   }
 
-  void _newCard() {
+  /// A fresh card becomes the one in hand, the store moves on and the listener
+  /// repoints the editors, so the caller only has to hand the card back.
+  UserPersona _newCard() {
     _commit();
-    final created = _st.createPersonaCard();
-    setState(() {
-      _card = created;
-      _name.text = '';
-      _title.text = '';
-      _desc.text = '';
-      _name0 = '';
-      _title0 = '';
-      _desc0 = '';
-    });
+    return _st.createPersonaCard();
   }
 
   void _duplicate() {
     _commit();
-    final copy = _st.duplicatePersonaCard(_card.id);
-    setState(() {
-      _card = copy;
-      _name.text = copy.name;
-      _title.text = copy.title;
-      _desc.text = copy.description;
-      _name0 = copy.name;
-      _title0 = copy.title;
-      _desc0 = copy.description;
-    });
+    _st.duplicatePersonaCard(_card.id);
     showBulletin(context, context.l.cardDuplicated);
   }
 
@@ -202,10 +203,25 @@ class _PersonaCardsSectionState extends State<PersonaCardsSection> {
     showBulletin(context, l.cardDeleted);
   }
 
-  Future<void> _pickAvatar() async {
+  /// The picker hands back the card it wants in hand. A pending edit is stored
+  /// against the card it was typed into before the switch.
+  Future<void> _pickCard() async {
+    final id = await showTgSheet<String>(context, (_) => _CardPickerSheet(cards: _st.personas, active: _card.id, fallback: _st.defaultPersona?.id ?? '', onCreate: _newCard));
+    if (id == null || !mounted) return;
+    if (id == _card.id) return;
+    _commit();
+    _st.selectPersona(id);
+  }
+
+  void _clearPhoto() {
+    _st.updatePersonaCard(_card.id, (p) => p.avatarPath = '');
+    showBulletin(context, context.l.cardRemovePhoto);
+  }
+
+  Future<void> _pickAvatar(String id) async {
     try {
       final x = await ip.ImagePicker().pickImage(source: ip.ImageSource.gallery, imageQuality: 92);
-      if (x != null) _st.updatePersonaCard(_card.id, (p) => p.avatarPath = x.path);
+      if (x != null) _st.updatePersonaCard(id, (p) => p.avatarPath = x.path);
     } catch (_) {
       if (mounted) showBulletin(context, context.l.galleryUnavailable);
     }
@@ -235,338 +251,248 @@ class _PersonaCardsSectionState extends State<PersonaCardsSection> {
     _st.updatePersonaCard(_card.id, (p) => p.role = picked);
   }
 
+  /// the characters this card can be pinned to, the ST character lock dialog
+  List<String> _characters() => _st.chats.map((c) => c.persona.name).where((n) => n.trim().isNotEmpty).toSet().toList()..sort();
+
+  Future<void> _linkCharacter() async {
+    final l = context.l;
+    _commit();
+    final names = _characters();
+    if (names.isEmpty) {
+      showBulletin(context, l.cardNoChat);
+      return;
+    }
+    await showTgSheet<void>(context, (_) => _CharLinkSheet(names: names, cardId: _card.id, store: _st));
+  }
+
   @override
   Widget build(BuildContext context) {
     final p = context.p;
     _st = Store.read(context);
     final cards = _st.personas;
-    if (!_st.personas.any((e) => e.id == _card.id)) _card = _st.activePersona;
+    if (!cards.any((e) => e.id == _card.id)) _card = _st.activePersona;
 
-    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-      // header row with the create action on the right
-      SizedBox(
-        height: 40,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(18, 7, 12, 0),
-          child: Row(children: [
-            // the title gives way first, the actions are the useful part
-            Expanded(
-              child: Text(context.l.profileLabelPersonaCard, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(color: p.accent, fontSize: 14, fontWeight: FontWeight.w700, decoration: TextDecoration.none)),
-            ),
-            if (cards.isNotEmpty) _mini(p, context.l.cardDuplicate, Ic.copy, _duplicate),
-            _mini(p, context.l.cardNew, Ic.plus, _newCard),
-          ]),
-        ),
-      ),
-      if (cards.isEmpty)
-        _empty(p)
-      else ...[
-        SizedBox(height: 84, child: _strip(p, cards)),
-        _editor(p),
-        _connections(p),
-        _info(p, context.l.cardInfoFooter),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (cards.isEmpty)
+          _empty(p)
+        else ...[
+          _whichCard(p),
+          _editor(p),
+          _inject(p),
+          _connections(p),
+          _actions(p),
+        ],
       ],
-    ]);
+    );
   }
 
-  // header icon button, same 40 tall row as the section title
-  Widget _mini(Pal p, String label, Ic ic, VoidCallback onTap) => Tap(
-        scale: .88,
-        onTap: onTap,
-        child: Padding(padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 6), child: Row(mainAxisSize: MainAxisSize.min, children: [TgIcon(ic, color: p.accent, size: 17, stroke: 2), const SizedBox(width: 4), Text(label, style: TextStyle(color: p.accent, fontSize: 14, fontWeight: FontWeight.w500, decoration: TextDecoration.none))])),
-      );
-
-  Widget _empty(Pal p) => Container(
-        color: p.bg,
-        padding: const EdgeInsets.fromLTRB(20, 22, 20, 26),
-        child: Column(children: [
-          TgIcon(Ic.user, color: p.subtitle.withAlpha(120), size: 40, stroke: 1.6),
-          const SizedBox(height: 12),
-          Text(context.l.cardEmptyTitle, style: TextStyle(color: p.title, fontSize: 16, decoration: TextDecoration.none)),
-          const SizedBox(height: 4),
-          Text(context.l.cardEmptyBody, textAlign: TextAlign.center, style: TextStyle(color: p.subtitle, fontSize: 14, height: 1.35, decoration: TextDecoration.none)),
-          const SizedBox(height: 16),
-          TgButton(label: context.l.cardCreate, onTap: _newCard),
-        ]),
-      );
-
-  // horizontal card strip, the mobile stand in for the ST persona list column
-  Widget _strip(Pal p, List<UserPersona> cards) => ListView.separated(
-        scrollDirection: Axis.horizontal,
-        physics: const ClampingScrollPhysics(),
-        padding: const EdgeInsets.fromLTRB(12, 2, 12, 10),
-        itemCount: cards.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 9),
-        itemBuilder: (_, i) => _cardTile(p, cards[i]),
-      );
-
-  Widget _cardTile(Pal p, UserPersona c) {
-    final on = c.id == _card.id;
-    final isDefault = _st.isDefault(c.id);
-    return Tap(
-      scale: .96,
-      onTap: () {
-        _commit();
-        _st.selectPersona(c.id);
-        setState(() {});
-      },
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 240),
-        curve: TgCurves.easeOut,
-        width: 168,
-        padding: const EdgeInsets.fromLTRB(10, 9, 10, 9),
-        decoration: BoxDecoration(
-          color: on ? p.accent.withAlpha(p.dark ? 26 : 18) : p.bg,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: isDefault ? _crown : (on ? p.accent : p.divider),
-            width: isDefault ? 1.8 : (on ? 1.4 : .5),
-          ),
+  /// Nothing saved yet, so only the create row and a note under the block.
+  Widget _empty(Pal p) {
+    final l = context.l;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        TgSection(
+          header: l.profileLabelPersonaCard,
+          children: [TgTextCell(icon: Ic.plus, title: l.cardCreate, color: p.accent, onTap: _newCard, divider: false)],
+          gap: false,
         ),
-        child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          _avatar(p, c, 34),
-          const SizedBox(width: 9),
-          Expanded(
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
-              Row(children: [
-                Expanded(child: Text(c.name.trim().isEmpty ? context.l.lockSheetUnnamed : c.name.trim(), maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(color: p.title, fontSize: 15, fontWeight: FontWeight.w600, decoration: TextDecoration.none))),
-                if (isDefault) const Padding(padding: EdgeInsets.only(left: 4), child: TgIcon(Ic.crown, color: _crown, size: 14, stroke: 1.8)),
-              ]),
-              if (c.title.trim().isNotEmpty) ...[
-                const SizedBox(height: 1),
-                Text(c.title.trim(), maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(color: p.subtitle, fontSize: 12.5, decoration: TextDecoration.none)),
-              ],
-              const SizedBox(height: 3),
-              Text(c.summary, maxLines: 2, overflow: TextOverflow.ellipsis, style: TextStyle(color: on ? p.title.withAlpha(190) : p.subtitle, fontSize: 12, height: 1.28, decoration: TextDecoration.none, fontWeight: FontWeight.w400)),
-            ]),
-          ),
-        ]),
-      ),
-    );
-  }
-
-  Widget _avatar(Pal p, UserPersona c, double size) {
-    final g = _avatarPalette[c.color % _avatarPalette.length];
-    final ring = AnimatedContainer(
-      duration: const Duration(milliseconds: 260),
-      curve: TgCurves.easeOutBack,
-      width: size,
-      height: size,
-      padding: const EdgeInsets.all(2),
-      decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: _st.isDefault(c.id) ? _crown : const Color(0x00000000), width: 1.6)),
-      child: Container(
-        decoration: BoxDecoration(shape: BoxShape.circle, gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: g)),
-        clipBehavior: Clip.antiAlias,
-        child: c.avatarPath.isEmpty
-            ? Center(child: Text(c.initial, style: TextStyle(color: const Color(0xFFFFFFFF), fontSize: size * .42, fontWeight: FontWeight.w500, decoration: TextDecoration.none)))
-            : Image.file(File(c.avatarPath), fit: BoxFit.cover, errorBuilder: (_, __, ___) => Center(child: Text(c.initial, style: TextStyle(color: const Color(0xFFFFFFFF), fontSize: size * .42, fontWeight: FontWeight.w500, decoration: TextDecoration.none)))),
-      ),
-    );
-    return SizedBox(width: size, height: size, child: Tap(scale: .9, onTap: _pickAvatar, child: Stack(children: [ring, Positioned(right: 0, bottom: 0, child: Container(width: 15, height: 15, alignment: Alignment.center, decoration: BoxDecoration(color: p.accent, shape: BoxShape.circle, border: Border.all(color: p.bg, width: 1.5)), child: TgIcon(Ic.camera, color: const Color(0xFFFFFFFF), size: 9, stroke: 2.2))) ])));
-  }
-
-  // name / title / description editors for the card in hand
-  Widget _editor(Pal p) {
-    final card = _card;
-    return Container(
-      color: p.bg,
-      child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(18, 4, 18, 0),
+          padding: const EdgeInsets.fromLTRB(21, 14, 21, 0),
+          child: Column(children: [
+            Text(l.cardEmptyTitle, textAlign: TextAlign.center, style: TextStyle(color: p.title, fontSize: 15, fontWeight: FontWeight.w500, decoration: TextDecoration.none)),
+            const SizedBox(height: 4),
+            Text(l.cardEmptyBody, textAlign: TextAlign.center, style: TextStyle(color: p.subtitle, fontSize: 14, height: 1.35, decoration: TextDecoration.none)),
+          ]),
+        ),
+      ],
+    );
+  }
+
+  /// Which card is in hand. One row, the name on the right, the sheet behind
+  /// it carries the whole list, so nothing has to be laid out as a strip.
+  Widget _whichCard(Pal p) {
+    final l = context.l;
+    final card = _card;
+    final desc = card.description.trim();
+    return TgSection(
+      header: l.profileLabelPersonaCard,
+      children: [
+        TgTextCell(
+          leading: AnimatedAvatar(path: card.avatarPath, name: card.name, color: card.color, size: 34),
+          title: l.cardCurrentLabel,
+          subtitle: desc.isEmpty ? null : desc,
+          value: card.name.trim().isEmpty ? l.lockSheetUnnamed : card.name.trim(),
+          // the whole list now lives behind this row, so it has to say it opens
+          trailing: TgIcon(Ic.chevron, color: p.subtitle, size: 18, stroke: 1.8),
+          onTap: _pickCard,
+          divider: true,
+        ),
+        TgTextCell(icon: Ic.plus, title: l.cardNew, color: p.accent, onTap: _newCard, divider: false),
+      ],
+    );
+  }
+
+  /// Avatar, then the three bare inputs. Edit profile's shape: the picture on
+  /// its own with the accent link under it, no box drawn around any field.
+  Widget _editor(Pal p) {
+    final l = context.l;
+    final card = _card;
+    return TgSection(
+      header: l.cardEditing,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(21, 18, 21, 16),
+          child: Column(children: [
+            AnimatedAvatar(
+              path: card.avatarPath,
+              name: card.name,
+              color: card.color,
+              size: 64,
+              onTap: () => _pickAvatar(card.id),
+              onLongPress: card.avatarPath.isEmpty ? null : _clearPhoto,
+            ),
+            const SizedBox(height: 10),
+            Tap(
+              onTap: () => _pickAvatar(card.id),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                child: Text(l.cardSetPhoto, style: TextStyle(color: p.accent, fontSize: 15, fontWeight: FontWeight.w500, decoration: TextDecoration.none)),
+              ),
+            ),
+          ]),
+        ),
+        TgEditCell(controller: _name, hint: l.cardFieldNameHint, label: l.cardFieldName, divider: true),
+        TgEditCell(controller: _title, hint: l.cardFieldTitleHint, label: l.cardFieldTitle, divider: true),
+        _descCell(p),
+      ],
+      footer: l.cardInfoFooter,
+    );
+  }
+
+  /// The description is the one field that gets a live readout, so the counter
+  /// rides the label row the way the bio cell's countdown rides its own.
+  Widget _descCell(Pal p) {
+    final l = context.l;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(21, 10, 21, 0),
           child: Row(children: [
-            AnimatedAvatar(path: card.avatarPath, name: card.name, color: card.color, size: 54, onTap: _pickAvatar, onLongPress: card.avatarPath.isEmpty ? null : () => _st.updatePersonaCard(card.id, (c) => c.avatarPath = '')),
-            const SizedBox(width: 14),
-            Expanded(
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(context.l.cardEditing, style: TextStyle(color: p.subtitle, fontSize: 13, decoration: TextDecoration.none)),
-                const SizedBox(height: 2),
-                Text(card.name.trim().isEmpty ? context.l.lockSheetUnnamed : card.name.trim(), maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(color: p.title, fontSize: 17, fontWeight: FontWeight.w600, decoration: TextDecoration.none)),
-              ]),
-            ),
-          ]),
-        ),
-        const SizedBox(height: 4),
-        _row(p, context.l.cardFieldName, _name, context.l.cardFieldNameHint),
-        _row(p, context.l.cardFieldTitle, _title, context.l.cardFieldTitleHint),
-        _descRow(p),
-        _positionRow(p, card),
-        if (card.position == PersonaPosition.atDepth) _depthRow(p, card),
-      ]),
-    );
-  }
-
-  Widget _row(Pal p, String label, TextEditingController c, String hint) => Container(
-        color: p.bg,
-        padding: const EdgeInsets.fromLTRB(18, 9, 18, 9),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-          Text(label, style: TextStyle(color: p.subtitle, fontSize: 13, decoration: TextDecoration.none)),
-          const SizedBox(height: 2),
-          TgEdit(controller: c, hint: hint, maxLines: 1, style: TextStyle(color: p.title, fontSize: 16, decoration: TextDecoration.none), hintStyle: TextStyle(color: p.hint, fontSize: 16, decoration: TextDecoration.none), cursor: p.accent),
-        ]),
-      );
-
-  Widget _descRow(Pal p) {
-    return Container(
-      color: p.bg,
-      padding: const EdgeInsets.fromLTRB(18, 6, 18, 10),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-        Row(children: [
-          Text(context.l.cardFieldDescription, style: TextStyle(color: p.subtitle, fontSize: 13, decoration: TextDecoration.none)),
-          const Spacer(),
-          ValueListenableBuilder<TextEditingValue>(
-            valueListenable: _desc,
-            builder: (_, v, __) => Text(context.l.pluralTokens(estimateTokens(v.text)), style: TextStyle(color: p.subtitle, fontSize: 12, decoration: TextDecoration.none)),
-          ),
-        ]),
-        const SizedBox(height: 6),
-        Container(
-          constraints: const BoxConstraints(minHeight: 108),
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-          decoration: BoxDecoration(color: p.gray, borderRadius: BorderRadius.circular(10), border: Border.all(color: p.divider, width: .5)),
-          child: TgEdit(controller: _desc, hint: context.l.cardDescHint, maxLines: 10, style: TextStyle(color: p.title, fontSize: 15, height: 1.35, decoration: TextDecoration.none), hintStyle: TextStyle(color: p.hint, fontSize: 15, height: 1.35, decoration: TextDecoration.none), cursor: p.accent),
-        ),
-        const SizedBox(height: 5),
-        Text(context.l.cardPlaceholdersHint, style: TextStyle(color: p.subtitle, fontSize: 12, height: 1.3, decoration: TextDecoration.none)),
-      ]),
-    );
-  }
-
-  Widget _positionRow(Pal p, UserPersona card) {
-    final l = L10n.current;
-    final opt = positionOption(l, card.position);
-    return Tap(
-      highlight: true,
-      onTap: _pickPosition,
-      child: SizedBox(
-        height: 52,
-        child: Row(children: [
-          const SizedBox(width: 18),
-          Expanded(child: Column(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(l.cardPositionLabel, style: TextStyle(color: p.title, fontSize: 16, decoration: TextDecoration.none)),
-            Text(opt.sub, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(color: p.subtitle, fontSize: 12.5, decoration: TextDecoration.none)),
-          ])),
-          Text(opt.label, style: TextStyle(color: p.subtitle, fontSize: 14.5, decoration: TextDecoration.none)),
-          const SizedBox(width: 6),
-          TgIcon(Ic.chevron, color: p.subtitle, size: 18, stroke: 1.8),
-          const SizedBox(width: 14),
-        ]),
-      ),
-    );
-  }
-
-  Widget _depthRow(Pal p, UserPersona card) {
-    final l = L10n.current;
-    return Container(
-        color: p.bg,
-        padding: const EdgeInsets.fromLTRB(18, 4, 18, 12),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-          Row(children: [
-            Text(l.cardDepthLabel, style: TextStyle(color: p.title, fontSize: 16, decoration: TextDecoration.none)),
+            Text(l.cardFieldDescription, style: TextStyle(color: p.subtitle, fontSize: 13, height: 1.2, decoration: TextDecoration.none)),
             const Spacer(),
-            Text(l.cardDepthMessages(card.depth), style: TextStyle(color: p.subtitle, fontSize: 14, decoration: TextDecoration.none)),
-          ]),
-          TgSlider(value: card.depth.toDouble(), min: 1, max: 20, onChanged: (v) => _st.updatePersonaCard(card.id, (c) => c.depth = v.toInt())),
-          const SizedBox(height: 6),
-          Tap(
-            highlight: true,
-            onTap: _pickRole,
-            child: SizedBox(
-              height: 40,
-              child: Row(children: [
-                Text(l.cardRoleLabel, style: TextStyle(color: p.title, fontSize: 16, decoration: TextDecoration.none)),
-                const Spacer(),
-                Text(switch (card.role) { PersonaRole.system => l.roleSystem, PersonaRole.user => l.roleUser, PersonaRole.assistant => l.roleAssistant }, style: TextStyle(color: p.subtitle, fontSize: 15, decoration: TextDecoration.none)),
-                const SizedBox(width: 6),
-                TgIcon(Ic.chevron, color: p.subtitle, size: 18, stroke: 1.8),
-              ]),
+            ValueListenableBuilder<TextEditingValue>(
+              valueListenable: _desc,
+              builder: (_, v, __) => Text(l.pluralTokens(estimateTokens(v.text)), style: TextStyle(color: p.subtitle, fontSize: 12, decoration: TextDecoration.none)),
             ),
+          ]),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(21, 4, 21, 0),
+          child: TgEdit(
+            controller: _desc,
+            hint: l.cardDescHint,
+            maxLines: 6,
+            style: TextStyle(color: p.title, fontSize: 17, height: 1.35, decoration: TextDecoration.none),
+            hintStyle: TextStyle(color: p.hint, fontSize: 17, height: 1.35, decoration: TextDecoration.none),
+            cursor: p.accent,
           ),
-        ]),
-      );
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(21, 10, 21, 15),
+          child: Text(l.cardPlaceholdersHint, style: TextStyle(color: p.subtitle, fontSize: 13, height: 1.3, decoration: TextDecoration.none)),
+        ),
+      ],
+    );
   }
 
-  // default crown, chat lock and character lock, the ST connections row
+  /// Where the card lands in the prompt, and the two controls that position
+  /// brings with it. Plain rows, the value on the right like every settings
+  /// row, the seek bar under the row it belongs to.
+  Widget _inject(Pal p) {
+    final l = context.l;
+    final card = _card;
+    final atDepth = card.position == PersonaPosition.atDepth;
+    final opt = positionOption(l, card.position);
+    return TgSection(
+      children: [
+        TgTextCell(title: l.cardPositionLabel, subtitle: opt.sub, value: opt.label, onTap: _pickPosition, divider: atDepth),
+        if (atDepth)
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              TgTextCell(title: l.cardDepthLabel, value: l.cardDepthMessages(card.depth), divider: true),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 7),
+                child: TgSlider(value: card.depth.toDouble(), min: 1, max: 20, onChanged: (v) => _st.updatePersonaCard(card.id, (c) => c.depth = v.toInt())),
+              ),
+              TgTextCell(title: l.cardRoleLabel, value: roleLabel(l, card.role), onTap: _pickRole, divider: false),
+            ],
+          ),
+      ],
+    );
+  }
+
+  /// Default marker, chat lock and character lock, the ST connections rows.
   Widget _connections(Pal p) {
-    final l = L10n.current;
+    final l = context.l;
     final card = _card;
     final isDefault = _st.isDefault(card.id);
-    final charNames = _st.chats.map((c) => c.persona.name).where((n) => n.trim().isNotEmpty).toSet().toList()..sort();
-    final lockedChars = charNames.where((n) => _st.lockedTo(n).any((e) => e.id == card.id)).toList();
-    return Container(
-      color: p.bg,
-      child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(18, 8, 18, 6),
-          child: Text(l.cardConnectionsHeader, style: TextStyle(color: p.accent, fontSize: 13, fontWeight: FontWeight.w500, decoration: TextDecoration.none)),
+    final lockedChars = _characters().where((n) => _st.lockedTo(n).any((e) => e.id == card.id)).toList();
+    return TgSection(
+      header: l.cardConnectionsHeader,
+      children: [
+        TgTextCell(
+          leading: TgIcon(Ic.crown, color: isDefault ? _crown : p.icon, size: 24, stroke: 1.8),
+          title: l.cardDefaultLabel,
+          subtitle: isDefault ? l.cardFallbackSub : l.cardSetFallback,
+          color: isDefault ? p.accent : null,
+          trailing: isDefault ? TgIcon(Ic.check, color: p.accent, size: 22, stroke: 2.2) : null,
+          onTap: () => _st.toggleDefaultPersona(card.id),
+          divider: true,
         ),
-        _connTile(p, Ic.crown, l.cardDefaultLabel, isDefault ? l.cardFallbackSub : l.cardSetFallback, isDefault ? _crown : null, () => _st.toggleDefaultPersona(card.id)),
-        _connTile(p, Ic.chats, l.cardChatLabel, l.cardLockToChat, null, () {
-          _commit();
-          if (_st.chats.isEmpty) {
-            showBulletin(context, l.cardNoChat);
-          } else {
-            showBulletin(context, l.cardNoChatSub);
-          }
-        }),
-        _connTile(p, Ic.ai, l.cardCharacterLabel, lockedChars.isEmpty ? l.cardLinkPersona : lockedChars.join(', '), null, () {
-          _commit();
-          if (charNames.isEmpty) {
-            showBulletin(context, l.cardNoChat);
-            return;
-          }
-          showTgSheet<void>(context, (_) => _CharLinkSheet(names: charNames, cardId: card.id, store: _st));
-        }),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(18, 4, 18, 14),
-          child: Row(children: [
-            Expanded(child: TgOutline(label: l.cardSave, onTap: _dirty ? _commit : null)),
-            const SizedBox(width: 10),
-            if (_st.personas.length > 1) _deleteBtn(p),
-          ]),
+        TgTextCell(
+          icon: Ic.chats,
+          title: l.cardChatLabel,
+          subtitle: l.cardLockToChat,
+          onTap: () {
+            _commit();
+            showBulletin(context, _st.chats.isEmpty ? l.cardNoChat : l.cardNoChatSub);
+          },
+          divider: true,
         ),
-      ]),
+        TgTextCell(
+          icon: Ic.ai,
+          title: l.cardCharacterLabel,
+          subtitle: lockedChars.isEmpty ? l.cardLinkPersona : lockedChars.join(', '),
+          trailing: TgIcon(Ic.chevron, color: p.subtitle, size: 18, stroke: 1.8),
+          onTap: _linkCharacter,
+          divider: false,
+        ),
+      ],
     );
   }
 
-  Widget _connTile(Pal p, Ic ic, String title, String sub, Color? active, VoidCallback onTap) => Tap(
-        highlight: true,
-        onTap: onTap,
-        child: SizedBox(
-          height: 56,
-          child: Row(children: [
-            const SizedBox(width: 18),
-            TgIcon(ic, color: active ?? p.subtitle, size: 21, stroke: 1.9),
-            const SizedBox(width: 14),
-            Expanded(child: Column(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(title, style: TextStyle(color: active ?? p.title, fontSize: 16, decoration: TextDecoration.none)),
-              Text(sub, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(color: p.subtitle, fontSize: 12.5, decoration: TextDecoration.none)),
-            ])),
-            if (active != null) TgIcon(Ic.check, color: active, size: 20, stroke: 2.2) else TgIcon(Ic.chevron, color: p.subtitle, size: 18, stroke: 1.8),
-            const SizedBox(width: 14),
-          ]),
-        ),
-      );
-
-  Widget _deleteBtn(Pal p) => Tap(
-        scale: .96,
-        onTap: _remove,
-        child: Container(
-          width: 96,
-          height: 44,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(color: p.danger.withAlpha(30), borderRadius: BorderRadius.circular(10)),
-          child: Text('Delete', style: TextStyle(color: p.danger, fontSize: 15, fontWeight: FontWeight.w500, decoration: TextDecoration.none)),
-        ),
-      );
-
-  // TextInfoPrivacyCell, the note under a block
-  Widget _info(Pal p, String text) => Padding(
-        padding: const EdgeInsets.fromLTRB(24, 10, 24, 17),
-        child: Text(text, style: TextStyle(color: p.subtitle, fontSize: 14, height: 1.35, decoration: TextDecoration.none, fontWeight: FontWeight.w400)),
-      );
+  /// Centred text actions, the way a Telegram profile ends. The save row greys
+  /// out instead of disappearing, so the block keeps its shape either way.
+  Widget _actions(Pal p) {
+    final l = context.l;
+    final many = _st.personas.length > 1;
+    return TgSection(
+      children: [
+        TgActionRow(label: l.cardSave, onTap: _dirty ? _commit : null, divider: true),
+        TgActionRow(label: l.cardDuplicate, onTap: _duplicate, divider: many),
+        if (many) TgActionRow(label: l.cardDeleteTitle, onTap: _remove, danger: true, divider: false),
+      ],
+      gap: false,
+    );
+  }
 }
 
-/// avatar with the camera badge used by the strip and the editor
+/// avatar with the photo link under it, also used by the chat header
 class AnimatedAvatar extends StatelessWidget {
   const AnimatedAvatar({super.key, required this.path, required this.name, required this.color, required this.size, this.onTap, this.onLongPress});
   final String path;
@@ -597,86 +523,128 @@ class AnimatedAvatar extends StatelessWidget {
   }
 }
 
-/// outlined button for the save action
-class TgOutline extends StatelessWidget {
-  const TgOutline({super.key, required this.label, required this.onTap});
-  final String label;
-  final VoidCallback? onTap;
+/// The sheet behind the "current card" row: every card as one flat row, the
+/// one in hand ticked, the default one crowned, and the create row Telegram
+/// puts at the bottom of a list like this.
+class _CardPickerSheet extends StatelessWidget {
+  const _CardPickerSheet({required this.cards, required this.active, required this.fallback, required this.onCreate});
+
+  final List<UserPersona> cards;
+  final String active;
+  final String fallback;
+  final UserPersona Function() onCreate;
 
   @override
   Widget build(BuildContext context) {
     final p = context.p;
-    return AnimatedOpacity(
-      duration: const Duration(milliseconds: 150),
-      opacity: onTap == null ? .45 : 1,
-      child: Tap(
-        scale: .97,
-        onTap: onTap,
-        child: Container(
-          height: 44,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(color: p.accent.withAlpha(p.dark ? 28 : 18), borderRadius: BorderRadius.circular(10), border: Border.all(color: p.accent, width: 1)),
-          child: Text(label, style: TextStyle(color: p.accent, fontSize: 15, fontWeight: FontWeight.w500, decoration: TextDecoration.none)),
-        ),
+    final l = context.l;
+    final mq = MediaQuery.of(context);
+    return TgSheet(
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxHeight: mq.size.height * .66),
+        child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 4, 20, 8),
+            child: Text(l.cardPickTitle, style: TextStyle(color: p.title, fontSize: 17, fontWeight: FontWeight.w600, decoration: TextDecoration.none)),
+          ),
+          Flexible(
+            child: ListView(
+              shrinkWrap: true,
+              padding: const EdgeInsets.only(bottom: 8),
+              children: [
+                for (var i = 0; i < cards.length; i++) _row(context, p, cards[i], last: i == cards.length - 1),
+                _rule(p),
+                TgTextCell(
+                  icon: Ic.plus,
+                  title: l.cardNew,
+                  color: p.accent,
+                  onTap: () => Navigator.of(context).pop(onCreate().id),
+                  divider: false,
+                ),
+              ],
+            ),
+          ),
+        ]),
+      ),
+    );
+  }
+
+  /// the thin rule between two sheet rows, it starts at the text column so it
+  /// lines up with the names instead of cutting through the avatars
+  Widget _rule(Pal p) => Padding(padding: const EdgeInsets.only(left: 72, right: 21), child: Container(height: .5, color: p.divider));
+
+  Widget _row(BuildContext context, Pal p, UserPersona c, {required bool last}) {
+    final l = context.l;
+    final on = c.id == active;
+    final name = c.name.trim().isEmpty ? l.lockSheetUnnamed : c.name.trim();
+    final desc = c.description.trim();
+    return Tap(
+      onTap: () => Navigator.of(context).pop(c.id),
+      child: SizedBox(
+        height: 60,
+        child: Stack(children: [
+          Positioned(left: 21, top: 0, bottom: 0, child: Center(child: AnimatedAvatar(path: c.avatarPath, name: c.name, color: c.color, size: 34))),
+          Positioned.fill(
+            left: 72,
+            child: Row(children: [
+              Expanded(
+                child: Column(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Row(children: [
+                    Flexible(child: Text(name, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(color: on ? p.accent : p.title, fontSize: 16, fontWeight: FontWeight.w500, decoration: TextDecoration.none))),
+                    if (c.id == fallback) const Padding(padding: EdgeInsets.only(left: 5), child: TgIcon(Ic.crown, color: _crown, size: 14, stroke: 1.8)),
+                  ]),
+                  if (desc.isNotEmpty) Text(desc, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(color: p.subtitle, fontSize: 13.5, decoration: TextDecoration.none)),
+                ]),
+              ),
+              if (on) TgIcon(Ic.check, color: p.accent, size: 22, stroke: 2.2),
+              const SizedBox(width: 21),
+            ]),
+          ),
+          if (!last) Positioned(left: 72, right: 0, bottom: 0, child: Container(height: .5, color: p.divider)),
+        ]),
       ),
     );
   }
 }
 
-// character link picker, the ST character lock dialog
-class _CharLinkSheet extends StatefulWidget {
+/// Character lock picker, the ST character lock dialog: the same flat rows, a
+/// tick per character this card is already pinned to.
+class _CharLinkSheet extends StatelessWidget {
   const _CharLinkSheet({required this.names, required this.cardId, required this.store});
+
   final List<String> names;
   final String cardId;
   final Store store;
 
   @override
-  State<_CharLinkSheet> createState() => _CharLinkSheetState();
-}
-
-class _CharLinkSheetState extends State<_CharLinkSheet> {
-  @override
   Widget build(BuildContext context) {
     final p = context.p;
+    final l = context.l;
     final mq = MediaQuery.of(context);
     return TgSheet(
       child: ConstrainedBox(
-        constraints: BoxConstraints(maxHeight: mq.size.height * 0.66),
+        constraints: BoxConstraints(maxHeight: mq.size.height * .66),
         child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(20, 4, 20, 10),
-            child: Text(context.l.cardLinkCharacter, style: TextStyle(color: p.title, fontSize: 17, fontWeight: FontWeight.w600, decoration: TextDecoration.none)),
+            padding: const EdgeInsets.fromLTRB(20, 4, 20, 8),
+            child: Text(l.cardLinkCharacter, style: TextStyle(color: p.title, fontSize: 17, fontWeight: FontWeight.w600, decoration: TextDecoration.none)),
           ),
           Flexible(
             child: ListView(
               shrinkWrap: true,
-              padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+              padding: const EdgeInsets.only(bottom: 8),
               children: [
-                for (final n in widget.names)
-                  Builder(builder: (_) {
-                    final on = widget.store.lockedTo(n).any((e) => e.id == widget.cardId);
-                    return Tap(
-                      scale: .99,
-                      onTap: () => widget.store.toggleCharLock(n, widget.cardId),
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 200),
-                        margin: const EdgeInsets.only(bottom: 6),
-                        padding: const EdgeInsets.fromLTRB(16, 13, 16, 13),
-                        decoration: BoxDecoration(color: on ? p.accent.withAlpha(28) : p.bg, borderRadius: BorderRadius.circular(12), border: Border.all(color: on ? p.accent : const Color(0x00000000), width: .6)),
-                        child: Row(children: [
-                          Expanded(child: Text(n, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(color: p.title, fontSize: 16, decoration: TextDecoration.none))),
-                          if (on) TgIcon(Ic.check, color: p.accent, size: 20, stroke: 2.2),
-                        ]),
-                      ),
-                    );
-                  }),
+                for (var i = 0; i < names.length; i++)
+                  TgTextCell(
+                    title: names[i],
+                    trailing: store.lockedTo(names[i]).any((e) => e.id == cardId) ? TgIcon(Ic.check, color: p.accent, size: 22, stroke: 2.2) : null,
+                    onTap: () => store.toggleCharLock(names[i], cardId),
+                    divider: i != names.length - 1,
+                  ),
               ],
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-            child: TgButton(label: context.l.actionDone, onTap: () => Navigator.of(context).pop()),
-          ),
+          TgActionRow(label: l.actionDone, onTap: () => Navigator.of(context).pop()),
         ]),
       ),
     );

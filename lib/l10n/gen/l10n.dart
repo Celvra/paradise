@@ -4593,6 +4593,30 @@ abstract class AppLocalizations {
   /// **'Save Card'**
   String get cardSave;
 
+  /// Row that shows which persona card is in hand
+  ///
+  /// In en, this message translates to:
+  /// **'Current card'**
+  String get cardCurrentLabel;
+
+  /// Title of the sheet that picks the card in hand
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a persona card'**
+  String get cardPickTitle;
+
+  /// Link under the card avatar that picks a photo
+  ///
+  /// In en, this message translates to:
+  /// **'Set photo'**
+  String get cardSetPhoto;
+
+  /// Shown after the card avatar photo is cleared
+  ///
+  /// In en, this message translates to:
+  /// **'Photo removed'**
+  String get cardRemovePhoto;
+
   /// Same stamp when the sender name is not known
   ///
   /// In en, this message translates to:

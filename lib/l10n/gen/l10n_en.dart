@@ -2518,5 +2518,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cardSave => 'Save Card';
 
   @override
+  String get cardCurrentLabel => 'Current card';
+
+  @override
+  String get cardPickTitle => 'Choose a persona card';
+
+  @override
+  String get cardSetPhoto => 'Set photo';
+
+  @override
+  String get cardRemovePhoto => 'Photo removed';
+
+  @override
   String get msgRecalledAnonymous => 'A message was recalled';
 }

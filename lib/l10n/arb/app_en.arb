@@ -1466,6 +1466,14 @@
   "@cardCharacterLabel": { "description": "Row that links the card to a persona" },
   "cardSave": "Save Card",
   "@cardSave": { "description": "Button that stores the card" },
+  "cardCurrentLabel": "Current card",
+  "@cardCurrentLabel": { "description": "Row that shows which persona card is in hand" },
+  "cardPickTitle": "Choose a persona card",
+  "@cardPickTitle": { "description": "Title of the sheet that picks the card in hand" },
+  "cardSetPhoto": "Set photo",
+  "@cardSetPhoto": { "description": "Link under the card avatar that picks a photo" },
+  "cardRemovePhoto": "Photo removed",
+  "@cardRemovePhoto": { "description": "Shown after the card avatar photo is cleared" },
   "msgRecalledAnonymous": "A message was recalled",
   "@msgRecalledAnonymous": { "description": "Same stamp when the sender name is not known" }
 }

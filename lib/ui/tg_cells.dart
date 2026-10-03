@@ -179,8 +179,10 @@ class TgCheckCell extends StatelessWidget {
 }
 
 /// EditTextCell: bare 17sp input on white, optional countdown on the right.
+/// [label] puts a grey name above the field, for a block that carries several
+/// inputs and would otherwise be a column of anonymous hints.
 class TgEditCell extends StatelessWidget {
-  const TgEditCell({super.key, required this.controller, required this.hint, this.lines = 1, this.max = 0, this.divider = false, this.focusNode});
+  const TgEditCell({super.key, required this.controller, required this.hint, this.lines = 1, this.max = 0, this.divider = false, this.focusNode, this.label});
 
   final TextEditingController controller;
   final String hint;
@@ -188,28 +190,39 @@ class TgEditCell extends StatelessWidget {
   final int max;
   final bool divider;
   final FocusNode? focusNode;
+  final String? label;
 
   @override
   Widget build(BuildContext context) {
     final p = context.p;
     return Stack(children: [
       Padding(
-        padding: EdgeInsets.fromLTRB(21, 15, max > 0 ? 63 : 21, 15),
-        child: TgEdit(
-          controller: controller,
-          hint: hint,
-          maxLines: lines,
-          focusNode: focusNode,
-          style: TextStyle(color: p.title, fontSize: 17, height: 1.3, decoration: _none),
-          hintStyle: TextStyle(color: p.hint, fontSize: 17, height: 1.3, decoration: _none),
-          cursor: p.accent,
+        padding: EdgeInsets.fromLTRB(21, label == null ? 15 : 10, max > 0 ? 63 : 21, 15),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (label != null) ...[
+              Text(label!, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(color: p.subtitle, fontSize: 13, height: 1.2, decoration: _none)),
+              const SizedBox(height: 4),
+            ],
+            TgEdit(
+              controller: controller,
+              hint: hint,
+              maxLines: lines,
+              focusNode: focusNode,
+              style: TextStyle(color: p.title, fontSize: 17, height: 1.3, decoration: _none),
+              hintStyle: TextStyle(color: p.hint, fontSize: 17, height: 1.3, decoration: _none),
+              cursor: p.accent,
+            ),
+          ],
         ),
       ),
       if (max > 0)
         Positioned(
           right: 21,
           bottom: 0,
-          height: 52,
+          height: label == null ? 52 : 47,
           child: Center(
             child: ValueListenableBuilder<TextEditingValue>(
               valueListenable: controller,
@@ -225,6 +238,41 @@ class TgEditCell extends StatelessWidget {
         ),
       if (divider) Positioned(left: 21, right: 0, bottom: 0, child: Container(height: .5, color: p.divider)),
     ]);
+  }
+}
+
+/// A centred text action, how Telegram stacks "Save" and "Delete" under a
+/// profile or a bot: the label is the whole target, no button chrome at all.
+/// A null [onTap] greys the label out rather than hiding the row, so the block
+/// does not change shape between a dirty card and a clean one.
+class TgActionRow extends StatelessWidget {
+  const TgActionRow({super.key, required this.label, this.onTap, this.danger = false, this.divider = false});
+
+  final String label;
+  final VoidCallback? onTap;
+  final bool danger;
+  final bool divider;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = context.p;
+    return Tap(
+      highlight: true,
+      onTap: onTap,
+      child: Stack(children: [
+        SizedBox(
+          height: 50,
+          child: Center(
+            child: AnimatedDefaultTextStyle(
+              duration: const Duration(milliseconds: 180),
+              style: TextStyle(color: onTap == null ? p.hint : (danger ? p.danger : p.accent), fontSize: 16, fontWeight: FontWeight.w500, decoration: _none),
+              child: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis),
+            ),
+          ),
+        ),
+        if (divider) Positioned(left: 21, right: 0, bottom: 0, child: Container(height: .5, color: p.divider)),
+      ]),
+    );
   }
 }
 
