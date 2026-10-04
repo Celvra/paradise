@@ -1194,7 +1194,7 @@ abstract class AppLocalizations {
   /// Settings row subtitle of the about entry
   ///
   /// In en, this message translates to:
-  /// **'Version 1.0.0'**
+  /// **'Version 1.0.1'**
   String get settingsAboutSub;
 
   /// Licence and ownership notice in the about dialog

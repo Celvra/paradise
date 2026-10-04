@@ -596,7 +596,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get aboutLinkFailed => '无法打开链接';
 
   @override
-  String get settingsAboutSub => '版本 1.0.0';
+  String get settingsAboutSub => '版本 1.0.1';
 
   @override
   String get settingsAboutLicense =>
@@ -3654,7 +3654,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get aboutLinkFailed => '無法開啟連結';
 
   @override
-  String get settingsAboutSub => '版本 1.0.0';
+  String get settingsAboutSub => '版本 1.0.1';
 
   @override
   String get settingsAboutLicense =>

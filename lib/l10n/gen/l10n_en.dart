@@ -611,7 +611,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aboutLinkFailed => 'Could not open the link';
 
   @override
-  String get settingsAboutSub => 'Version 1.0.0';
+  String get settingsAboutSub => 'Version 1.0.1';
 
   @override
   String get settingsAboutLicense =>

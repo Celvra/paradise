@@ -365,7 +365,7 @@
   "@settingsAbout": { "description": "Settings row" },
   "aboutLinkFailed": "無法開啟連結",
   "@aboutLinkFailed": { "description": "Bulletin when the community link cannot be opened" },
-  "settingsAboutSub": "版本 1.0.0",
+  "settingsAboutSub": "版本 1.0.1",
   "@settingsAboutSub": { "description": "Settings row subtitle of the about entry" },
   "settingsAboutLicense": "開發者: 殘月。請遵守 AGPL 3.0 開源授權，這意味著您不得在閉源的前提下二次分發和商業化本項目，若違反，我們將依法處理。",
   "@settingsAboutLicense": { "description": "Licence and ownership notice in the about dialog" },

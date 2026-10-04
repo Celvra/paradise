@@ -365,7 +365,7 @@
   "@settingsAbout": { "description": "Settings row" },
   "aboutLinkFailed": "Could not open the link",
   "@aboutLinkFailed": { "description": "Bulletin when the community link cannot be opened" },
-  "settingsAboutSub": "Version 1.0.0",
+  "settingsAboutSub": "Version 1.0.1",
   "@settingsAboutSub": { "description": "Settings row subtitle of the about entry" },
   "settingsAboutLicense": "Developer: 殘月. It is distributed under the AGPL 3.0 open source licence, which means you may not redistribute or commercialise it without publishing its source code. Violations will be handled in accordance with the law.",
   "@settingsAboutLicense": { "description": "Licence and ownership notice in the about dialog" },

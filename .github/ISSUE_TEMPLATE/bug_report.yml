@@ -80,7 +80,7 @@ body:
     attributes:
       label: Version or build
       description: The About screen shows it, or the commit you are running.
-      placeholder: 1.0.0
+      placeholder: 1.0.1
     validations:
       required: true
 

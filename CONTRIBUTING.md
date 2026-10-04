@@ -71,7 +71,7 @@ already been used:
 
 ```bash
 # bump version: in pubspec.yaml first, then
-git tag v1.0.0 && git push origin v1.0.0
+git tag v1.0.1 && git push origin v1.0.1
 ```
 
 It produces four APKs, `armeabi-v7a`, `arm64-v8a`, `x86_64` and a universal one,
