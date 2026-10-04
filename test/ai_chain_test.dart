@@ -34,7 +34,9 @@ AiSettings _settings(List<ChainNode> chain) => AiSettings(
       replyMode: ReplyMode.full,
       temperature: 1,
       maxOutput: 0,
-      typewriterMs: 0,
+      firstBubbleDelayMs: 0,
+      bubbleGapScale: 1,
+      pacingJitter: 0.35,
       stripMarkdownInCharacterMode: false,
       compaction: const CompactionSettings(),
     );

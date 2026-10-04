@@ -18,6 +18,7 @@ import 'bubble.dart';
 import 'account_page.dart';
 import 'wallpaper.dart';
 import 'wallpaper_page.dart';
+import 'workspace/workspace_pages.dart';
 import 'ai_model_picker.dart';
 import 'ai_reply_page.dart';
 import 'ai_settings_page.dart';
@@ -73,6 +74,7 @@ class SettingsTab extends StatelessWidget {
                 ),
                 _Cell(icon: Ic.smile, colors: _cyan, title: l.humanTitle, sub: l.humanSubtitle, onTap: () => openHumanSettings(context)),
                 _Cell(icon: Ic.chats, colors: _teal, title: l.aiReplyTitle, sub: aiReplySummary(st), onTap: () => openAiReplySettings(context)),
+                _Cell(icon: Ic.folder, colors: _gray, title: l.wsTitle, sub: st.workspace.all.isEmpty ? l.wsSub : wsSettingsSummary(st), onTap: () => openWorkspaceSettings(context)),
                 _Cell(icon: Ic.palette, colors: _orange, title: l.settingsAppearance, sub: l.settingsAppearanceSub, onTap: () => _open(context, l.settingsAppearance, _appearance)),
                 _Cell(icon: Ic.bell, colors: _red, title: l.settingsNotifications, sub: st.haptics ? l.settingsVibrationOn : l.settingsVibrationOff, onTap: () => _open(context, l.settingsNotifications, _notifications)),
                 _Cell(icon: Ic.globe, colors: _green, title: l.settingsLanguage, sub: languageLabel(st.localeTag, l), onTap: () => _openLanguage(context)),
@@ -544,6 +546,16 @@ class _Preview extends StatelessWidget {
     );
   }
 }
+
+/// One line under the workspace settings row: how many there are and whether
+/// the tools are on, so the row says something before it is opened.
+String wsSettingsSummary(Store st) {
+  final ws = st.workspace;
+  final n = ws.all.length;
+  return '${wsTitles(n)} · ${ws.toolsEnabled ? L10n.current.wsToolsOn : L10n.current.wsToolsOff}';
+}
+
+String wsTitles(int n) => L10n.number('#,##0').format(n);
 
 /// Body of the about dialog: the licence notice, then the repository link, the
 /// projects this one was modelled on and the direct dependencies with their

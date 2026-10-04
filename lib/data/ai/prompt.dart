@@ -13,7 +13,7 @@ final _baseInstruction = [
 
 final _characterRules = [
   'Do not use any Markdown, including asterisks, hashes, backticks and dash lists.',
-  'Send several short messages like a real person would, one or two sentences each.',
+  'Send several short messages like a real person would. How many and how long varies turn by turn: sometimes one line, sometimes a burst of small ones. Never the same count with the same size twice.',
 ].join('\n');
 
 const _notesHeader = 'Author notes (for your understanding only, never mention them in conversation):';

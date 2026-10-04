@@ -21,18 +21,28 @@ const _agentNote = [
   'When you have what you need, write the reply in the chat voice above and stop. Do not narrate the steps you took.',
 ];
 
+/// The three always-present tools. The workspace tools are counted separately
+/// because they come and go with the binding, and a constant that had to be
+/// kept in step by hand is a constant that would eventually be wrong.
 const agentLocalToolCount = 3;
 
 extension StoreAgent on Store {
   /// The plain chat system prompt with the tool rules appended. Under humanize
   /// the engine builds its own, richer context instead, so this half only runs
   /// when the humanize layer is off.
-  String agentSystem(Chat c) {
+  ///
+  /// Async because the workspace block needs the roots resolved off the disk,
+  /// and a prompt that named a directory that had since been deleted would send
+  /// the model looking for files that are not there.
+  Future<String> agentSystem(Chat c) async {
     final mcp = human?.mcp.tools.length ?? 0;
+    final ws = await wsPrompt(c);
+    final local = agentLocalToolCount + wsLocalToolCount(c);
     return [
       _systemPrompt(c),
       '# Tools',
-      'You have ${agentLocalToolCount + mcp} tools: $agentLocalToolCount built in and $mcp from MCP servers. Use them when they are the honest way to answer, and answer from memory when they are not.',
+      'You have $local tools: $local built in and $mcp from MCP servers. Use them when they are the honest way to answer, and answer from memory when they are not.',
+      if (ws != null) ws,
       ..._agentNote,
     ].join('\n\n');
   }
@@ -40,7 +50,11 @@ extension StoreAgent on Store {
   /// The local half of the agent tool table. Deliberately dull: these are the
   /// three things a chat assistant cannot answer without reaching outside, and
   /// anything with a side effect belongs behind a permission the user set.
-  List<HTool> agentTools(Chat c) {
+  ///
+  /// [run] is threaded through for the workspace tools, which need the trace row
+  /// to hang a diff on. Null only when a caller wants the table without being
+  /// able to run it, which the settings pane does to read the descriptions.
+  Future<List<HTool>> agentTools(Chat c, [_Run? run]) async {
     final tools = <HTool>[
       HTool('get_time', 'Current date, time, time zone and the unix timestamp. Call it before anything that depends on the current moment.', {}, (a) async => agentTimeBlock(c)),
       HTool('fetch_url', 'Download one url and return the readable text of the page. Useful for a link the user pasted or a fact you need to check.', {
@@ -72,6 +86,11 @@ extension StoreAgent on Store {
         return lines.isEmpty ? 'No MCP server is enabled.' : lines.join('\n');
       }),
     ];
+
+    // the workspace half, appended rather than merged so an unbound chat gets
+    // exactly the three tools it always did. wsTools holds the availability
+    // rule, so this does not re-state it
+    if (run != null) tools.addAll(await wsTools(c, run));
 
     // every enabled server contributed its tools at the last refresh, they are
     // the only tools the user did not have to type in themselves

@@ -63,14 +63,14 @@ extension BackupStore on Store {
         if (at >= 0) {
           // the old one keeps its listener, the replacement needs its own or
           // later edits to it would never be saved
-          chats[at].removeListener(_onChat);
+          _unlisten(chats[at]);
           chats[at] = c;
         } else {
           chats.add(c);
         }
         // createChat does the same, and a chat without it changes without ever
         // reaching storage
-        c.addListener(_onChat);
+        _listen(c);
         report.chats++;
         report.messages += c.msgs.length;
       } catch (e) {

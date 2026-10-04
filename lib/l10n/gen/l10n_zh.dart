@@ -300,7 +300,40 @@ class AppLocalizationsZh extends AppLocalizations {
   String get aiReplyStyleCharacterSub => '像真人一样分成几条短消息发送';
 
   @override
-  String get aiStripMarkdown => '在角色模式下移除 Markdown';
+  String get aiFirstBubbleDelay => '回复前的读消息时间';
+
+  @override
+  String get aiBubbleGapScale => '消息间停顿倍率';
+
+  @override
+  String get aiPacingOff => '关闭';
+
+  @override
+  String get aiPacingDelayHint => '第一条消息立即送达';
+
+  @override
+  String get aiPacingJitter => '节奏随机幅度';
+
+  @override
+  String get aiPacingJitterLow => '轻微';
+
+  @override
+  String get aiPacingJitterNormal => '标准';
+
+  @override
+  String get aiPacingJitterWild => '狂放';
+
+  @override
+  String get aiPacingJitterHintOff => '每个停顿都和设定值一样长';
+
+  @override
+  String get aiPacingJitterHintLow => '停顿在设定值附近轻微浮动';
+
+  @override
+  String get aiPacingJitterHintNormal => '每个停顿都有人类式的不均匀';
+
+  @override
+  String get aiPacingJitterHintWild => '难以预测，有时秒回有时磨蹭';
 
   @override
   String get aiSamplingHeader => '采样';
@@ -581,7 +614,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get settingsAboutDeps =>
-      '依赖库:\n\naudioplayers 6.8.1 - 语音消息播放  (MIT)\nhttps://github.com/bluefireteam/audioplayers/tree/master/packages/audioplayers\ncharacters 1.4.1 - 字形簇，用于正确计算文本宽度  (BSD-3-Clause)\nhttps://github.com/dart-lang/core/tree/main/pkgs/characters\nfile_picker 13.1.0 - 文件与音频选择  (MIT)\nhttps://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker\nflutter_contacts 2.5.0 - 分享联系人名片  (MIT)\nhttps://github.com/QuisApp/flutter_contacts\nflutter_local_notifications 18.0.1 - 本地通知  (BSD-3-Clause)\nflutter_svg 2.3.0 - 服务商图标与矢量图标  (MIT)\nhttps://github.com/flutter/packages/tree/main/third_party/packages/flutter_svg\nflutter_tts 4.2.5 - 语音消息朗读  (MIT)\ngeolocator 13.0.4 - 位置附件  (MIT)\nhttps://github.com/baseflow/flutter-geolocator/tree/main/geolocator\nhttp 1.6.0 - OpenAI 兼容接口请求  (BSD-3-Clause)\nhttps://github.com/dart-lang/http/tree/master/pkgs/http\nimage_picker 1.2.3 - 相机与相册图片  (Apache-2.0)\nhttps://github.com/flutter/packages/tree/main/packages/image_picker/image_picker\nintl 0.20.3 - 日期与数字格式化  (BSD-3-Clause)\nhttps://github.com/dart-lang/i18n/tree/main/pkgs/intl\npath_provider 2.1.6 - 应用目录，用于表情与导出文件  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/path_provider/path_provider\nphoto_manager 3.12.0 - 相册访问，用于附件  (Apache-2.0)\nhttps://github.com/fluttercandies/flutter_photo_manager\nshared_preferences 2.5.5 - 设置与聊天记录存储  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/shared_preferences/shared_preferences\nsqflite 2.4.4 - 消息历史与会话分页  (BSD-2-Clause)\nhttps://github.com/tekartik/sqflite/tree/master/sqflite\ntimezone 0.10.1 - 日程消息的时区数据  (BSD-2-Clause)\nhttps://github.com/srawlins/timezone\nurl_launcher 6.3.2 - 本弹窗中的交流群链接  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/url_launcher/url_launcher\nworkmanager 0.10.10 - 应用被杀后的后台送达  (MIT)\nhttps://github.com/fluttercommunity/flutter_workmanager';
+      '依赖库:\n\ncharacters 1.4.1 - 字形簇，用于正确计算文本宽度  (BSD-3-Clause)\nhttps://github.com/dart-lang/core/tree/main/pkgs/characters\nfile_picker 13.1.0 - 文件与音频选择  (MIT)\nhttps://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker\nflutter_contacts 2.5.0 - 分享联系人名片  (MIT)\nhttps://github.com/QuisApp/flutter_contacts\nflutter_local_notifications 18.0.1 - 本地通知  (BSD-3-Clause)\nflutter_svg 2.3.0 - 服务商图标与矢量图标  (MIT)\nhttps://github.com/flutter/packages/tree/main/third_party/packages/flutter_svg\ngeolocator 13.0.4 - 位置附件  (MIT)\nhttps://github.com/baseflow/flutter-geolocator/tree/main/geolocator\nhttp 1.6.0 - OpenAI 兼容接口请求  (BSD-3-Clause)\nhttps://github.com/dart-lang/http/tree/master/pkgs/http\nimage_picker 1.2.3 - 相机与相册图片  (Apache-2.0)\nhttps://github.com/flutter/packages/tree/main/packages/image_picker/image_picker\nintl 0.20.3 - 日期与数字格式化  (BSD-3-Clause)\nhttps://github.com/dart-lang/i18n/tree/main/pkgs/intl\npath_provider 2.1.6 - 应用目录，用于表情与导出文件  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/path_provider/path_provider\nphoto_manager 3.12.0 - 相册访问，用于附件  (Apache-2.0)\nhttps://github.com/fluttercandies/flutter_photo_manager\nshared_preferences 2.5.5 - 设置与聊天记录存储  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/shared_preferences/shared_preferences\nsqflite 2.4.4 - 消息历史与会话分页  (BSD-2-Clause)\nhttps://github.com/tekartik/sqflite/tree/master/sqflite\ntimezone 0.10.1 - 日程消息的时区数据  (BSD-2-Clause)\nhttps://github.com/srawlins/timezone\nurl_launcher 6.3.2 - 本弹窗中的交流群链接  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/url_launcher/url_launcher\nworkmanager 0.10.10 - 应用被杀后的后台送达  (MIT)\nhttps://github.com/fluttercommunity/flutter_workmanager';
 
   @override
   String get settingsAboutCommunityUrl => 'https://discord.gg/aQaNUHPsw';
@@ -1320,9 +1353,6 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get msgVoice => '语音消息';
-
-  @override
   String get msgEdited => '已编辑';
 
   @override
@@ -1378,11 +1408,20 @@ class AppLocalizationsZh extends AppLocalizations {
   String get aiReplyTitle => 'AI 回复';
 
   @override
+  String get aiReplyStyleHeader => '节奏';
+
+  @override
   String get aiReplyVisibleHeader => '你能看到的内容';
 
   @override
   String get aiReplyVisibleFooter =>
       '开启显示思考后，思考模型的推理过程会作为可展开的步骤写在答案上方。Agent 模式让模型调用工具，并为每次调用加上一行，显示它的参数和结果。';
+
+  @override
+  String get aiReplyMarkdown => 'Markdown';
+
+  @override
+  String get aiReplyMarkdownSub => '气泡里渲染加粗、代码块和标题；关闭后人格化模式会去掉这些标记';
 
   @override
   String get aiReplyShowThinking => '显示思考';
@@ -1638,9 +1677,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get humanToolsRow => '工具、MCP 服务器与权限';
 
   @override
-  String get humanVoiceRow => '语音（文字转语音）';
-
-  @override
   String get humanWalletRow => '钱包';
 
   @override
@@ -1669,6 +1705,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get humanBrPause => '默认停顿';
+
+  @override
+  String get humanReplyDelay => '首条消息前的读消息时间';
+
+  @override
+  String get humanPaceScale => '消息间停顿倍率';
 
   @override
   String get humanRandomHeader => '随机性';
@@ -1866,28 +1908,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get humanRatingTuning => '主动发信频率倍率';
-
-  @override
-  String get humanVoiceTitle => '语音';
-
-  @override
-  String get humanVoiceFooter =>
-      '任意兼容 OpenAI 的 /audio/speech 接口地址。若未配置，语音消息会由系统语音朗读。';
-
-  @override
-  String get humanVoiceEndpoint => '接口地址';
-
-  @override
-  String get humanVoiceModel => '模型';
-
-  @override
-  String get humanVoiceVoice => '音色';
-
-  @override
-  String get humanVoiceSpeed => '语速';
-
-  @override
-  String get humanVoiceSystem => '回退到系统语音';
 
   @override
   String get humanBackupTitle => '备份与导入';
@@ -2472,6 +2492,574 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get msgRecalledAnonymous => '有一条消息被撤回';
+
+  @override
+  String get wsTitle => '工作区';
+
+  @override
+  String get wsSub => '给 AI 一个自己的目录';
+
+  @override
+  String get wsSubOff => '开启文件工具后 AI 才能读写这里';
+
+  @override
+  String get wsToolsOff => '文件工具已关';
+
+  @override
+  String get wsNoWorkspace => '未绑定工作区';
+
+  @override
+  String get wsToolsOn => '文件工具';
+
+  @override
+  String get wsToolsFooter => '开启后，已绑定工作区的会话会获得六个文件工具。每次写入都会先把改动给你看。';
+
+  @override
+  String get wsConfirmWrites => '每次写入都确认';
+
+  @override
+  String get wsConfirmWritesFooter => '关闭后 AI 会直接写入，不再逐次询问。改动仍会显示在步骤行里。';
+
+  @override
+  String get wsNew => '新建工作区';
+
+  @override
+  String get wsNewTitle => '名称';
+
+  @override
+  String get wsCreate => '创建';
+
+  @override
+  String get wsRename => '重命名';
+
+  @override
+  String get wsDelete => '删除';
+
+  @override
+  String wsDeleteConfirm(String name) {
+    return '删除「$name」？';
+  }
+
+  @override
+  String get wsDeleteFiles => '同时删除其中的文件';
+
+  @override
+  String get wsDeleteFilesFooter => '关闭则保留设备上的文件。你自己挑选的文件夹无论如何都不会被删除。';
+
+  @override
+  String wsBoundTo(int count) {
+    return '$count 个会话使用';
+  }
+
+  @override
+  String get wsNeverUsed => '尚未使用';
+
+  @override
+  String get wsFiles => '文件';
+
+  @override
+  String get wsToolsTab => '工具';
+
+  @override
+  String get wsToolShell => 'Shell';
+
+  @override
+  String get wsToolViewImage => '查看图片';
+
+  @override
+  String get wsToolsTabFooter => '在这里关闭的工具不会提供给 AI。重新开启也不会覆盖你在工具页设置的权限。';
+
+  @override
+  String get wsBind => '绑定工作区';
+
+  @override
+  String get wsBindTitle => '选择工作区';
+
+  @override
+  String get wsBindNone => '不绑定';
+
+  @override
+  String get wsUnbind => '解除绑定';
+
+  @override
+  String get wsUnbindConfirm => 'AI 已经在本会话用过这个工作区，仍要解除绑定吗？';
+
+  @override
+  String get wsChange => '更换';
+
+  @override
+  String get wsCwd => '工作目录';
+
+  @override
+  String get wsCwdEmpty => '工作区根目录';
+
+  @override
+  String get wsCwdInvalid => '该路径不在工作区内';
+
+  @override
+  String get wsReveal => '查看文件';
+
+  @override
+  String get wsEmpty => '这里还是空的';
+
+  @override
+  String get wsEmptyHint => '让 AI 写一个文件，它就会出现在这个列表里。';
+
+  @override
+  String get wsShowHidden => '显示隐藏文件';
+
+  @override
+  String get wsSort => '排序';
+
+  @override
+  String get wsSortName => '名称';
+
+  @override
+  String get wsSortModified => '修改时间';
+
+  @override
+  String get wsSortSize => '大小';
+
+  @override
+  String get wsFoldersFirst => '文件夹在前';
+
+  @override
+  String get wsNewFolder => '新建文件夹';
+
+  @override
+  String get wsNewFile => '新建文件';
+
+  @override
+  String get wsImport => '导入';
+
+  @override
+  String get wsExport => '导出';
+
+  @override
+  String get wsExportZip => '打包为 zip';
+
+  @override
+  String get wsMove => '移动';
+
+  @override
+  String get wsMoveHere => '移动到这里';
+
+  @override
+  String get wsCopyPath => '复制路径';
+
+  @override
+  String get wsCopiedPath => '路径已复制';
+
+  @override
+  String get wsOpenWith => '用其他应用打开';
+
+  @override
+  String get wsShare => '分享';
+
+  @override
+  String get wsEmptyDir => '这个文件夹是空的';
+
+  @override
+  String wsTruncated(int count) {
+    return '列表在 $count 项处截断';
+  }
+
+  @override
+  String get wsPreview => '预览';
+
+  @override
+  String get wsPreviewMissing => '文件已不存在';
+
+  @override
+  String get wsPreviewTooBig => '文件太大，无法预览';
+
+  @override
+  String get wsPreviewBinary => '这不是文本文件';
+
+  @override
+  String get wsPreviewEmpty => '空文件';
+
+  @override
+  String get wsWrap => '自动换行';
+
+  @override
+  String get wsZoomIn => '放大';
+
+  @override
+  String get wsZoomOut => '缩小';
+
+  @override
+  String get wsRendered => '渲染';
+
+  @override
+  String get wsSource => '源码';
+
+  @override
+  String get wsWriteTitle => '允许这次改动吗';
+
+  @override
+  String get wsWriteNew => '新建文件';
+
+  @override
+  String get wsWriteReplace => '替换整个文件';
+
+  @override
+  String wsWriteEdit(int count) {
+    return '替换 $count 行';
+  }
+
+  @override
+  String wsWriteCounts(int added, int removed) {
+    return '+$added −$removed';
+  }
+
+  @override
+  String get wsWriteLoose => '宽松匹配';
+
+  @override
+  String get wsWriteAllow => '允许';
+
+  @override
+  String get wsWriteAllowAll => '本会话全部允许';
+
+  @override
+  String get wsWriteRefuse => '拒绝';
+
+  @override
+  String get wsWriteRefused => '你拒绝了这次改动';
+
+  @override
+  String get wsWriteNoUi => '本次未经确认';
+
+  @override
+  String get wsToolRead => '读取';
+
+  @override
+  String get wsToolWrite => '写入';
+
+  @override
+  String get wsToolEdit => '编辑';
+
+  @override
+  String get wsToolList => '列出';
+
+  @override
+  String get wsToolGlob => '查找';
+
+  @override
+  String get wsToolGrep => '搜索';
+
+  @override
+  String get wsToolDenied => '已拒绝';
+
+  @override
+  String wsLines(int count) {
+    return '$count 行';
+  }
+
+  @override
+  String wsFilesCount(int count) {
+    return '$count 个文件';
+  }
+
+  @override
+  String wsBytesCount(String size) {
+    return '$size';
+  }
+
+  @override
+  String get wsOpenFile => '打开';
+
+  @override
+  String get wsNameEmpty => '给它起个名字';
+
+  @override
+  String get wsNameSlash => '名称不能包含斜杠';
+
+  @override
+  String get wsNameDot => '这个名称不可用';
+
+  @override
+  String get wsNameLeadingDot => '以点开头的名称会被隐藏';
+
+  @override
+  String wsPreviewTruncatedLines(Object count) {
+    return '仅显示前 $count 行';
+  }
+
+  @override
+  String get wsDeleteFolderTitle => '删除文件夹？';
+
+  @override
+  String get wsDeleteFileTitle => '删除文件？';
+
+  @override
+  String get wsOpenTerminal => '终端';
+
+  @override
+  String get wsWriteNoPreview => '无法显示原内容';
+
+  @override
+  String get wsWriteNoChange => '没有改动';
+
+  @override
+  String get toolDescGetTime => '读取当前日期、时间、时区，以及双方最后一次说话的时间';
+
+  @override
+  String get toolDescSchedule => '让它之后主动给你发消息';
+
+  @override
+  String get toolDescCancelScheduled => '取消一条还没发出的定时消息';
+
+  @override
+  String get toolDescModifyScheduled => '修改定时消息的时间或内容';
+
+  @override
+  String get toolDescListScheduled => '查看它已经安排好的全部消息';
+
+  @override
+  String get toolDescSetStatus => '设置你在会话列表看到的状态';
+
+  @override
+  String get toolDescAdjustFeeling => '在好坏时刻之后调整它的心情或好感';
+
+  @override
+  String get toolDescWriteMemory => '记下一件值得记住的事';
+
+  @override
+  String get toolDescReadMemory => '搜索它已经记住的东西';
+
+  @override
+  String get toolDescCompleteTodo => '把它写下的承诺或待办标记完成';
+
+  @override
+  String get toolDescLifeSchedule => '声明它正在忙，于是那段时间话少';
+
+  @override
+  String get toolDescPinMessage => '在会话里置顶或取消置顶一条消息';
+
+  @override
+  String get toolDescEditMessage => '改写它自己先前发过的一条消息';
+
+  @override
+  String get toolDescQuoteMessage => '引用某条消息来回复';
+
+  @override
+  String get toolDescCharacterCard => '让它缓慢微调自己的人设';
+
+  @override
+  String get toolDescRating => '根据你的回应调整它的自我调校';
+
+  @override
+  String get toolDescSendSticker => '从表情库发一张贴纸';
+
+  @override
+  String get toolDescSaveSticker => '把你发过的梗图存进表情库';
+
+  @override
+  String get toolDescRecall => '像人一样撤回刚发出的消息';
+
+  @override
+  String get toolDescTypo => '发一条故意打错的字，然后修正';
+
+  @override
+  String get toolDescSendImage => '从链接发送一张图片';
+
+  @override
+  String get toolDescSendFile => '写一个文本文件并发给你';
+
+  @override
+  String get toolDescSendTransfer => '发一个假的红包，点一下就收';
+
+  @override
+  String get wsToolDescRead => '按行号读取工作区里的文件';
+
+  @override
+  String get wsToolDescWrite => '新建或覆盖文件，写入前你会看到差异';
+
+  @override
+  String get wsToolDescEdit => '替换文件中的某一段文字';
+
+  @override
+  String get wsToolDescList => '列出某个目录下的文件';
+
+  @override
+  String get wsToolDescGlob => '按文件名查找，比如所有 .dart 文件';
+
+  @override
+  String get wsToolDescGrep => '用正则搜索文件内容';
+
+  @override
+  String get toolNoUrl => '（未填写地址）';
+
+  @override
+  String get toolBuiltinFooter => '开启文件工具并为会话绑定工作区后，会出现六个文件工具。';
+
+  @override
+  String get wsSubOn => '每个已绑定工作区的会话获得六个文件工具';
+
+  @override
+  String get wsToolDescShell => '在 Linux 环境里执行 shell 命令';
+
+  @override
+  String get wsToolDescViewImage => '让 AI 查看一张图片';
+
+  @override
+  String get actionClose => '关闭';
+
+  @override
+  String get termTitle => '终端';
+
+  @override
+  String get termNoEnvironment => '尚未安装 Linux 环境';
+
+  @override
+  String get termOpenSettings => '打开环境设置';
+
+  @override
+  String get termNewShell => '新建 shell';
+
+  @override
+  String get termRename => '重命名 shell';
+
+  @override
+  String get termCopyAll => '复制全部内容';
+
+  @override
+  String get termClear => '清屏';
+
+  @override
+  String get termFontBigger => '放大文字';
+
+  @override
+  String get termFontSmaller => '缩小文字';
+
+  @override
+  String get termCopied => '已复制';
+
+  @override
+  String get termSessionDead => '该 shell 已关闭';
+
+  @override
+  String get termLinkUnsupported => '无法从这里打开此链接';
+
+  @override
+  String get termHint => '在下方输入命令。长按标签可重命名。';
+
+  @override
+  String get termSettings => '环境';
+
+  @override
+  String get termInstallEnvironment => '安装 Linux 环境后即可使用终端';
+
+  @override
+  String get termShellPath => 'Shell 路径';
+
+  @override
+  String get termProotArgs => 'PRoot 选项';
+
+  @override
+  String get actionPaste => '粘贴';
+
+  @override
+  String get termCloseConfirm => '关闭这个 shell？正在运行的程序会停止。';
+
+  @override
+  String get termOpenFailedShort => '无法打开 shell';
+
+  @override
+  String get envTitle => 'Linux 环境';
+
+  @override
+  String get envNotInstalled => '尚未安装环境';
+
+  @override
+  String get envReady => '已就绪';
+
+  @override
+  String get envInstall => '安装';
+
+  @override
+  String get envCancel => '取消';
+
+  @override
+  String get envRemove => '移除环境';
+
+  @override
+  String get envUpdate => '有可用更新';
+
+  @override
+  String get envDownloading => '正在下载';
+
+  @override
+  String get envVerifying => '正在校验压缩包';
+
+  @override
+  String get envExtracting => '正在解压';
+
+  @override
+  String get envPatching => '正在配置';
+
+  @override
+  String get envChoose => '选择发行版';
+
+  @override
+  String get envArch => '架构';
+
+  @override
+  String get envInstallConfirm => '安装这个 Linux 环境？';
+
+  @override
+  String get envRemoveConfirm => '移除已安装的 Linux 环境和下载的压缩包？';
+
+  @override
+  String envMinFree(int mb) {
+    return '需要 $mb MB 可用空间';
+  }
+
+  @override
+  String get actionTypeDeleteHint => '输入 delete 以确认删除';
+
+  @override
+  String get envUnknownError => '环境操作失败';
+
+  @override
+  String get envChecking => '正在检查设备支持';
+
+  @override
+  String get envUnsupported => '没有适用于此设备的发行版';
+
+  @override
+  String envUnsupportedDevice(Object abi) {
+    return '没有适用于 ABI $abi 的根文件系统';
+  }
+
+  @override
+  String get envErrorArchitecture => '环境架构与此应用不匹配';
+
+  @override
+  String get envErrorProot => '此版本未包含 PRoot';
+
+  @override
+  String get envErrorDisk => '可用存储空间不足';
+
+  @override
+  String get envErrorNetwork => '下载失败，请检查网络后重试';
+
+  @override
+  String get envErrorChecksum => '下载文件未通过 SHA-256 校验';
+
+  @override
+  String get envErrorExtract => '无法解压文件';
+
+  @override
+  String get envErrorPatch => '无法配置环境';
+
+  @override
+  String get envErrorCancelled => '操作已取消';
+
+  @override
+  String get envErrorInvalid => '已安装的环境不完整';
 }
 
 /// The translations for Chinese, using the Han script (`zh_Hant`).
@@ -2770,7 +3358,40 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get aiReplyStyleCharacterSub => '像真人一樣分成幾則短訊息發送';
 
   @override
-  String get aiStripMarkdown => '在角色模式下移除 Markdown';
+  String get aiFirstBubbleDelay => '回覆前的讀訊息時間';
+
+  @override
+  String get aiBubbleGapScale => '訊息間停頓倍率';
+
+  @override
+  String get aiPacingOff => '關閉';
+
+  @override
+  String get aiPacingDelayHint => '第一則訊息立即送達';
+
+  @override
+  String get aiPacingJitter => '節奏隨機幅度';
+
+  @override
+  String get aiPacingJitterLow => '輕微';
+
+  @override
+  String get aiPacingJitterNormal => '標準';
+
+  @override
+  String get aiPacingJitterWild => '狂放';
+
+  @override
+  String get aiPacingJitterHintOff => '每個停頓都和設定值一樣長';
+
+  @override
+  String get aiPacingJitterHintLow => '停頓在設定值附近輕微浮動';
+
+  @override
+  String get aiPacingJitterHintNormal => '每個停頓都有人類式的不均勻';
+
+  @override
+  String get aiPacingJitterHintWild => '難以預測，有時秒回有時磨蹭';
 
   @override
   String get aiSamplingHeader => '取樣';
@@ -3051,7 +3672,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get settingsAboutDeps =>
-      '依賴庫:\n\naudioplayers 6.8.1 - 語音訊息播放  (MIT)\nhttps://github.com/bluefireteam/audioplayers/tree/master/packages/audioplayers\ncharacters 1.4.1 - 字形叢集，用於正確計算文字寬度  (BSD-3-Clause)\nhttps://github.com/dart-lang/core/tree/main/pkgs/characters\nfile_picker 13.1.0 - 檔案與音訊選擇  (MIT)\nhttps://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker\nflutter_contacts 2.5.0 - 分享聯絡人名片  (MIT)\nhttps://github.com/QuisApp/flutter_contacts\nflutter_local_notifications 18.0.1 - 本機通知  (BSD-3-Clause)\nflutter_svg 2.3.0 - 服務商圖示與向量圖示  (MIT)\nhttps://github.com/flutter/packages/tree/main/third_party/packages/flutter_svg\nflutter_tts 4.2.5 - 語音訊息朗讀  (MIT)\ngeolocator 13.0.4 - 位置附件  (MIT)\nhttps://github.com/baseflow/flutter-geolocator/tree/main/geolocator\nhttp 1.6.0 - OpenAI 相容介面請求  (BSD-3-Clause)\nhttps://github.com/dart-lang/http/tree/master/pkgs/http\nimage_picker 1.2.3 - 相機與相簿圖片  (Apache-2.0)\nhttps://github.com/flutter/packages/tree/main/packages/image_picker/image_picker\nintl 0.20.3 - 日期與數字格式化  (BSD-3-Clause)\nhttps://github.com/dart-lang/i18n/tree/main/pkgs/intl\npath_provider 2.1.6 - 應用程式目錄，用於表情與匯出檔案  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/path_provider/path_provider\nphoto_manager 3.12.0 - 相簿存取，用於附件  (Apache-2.0)\nhttps://github.com/fluttercandies/flutter_photo_manager\nshared_preferences 2.5.5 - 設定與對話紀錄儲存  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/shared_preferences/shared_preferences\nsqflite 2.4.4 - 訊息歷史與對話分頁  (BSD-2-Clause)\nhttps://github.com/tekartik/sqflite/tree/master/sqflite\ntimezone 0.10.1 - 排程訊息的時區資料  (BSD-2-Clause)\nhttps://github.com/srawlins/timezone\nurl_launcher 6.3.2 - 本彈出視窗中的交流群連結  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/url_launcher/url_launcher\nworkmanager 0.10.10 - 應用程式被關閉後的背景送達  (MIT)\nhttps://github.com/fluttercommunity/flutter_workmanager';
+      '依賴庫:\n\ncharacters 1.4.1 - 字形叢集，用於正確計算文字寬度  (BSD-3-Clause)\nhttps://github.com/dart-lang/core/tree/main/pkgs/characters\nfile_picker 13.1.0 - 檔案與音訊選擇  (MIT)\nhttps://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker\nflutter_contacts 2.5.0 - 分享聯絡人名片  (MIT)\nhttps://github.com/QuisApp/flutter_contacts\nflutter_local_notifications 18.0.1 - 本機通知  (BSD-3-Clause)\nflutter_svg 2.3.0 - 服務商圖示與向量圖示  (MIT)\nhttps://github.com/flutter/packages/tree/main/third_party/packages/flutter_svg\ngeolocator 13.0.4 - 位置附件  (MIT)\nhttps://github.com/baseflow/flutter-geolocator/tree/main/geolocator\nhttp 1.6.0 - OpenAI 相容介面請求  (BSD-3-Clause)\nhttps://github.com/dart-lang/http/tree/master/pkgs/http\nimage_picker 1.2.3 - 相機與相簿圖片  (Apache-2.0)\nhttps://github.com/flutter/packages/tree/main/packages/image_picker/image_picker\nintl 0.20.3 - 日期與數字格式化  (BSD-3-Clause)\nhttps://github.com/dart-lang/i18n/tree/main/pkgs/intl\npath_provider 2.1.6 - 應用程式目錄，用於表情與匯出檔案  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/path_provider/path_provider\nphoto_manager 3.12.0 - 相簿存取，用於附件  (Apache-2.0)\nhttps://github.com/fluttercandies/flutter_photo_manager\nshared_preferences 2.5.5 - 設定與對話紀錄儲存  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/shared_preferences/shared_preferences\nsqflite 2.4.4 - 訊息歷史與對話分頁  (BSD-2-Clause)\nhttps://github.com/tekartik/sqflite/tree/master/sqflite\ntimezone 0.10.1 - 排程訊息的時區資料  (BSD-2-Clause)\nhttps://github.com/srawlins/timezone\nurl_launcher 6.3.2 - 本彈出視窗中的交流群連結  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/url_launcher/url_launcher\nworkmanager 0.10.10 - 應用程式被關閉後的背景送達  (MIT)\nhttps://github.com/fluttercommunity/flutter_workmanager';
 
   @override
   String get settingsAboutCommunityUrl => 'https://discord.gg/aQaNUHPsw';
@@ -3790,9 +4411,6 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   }
 
   @override
-  String get msgVoice => '語音訊息';
-
-  @override
   String get msgEdited => '編輯過';
 
   @override
@@ -3848,11 +4466,20 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get aiReplyTitle => 'AI 回覆';
 
   @override
+  String get aiReplyStyleHeader => '節奏';
+
+  @override
   String get aiReplyVisibleHeader => '你能看到的內容';
 
   @override
   String get aiReplyVisibleFooter =>
       '開啟顯示思考後，思考模型的推理過程會作為可展開的步驟寫在答案上方。Agent 模式讓模型呼叫工具，並為每次呼叫加上一列，顯示它的參數與結果。';
+
+  @override
+  String get aiReplyMarkdown => 'Markdown';
+
+  @override
+  String get aiReplyMarkdownSub => '在氣泡裡渲染粗體、程式碼區塊與標題；關閉後人格化模式會去掉這些標記';
 
   @override
   String get aiReplyShowThinking => '顯示思考';
@@ -4108,9 +4735,6 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get humanToolsRow => '工具、MCP 伺服器與權限';
 
   @override
-  String get humanVoiceRow => '語音（文字轉語音）';
-
-  @override
   String get humanWalletRow => '錢包';
 
   @override
@@ -4139,6 +4763,12 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get humanBrPause => '預設停頓';
+
+  @override
+  String get humanReplyDelay => '首則訊息前的讀訊息時間';
+
+  @override
+  String get humanPaceScale => '訊息間停頓倍率';
 
   @override
   String get humanRandomHeader => '隨機性';
@@ -4336,28 +4966,6 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get humanRatingTuning => '主動發信頻率倍率';
-
-  @override
-  String get humanVoiceTitle => '語音';
-
-  @override
-  String get humanVoiceFooter =>
-      '任何相容 OpenAI 的 /audio/speech 介面網址。若未設定，語音訊息會由系統語音朗讀。';
-
-  @override
-  String get humanVoiceEndpoint => '介面網址';
-
-  @override
-  String get humanVoiceModel => '模型';
-
-  @override
-  String get humanVoiceVoice => '音色';
-
-  @override
-  String get humanVoiceSpeed => '語速';
-
-  @override
-  String get humanVoiceSystem => '回退到系統語音';
 
   @override
   String get humanBackupTitle => '備份與匯入';
@@ -4942,4 +5550,572 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get msgRecalledAnonymous => '有一則訊息被收回';
+
+  @override
+  String get wsTitle => '工作區';
+
+  @override
+  String get wsSub => '給 AI 一個自己的目錄';
+
+  @override
+  String get wsSubOff => '開啟檔案工具後 AI 才能讀寫這裡';
+
+  @override
+  String get wsToolsOff => '檔案工具已關';
+
+  @override
+  String get wsNoWorkspace => '未綁定工作區';
+
+  @override
+  String get wsToolsOn => '檔案工具';
+
+  @override
+  String get wsToolsFooter => '開啟後，已綁定工作區的對話會獲得六個檔案工具。每次寫入都會先把改動給你看。';
+
+  @override
+  String get wsConfirmWrites => '每次寫入都確認';
+
+  @override
+  String get wsConfirmWritesFooter => '關閉後 AI 會直接寫入，不再逐次詢問。改動仍會顯示在步驟列裡。';
+
+  @override
+  String get wsNew => '新增工作區';
+
+  @override
+  String get wsNewTitle => '名稱';
+
+  @override
+  String get wsCreate => '建立';
+
+  @override
+  String get wsRename => '重新命名';
+
+  @override
+  String get wsDelete => '刪除';
+
+  @override
+  String wsDeleteConfirm(String name) {
+    return '刪除「$name」？';
+  }
+
+  @override
+  String get wsDeleteFiles => '同時刪除其中的檔案';
+
+  @override
+  String get wsDeleteFilesFooter => '關閉則保留裝置上的檔案。你自己挑選的資料夾無論如何都不會被刪除。';
+
+  @override
+  String wsBoundTo(int count) {
+    return '$count 個對話使用';
+  }
+
+  @override
+  String get wsNeverUsed => '尚未使用';
+
+  @override
+  String get wsFiles => '檔案';
+
+  @override
+  String get wsToolsTab => '工具';
+
+  @override
+  String get wsToolShell => 'Shell';
+
+  @override
+  String get wsToolViewImage => '檢視圖片';
+
+  @override
+  String get wsToolsTabFooter => '在這裡關閉的工具不會提供給 AI。重新開啟也不會覆蓋你在工具頁設定的權限。';
+
+  @override
+  String get wsBind => '綁定工作區';
+
+  @override
+  String get wsBindTitle => '選擇工作區';
+
+  @override
+  String get wsBindNone => '不綁定';
+
+  @override
+  String get wsUnbind => '解除綁定';
+
+  @override
+  String get wsUnbindConfirm => 'AI 已經在本對話用過這個工作區，仍要解除綁定嗎？';
+
+  @override
+  String get wsChange => '更換';
+
+  @override
+  String get wsCwd => '工作目錄';
+
+  @override
+  String get wsCwdEmpty => '工作區根目錄';
+
+  @override
+  String get wsCwdInvalid => '該路徑不在工作區內';
+
+  @override
+  String get wsReveal => '檢視檔案';
+
+  @override
+  String get wsEmpty => '這裡還是空的';
+
+  @override
+  String get wsEmptyHint => '讓 AI 寫一個檔案，它就會出現在這個清單裡。';
+
+  @override
+  String get wsShowHidden => '顯示隱藏檔案';
+
+  @override
+  String get wsSort => '排序';
+
+  @override
+  String get wsSortName => '名稱';
+
+  @override
+  String get wsSortModified => '修改時間';
+
+  @override
+  String get wsSortSize => '大小';
+
+  @override
+  String get wsFoldersFirst => '資料夾在前';
+
+  @override
+  String get wsNewFolder => '新增資料夾';
+
+  @override
+  String get wsNewFile => '新增檔案';
+
+  @override
+  String get wsImport => '匯入';
+
+  @override
+  String get wsExport => '匯出';
+
+  @override
+  String get wsExportZip => '打包為 zip';
+
+  @override
+  String get wsMove => '移動';
+
+  @override
+  String get wsMoveHere => '移動到這裡';
+
+  @override
+  String get wsCopyPath => '複製路徑';
+
+  @override
+  String get wsCopiedPath => '路徑已複製';
+
+  @override
+  String get wsOpenWith => '用其他應用程式開啟';
+
+  @override
+  String get wsShare => '分享';
+
+  @override
+  String get wsEmptyDir => '這個資料夾是空的';
+
+  @override
+  String wsTruncated(int count) {
+    return '清單在 $count 項處截斷';
+  }
+
+  @override
+  String get wsPreview => '預覽';
+
+  @override
+  String get wsPreviewMissing => '檔案已不存在';
+
+  @override
+  String get wsPreviewTooBig => '檔案太大，無法預覽';
+
+  @override
+  String get wsPreviewBinary => '這不是文字檔';
+
+  @override
+  String get wsPreviewEmpty => '空檔案';
+
+  @override
+  String get wsWrap => '自動換行';
+
+  @override
+  String get wsZoomIn => '放大';
+
+  @override
+  String get wsZoomOut => '縮小';
+
+  @override
+  String get wsRendered => '渲染';
+
+  @override
+  String get wsSource => '原始碼';
+
+  @override
+  String get wsWriteTitle => '允許這次改動嗎';
+
+  @override
+  String get wsWriteNew => '新增檔案';
+
+  @override
+  String get wsWriteReplace => '替換整個檔案';
+
+  @override
+  String wsWriteEdit(int count) {
+    return '替換 $count 行';
+  }
+
+  @override
+  String wsWriteCounts(int added, int removed) {
+    return '+$added −$removed';
+  }
+
+  @override
+  String get wsWriteLoose => '寬鬆匹配';
+
+  @override
+  String get wsWriteAllow => '允許';
+
+  @override
+  String get wsWriteAllowAll => '本對話全部允許';
+
+  @override
+  String get wsWriteRefuse => '拒絕';
+
+  @override
+  String get wsWriteRefused => '你拒絕了這次改動';
+
+  @override
+  String get wsWriteNoUi => '本次未經確認';
+
+  @override
+  String get wsToolRead => '讀取';
+
+  @override
+  String get wsToolWrite => '寫入';
+
+  @override
+  String get wsToolEdit => '編輯';
+
+  @override
+  String get wsToolList => '列出';
+
+  @override
+  String get wsToolGlob => '尋找';
+
+  @override
+  String get wsToolGrep => '搜尋';
+
+  @override
+  String get wsToolDenied => '已拒絕';
+
+  @override
+  String wsLines(int count) {
+    return '$count 行';
+  }
+
+  @override
+  String wsFilesCount(int count) {
+    return '$count 個檔案';
+  }
+
+  @override
+  String wsBytesCount(String size) {
+    return '$size';
+  }
+
+  @override
+  String get wsOpenFile => '開啟';
+
+  @override
+  String get wsNameEmpty => '給它取個名字';
+
+  @override
+  String get wsNameSlash => '名稱不能包含斜線';
+
+  @override
+  String get wsNameDot => '這個名稱不可用';
+
+  @override
+  String get wsNameLeadingDot => '以點開頭的名稱會被隱藏';
+
+  @override
+  String wsPreviewTruncatedLines(Object count) {
+    return '僅顯示前 $count 行';
+  }
+
+  @override
+  String get wsDeleteFolderTitle => '刪除資料夾？';
+
+  @override
+  String get wsDeleteFileTitle => '刪除檔案？';
+
+  @override
+  String get wsOpenTerminal => '終端機';
+
+  @override
+  String get wsWriteNoPreview => '無法顯示原內容';
+
+  @override
+  String get wsWriteNoChange => '沒有改動';
+
+  @override
+  String get toolDescGetTime => '讀取目前日期、時間、時區，以及雙方最後一次說話的時間';
+
+  @override
+  String get toolDescSchedule => '讓它之後主動給你發訊息';
+
+  @override
+  String get toolDescCancelScheduled => '取消一則還沒發出的定時訊息';
+
+  @override
+  String get toolDescModifyScheduled => '修改定時訊息的時間或內容';
+
+  @override
+  String get toolDescListScheduled => '檢視它已經安排好的全部訊息';
+
+  @override
+  String get toolDescSetStatus => '設定你在對話列表看到的狀態';
+
+  @override
+  String get toolDescAdjustFeeling => '在好壞時刻之後調整它的心情或好感';
+
+  @override
+  String get toolDescWriteMemory => '記下一件值得記住的事';
+
+  @override
+  String get toolDescReadMemory => '搜尋它已經記住的東西';
+
+  @override
+  String get toolDescCompleteTodo => '把它寫下的承諾或待辦標記完成';
+
+  @override
+  String get toolDescLifeSchedule => '聲明它正在忙，於是那段時間話少';
+
+  @override
+  String get toolDescPinMessage => '在對話裡置頂或取消置頂一則訊息';
+
+  @override
+  String get toolDescEditMessage => '改寫它自己先前發過的一則訊息';
+
+  @override
+  String get toolDescQuoteMessage => '引用某則訊息來回覆';
+
+  @override
+  String get toolDescCharacterCard => '讓它緩慢微調自己的人設';
+
+  @override
+  String get toolDescRating => '根據你的回應調整它的自我調校';
+
+  @override
+  String get toolDescSendSticker => '從表情庫發一張貼紙';
+
+  @override
+  String get toolDescSaveSticker => '把你發過的梗圖存進表情庫';
+
+  @override
+  String get toolDescRecall => '像人一樣撤回剛發出的訊息';
+
+  @override
+  String get toolDescTypo => '發一則故意打錯的字，然後修正';
+
+  @override
+  String get toolDescSendImage => '從連結傳送一張圖片';
+
+  @override
+  String get toolDescSendFile => '寫一個文字檔並傳給你';
+
+  @override
+  String get toolDescSendTransfer => '發一個假的紅包，點一下就收';
+
+  @override
+  String get wsToolDescRead => '按行號讀取工作區裡的檔案';
+
+  @override
+  String get wsToolDescWrite => '新增或覆寫檔案，寫入前你會看到差異';
+
+  @override
+  String get wsToolDescEdit => '替換檔案中的某一段文字';
+
+  @override
+  String get wsToolDescList => '列出某個目錄下的檔案';
+
+  @override
+  String get wsToolDescGlob => '依檔名查找，例如所有 .dart 檔案';
+
+  @override
+  String get wsToolDescGrep => '用正規表示式搜尋檔案內容';
+
+  @override
+  String get toolNoUrl => '（未填寫位址）';
+
+  @override
+  String get toolBuiltinFooter => '開啟檔案工具並為對話綁定工作區後，會出現六個檔案工具。';
+
+  @override
+  String get wsSubOn => '每個已綁定工作區的對話獲得六個檔案工具';
+
+  @override
+  String get wsToolDescShell => '在 Linux 環境裡執行 shell 命令';
+
+  @override
+  String get wsToolDescViewImage => '讓 AI 檢視一張圖片';
+
+  @override
+  String get actionClose => '關閉';
+
+  @override
+  String get termTitle => '終端機';
+
+  @override
+  String get termNoEnvironment => '尚未安裝 Linux 環境';
+
+  @override
+  String get termOpenSettings => '開啟環境設定';
+
+  @override
+  String get termNewShell => '新增 shell';
+
+  @override
+  String get termRename => '重新命名 shell';
+
+  @override
+  String get termCopyAll => '複製全部內容';
+
+  @override
+  String get termClear => '清除螢幕';
+
+  @override
+  String get termFontBigger => '放大文字';
+
+  @override
+  String get termFontSmaller => '縮小文字';
+
+  @override
+  String get termCopied => '已複製';
+
+  @override
+  String get termSessionDead => '該 shell 已關閉';
+
+  @override
+  String get termLinkUnsupported => '無法從這裡開啟此連結';
+
+  @override
+  String get termHint => '在下方輸入命令。長按標籤可重新命名。';
+
+  @override
+  String get termSettings => '環境';
+
+  @override
+  String get termInstallEnvironment => '安裝 Linux 環境後即可使用終端機';
+
+  @override
+  String get termShellPath => 'Shell 路徑';
+
+  @override
+  String get termProotArgs => 'PRoot 選項';
+
+  @override
+  String get actionPaste => '貼上';
+
+  @override
+  String get termCloseConfirm => '關閉這個 shell？正在執行的程式會停止。';
+
+  @override
+  String get termOpenFailedShort => '無法開啟 shell';
+
+  @override
+  String get envTitle => 'Linux 環境';
+
+  @override
+  String get envNotInstalled => '尚未安裝環境';
+
+  @override
+  String get envReady => '已就緒';
+
+  @override
+  String get envInstall => '安裝';
+
+  @override
+  String get envCancel => '取消';
+
+  @override
+  String get envRemove => '移除環境';
+
+  @override
+  String get envUpdate => '有可用更新';
+
+  @override
+  String get envDownloading => '正在下載';
+
+  @override
+  String get envVerifying => '正在驗證壓縮檔';
+
+  @override
+  String get envExtracting => '正在解壓';
+
+  @override
+  String get envPatching => '正在設定';
+
+  @override
+  String get envChoose => '選擇發行版';
+
+  @override
+  String get envArch => '架構';
+
+  @override
+  String get envInstallConfirm => '安裝這個 Linux 環境？';
+
+  @override
+  String get envRemoveConfirm => '移除已安裝的 Linux 環境和下載的壓縮檔？';
+
+  @override
+  String envMinFree(int mb) {
+    return '需要 $mb MB 可用空間';
+  }
+
+  @override
+  String get actionTypeDeleteHint => '輸入 delete 以確認刪除';
+
+  @override
+  String get envUnknownError => '環境操作失敗';
+
+  @override
+  String get envChecking => '正在檢查裝置支援';
+
+  @override
+  String get envUnsupported => '沒有適用於此裝置的發行版';
+
+  @override
+  String envUnsupportedDevice(Object abi) {
+    return '沒有適用於 ABI $abi 的根檔案系統';
+  }
+
+  @override
+  String get envErrorArchitecture => '環境架構與此應用程式不相符';
+
+  @override
+  String get envErrorProot => '此版本未包含 PRoot';
+
+  @override
+  String get envErrorDisk => '可用儲存空間不足';
+
+  @override
+  String get envErrorNetwork => '下載失敗，請檢查網路後重試';
+
+  @override
+  String get envErrorChecksum => '下載檔案未通過 SHA-256 驗證';
+
+  @override
+  String get envErrorExtract => '無法解壓檔案';
+
+  @override
+  String get envErrorPatch => '無法設定環境';
+
+  @override
+  String get envErrorCancelled => '操作已取消';
+
+  @override
+  String get envErrorInvalid => '已安裝的環境不完整';
 }

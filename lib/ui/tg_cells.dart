@@ -18,7 +18,12 @@ const _none = TextDecoration.none;
 
 /// A white block: optional header inside, rows, then an info note or a plain gap.
 class TgSection extends StatelessWidget {
-  const TgSection({super.key, this.header, required this.children, this.footer, this.gap = true});
+  const TgSection(
+      {super.key,
+      this.header,
+      required this.children,
+      this.footer,
+      this.gap = true});
 
   final String? header;
   final List<Widget> children;
@@ -30,16 +35,25 @@ class TgSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final p = context.p;
-    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, mainAxisSize: MainAxisSize.min, children: [
-      Container(
-        color: p.bg,
-        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, mainAxisSize: MainAxisSize.min, children: [
-          if (header != null) TgHeaderCell(header!),
-          ...children,
-        ]),
-      ),
-      if (footer != null) TgInfoCell(footer!) else if (gap) const SizedBox(height: 12),
-    ]);
+    return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            color: p.bg,
+            child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (header != null) TgHeaderCell(header!),
+                  ...children,
+                ]),
+          ),
+          if (footer != null)
+            TgInfoCell(footer!)
+          else if (gap)
+            const SizedBox(height: 12),
+        ]);
   }
 }
 
@@ -56,7 +70,16 @@ class TgHeaderCell extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.fromLTRB(21, 15, 21, 0),
         child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Expanded(child: Text(text, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(color: p.accent, fontSize: 15, height: 1.2, fontWeight: FontWeight.w600, decoration: _none))),
+          Expanded(
+              child: Text(text,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                      color: p.accent,
+                      fontSize: 15,
+                      height: 1.2,
+                      fontWeight: FontWeight.w600,
+                      decoration: _none))),
           if (trailing != null) trailing!,
         ]),
       ),
@@ -65,20 +88,39 @@ class TgHeaderCell extends StatelessWidget {
 }
 
 /// TextInfoPrivacyCell, the grey caption under a block.
+///
+/// The height animates because a caption that appears or disappears under a
+/// switch has to, and a block that jumps under the finger while it is being
+/// flipped reads as a glitch rather than as an explanation arriving.
 class TgInfoCell extends StatelessWidget {
   const TgInfoCell(this.text, {super.key, this.center = false});
   final String text;
   final bool center;
 
   @override
-  Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.fromLTRB(21, 10, 21, 17),
-        child: Text(text, textAlign: center ? TextAlign.center : TextAlign.start, style: TextStyle(color: context.p.subtitle, fontSize: 14, height: 1.35, fontWeight: FontWeight.w400, decoration: _none)),
+  Widget build(BuildContext context) => AnimatedSize(
+        duration: const Duration(milliseconds: 180),
+        curve: Curves.easeOutCubic,
+        alignment: Alignment.topCenter,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(21, 10, 21, 17),
+          child: Text(text,
+              textAlign: center ? TextAlign.center : TextAlign.start,
+              style: TextStyle(
+                  color: context.p.subtitle,
+                  fontSize: 14,
+                  height: 1.35,
+                  fontWeight: FontWeight.w400,
+                  decoration: _none)),
+        ),
       );
 }
 
 /// TextCell / TextSettingsCell. An accent [color] paints both the icon and the
 /// label, which is how Telegram draws "Add ..." and "Set Profile Photo" rows.
+/// [iconColor] paints the icon alone, for a glyph that must not follow the
+/// label colour: the default persona's crown stays gold while its row goes
+/// accent.
 class TgTextCell extends StatelessWidget {
   const TgTextCell({
     super.key,
@@ -93,6 +135,7 @@ class TgTextCell extends StatelessWidget {
     this.color,
     this.divider = true,
     this.subtitleColor,
+    this.iconColor,
   });
 
   final String title;
@@ -106,6 +149,9 @@ class TgTextCell extends StatelessWidget {
   final Color? color;
   final bool divider;
   final Color? subtitleColor;
+
+  /// paints the [icon] without dragging the label colour with it
+  final Color? iconColor;
 
   @override
   Widget build(BuildContext context) {
@@ -121,44 +167,90 @@ class TgTextCell extends StatelessWidget {
             left: leading != null ? 13 : 21,
             top: 0,
             bottom: 0,
-            child: Center(child: leading ?? TgIcon(icon!, color: color ?? p.icon, size: 24, stroke: 1.8)),
+            child: Center(
+                child: leading ??
+                    TgIcon(icon!,
+                        color: iconColor ?? color ?? p.icon,
+                        size: 24,
+                        stroke: 1.8)),
           ),
         Positioned.fill(
           left: textLeft,
           child: Row(children: [
             Expanded(
-              child: Column(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(title, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(color: color ?? p.title, fontSize: 16, height: 1.25, fontWeight: FontWeight.w400, decoration: _none)),
-                if (subtitle != null)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 2),
-                    child: Text(subtitle!, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(color: subtitleColor ?? p.subtitle, fontSize: 13.5, height: 1.25, fontWeight: FontWeight.w400, decoration: _none)),
-                  ),
-              ]),
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            color: color ?? p.title,
+                            fontSize: 16,
+                            height: 1.25,
+                            fontWeight: FontWeight.w400,
+                            decoration: _none)),
+                    if (subtitle != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 2),
+                        child: Text(subtitle!,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                                color: subtitleColor ?? p.subtitle,
+                                fontSize: 13.5,
+                                height: 1.25,
+                                fontWeight: FontWeight.w400,
+                                decoration: _none)),
+                      ),
+                  ]),
             ),
             if (value != null)
               ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 160),
                 child: Padding(
                   padding: const EdgeInsets.only(left: 12),
-                  child: Text(value!, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(color: p.accent, fontSize: 16, fontWeight: FontWeight.w400, decoration: _none)),
+                  child: Text(value!,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                          color: p.accent,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400,
+                          decoration: _none)),
                 ),
               ),
-            if (trailing != null) Padding(padding: const EdgeInsets.only(left: 12), child: trailing!),
+            if (trailing != null)
+              Padding(
+                  padding: const EdgeInsets.only(left: 12), child: trailing!),
             const SizedBox(width: 21),
           ]),
         ),
-        if (divider) Positioned(left: textLeft, right: 0, bottom: 0, child: Container(height: .5, color: p.divider)),
+        if (divider)
+          Positioned(
+              left: textLeft,
+              right: 0,
+              bottom: 0,
+              child: Container(height: .5, color: p.divider)),
       ]),
     );
     if (onTap == null && onLongPress == null) return body;
-    return Tap(highlight: true, onTap: onTap, onLongPress: onLongPress, child: body);
+    return Tap(
+        highlight: true, onTap: onTap, onLongPress: onLongPress, child: body);
   }
 }
 
 /// TextCheckCell, the whole row toggles.
 class TgCheckCell extends StatelessWidget {
-  const TgCheckCell({super.key, required this.title, this.subtitle, this.icon, required this.value, required this.onChanged, this.divider = true});
+  const TgCheckCell(
+      {super.key,
+      required this.title,
+      this.subtitle,
+      this.icon,
+      required this.value,
+      required this.onChanged,
+      this.divider = true});
 
   final String title;
   final String? subtitle;
@@ -182,7 +274,15 @@ class TgCheckCell extends StatelessWidget {
 /// [label] puts a grey name above the field, for a block that carries several
 /// inputs and would otherwise be a column of anonymous hints.
 class TgEditCell extends StatelessWidget {
-  const TgEditCell({super.key, required this.controller, required this.hint, this.lines = 1, this.max = 0, this.divider = false, this.focusNode, this.label});
+  const TgEditCell(
+      {super.key,
+      required this.controller,
+      required this.hint,
+      this.lines = 1,
+      this.max = 0,
+      this.divider = false,
+      this.focusNode,
+      this.label});
 
   final TextEditingController controller;
   final String hint;
@@ -197,13 +297,21 @@ class TgEditCell extends StatelessWidget {
     final p = context.p;
     return Stack(children: [
       Padding(
-        padding: EdgeInsets.fromLTRB(21, label == null ? 15 : 10, max > 0 ? 63 : 21, 15),
+        padding: EdgeInsets.fromLTRB(
+            21, label == null ? 15 : 10, max > 0 ? 63 : 21, 15),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisSize: MainAxisSize.min,
           children: [
             if (label != null) ...[
-              Text(label!, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(color: p.subtitle, fontSize: 13, height: 1.2, decoration: _none)),
+              Text(label!,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                      color: p.subtitle,
+                      fontSize: 13,
+                      height: 1.2,
+                      decoration: _none)),
               const SizedBox(height: 4),
             ],
             TgEdit(
@@ -211,8 +319,10 @@ class TgEditCell extends StatelessWidget {
               hint: hint,
               maxLines: lines,
               focusNode: focusNode,
-              style: TextStyle(color: p.title, fontSize: 17, height: 1.3, decoration: _none),
-              hintStyle: TextStyle(color: p.hint, fontSize: 17, height: 1.3, decoration: _none),
+              style: TextStyle(
+                  color: p.title, fontSize: 17, height: 1.3, decoration: _none),
+              hintStyle: TextStyle(
+                  color: p.hint, fontSize: 17, height: 1.3, decoration: _none),
               cursor: p.accent,
             ),
           ],
@@ -230,13 +340,24 @@ class TgEditCell extends StatelessWidget {
                 final left = max - v.text.length;
                 return AnimatedSwitcher(
                   duration: const Duration(milliseconds: 160),
-                  child: Text('$left', key: ValueKey(left), style: TextStyle(color: left < 0 ? p.danger : p.hint, fontSize: 15, fontWeight: FontWeight.w400, decoration: _none)),
+                  child: Text('$left',
+                      key: ValueKey(left),
+                      style: TextStyle(
+                          color: left < 0 ? p.danger : p.hint,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w400,
+                          decoration: _none)),
                 );
               },
             ),
           ),
         ),
-      if (divider) Positioned(left: 21, right: 0, bottom: 0, child: Container(height: .5, color: p.divider)),
+      if (divider)
+        Positioned(
+            left: 21,
+            right: 0,
+            bottom: 0,
+            child: Container(height: .5, color: p.divider)),
     ]);
   }
 }
@@ -246,7 +367,12 @@ class TgEditCell extends StatelessWidget {
 /// A null [onTap] greys the label out rather than hiding the row, so the block
 /// does not change shape between a dirty card and a clean one.
 class TgActionRow extends StatelessWidget {
-  const TgActionRow({super.key, required this.label, this.onTap, this.danger = false, this.divider = false});
+  const TgActionRow(
+      {super.key,
+      required this.label,
+      this.onTap,
+      this.danger = false,
+      this.divider = false});
 
   final String label;
   final VoidCallback? onTap;
@@ -265,12 +391,22 @@ class TgActionRow extends StatelessWidget {
           child: Center(
             child: AnimatedDefaultTextStyle(
               duration: const Duration(milliseconds: 180),
-              style: TextStyle(color: onTap == null ? p.hint : (danger ? p.danger : p.accent), fontSize: 16, fontWeight: FontWeight.w500, decoration: _none),
+              style: TextStyle(
+                  color:
+                      onTap == null ? p.hint : (danger ? p.danger : p.accent),
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  decoration: _none),
               child: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis),
             ),
           ),
         ),
-        if (divider) Positioned(left: 21, right: 0, bottom: 0, child: Container(height: .5, color: p.divider)),
+        if (divider)
+          Positioned(
+              left: 21,
+              right: 0,
+              bottom: 0,
+              child: Container(height: .5, color: p.divider)),
       ]),
     );
   }
@@ -287,8 +423,16 @@ class TgChip extends StatelessWidget {
     final p = context.p;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1.5),
-      decoration: BoxDecoration(color: accent ? p.accent.withAlpha(32) : p.selector, borderRadius: BorderRadius.circular(5)),
-      child: Text(label, style: TextStyle(color: accent ? p.accent : p.subtitle, fontSize: 11, height: 1.3, fontWeight: FontWeight.w600, decoration: _none)),
+      decoration: BoxDecoration(
+          color: accent ? p.accent.withAlpha(32) : p.selector,
+          borderRadius: BorderRadius.circular(5)),
+      child: Text(label,
+          style: TextStyle(
+              color: accent ? p.accent : p.subtitle,
+              fontSize: 11,
+              height: 1.3,
+              fontWeight: FontWeight.w600,
+              decoration: _none)),
     );
   }
 }
@@ -296,7 +440,12 @@ class TgChip extends StatelessWidget {
 /// ActionBar with the elevation shadow Telegram draws once the list scrolls,
 /// an optional done check, and an optional tab strip glued underneath.
 class TgActionBar extends StatelessWidget {
-  const TgActionBar({super.key, required this.title, this.actions = const [], this.raised = false, this.bottom});
+  const TgActionBar(
+      {super.key,
+      required this.title,
+      this.actions = const [],
+      this.raised = false,
+      this.bottom});
 
   final String title;
   final List<Widget> actions;
@@ -311,16 +460,38 @@ class TgActionBar extends StatelessWidget {
       duration: const Duration(milliseconds: 180),
       decoration: BoxDecoration(
         color: p.bar,
-        boxShadow: [if (raised) BoxShadow(color: p.dark ? const Color(0x40000000) : const Color(0x1A000000), blurRadius: 3, offset: const Offset(0, 1))],
+        boxShadow: [
+          if (raised)
+            BoxShadow(
+                color:
+                    p.dark ? const Color(0x40000000) : const Color(0x1A000000),
+                blurRadius: 3,
+                offset: const Offset(0, 1))
+        ],
       ),
       padding: EdgeInsets.only(top: top),
       child: Column(mainAxisSize: MainAxisSize.min, children: [
         SizedBox(
           height: 56,
           child: Row(children: [
-            Tap(scale: .88, onTap: () => Navigator.of(context).maybePop(), child: SizedBox(width: 56, height: 56, child: Center(child: TgIcon(Ic.back, color: p.icon, size: 24)))),
+            Tap(
+                scale: .88,
+                onTap: () => Navigator.of(context).maybePop(),
+                child: SizedBox(
+                    width: 56,
+                    height: 56,
+                    child: Center(
+                        child: TgIcon(Ic.back, color: p.icon, size: 24)))),
             const SizedBox(width: 8),
-            Expanded(child: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(color: p.title, fontSize: 20, fontWeight: FontWeight.w600, decoration: _none))),
+            Expanded(
+                child: Text(title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                        color: p.title,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                        decoration: _none))),
             ...actions,
             if (actions.isEmpty) const SizedBox(width: 16),
           ]),
@@ -349,7 +520,14 @@ class TgDoneAction extends StatelessWidget {
           duration: const Duration(milliseconds: 220),
           curve: TgCurves.easeOutQuint,
           scale: visible ? 1 : .2,
-          child: Tap(scale: .9, onTap: visible ? onTap : null, child: SizedBox(width: 56, height: 56, child: Center(child: TgIcon(Ic.check, color: p.icon, size: 24)))),
+          child: Tap(
+              scale: .9,
+              onTap: visible ? onTap : null,
+              child: SizedBox(
+                  width: 56,
+                  height: 56,
+                  child: Center(
+                      child: TgIcon(Ic.check, color: p.icon, size: 24)))),
         ),
       ),
     );
@@ -359,7 +537,11 @@ class TgDoneAction extends StatelessWidget {
 /// ScrollSlidingTextTabStrip: equal width labels with a rounded 3dp indicator
 /// that slides under the selected one, as on the Stats and Filters screens.
 class TgTabStrip extends StatelessWidget {
-  const TgTabStrip({super.key, required this.labels, required this.index, required this.onChange});
+  const TgTabStrip(
+      {super.key,
+      required this.labels,
+      required this.index,
+      required this.onChange});
 
   final List<String> labels;
   final int index;
@@ -382,8 +564,13 @@ class TgTabStrip extends StatelessWidget {
                     child: Center(
                       child: AnimatedDefaultTextStyle(
                         duration: const Duration(milliseconds: 200),
-                        style: TextStyle(color: i == index ? p.accent : p.subtitle, fontSize: 15, fontWeight: FontWeight.w600, decoration: _none),
-                        child: Text(labels[i], maxLines: 1, overflow: TextOverflow.ellipsis),
+                        style: TextStyle(
+                            color: i == index ? p.accent : p.subtitle,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                            decoration: _none),
+                        child: Text(labels[i],
+                            maxLines: 1, overflow: TextOverflow.ellipsis),
                       ),
                     ),
                   ),
@@ -397,7 +584,11 @@ class TgTabStrip extends StatelessWidget {
             width: w * .6,
             bottom: 0,
             height: 3,
-            child: Container(decoration: BoxDecoration(color: p.accent, borderRadius: const BorderRadius.vertical(top: Radius.circular(3)))),
+            child: Container(
+                decoration: BoxDecoration(
+                    color: p.accent,
+                    borderRadius:
+                        const BorderRadius.vertical(top: Radius.circular(3)))),
           ),
         ]);
       }),
@@ -408,14 +599,20 @@ class TgTabStrip extends StatelessWidget {
 /// Scaffold for a settings screen: grey window, action bar that raises its
 /// shadow on scroll, and swipe back.
 class TgSettingsPage extends StatefulWidget {
-  const TgSettingsPage({super.key, required this.title, required this.builder, this.actions = const [], this.bottom});
+  const TgSettingsPage(
+      {super.key,
+      required this.title,
+      required this.builder,
+      this.actions = const [],
+      this.bottom});
 
   final String title;
   final List<Widget> actions;
   final Widget? bottom;
 
   /// receives a scroll listener, attach it to the page list
-  final Widget Function(BuildContext context, ScrollController? controller) builder;
+  final Widget Function(BuildContext context, ScrollController? controller)
+      builder;
 
   @override
   State<TgSettingsPage> createState() => _TgSettingsPageState();
@@ -438,8 +635,15 @@ class _TgSettingsPageState extends State<TgSettingsPage> {
       child: ColoredBox(
         color: p.gray,
         child: Column(children: [
-          TgActionBar(title: widget.title, actions: widget.actions, raised: _raised || widget.bottom != null, bottom: widget.bottom),
-          Expanded(child: NotificationListener<ScrollNotification>(onNotification: _onScroll, child: widget.builder(context, null))),
+          TgActionBar(
+              title: widget.title,
+              actions: widget.actions,
+              raised: _raised || widget.bottom != null,
+              bottom: widget.bottom),
+          Expanded(
+              child: NotificationListener<ScrollNotification>(
+                  onNotification: _onScroll,
+                  child: widget.builder(context, null))),
         ]),
       ),
     );
@@ -452,3 +656,25 @@ Rect rectOf(BuildContext context) {
   if (box == null || !box.hasSize) return Rect.zero;
   return box.localToGlobal(Offset.zero) & box.size;
 }
+
+/// Global rect of a keyed widget.
+///
+/// This is the one to use for a menu that belongs to a button or a row.
+/// [rectOf] resolves the context it is handed, and a context inside a page or a
+/// list builder is the page or the whole row, so a menu anchored to one opens
+/// from the bottom corner of the screen instead of from the thing that was
+/// tapped.
+Rect anchorRect(GlobalKey key) {
+  final ctx = key.currentContext;
+  return ctx == null ? Rect.zero : rectOf(ctx);
+}
+
+/// A menu that opens from a button rather than from the page it sits on.
+///
+/// The key is what makes the difference: without it there is nothing to measure,
+/// and the only thing available is the enclosing context, which is the page.
+Future<void> showMenuAt(
+        BuildContext context, GlobalKey key, List<MenuItem> items,
+        {Widget? ghost, bool blur = false}) =>
+    showTgMenu(context,
+        anchor: anchorRect(key), items: items, ghost: ghost, blur: blur);

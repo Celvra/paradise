@@ -29,9 +29,14 @@ const _positionOptions = <PersonaPosition>[
 
 /// The position labels, keyed by the position rather than the tuple so the
 /// switch stays exhaustive if a new one is ever added.
-({String label, String sub}) positionOption(AppLocalizations l, PersonaPosition at) => switch (at) {
+({String label, String sub}) positionOption(
+        AppLocalizations l, PersonaPosition at) =>
+    switch (at) {
       PersonaPosition.topNote => (label: l.posTopNote, sub: l.posTopNoteSub),
-      PersonaPosition.bottomNote => (label: l.posBottomNote, sub: l.posBottomNoteSub),
+      PersonaPosition.bottomNote => (
+          label: l.posBottomNote,
+          sub: l.posBottomNoteSub
+        ),
       PersonaPosition.atDepth => (label: l.posAtDepth, sub: l.posAtDepthSub),
       PersonaPosition.none => (label: l.posNone, sub: l.posNoneSub),
       PersonaPosition.inPrompt => (label: l.posInPrompt, sub: l.posInPromptSub),
@@ -154,7 +159,8 @@ class _PersonaCardsSectionState extends State<PersonaCardsSection> {
     super.dispose();
   }
 
-  bool get _dirty => _name.text != _name0 || _title.text != _title0 || _desc.text != _desc0;
+  bool get _dirty =>
+      _name.text != _name0 || _title.text != _title0 || _desc.text != _desc0;
 
   void _commit() {
     // if the store moved to another card while this one was open, the editors
@@ -193,8 +199,12 @@ class _PersonaCardsSectionState extends State<PersonaCardsSection> {
     final ok = await showTgDialog<bool>(
       context,
       title: l.cardDeleteTitle,
-      message: l.cardDeleteMessage(_card.name.trim().isEmpty ? l.cardDeleteThisCard : _card.name.trim()),
-      actions: [DialogAction(l.actionCancel, false), DialogAction(l.actionDelete, true, danger: true)],
+      message: l.cardDeleteMessage(
+          _card.name.trim().isEmpty ? l.cardDeleteThisCard : _card.name.trim()),
+      actions: [
+        DialogAction(l.actionCancel, false),
+        DialogAction(l.actionDelete, true, danger: true)
+      ],
     );
     if (ok != true || !mounted) return;
     _st.deletePersonaCard(_card.id);
@@ -206,7 +216,13 @@ class _PersonaCardsSectionState extends State<PersonaCardsSection> {
   /// The picker hands back the card it wants in hand. A pending edit is stored
   /// against the card it was typed into before the switch.
   Future<void> _pickCard() async {
-    final id = await showTgSheet<String>(context, (_) => _CardPickerSheet(cards: _st.personas, active: _card.id, fallback: _st.defaultPersona?.id ?? '', onCreate: _newCard));
+    final id = await showTgSheet<String>(
+        context,
+        (_) => _CardPickerSheet(
+            cards: _st.personas,
+            active: _card.id,
+            fallback: _st.defaultPersona?.id ?? '',
+            onCreate: _newCard));
     if (id == null || !mounted) return;
     if (id == _card.id) return;
     _commit();
@@ -220,7 +236,8 @@ class _PersonaCardsSectionState extends State<PersonaCardsSection> {
 
   Future<void> _pickAvatar(String id) async {
     try {
-      final x = await ip.ImagePicker().pickImage(source: ip.ImageSource.gallery, imageQuality: 92);
+      final x = await ip.ImagePicker()
+          .pickImage(source: ip.ImageSource.gallery, imageQuality: 92);
       if (x != null) _st.updatePersonaCard(id, (p) => p.avatarPath = x.path);
     } catch (_) {
       if (mounted) showBulletin(context, context.l.galleryUnavailable);
@@ -233,7 +250,14 @@ class _PersonaCardsSectionState extends State<PersonaCardsSection> {
       context,
       title: l.cardPositionTitle,
       value: _card.position,
-      options: [for (final o in _positionOptions) (value: o, label: positionOption(l, o).label, sub: positionOption(l, o).sub)],
+      options: [
+        for (final o in _positionOptions)
+          (
+            value: o,
+            label: positionOption(l, o).label,
+            sub: positionOption(l, o).sub
+          )
+      ],
     );
     if (picked == null) return;
     _st.updatePersonaCard(_card.id, (p) => p.position = picked);
@@ -245,14 +269,22 @@ class _PersonaCardsSectionState extends State<PersonaCardsSection> {
       context,
       title: l.cardRoleTitle,
       value: _card.role,
-      options: [for (final o in _roleOptions) (value: o.$1, label: roleLabel(l, o.$1), sub: null)],
+      options: [
+        for (final o in _roleOptions)
+          (value: o.$1, label: roleLabel(l, o.$1), sub: null)
+      ],
     );
     if (picked == null) return;
     _st.updatePersonaCard(_card.id, (p) => p.role = picked);
   }
 
   /// the characters this card can be pinned to, the ST character lock dialog
-  List<String> _characters() => _st.chats.map((c) => c.persona.name).where((n) => n.trim().isNotEmpty).toSet().toList()..sort();
+  List<String> _characters() => _st.chats
+      .map((c) => c.persona.name)
+      .where((n) => n.trim().isNotEmpty)
+      .toSet()
+      .toList()
+    ..sort();
 
   Future<void> _linkCharacter() async {
     final l = context.l;
@@ -262,7 +294,8 @@ class _PersonaCardsSectionState extends State<PersonaCardsSection> {
       showBulletin(context, l.cardNoChat);
       return;
     }
-    await showTgSheet<void>(context, (_) => _CharLinkSheet(names: names, cardId: _card.id, store: _st));
+    await showTgSheet<void>(context,
+        (_) => _CharLinkSheet(names: names, cardId: _card.id, store: _st));
   }
 
   @override
@@ -296,15 +329,34 @@ class _PersonaCardsSectionState extends State<PersonaCardsSection> {
       children: [
         TgSection(
           header: l.profileLabelPersonaCard,
-          children: [TgTextCell(icon: Ic.plus, title: l.cardCreate, color: p.accent, onTap: _newCard, divider: false)],
+          children: [
+            TgTextCell(
+                icon: Ic.plus,
+                title: l.cardCreate,
+                color: p.accent,
+                onTap: _newCard,
+                divider: false)
+          ],
           gap: false,
         ),
         Padding(
           padding: const EdgeInsets.fromLTRB(21, 14, 21, 0),
           child: Column(children: [
-            Text(l.cardEmptyTitle, textAlign: TextAlign.center, style: TextStyle(color: p.title, fontSize: 15, fontWeight: FontWeight.w500, decoration: TextDecoration.none)),
+            Text(l.cardEmptyTitle,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: p.title,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                    decoration: TextDecoration.none)),
             const SizedBox(height: 4),
-            Text(l.cardEmptyBody, textAlign: TextAlign.center, style: TextStyle(color: p.subtitle, fontSize: 14, height: 1.35, decoration: TextDecoration.none)),
+            Text(l.cardEmptyBody,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: p.subtitle,
+                    fontSize: 14,
+                    height: 1.35,
+                    decoration: TextDecoration.none)),
           ]),
         ),
       ],
@@ -321,16 +373,27 @@ class _PersonaCardsSectionState extends State<PersonaCardsSection> {
       header: l.profileLabelPersonaCard,
       children: [
         TgTextCell(
-          leading: AnimatedAvatar(path: card.avatarPath, name: card.name, color: card.color, size: 34),
+          leading: AnimatedAvatar(
+              path: card.avatarPath,
+              name: card.name,
+              color: card.color,
+              size: 34),
           title: l.cardCurrentLabel,
           subtitle: desc.isEmpty ? null : desc,
-          value: card.name.trim().isEmpty ? l.lockSheetUnnamed : card.name.trim(),
+          value:
+              card.name.trim().isEmpty ? l.lockSheetUnnamed : card.name.trim(),
           // the whole list now lives behind this row, so it has to say it opens
-          trailing: TgIcon(Ic.chevron, color: p.subtitle, size: 18, stroke: 1.8),
+          trailing:
+              TgIcon(Ic.chevron, color: p.subtitle, size: 18, stroke: 1.8),
           onTap: _pickCard,
           divider: true,
         ),
-        TgTextCell(icon: Ic.plus, title: l.cardNew, color: p.accent, onTap: _newCard, divider: false),
+        TgTextCell(
+            icon: Ic.plus,
+            title: l.cardNew,
+            color: p.accent,
+            onTap: _newCard,
+            divider: false),
       ],
     );
   }
@@ -358,14 +421,28 @@ class _PersonaCardsSectionState extends State<PersonaCardsSection> {
             Tap(
               onTap: () => _pickAvatar(card.id),
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                child: Text(l.cardSetPhoto, style: TextStyle(color: p.accent, fontSize: 15, fontWeight: FontWeight.w500, decoration: TextDecoration.none)),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                child: Text(l.cardSetPhoto,
+                    style: TextStyle(
+                        color: p.accent,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500,
+                        decoration: TextDecoration.none)),
               ),
             ),
           ]),
         ),
-        TgEditCell(controller: _name, hint: l.cardFieldNameHint, label: l.cardFieldName, divider: true),
-        TgEditCell(controller: _title, hint: l.cardFieldTitleHint, label: l.cardFieldTitle, divider: true),
+        TgEditCell(
+            controller: _name,
+            hint: l.cardFieldNameHint,
+            label: l.cardFieldName,
+            divider: true),
+        TgEditCell(
+            controller: _title,
+            hint: l.cardFieldTitleHint,
+            label: l.cardFieldTitle,
+            divider: true),
         _descCell(p),
       ],
       footer: l.cardInfoFooter,
@@ -382,11 +459,21 @@ class _PersonaCardsSectionState extends State<PersonaCardsSection> {
         Padding(
           padding: const EdgeInsets.fromLTRB(21, 10, 21, 0),
           child: Row(children: [
-            Text(l.cardFieldDescription, style: TextStyle(color: p.subtitle, fontSize: 13, height: 1.2, decoration: TextDecoration.none)),
+            Text(l.cardFieldDescription,
+                style: TextStyle(
+                    color: p.subtitle,
+                    fontSize: 13,
+                    height: 1.2,
+                    decoration: TextDecoration.none)),
             const Spacer(),
             ValueListenableBuilder<TextEditingValue>(
               valueListenable: _desc,
-              builder: (_, v, __) => Text(l.pluralTokens(estimateTokens(v.text)), style: TextStyle(color: p.subtitle, fontSize: 12, decoration: TextDecoration.none)),
+              builder: (_, v, __) => Text(
+                  l.pluralTokens(estimateTokens(v.text)),
+                  style: TextStyle(
+                      color: p.subtitle,
+                      fontSize: 12,
+                      decoration: TextDecoration.none)),
             ),
           ]),
         ),
@@ -396,14 +483,27 @@ class _PersonaCardsSectionState extends State<PersonaCardsSection> {
             controller: _desc,
             hint: l.cardDescHint,
             maxLines: 6,
-            style: TextStyle(color: p.title, fontSize: 17, height: 1.35, decoration: TextDecoration.none),
-            hintStyle: TextStyle(color: p.hint, fontSize: 17, height: 1.35, decoration: TextDecoration.none),
+            style: TextStyle(
+                color: p.title,
+                fontSize: 17,
+                height: 1.35,
+                decoration: TextDecoration.none),
+            hintStyle: TextStyle(
+                color: p.hint,
+                fontSize: 17,
+                height: 1.35,
+                decoration: TextDecoration.none),
             cursor: p.accent,
           ),
         ),
         Padding(
           padding: const EdgeInsets.fromLTRB(21, 10, 21, 15),
-          child: Text(l.cardPlaceholdersHint, style: TextStyle(color: p.subtitle, fontSize: 13, height: 1.3, decoration: TextDecoration.none)),
+          child: Text(l.cardPlaceholdersHint,
+              style: TextStyle(
+                  color: p.subtitle,
+                  fontSize: 13,
+                  height: 1.3,
+                  decoration: TextDecoration.none)),
         ),
       ],
     );
@@ -419,17 +519,34 @@ class _PersonaCardsSectionState extends State<PersonaCardsSection> {
     final opt = positionOption(l, card.position);
     return TgSection(
       children: [
-        TgTextCell(title: l.cardPositionLabel, subtitle: opt.sub, value: opt.label, onTap: _pickPosition, divider: atDepth),
+        TgTextCell(
+            title: l.cardPositionLabel,
+            subtitle: opt.sub,
+            value: opt.label,
+            onTap: _pickPosition,
+            divider: atDepth),
         if (atDepth)
           Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              TgTextCell(title: l.cardDepthLabel, value: l.cardDepthMessages(card.depth), divider: true),
+              TgTextCell(
+                  title: l.cardDepthLabel,
+                  value: l.cardDepthMessages(card.depth),
+                  divider: true),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 7),
-                child: TgSlider(value: card.depth.toDouble(), min: 1, max: 20, onChanged: (v) => _st.updatePersonaCard(card.id, (c) => c.depth = v.toInt())),
+                child: TgSlider(
+                    value: card.depth.toDouble(),
+                    min: 1,
+                    max: 20,
+                    onChanged: (v) => _st.updatePersonaCard(
+                        card.id, (c) => c.depth = v.toInt())),
               ),
-              TgTextCell(title: l.cardRoleLabel, value: roleLabel(l, card.role), onTap: _pickRole, divider: false),
+              TgTextCell(
+                  title: l.cardRoleLabel,
+                  value: roleLabel(l, card.role),
+                  onTap: _pickRole,
+                  divider: false),
             ],
           ),
       ],
@@ -441,16 +558,23 @@ class _PersonaCardsSectionState extends State<PersonaCardsSection> {
     final l = context.l;
     final card = _card;
     final isDefault = _st.isDefault(card.id);
-    final lockedChars = _characters().where((n) => _st.lockedTo(n).any((e) => e.id == card.id)).toList();
+    final lockedChars = _characters()
+        .where((n) => _st.lockedTo(n).any((e) => e.id == card.id))
+        .toList();
     return TgSection(
       header: l.cardConnectionsHeader,
       children: [
         TgTextCell(
-          leading: TgIcon(Ic.crown, color: isDefault ? _crown : p.icon, size: 24, stroke: 1.8),
+          // the icon slot, not leading: leading is the avatar column at 13,
+          // which pulled the crown left of the chats and ai icons below
+          icon: Ic.crown,
+          iconColor: isDefault ? _crown : p.icon,
           title: l.cardDefaultLabel,
           subtitle: isDefault ? l.cardFallbackSub : l.cardSetFallback,
           color: isDefault ? p.accent : null,
-          trailing: isDefault ? TgIcon(Ic.check, color: p.accent, size: 22, stroke: 2.2) : null,
+          trailing: isDefault
+              ? TgIcon(Ic.check, color: p.accent, size: 22, stroke: 2.2)
+              : null,
           onTap: () => _st.toggleDefaultPersona(card.id),
           divider: true,
         ),
@@ -460,15 +584,18 @@ class _PersonaCardsSectionState extends State<PersonaCardsSection> {
           subtitle: l.cardLockToChat,
           onTap: () {
             _commit();
-            showBulletin(context, _st.chats.isEmpty ? l.cardNoChat : l.cardNoChatSub);
+            showBulletin(
+                context, _st.chats.isEmpty ? l.cardNoChat : l.cardNoChatSub);
           },
           divider: true,
         ),
         TgTextCell(
           icon: Ic.ai,
           title: l.cardCharacterLabel,
-          subtitle: lockedChars.isEmpty ? l.cardLinkPersona : lockedChars.join(', '),
-          trailing: TgIcon(Ic.chevron, color: p.subtitle, size: 18, stroke: 1.8),
+          subtitle:
+              lockedChars.isEmpty ? l.cardLinkPersona : lockedChars.join(', '),
+          trailing:
+              TgIcon(Ic.chevron, color: p.subtitle, size: 18, stroke: 1.8),
           onTap: _linkCharacter,
           divider: false,
         ),
@@ -483,9 +610,15 @@ class _PersonaCardsSectionState extends State<PersonaCardsSection> {
     final many = _st.personas.length > 1;
     return TgSection(
       children: [
-        TgActionRow(label: l.cardSave, onTap: _dirty ? _commit : null, divider: true),
+        TgActionRow(
+            label: l.cardSave, onTap: _dirty ? _commit : null, divider: true),
         TgActionRow(label: l.cardDuplicate, onTap: _duplicate, divider: many),
-        if (many) TgActionRow(label: l.cardDeleteTitle, onTap: _remove, danger: true, divider: false),
+        if (many)
+          TgActionRow(
+              label: l.cardDeleteTitle,
+              onTap: _remove,
+              danger: true,
+              divider: false),
       ],
       gap: false,
     );
@@ -494,7 +627,14 @@ class _PersonaCardsSectionState extends State<PersonaCardsSection> {
 
 /// avatar with the photo link under it, also used by the chat header
 class AnimatedAvatar extends StatelessWidget {
-  const AnimatedAvatar({super.key, required this.path, required this.name, required this.color, required this.size, this.onTap, this.onLongPress});
+  const AnimatedAvatar(
+      {super.key,
+      required this.path,
+      required this.name,
+      required this.color,
+      required this.size,
+      this.onTap,
+      this.onLongPress});
   final String path;
   final String name;
   final int color;
@@ -505,7 +645,9 @@ class AnimatedAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final g = _avatarPalette[color % _avatarPalette.length];
-    final ch = name.trim().isEmpty ? '?' : String.fromCharCodes(name.trim().runes.take(1)).toUpperCase();
+    final ch = name.trim().isEmpty
+        ? '?'
+        : String.fromCharCodes(name.trim().runes.take(1)).toUpperCase();
     return Tap(
       scale: .95,
       onTap: onTap,
@@ -514,10 +656,29 @@ class AnimatedAvatar extends StatelessWidget {
         width: size,
         height: size,
         clipBehavior: Clip.antiAlias,
-        decoration: BoxDecoration(shape: BoxShape.circle, gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: g)),
+        decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: g)),
         child: path.isEmpty
-            ? Center(child: Text(ch, style: TextStyle(color: const Color(0xFFFFFFFF), fontSize: size * .4, fontWeight: FontWeight.w500, decoration: TextDecoration.none)))
-            : Image.file(File(path), fit: BoxFit.cover, errorBuilder: (_, __, ___) => Center(child: Text(ch, style: TextStyle(color: const Color(0xFFFFFFFF), fontSize: size * .4, fontWeight: FontWeight.w500, decoration: TextDecoration.none)))),
+            ? Center(
+                child: Text(ch,
+                    style: TextStyle(
+                        color: const Color(0xFFFFFFFF),
+                        fontSize: size * .4,
+                        fontWeight: FontWeight.w500,
+                        decoration: TextDecoration.none)))
+            : Image.file(File(path),
+                fit: BoxFit.cover,
+                errorBuilder: (_, __, ___) => Center(
+                    child: Text(ch,
+                        style: TextStyle(
+                            color: const Color(0xFFFFFFFF),
+                            fontSize: size * .4,
+                            fontWeight: FontWeight.w500,
+                            decoration: TextDecoration.none)))),
       ),
     );
   }
@@ -527,7 +688,11 @@ class AnimatedAvatar extends StatelessWidget {
 /// one in hand ticked, the default one crowned, and the create row Telegram
 /// puts at the bottom of a list like this.
 class _CardPickerSheet extends StatelessWidget {
-  const _CardPickerSheet({required this.cards, required this.active, required this.fallback, required this.onCreate});
+  const _CardPickerSheet(
+      {required this.cards,
+      required this.active,
+      required this.fallback,
+      required this.onCreate});
 
   final List<UserPersona> cards;
   final String active;
@@ -542,38 +707,50 @@ class _CardPickerSheet extends StatelessWidget {
     return TgSheet(
       child: ConstrainedBox(
         constraints: BoxConstraints(maxHeight: mq.size.height * .66),
-        child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 4, 20, 8),
-            child: Text(l.cardPickTitle, style: TextStyle(color: p.title, fontSize: 17, fontWeight: FontWeight.w600, decoration: TextDecoration.none)),
-          ),
-          Flexible(
-            child: ListView(
-              shrinkWrap: true,
-              padding: const EdgeInsets.only(bottom: 8),
-              children: [
-                for (var i = 0; i < cards.length; i++) _row(context, p, cards[i], last: i == cards.length - 1),
-                _rule(p),
-                TgTextCell(
-                  icon: Ic.plus,
-                  title: l.cardNew,
-                  color: p.accent,
-                  onTap: () => Navigator.of(context).pop(onCreate().id),
-                  divider: false,
+        child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 4, 20, 8),
+                child: Text(l.cardPickTitle,
+                    style: TextStyle(
+                        color: p.title,
+                        fontSize: 17,
+                        fontWeight: FontWeight.w600,
+                        decoration: TextDecoration.none)),
+              ),
+              Flexible(
+                child: ListView(
+                  shrinkWrap: true,
+                  padding: const EdgeInsets.only(bottom: 8),
+                  children: [
+                    for (var i = 0; i < cards.length; i++)
+                      _row(context, p, cards[i], last: i == cards.length - 1),
+                    _rule(p),
+                    TgTextCell(
+                      icon: Ic.plus,
+                      title: l.cardNew,
+                      color: p.accent,
+                      onTap: () => Navigator.of(context).pop(onCreate().id),
+                      divider: false,
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          ),
-        ]),
+              ),
+            ]),
       ),
     );
   }
 
   /// the thin rule between two sheet rows, it starts at the text column so it
   /// lines up with the names instead of cutting through the avatars
-  Widget _rule(Pal p) => Padding(padding: const EdgeInsets.only(left: 72, right: 21), child: Container(height: .5, color: p.divider));
+  Widget _rule(Pal p) => Padding(
+      padding: const EdgeInsets.only(left: 72, right: 21),
+      child: Container(height: .5, color: p.divider));
 
-  Widget _row(BuildContext context, Pal p, UserPersona c, {required bool last}) {
+  Widget _row(BuildContext context, Pal p, UserPersona c,
+      {required bool last}) {
     final l = context.l;
     final on = c.id == active;
     final name = c.name.trim().isEmpty ? l.lockSheetUnnamed : c.name.trim();
@@ -583,24 +760,55 @@ class _CardPickerSheet extends StatelessWidget {
       child: SizedBox(
         height: 60,
         child: Stack(children: [
-          Positioned(left: 21, top: 0, bottom: 0, child: Center(child: AnimatedAvatar(path: c.avatarPath, name: c.name, color: c.color, size: 34))),
+          Positioned(
+              left: 21,
+              top: 0,
+              bottom: 0,
+              child: Center(
+                  child: AnimatedAvatar(
+                      path: c.avatarPath,
+                      name: c.name,
+                      color: c.color,
+                      size: 34))),
           Positioned.fill(
             left: 72,
             child: Row(children: [
               Expanded(
-                child: Column(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Row(children: [
-                    Flexible(child: Text(name, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(color: on ? p.accent : p.title, fontSize: 16, fontWeight: FontWeight.w500, decoration: TextDecoration.none))),
-                    if (c.id == fallback) const Padding(padding: EdgeInsets.only(left: 5), child: TgIcon(Ic.crown, color: _crown, size: 14, stroke: 1.8)),
-                  ]),
-                  if (desc.isNotEmpty) Text(desc, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(color: p.subtitle, fontSize: 13.5, decoration: TextDecoration.none)),
-                ]),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(name,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                              color: on ? p.accent : p.title,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              decoration: TextDecoration.none)),
+                      if (desc.isNotEmpty)
+                        Text(desc,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                                color: p.subtitle,
+                                fontSize: 13.5,
+                                decoration: TextDecoration.none)),
+                    ]),
               ),
-              if (on) TgIcon(Ic.check, color: p.accent, size: 22, stroke: 2.2),
+              if (on)
+                TgIcon(Ic.check, color: p.accent, size: 22, stroke: 2.2)
+              else if (c.id == fallback)
+                TgIcon(Ic.crown, color: _crown, size: 18, stroke: 1.8),
               const SizedBox(width: 21),
             ]),
           ),
-          if (!last) Positioned(left: 72, right: 0, bottom: 0, child: Container(height: .5, color: p.divider)),
+          if (!last)
+            Positioned(
+                left: 72,
+                right: 0,
+                bottom: 0,
+                child: Container(height: .5, color: p.divider)),
         ]),
       ),
     );
@@ -610,7 +818,8 @@ class _CardPickerSheet extends StatelessWidget {
 /// Character lock picker, the ST character lock dialog: the same flat rows, a
 /// tick per character this card is already pinned to.
 class _CharLinkSheet extends StatelessWidget {
-  const _CharLinkSheet({required this.names, required this.cardId, required this.store});
+  const _CharLinkSheet(
+      {required this.names, required this.cardId, required this.store});
 
   final List<String> names;
   final String cardId;
@@ -624,28 +833,42 @@ class _CharLinkSheet extends StatelessWidget {
     return TgSheet(
       child: ConstrainedBox(
         constraints: BoxConstraints(maxHeight: mq.size.height * .66),
-        child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 4, 20, 8),
-            child: Text(l.cardLinkCharacter, style: TextStyle(color: p.title, fontSize: 17, fontWeight: FontWeight.w600, decoration: TextDecoration.none)),
-          ),
-          Flexible(
-            child: ListView(
-              shrinkWrap: true,
-              padding: const EdgeInsets.only(bottom: 8),
-              children: [
-                for (var i = 0; i < names.length; i++)
-                  TgTextCell(
-                    title: names[i],
-                    trailing: store.lockedTo(names[i]).any((e) => e.id == cardId) ? TgIcon(Ic.check, color: p.accent, size: 22, stroke: 2.2) : null,
-                    onTap: () => store.toggleCharLock(names[i], cardId),
-                    divider: i != names.length - 1,
-                  ),
-              ],
-            ),
-          ),
-          TgActionRow(label: l.actionDone, onTap: () => Navigator.of(context).pop()),
-        ]),
+        child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 4, 20, 8),
+                child: Text(l.cardLinkCharacter,
+                    style: TextStyle(
+                        color: p.title,
+                        fontSize: 17,
+                        fontWeight: FontWeight.w600,
+                        decoration: TextDecoration.none)),
+              ),
+              Flexible(
+                child: ListView(
+                  shrinkWrap: true,
+                  padding: const EdgeInsets.only(bottom: 8),
+                  children: [
+                    for (var i = 0; i < names.length; i++)
+                      TgTextCell(
+                        title: names[i],
+                        trailing:
+                            store.lockedTo(names[i]).any((e) => e.id == cardId)
+                                ? TgIcon(Ic.check,
+                                    color: p.accent, size: 22, stroke: 2.2)
+                                : null,
+                        onTap: () => store.toggleCharLock(names[i], cardId),
+                        divider: i != names.length - 1,
+                      ),
+                  ],
+                ),
+              ),
+              TgActionRow(
+                  label: l.actionDone,
+                  onTap: () => Navigator.of(context).pop()),
+            ]),
       ),
     );
   }

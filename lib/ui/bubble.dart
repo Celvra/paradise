@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:flutter/gestures.dart' show TapGestureRecognizer;
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
@@ -81,7 +82,7 @@ class BubblePainter extends CustomPainter {
 
 // one message bubble text time ticks reply quote and markdown
 class BubbleView extends StatefulWidget {
-  const BubbleView({super.key, required this.msg, required this.tail, required this.topNear, required this.maxWidth, this.replyTo, this.replyName = '', this.senderName = '', this.scroll, this.onLongPress, this.query = '', this.onRetry, this.onVote, this.onPhoto, this.onAction});
+  const BubbleView({super.key, required this.msg, required this.tail, required this.topNear, required this.maxWidth, this.replyTo, this.replyName = '', this.senderName = '', this.scroll, this.onLongPress, this.query = '', this.onRetry, this.onVote, this.onPhoto, this.onAction, this.onFileLink});
   final Msg msg;
   final bool tail;
   final bool topNear;
@@ -99,8 +100,13 @@ class BubbleView extends StatefulWidget {
   final void Function(int)? onVote;
   final VoidCallback? onPhoto;
 
-  /// tap on a voice message or a transfer card
+  /// tap on a transfer card
   final VoidCallback? onAction;
+
+  /// Opens a workspace link the body cites, `paradise://…`. Null leaves the
+  /// link as tinted text that only looks tappable, which is what the preview
+  /// bubbles on the wallpaper page want.
+  final void Function(String link)? onFileLink;
 
   @override
   State<BubbleView> createState() => _BubbleViewState();
@@ -182,7 +188,7 @@ class _BubbleViewState extends State<BubbleView> {
               WidgetSpan(alignment: PlaceholderAlignment.bottom, child: SizedBox(width: spacer, height: 14)),
             ]), textWidthBasis: TextWidthBasis.longestLine),
           ]
-        : mdBlocks(context, m.text, base, out ? p.codeOut : p.codeIn, p.accent, spacer);
+        : mdBlocks(context, m.text, base, out ? p.codeOut : p.codeIn, p.accent, spacer, onFileLink: widget.onFileLink);
     final media = m.kind == MsgKind.text ? null : mediaBody(context, m: m, p: p, width: math.min(widget.maxWidth - 28, 280), out: out, timePill: overlay ? pill : null, onPhoto: widget.onPhoto, onVote: widget.onVote, onAction: widget.onAction);
     final content = Stack(children: [
       Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -258,8 +264,8 @@ class _Blk {
   final String lang;
 }
 
-// tiny markdown fences bold italic inline code headings and bullets
-List<Widget> mdBlocks(BuildContext context, String text, TextStyle base, Color codeBg, Color accent, double spacer) {
+// tiny markdown fences bold italic inline code headings bullets and links
+List<Widget> mdBlocks(BuildContext context, String text, TextStyle base, Color codeBg, Color accent, double spacer, {void Function(String link)? onFileLink}) {
   final blocks = <_Blk>[];
   final buf = <String>[];
   var inCode = false;
@@ -314,7 +320,7 @@ List<Widget> mdBlocks(BuildContext context, String text, TextStyle base, Color c
       ));
       if (last) out.add(const SizedBox(height: 14));
     } else {
-      final spans = _inline(b.text, base, accent, codeBg);
+      final spans = _inline(b.text, base, accent, codeBg, onFileLink);
       if (last) spans.add(WidgetSpan(alignment: PlaceholderAlignment.bottom, child: SizedBox(width: spacer, height: 14)));
       out.add(Text.rich(TextSpan(children: spans), textWidthBasis: TextWidthBasis.longestLine));
     }
@@ -322,7 +328,11 @@ List<Widget> mdBlocks(BuildContext context, String text, TextStyle base, Color c
   return out;
 }
 
-List<InlineSpan> _inline(String text, TextStyle base, Color accent, Color codeBg) {
+// a cited file, `[label](paradise://zone/path)`; the whole thing is the tap
+// target, the label is what the reader sees
+final _mdLink = RegExp(r'\[([^\]\n]+)\]\((paradise://[^)\s]+)\)');
+
+List<InlineSpan> _inline(String text, TextStyle base, Color accent, Color codeBg, [void Function(String link)? onFileLink]) {
   final spans = <InlineSpan>[];
   final lines = text.split('\n');
   final re = RegExp(r'(\*\*[^*\n]+\*\*|`[^`\n]+`|\*[^*\n\s][^*\n]*\*)');
@@ -338,20 +348,55 @@ List<InlineSpan> _inline(String text, TextStyle base, Color accent, Color codeBg
     if (b != null) line = '${b.group(1)}\u2022 ${line.substring(b.end)}';
     var at = 0;
     for (final m in re.allMatches(line)) {
-      if (m.start > at) spans.add(TextSpan(text: line.substring(at, m.start), style: style));
+      if (m.start > at) spans.addAll(_withLinks(line.substring(at, m.start), style, accent, onFileLink));
       final s = m.group(0)!;
       if (s.startsWith('**')) {
-        spans.add(TextSpan(text: s.substring(2, s.length - 2), style: style.copyWith(fontWeight: FontWeight.w600)));
+        spans.addAll(_withLinks(s.substring(2, s.length - 2), style.copyWith(fontWeight: FontWeight.w600), accent, onFileLink));
       } else if (s.startsWith('`')) {
         spans.add(TextSpan(text: s.substring(1, s.length - 1), style: style.copyWith(fontFamily: 'monospace', fontSize: style.fontSize! - 1.5, backgroundColor: codeBg)));
       } else {
-        spans.add(TextSpan(text: s.substring(1, s.length - 1), style: style.copyWith(fontStyle: FontStyle.italic)));
+        spans.addAll(_withLinks(s.substring(1, s.length - 1), style.copyWith(fontStyle: FontStyle.italic), accent, onFileLink));
       }
       at = m.end;
     }
-    if (at < line.length) spans.add(TextSpan(text: line.substring(at), style: style));
+    if (at < line.length) spans.addAll(_withLinks(line.substring(at), style, accent, onFileLink));
     if (li < lines.length - 1) spans.add(TextSpan(text: '\n', style: style));
   }
   return spans;
+}
+
+/// Splits a stretch of plain text on the file links it cites. A link with a
+/// handler becomes the label underlined and tinted with its own tap target; a
+/// bare `paradise://…` url is the same thing with the url as its label. The
+/// recognizer is disposed by the span tree, a GestureRecognizer sink of one.
+List<TextSpan> _withLinks(String text, TextStyle style, Color accent, void Function(String link)? onFileLink) {
+  if (!text.contains('paradise://') || onFileLink == null) return [TextSpan(text: text, style: style)];
+  final out = <TextSpan>[];
+  var at = 0;
+  for (final m in _mdLink.allMatches(text)) {
+    if (m.start > at) out.add(TextSpan(text: text.substring(at, m.start), style: style));
+    out.add(_linkSpan(m.group(1)!, m.group(2)!, style, accent, onFileLink));
+    at = m.end;
+  }
+  // a bare link with no label: the url itself, up to whitespace
+  final rest = text.substring(at);
+  final bare = RegExp('paradise://[^\\s)]+');
+  var b = 0;
+  for (final m in bare.allMatches(rest)) {
+    if (m.start > b) out.add(TextSpan(text: rest.substring(b, m.start), style: style));
+    out.add(_linkSpan(m.group(0)!, m.group(0)!, style, accent, onFileLink));
+    b = m.end;
+  }
+  if (b < rest.length) out.add(TextSpan(text: rest.substring(b), style: style));
+  return out;
+}
+
+TextSpan _linkSpan(String label, String link, TextStyle style, Color accent, void Function(String) onFileLink) {
+  final rec = TapGestureRecognizer()..onTap = () => onFileLink(link);
+  return TextSpan(
+    text: label,
+    style: style.copyWith(color: accent, decoration: TextDecoration.underline, decorationColor: accent.withAlpha(120)),
+    recognizer: rec,
+  );
 }
 

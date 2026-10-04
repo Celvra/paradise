@@ -7,6 +7,7 @@ import 'package:flutter/widgets.dart';
 import 'anim.dart';
 import 'theme.dart';
 import 'ui_kit.dart';
+import '../l10n/x.dart';
 
 // fragment push from ActionBarLayout fade plus 48dp slide over 150ms
 class TgRoute<T> extends PageRoute<T> {
@@ -366,18 +367,28 @@ class _MenuPage extends StatelessWidget {
 }
 
 class DialogAction {
-  const DialogAction(this.label, this.value, {this.danger = false});
+  const DialogAction(this.label, this.value, {this.danger = false, this.enabled});
   final String label;
   final Object? value;
   final bool danger;
+
+  /// Checked when the body rebuilds, so a typed confirm keeps its button
+  /// dead until the field says the word.
+  final bool Function()? enabled;
 }
 
-Future<T?> showTgDialog<T>(BuildContext context, {required String title, String? message, Widget? content, required List<DialogAction> actions}) {
+Future<T?> showTgDialog<T>(BuildContext context, {required String title, String? message, Widget? content, required List<DialogAction> actions, Listenable? listenable}) {
   return Navigator.of(context, rootNavigator: true).push(_PopupRoute<T>(
     dim: const Color(0x73000000),
     enter: 220,
     exit: 150,
-    builder: (c) => _DialogBody(title: title, message: message, content: content, actions: actions),
+    // the listenable rebuilds the body so an enabled action can flip from
+    // dead to live while the user types
+    builder: (c) => ListenableBuilder(
+      listenable: listenable ?? ValueNotifier<int>(0),
+      child: _DialogBody(title: title, message: message, content: content, actions: actions),
+      builder: (_, body) => body!,
+    ),
     transition: (c, a, child) => AnimatedBuilder(
       animation: a,
       child: child,
@@ -424,10 +435,13 @@ class _DialogBody extends StatelessWidget {
                 for (final a in actions)
                   Tap(
                     scale: .96,
-                    onTap: () => Navigator.of(context).pop(a.value),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                      child: Text(a.label, style: TextStyle(color: a.danger ? p.danger : p.accent, fontSize: 15, fontWeight: FontWeight.w500, decoration: TextDecoration.none)),
+                    onTap: a.enabled?.call() ?? true ? () => Navigator.of(context).pop(a.value) : null,
+                    child: Opacity(
+                      opacity: a.enabled?.call() ?? true ? 1 : .35,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                        child: Text(a.label, style: TextStyle(color: a.danger ? p.danger : p.accent, fontSize: 15, fontWeight: FontWeight.w500, decoration: TextDecoration.none)),
+                      ),
                     ),
                   ),
               ]),
@@ -445,7 +459,10 @@ Future<String?> showTgInput(BuildContext context, {required String title, requir
     context,
     title: title,
     content: TgField(controller: ctl, hint: hint, obscure: obscure, autofocus: true),
-    actions: const [DialogAction('Cancel', null), DialogAction('OK', '__ok__')],
+    actions: [
+      DialogAction(context.l.actionCancel, null),
+      DialogAction(context.l.actionOk, '__ok__')
+    ],
   ).then((v) {
     final r = v == '__ok__' ? ctl.text : null;
     ctl.dispose();

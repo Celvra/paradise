@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:flutter/services.dart';
@@ -13,6 +14,8 @@ import '../core/theme.dart';
 import '../core/ui_kit.dart';
 import '../data/models.dart';
 import '../data/store.dart';
+import '../data/workspace/workspace_metadata.dart';
+import '../data/workspace/workspace_paths.dart' show PathResolutionException;
 import '../l10n/x.dart';
 import 'attach_sheet.dart';
 import 'bubble.dart';
@@ -20,12 +23,15 @@ import 'calendar_sheet.dart';
 import 'emoji_panel.dart';
 import 'input_bar.dart';
 import 'media_bubbles.dart';
+import 'workspace/file_preview_page.dart' show showFilePreview;
 import 'persona_card.dart';
 import 'profile_page.dart';
 import 'trace_view.dart';
 import 'user_persona.dart';
 import 'wallpaper.dart';
 import 'wallpaper_page.dart';
+import 'workspace/workspace_pages.dart';
+import 'workspace/workspace_prompts.dart' show askTypeDelete;
 
 class ChatPage extends StatefulWidget {
   const ChatPage({super.key, required this.chat, this.focusId, this.query, this.startSearch = false});
@@ -312,9 +318,10 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
     );
   }
 
-  Future<void> _confirm(String title, String msg, String action, VoidCallback run) async {
-    final r = await showTgDialog<bool>(context, title: title, message: msg, actions: [DialogAction(context.l.actionCancel, false), DialogAction(action, true, danger: true)]);
-    if (r == true) run();
+  // typed confirm, a tap through a menu is too easy for what this takes away
+  Future<void> _confirmDelete(String title, String msg, VoidCallback run) async {
+    final ok = await askTypeDelete(context, title: title, message: msg);
+    if (ok) run();
   }
 
   /// Tapping a transfer or a red packet takes the money straight away. The card
@@ -326,6 +333,25 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
     final amount = L10n.number('#,##0.00').format(((m.data['amount'] as num?) ?? 0).toDouble());
     _store.humanAcceptTransfer(chat, m);
     showBulletin(context, red ? l.chatWalletOpened(amount) : l.chatWalletReceived(amount));
+  }
+
+  /// Opens a `paradise://…` file link a bubble cites, the same road the trace
+  /// rows take their file chips down: parse, resolve for real, preview.
+  Future<void> _openFileLink(String link) async {
+    final parsed = FileLink.tryParse(link);
+    if (parsed == null) return;
+    final ctx = await _store.wsContext(chat);
+    if (ctx == null || !mounted) {
+      if (mounted) showBulletin(context, L10n.current.wsPreviewMissing);
+      return;
+    }
+    try {
+      final resolved = await ctx.paths.resolveReal(parsed.modelPath);
+      if (!mounted) return;
+      await showFilePreview(context, File(resolved.hostPath), title: parsed.modelPath.split('/').last);
+    } on PathResolutionException {
+      if (mounted) showBulletin(context, L10n.current.wsPreviewMissing);
+    }
   }
 
   void _headerMenu(BuildContext ctx) {
@@ -340,8 +366,11 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
       // the chat lock, the per chat half of a SillyTavern persona connection
       MenuItem(l.headerMenuLockPersona, Ic.user, _openPersonaLock, sub: locked.name.trim().isEmpty ? locked.initial : locked.name.trim()),
       MenuItem(l.wallpaperChatTitle, Ic.image, () => openWallpaperSheet(context, chat: chat), sub: chat.wallpaperPath == null ? null : l.wallpaperRow),
-      MenuItem(l.headerMenuClearHistory, Ic.trash, () => _confirm(l.dialogClearHistoryHereTitle, l.dialogClearHistoryHereMessage, l.actionClear, () => _store.clearHistory(chat)), danger: true),
-      MenuItem(l.headerMenuDeleteChat, Ic.close, () => _confirm(l.dialogDeleteChatHereTitle, l.dialogDeleteChatMessage(chat.persona.name), l.actionDelete, () {
+      MenuItem(l.wsTitle, Ic.folder, () => bindWorkspace(context, _store, chat), sub: _store.wsFor(chat)?.name),
+       if (_store.wsFor(chat) != null)
+         MenuItem(l.termTitle, Ic.terminal, () => openWorkspaceTerminal(context, _store.wsFor(chat)!)),
+      MenuItem(l.headerMenuClearHistory, Ic.trash, () => _confirmDelete(l.dialogClearHistoryHereTitle, l.dialogClearHistoryHereMessage, () => _store.clearHistory(chat))),
+      MenuItem(l.headerMenuDeleteChat, Ic.close, () => _confirmDelete(l.dialogDeleteChatHereTitle, l.dialogDeleteChatMessage(chat.persona.name), () {
             Navigator.of(context).pop();
             _store.deleteChat(chat);
           }), danger: true),
@@ -630,7 +659,8 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
             onRetry: () => _store.retry(chat, m),
             onVote: (i) => _store.votePoll(chat, m, i),
             onPhoto: () => openPhotoViewer(context, photos, m),
-            onAction: () => m.kind == MsgKind.voice ? playVoice(m) : _openWallet(m),
+            onAction: () => _openWallet(m),
+            onFileLink: ghost ? null : (link) => _openFileLink(link),
             onLongPress: ghost ? null : (rect) => _menu(m, rect, bubble(ghost: true)),
           );
       row = Padding(

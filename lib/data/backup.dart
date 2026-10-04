@@ -4,7 +4,7 @@ import 'dart:convert';
 ///
 /// One JSON document, following the envelope the sticker and memory exports
 /// already use, so a file that is handed to somebody can be read without this
-/// app. Attachments are deliberately not in it: the photo, voice and file
+/// app. Attachments are deliberately not in it: the photo and file
 /// messages only carry a path into app private storage, and pulling the bytes
 /// in would make this a multi gigabyte archive rather than a document.
 ///

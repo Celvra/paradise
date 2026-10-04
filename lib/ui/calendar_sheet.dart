@@ -63,7 +63,14 @@ class _CalendarState extends State<_Calendar> {
             Expanded(
               child: AnimatedSwitcher(
                 duration: const Duration(milliseconds: 220),
-                transitionBuilder: (c, a) => FadeTransition(opacity: a, child: SlideTransition(position: Tween(begin: Offset(.25 * _dir, 0), end: Offset.zero).animate(a), child: c)),
+                // the leaving month travels the way the strip travels: it exits
+                // left when going forward instead of crossing the incoming one
+                // (AnimatedSwitcher plays the outgoing child backwards, so its
+                // begin is mirrored; its key is the previous month)
+                transitionBuilder: (c, a) {
+                  final leaving = c.key != ValueKey(_month);
+                  return FadeTransition(opacity: a, child: SlideTransition(position: Tween(begin: Offset(.25 * _dir * (leaving ? -1 : 1), 0), end: Offset.zero).animate(a), child: c));
+                },
                 child: Text(monthYear(_month), key: ValueKey(_month), textAlign: TextAlign.center, style: TextStyle(color: p.title, fontSize: 18, fontWeight: FontWeight.w500, decoration: TextDecoration.none)),
               ),
             ),

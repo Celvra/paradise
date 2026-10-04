@@ -24,6 +24,12 @@ class HumanSettings {
   // <i-br> and randomness
   bool br = true;
   int brDefaultMs = 600;
+
+  /// read time before the first bubble of a turn
+  int replyDelayMs = 1500;
+
+  /// global multiplier on every inter bubble pause
+  double paceScale = 1.0;
   double randomRange = 0.2;
 
   /// null draws a fresh sequence each turn, a number replays the same dice for
@@ -63,14 +69,6 @@ class HumanSettings {
   // tool permissions by tool name, absent means the default for its origin
   final Map<String, String> perms = {};
 
-  // voice
-  String ttsUrl = '';
-  String ttsKey = '';
-  String ttsModel = 'tts-1';
-  String ttsVoice = 'alloy';
-  double ttsSpeed = 1.0;
-  bool ttsSystem = true;
-
   // server side fallback for scheduled messages
   String serverUrl = '';
   String deviceId = '';
@@ -105,6 +103,8 @@ class HumanSettings {
         'wallet': wallet,
         'br': br,
         'brDefaultMs': brDefaultMs,
+        'replyDelayMs': replyDelayMs,
+        'paceScale': paceScale,
         'randomRange': randomRange,
         'seed': seed,
         'typoProb': typoProb,
@@ -130,12 +130,6 @@ class HumanSettings {
         'recallPerHour': recallPerHour,
         'recallWindowSec': recallWindowSec,
         'perms': perms,
-        'ttsUrl': ttsUrl,
-        'ttsKey': ttsKey,
-        'ttsModel': ttsModel,
-        'ttsVoice': ttsVoice,
-        'ttsSpeed': ttsSpeed,
-        'ttsSystem': ttsSystem,
         'serverUrl': serverUrl,
         'deviceId': deviceId,
         'humanScore': humanScore,
@@ -151,6 +145,8 @@ class HumanSettings {
     s.wallet = _b(j['wallet'], s.wallet);
     s.br = _b(j['br'], s.br);
     s.brDefaultMs = _i(j['brDefaultMs'], s.brDefaultMs);
+    s.replyDelayMs = _i(j['replyDelayMs'], s.replyDelayMs);
+    s.paceScale = _d(j['paceScale'], s.paceScale);
     s.randomRange = _d(j['randomRange'], s.randomRange);
     s.seed = (j['seed'] as num?)?.toInt();
     s.typoProb = _d(j['typoProb'], s.typoProb);
@@ -176,12 +172,6 @@ class HumanSettings {
     s.recallPerHour = _i(j['recallPerHour'], s.recallPerHour);
     s.recallWindowSec = _i(j['recallWindowSec'], s.recallWindowSec);
     if (j['perms'] is Map) s.perms.addAll(Map<String, String>.from((j['perms'] as Map).map((k, v) => MapEntry('$k', '$v'))));
-    s.ttsUrl = _s(j['ttsUrl'], '');
-    s.ttsKey = _s(j['ttsKey'], '');
-    s.ttsModel = _s(j['ttsModel'], s.ttsModel);
-    s.ttsVoice = _s(j['ttsVoice'], s.ttsVoice);
-    s.ttsSpeed = _d(j['ttsSpeed'], 1);
-    s.ttsSystem = _b(j['ttsSystem'], true);
     s.serverUrl = _s(j['serverUrl'], '');
     s.deviceId = _s(j['deviceId'], '');
     s.humanScore = _d(j['humanScore'], 3);
@@ -204,6 +194,9 @@ class HumanRandom {
   }
 
   final Random _r;
+
+  /// the underlying dice, for helpers that take a Random
+  Random get raw => _r;
 
   double next() => _r.nextDouble();
   bool chance(double p) => _r.nextDouble() < p;
@@ -494,6 +487,9 @@ class HumanState {
   }
 
   int recallsInLastHour(int now) => recallStamps.where((t) => now - t < 3600000).length;
+
+  /// how long the chat has been quiet, from the later of the two sides
+  int silence(int now) => now - max(lastUserAt, lastAiAt);
 
   Map<String, dynamic> toJson() => {
         'status': statusWire(status == StatusKind.typing ? StatusKind.online : status),

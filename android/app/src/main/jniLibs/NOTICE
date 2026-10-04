@@ -1,0 +1,55 @@
+Third party binaries in this directory
+=======================================
+
+These are gitignored and fetched by tool/fetch_proot.sh. They are not part of
+the source tree and nothing here is linked into the app.
+
+
+proot_exec.so, proot_loader.so
+------------------------------
+Termux proot 5.1.107.96, GPL-2.0-or-later
+https://github.com/termux/proot
+
+proot_exec.so is actually Termux's proot binary, renamed. Both are executed as
+separate processes with execve, never dlopen'd and never linked against, so this
+AGPL-3.0 application does not become subject to proot's GPL-2.0 terms. That is
+the whole reason they are packaged as jniLibs and exec'd rather than vendored
+into the Kotlin or C++ sources.
+
+Packaged with useLegacyPackaging = true in android/app/build.gradle.kts. That
+setting is load bearing: with the default the .so files stay compressed inside
+the APK and there is no executable file on disk to execve.
+
+
+libtalloc.so
+------------
+Termux libtalloc 2.5.0, LGPL-3.0-or-later
+https://github.com/termux-packages/talloc
+
+Copied next to proot as libtalloc.so.2, which is the SONAME proot's DT_NEEDED
+actually asks for. LGPL in a separate process is fine, but the rename is what
+keeps the dynamic linker satisfied without patching the binary.
+
+
+libandroid-shmem.so
+-------------------
+Termux libandroid-shmem 0.7, BSD-3-Clause
+https://github.com/termux-archive/packages
+
+
+termux_pty.so
+-------------
+Built from source in android/app/src/main/cpp/termux_pty.cpp, which is derived
+from the Termux app. GPL-3.0-or-later, and this project is AGPL-3.0, so the
+terms are compatible and no exception is needed.
+
+This one IS linked into the app, which is why it is built from source here rather
+than downloaded. It is a thin JNI shim over posix_openpt, grantpt, unlockpt,
+ptsname_r, fork, setsid, ioctl(TIOCSCTTY), ioctl(TIOCSWINSZ), dup2 and execve.
+
+
+sha256
+------
+tool/proot_checksums.txt, verified on every fetch. The script refuses to run
+without it and refuses to finish on a mismatch. Regenerate deliberately with
+tool/fetch_proot.sh --write-checksums and review the diff.

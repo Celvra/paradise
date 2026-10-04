@@ -1,13 +1,21 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/widgets.dart';
 
 import '../core/anim.dart';
+import '../core/overlays.dart';
 import '../core/theme.dart';
 import '../core/ui_kit.dart';
 import '../data/models.dart';
+import '../data/store.dart';
+import '../data/workspace/workspace_metadata.dart';
+import '../data/workspace/workspace_paths.dart';
 import '../l10n/x.dart';
+import 'bubble.dart' show mdBlocks;
+import 'workspace/file_preview_page.dart';
+import 'workspace/ws_trace_body.dart';
 
 // One step of the model's work, drawn in the chat stream where it happened: a
 // stretch of reasoning, or a tool call with what it got back. The shape follows
@@ -21,7 +29,9 @@ import '../l10n/x.dart';
 // step opens into, since that is a surface with text on it rather than a mark.
 //
 // Collapsed it is one line. While the step is still running it opens by itself
-// and follows the tail, so thinking is watchable without a single tap.
+// and follows the tail, so thinking is watchable without a single tap. The
+// chase yields to the reader: scroll up inside a running preview and it stops
+// chasing until the tail is reached again, so a long output can be read.
 
 /// How tall the running preview is, roughly six lines of small text.
 const _previewH = 108.0;
@@ -33,17 +43,6 @@ const _previewH = 108.0;
 /// constant paints white wherever it lands. The card a step opens into is left
 /// on the theme, it is a surface with text on it rather than a mark.
 const _white = Color(0xFFFFFFFF);
-
-/// dstIn masks for the running preview: flat while the text fits, faded at the
-/// bottom once there is more of it below the fold. A gradient needs two colours
-/// even when it is meant to be flat, one colour asserts during paint.
-const _flat = LinearGradient(colors: [_white, _white]);
-const _fade = LinearGradient(
-  begin: Alignment.topCenter,
-  end: Alignment.bottomCenter,
-  colors: [_white, _white, Color(0x00FFFFFF)],
-  stops: [0, .7, 1],
-);
 
 class TraceView extends StatefulWidget {
   const TraceView({super.key, required this.msg, this.linkedAbove = false, this.linkedBelow = false, this.titleKey, this.panelKey});
@@ -68,10 +67,15 @@ class _TraceViewState extends State<TraceView> {
   /// once it is done. A tap pins it the other way and it stays that way.
   bool? _pinned;
   String? _seen;
-  bool _over = false;
   Timer? _tick;
   final ScrollController _win = ScrollController();
   final ValueNotifier<int> _pulse = ValueNotifier<int>(0);
+
+  /// Whether the running preview should keep chasing its tail. It starts on, a
+  /// hand that scrolls away from the tail parks it, and landing back on the
+  /// tail turns it on again. A plain field on purpose: it paints nothing, so
+  /// flipping it never needs a rebuild.
+  bool _stick = true;
 
   bool get _running => widget.msg.data['state'] == 'run';
   bool get _tool => widget.msg.data['type'] == 'tool';
@@ -103,9 +107,18 @@ class _TraceViewState extends State<TraceView> {
 
   String get _think => '${widget.msg.data['body'] ?? ''}';
 
+  /// The workspace half of a step row, or null for every other tool. Parsed
+  /// from the row rather than passed in, because the row is persisted and a
+  /// conversation opened tomorrow must render the same way it did today.
+  WorkspaceToolMeta? get _ws {
+    if (!_tool) return null;
+    final raw = widget.msg.data['ws'];
+    return raw is Map ? WorkspaceToolMeta.fromJson(Map<String, dynamic>.from(raw)) : null;
+  }
+
   /// What the expanded card would show. A step with nothing in it does not get
   /// a chevron, tapping it would open an empty box.
-  String get _body => _tool ? '$_args$_result' : _think;
+  String get _body => _tool ? (_ws == null ? '$_args$_result' : (_ws!.path + _ws!.diff + _ws!.count.toString())) : _think;
 
   @override
   void initState() {
@@ -133,6 +146,8 @@ class _TraceViewState extends State<TraceView> {
     _tick?.cancel();
     _tick = null;
     if (_running) {
+      // a fresh run starts on the tail; the reader takes over from there
+      _stick = true;
       _tick = Timer.periodic(const Duration(milliseconds: 100), (_) {
         if (!mounted) return;
         _pulse.value++;
@@ -142,14 +157,27 @@ class _TraceViewState extends State<TraceView> {
   }
 
   /// Keeps the tail of a running step in view, the same way a streaming bubble
-  /// keeps its own tail at the bottom.
+  /// keeps its own tail at the bottom — until the reader takes over. A hand
+  /// that scrolls off the tail parks the chase, so a long output can be read
+  /// while the step is still running instead of being dragged back down every
+  /// tick. Landing on the tail again hands control straight back.
   void _follow() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted || !_win.hasClients) return;
-      _win.jumpTo(_win.position.maxScrollExtent);
-      final over = _win.position.maxScrollExtent > .5;
-      if (over != _over) setState(() => _over = over);
+      if (_stick) _win.jumpTo(_win.position.maxScrollExtent);
     });
+  }
+
+  /// The handoff between the tail chase and the reader. Only gestures count:
+  /// a drag carries its pointer details, a fling ends with the position where
+  /// the finger left it. Content growing under a pinned position corrects
+  /// silently during layout and dispatches nothing, so streaming never reads
+  /// as a scroll and the chase keeps its place at the tail.
+  bool _onPreviewScroll(ScrollNotification n) {
+    if (n.depth != 0) return false; // the diff view scrolls inside the card
+    final hand = (n is ScrollUpdateNotification && n.dragDetails != null) || n is ScrollEndNotification;
+    if (hand) _stick = (n.metrics.maxScrollExtent - n.metrics.pixels) <= 8;
+    return false;
   }
 
   @override
@@ -192,7 +220,7 @@ class _TraceViewState extends State<TraceView> {
                   height: 24,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(color: _white.withAlpha(_running ? 46 : 26), borderRadius: BorderRadius.circular(8)),
-                  child: TgIcon(_tool ? (_bad ? Ic.info : Ic.gear) : Ic.ai, color: _white, size: 15, stroke: 1.9),
+                  child: TgIcon(_ws != null ? _wsIcon(_ws!) : (_tool ? (_bad ? Ic.info : Ic.gear) : Ic.ai), color: _white, size: 15, stroke: 1.9),
                 ),
                 if (widget.linkedBelow) Container(width: 1, height: 5, color: _white),
               ]),
@@ -204,6 +232,9 @@ class _TraceViewState extends State<TraceView> {
                     ? null
                     : () {
                         setState(() => _pinned = !_open);
+                        // an opened preview starts on the tail, the same
+                        // auto-chase a step that opens by itself gets
+                        _stick = true;
                         _follow();
                       },
                 child: Padding(
@@ -248,16 +279,26 @@ class _TraceViewState extends State<TraceView> {
   }
 
   /// The card under the header. While the step runs it is a clipped window onto
-  /// the tail with a fade, so a long think never pushes the answer off screen.
+  /// the tail, so a long think never pushes the answer off screen.
   Widget _panel(Pal p) {
     final mono = _args.isNotEmpty;
     final style = TextStyle(color: p.msg, fontSize: mono ? 12 : 12.8, height: 1.4, fontFamily: mono ? 'monospace' : null, decoration: TextDecoration.none);
+    // reasoning and results are model text, so they read through the same
+    // markdown lens the bubbles use; the code blocks a shell run prints belong
+    // in fences, not in backtick soup
+    Widget body(String text) => Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: mdBlocks(context, text, style, p.codeIn, p.accent, 0),
+        );
     final card = Container(
       width: double.infinity,
       padding: const EdgeInsets.fromLTRB(11, 9, 11, 9),
       decoration: BoxDecoration(color: p.glassFill.withAlpha(p.dark ? 150 : 205), borderRadius: BorderRadius.circular(11), border: Border.all(color: p.divider, width: .5)),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
-        if (_tool) ...[
+        if (_ws != null)
+          WsTraceBody(meta: _ws!, result: _result, running: _running, onOpenFile: _openWsFile)
+        else if (_tool) ...[
           if (_args.isNotEmpty) ...[
             _tag(p, L10n.current.traceArguments),
             Text(_args, style: style.copyWith(color: p.subtitle)),
@@ -265,22 +306,21 @@ class _TraceViewState extends State<TraceView> {
           ],
           if (_result.isNotEmpty || _running) ...[
             _tag(p, L10n.current.traceResult),
-            Text(_result.isEmpty ? '…' : _result, style: style),
+            body(_result.isEmpty ? '…' : _result),
           ],
         ] else
-          Text(_think.isEmpty ? '…' : _think, style: style),
+          body(_think.isEmpty ? '…' : _think),
       ]),
     );
 
     if (!_running) return card;
+    // the running preview is a plain clipped window: the scroll view crops the
+    // card at its own edge with no fade, so streaming text lands at the tail
+    // fully opaque instead of dissolving in at the bottom of the mask
     return ConstrainedBox(
       constraints: const BoxConstraints(maxHeight: _previewH),
-      child: ShaderMask(
-        // the fade is only painted when there is more to read, otherwise the
-        // last visible line would look cut for no reason. A gradient needs two
-        // colours even when it is meant to be flat.
-        shaderCallback: _over ? _fade.createShader : _flat.createShader,
-        blendMode: BlendMode.dstIn,
+      child: NotificationListener<ScrollNotification>(
+        onNotification: _onPreviewScroll,
         child: SingleChildScrollView(controller: _win, physics: const ClampingScrollPhysics(), child: card),
       ),
     );
@@ -297,9 +337,55 @@ class _TraceViewState extends State<TraceView> {
   String _title() {
     final l = L10n.current;
     if (!_tool) return _running ? l.traceThinkingNow : l.traceThoughtFor(traceSeconds(_ms));
+    final ws = _ws;
+    if (ws != null) return WsTraceBody.titleFor(ws, '${widget.msg.data['tool'] ?? ''}');
     final name = '${widget.msg.data['tool'] ?? ''}';
     final server = '${widget.msg.data['mcp'] ?? ''}';
     return server.isEmpty ? name : '$name · $server';
+  }
+
+  /// Turns a model path from the metadata into a file and opens the preview.
+  ///
+  /// The row only stores the model path, because that is what belongs in a
+  /// persisted chat: a host path would break the moment the app's documents
+  /// directory moved, which it does on restore.
+  Future<void> _openWsFile(String modelPath) async {
+    final store = Store.read(context);
+    final chatId = '${widget.msg.data['chatId'] ?? ''}';
+    final chat = store.chats.where((c) => c.id == chatId).firstOrNull ?? _nearestBoundChat(store);
+    final ctx = chat == null ? null : await store.wsContext(chat);
+    if (ctx == null) {
+      if (context.mounted) showBulletin(context, L10n.current.wsPreviewMissing);
+      return;
+    }
+    if (!context.mounted) return;
+    try {
+      final resolved = await ctx.paths.resolveReal(modelPath);
+      await showFilePreview(context, File(resolved.hostPath), title: modelPath.split('/').last);
+    } on PathResolutionException {
+      if (context.mounted) showBulletin(context, L10n.current.wsPreviewMissing);
+    }
+  }
+
+  /// A row rendered from history has no chat of its own, so fall back to the
+  /// only workspace that matters for opening a file: the first bound one.
+  Chat? _nearestBoundChat(Store store) {
+    for (final c in store.chats) {
+      if (c.ws.isBound) return c;
+    }
+    return null;
+  }
+
+  /// A read and a search look different from a write, because the whole point of
+  /// the row is whether something on the device changed.
+  Ic _wsIcon(WorkspaceToolMeta m) {
+    if (_bad || m.status == 'denied') return Ic.info;
+    return switch (m.tool) {
+      'write_file' || 'edit_file' => Ic.pencil,
+      'list_dir' => Ic.folder,
+      'glob' || 'grep' => Ic.search,
+      _ => Ic.file,
+    };
   }
 
   /// A finished think already carries its duration in the title, so it gets

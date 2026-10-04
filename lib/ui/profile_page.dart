@@ -15,6 +15,7 @@ import '../l10n/x.dart';
 import 'account_page.dart';
 import 'dialogs_page.dart';
 import 'persona_card.dart';
+import 'workspace/workspace_prompts.dart' show askTypeDelete;
 
 // ProfileActivity2 lerp3 over collapsed default and expanded
 double _l3(double a, double b, double c, double t) => t < 0 ? a + (b - a) * (t + 1) : b + (c - b) * t;
@@ -352,8 +353,10 @@ class _ProfilePageState extends State<ProfilePage> {
       MenuItem(chat!.pinned ? l.menuUnpin : l.menuPin, Ic.pin, () => st.togglePin(chat!)),
       const MenuItem.gap(),
       MenuItem(l.menuClearHistory, Ic.trash, () async {
-        final ok = await showTgDialog<bool>(context, title: l.dialogClearHistoryTitle, message: l.dialogClearHistoryMessage(chat!.persona.name), actions: [DialogAction(l.actionCancel, false), DialogAction(l.actionClear, true, danger: true)]);
-        if (ok == true) st.clearHistory(chat!);
+        final ok = await askTypeDelete(context,
+            title: l.dialogClearHistoryTitle,
+            message: l.dialogClearHistoryMessage(chat!.persona.name));
+        if (ok) st.clearHistory(chat!);
       }, danger: true),
     ]);
   }

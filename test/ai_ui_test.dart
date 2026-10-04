@@ -30,6 +30,22 @@ Future<(Store, AiConfig)> boot(WidgetTester t) async {
   return (store, ai);
 }
 
+/// stateful stand-in pane: counts taps so a remount shows up as a reset
+class _CounterPane extends StatefulWidget {
+  const _CounterPane(this.label);
+  final String label;
+  @override
+  State<_CounterPane> createState() => _CounterPaneState();
+}
+
+class _CounterPaneState extends State<_CounterPane> {
+  int _taps = 0;
+  @override
+  Widget build(BuildContext context) => Center(
+        child: GestureDetector(onTap: () => setState(() => _taps++), child: Text('${widget.label}:$_taps taps')),
+      );
+}
+
 void main() {
   testWidgets('ai screen lists the six built in providers', (t) async {
     final (_, ai) = await boot(t);
@@ -88,11 +104,33 @@ void main() {
     await settle(t, 500);
 
     expect(find.text('Reply style'), findsOneWidget);
-    expect(find.text('Strip markdown in character mode'), findsOneWidget);
     expect(find.text('Temperature'), findsOneWidget);
     expect(find.text(ai.settings.temperature.toStringAsFixed(2)), findsOneWidget);
     expect(find.text('Max output'), findsOneWidget);
     expect(find.text('Extra system prompt'), findsNothing);
+    // the markdown switch moved to the AI replies page
+    expect(find.text('Strip markdown in character mode'), findsNothing);
+  });
+
+  testWidgets('the markdown switch lives on the AI replies page', (t) async {
+    final (_, ai) = await boot(t);
+    expect(ai.settings.stripMarkdownInCharacterMode, isTrue); // default: stripped
+
+    await t.tap(find.text('Settings').last);
+    await settle(t, 700);
+    await t.tap(find.text('AI replies').last);
+    await settle(t, 700);
+
+    // stored stripped, shown as Markdown off
+    expect(find.text('Markdown'), findsOneWidget);
+    await t.tap(find.text('Markdown'));
+    await settle(t, 700);
+    expect(ai.settings.stripMarkdownInCharacterMode, isFalse);
+
+    // and back off again
+    await t.tap(find.text('Markdown'));
+    await settle(t, 700);
+    expect(ai.settings.stripMarkdownInCharacterMode, isTrue);
   });
 
   testWidgets('picking character mode writes through to settings', (t) async {
@@ -395,6 +433,111 @@ void main() {
     expect(find.text('Compact long conversations'), findsOneWidget);
     // the page that left is offstage, so its content is out of the tree
     expect(find.text('PROVIDERS'), findsNothing);
+  });
+
+  testWidgets('the pane that leaves goes the way the strip travels', (t) async {
+    Widget pane(String s) => Center(child: Text(s));
+    Widget page(int i) => Directionality(
+          textDirection: TextDirection.ltr,
+          child: Switcher(index: i, children: [pane('a'), pane('b'), pane('c')]),
+        );
+
+    await t.pumpWidget(page(0));
+    await t.pumpWidget(page(1)); // providers -> chain, the strip moves right
+    for (var frame = 0; frame < 8; frame++) {
+      await t.pump(const Duration(milliseconds: 30)); // step a frame first so t > 0
+      final dx = t
+          .widgetList<FractionalTranslation>(find.byType(FractionalTranslation))
+          .map((w) => w.translation.dx)
+          .toList();
+      expect(dx, hasLength(2));
+      // the leaving pane exits left, the entering one lands from the right:
+      // the two must never sit on the same side, let alone overlap
+      expect(dx.where((d) => d <= 0), hasLength(1), reason: 'frame $frame: $dx');
+      expect(dx.where((d) => d >= 0), hasLength(1), reason: 'frame $frame: $dx');
+    }
+    await t.pump(const Duration(milliseconds: 400));
+  });
+
+  testWidgets('reversing mid-flight keeps both panes where they were', (t) async {
+    Widget pane(String s) => Center(child: Text(s));
+    Widget page(int i) => Directionality(
+          textDirection: TextDirection.ltr,
+          child: Switcher(index: i, children: [pane('a'), pane('b'), pane('c')]),
+        );
+    double dxOf(String label) => t
+        .widget<FractionalTranslation>(find.ancestor(of: find.text(label), matching: find.byType(FractionalTranslation)))
+        .translation
+        .dx;
+
+    await t.pumpWidget(page(0));
+    await t.pumpWidget(page(1));
+    await t.pump(const Duration(milliseconds: 60)); // mid-flight
+    final aBefore = dxOf('a');
+    final bBefore = dxOf('b');
+
+    await t.pumpWidget(page(0)); // straight back, same instant
+    // neither pane may snap: the flight just turns around where it stands
+    expect(dxOf('a'), closeTo(aBefore, 0.001), reason: 'a jumped: $aBefore -> ${dxOf('a')}');
+    expect(dxOf('b'), closeTo(bBefore, 0.001), reason: 'b jumped: $bBefore -> ${dxOf('b')}');
+
+    // still heading the way it should: a drifts home, b keeps fading right
+    await t.pump(const Duration(milliseconds: 90));
+    expect(dxOf('a'), greaterThan(aBefore));
+    expect(dxOf('b'), greaterThan(bBefore));
+
+    await t.pump(const Duration(milliseconds: 400));
+    expect(find.text('a'), findsOneWidget);
+    expect(find.text('b'), findsNothing);
+  });
+
+  testWidgets('jumping to a third tab mid-flight keeps the old panes continuous', (t) async {
+    Widget pane(String s) => Center(child: Text(s));
+    Widget page(int i) => Directionality(
+          textDirection: TextDirection.ltr,
+          child: Switcher(index: i, children: [pane('a'), pane('b'), pane('c')]),
+        );
+    double dxOf(String label) => t
+        .widget<FractionalTranslation>(find.ancestor(of: find.text(label), matching: find.byType(FractionalTranslation)))
+        .translation
+        .dx;
+
+    await t.pumpWidget(page(0));
+    await t.pumpWidget(page(1));
+    await t.pump(const Duration(milliseconds: 60));
+    final aBefore = dxOf('a');
+    final bBefore = dxOf('b');
+
+    await t.pumpWidget(page(2)); // off to a third tab while a is still leaving
+    expect(dxOf('a'), closeTo(aBefore, 0.001), reason: 'a jumped: $aBefore -> ${dxOf('a')}');
+    expect(dxOf('b'), closeTo(bBefore, 0.001), reason: 'b jumped: $bBefore -> ${dxOf('b')}');
+
+    await t.pump(const Duration(milliseconds: 400));
+    expect(find.text('c'), findsOneWidget);
+    expect(find.text('a'), findsNothing);
+    expect(find.text('b'), findsNothing);
+  });
+
+  testWidgets('panes keep their state when you switch back to them', (t) async {
+    Widget page(int i) => Directionality(
+          textDirection: TextDirection.ltr,
+          child: Switcher(index: i, children: [const _CounterPane('a'), const _CounterPane('b'), const _CounterPane('c')]),
+        );
+
+    await t.pumpWidget(page(0));
+    expect(find.text('a:0 taps'), findsOneWidget);
+    await t.tap(find.text('a:0 taps'));
+    await t.pump();
+    expect(find.text('a:1 taps'), findsOneWidget);
+
+    await t.pumpWidget(page(1));
+    await t.pump(const Duration(milliseconds: 400));
+    expect(find.text('b:0 taps'), findsOneWidget);
+
+    await t.pumpWidget(page(0)); // back to a
+    await t.pump(const Duration(milliseconds: 400));
+    // the tap must have survived the round trip, not been remounted to zero
+    expect(find.text('a:1 taps'), findsOneWidget);
   });
 
   testWidgets('a key on a later provider is not reported as missing', (t) async {

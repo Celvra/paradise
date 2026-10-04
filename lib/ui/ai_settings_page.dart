@@ -59,7 +59,9 @@ class _AiSettingsPageState extends State<AiSettingsPage> {
 }
 
 /// Slides and fades between tabs the way the strip indicator moves. Every tab
-/// stays mounted so switching back neither refetches nor loses the scroll.
+/// stays mounted so switching back neither refetches nor loses the scroll. A
+/// switch made mid-flight picks the moving panes up where they are, so tapping
+/// back and forth rewinds instead of snapping.
 class Switcher extends StatefulWidget {
   const Switcher({super.key, required this.index, required this.children});
 
@@ -77,18 +79,49 @@ class _SwitcherState extends State<Switcher> with SingleTickerProviderStateMixin
   late final AnimationController _c = AnimationController(vsync: this, duration: _duration)..value = 1;
   int _current = 0;
   int _outgoing = -1;
+  // panes still on their way out, each remembered at the pose it was caught
+  // at, so a switch made mid-flight carries on instead of snapping to the ends
+  List<({int i, double dx, double op})> _leaving = const [];
+  // where the incoming pane starts: the strip side, or its own pose when it
+  // was caught heading out
+  (double, double) _inFrom = (_shift, 0);
 
   @override
   void initState() {
     super.initState();
     _current = widget.index;
+    // once a flight settles, drop the leaving records so those panes go back
+    // to being plainly offstage
+    _c.addStatusListener((s) {
+      if (s == AnimationStatus.completed && _leaving.isNotEmpty) setState(() => _leaving = const []);
+    });
   }
 
   @override
   void didUpdateWidget(Switcher old) {
     super.didUpdateWidget(old);
     if (old.index == widget.index) return;
+    final turning = !_c.isCompleted;
+    final e = TgCurves.easeOutQuint.transform(_c.value);
+    final dir = _outgoing < 0 || _current > _outgoing ? 1.0 : -1.0; // the flight in progress
+    final ndir = widget.index > _current ? 1.0 : -1.0; // the flight we start now
     setState(() {
+      var inFrom = (ndir * _shift, 0.0);
+      final leaving = <({int i, double dx, double op})>[
+        // the pane being left keeps going from exactly where it is
+        (i: _current, dx: turning ? (1 - e) * dir * _shift : 0.0, op: turning ? e : 1.0),
+      ];
+      if (turning) {
+        for (final r in _leaving) {
+          if (r.i == widget.index) {
+            inFrom = (r.dx + e * (-dir * _shift - r.dx), r.op * (1 - e)); // caught heading out, comes back
+          } else {
+            leaving.add((i: r.i, dx: r.dx + e * (-dir * _shift - r.dx), op: r.op * (1 - e)));
+          }
+        }
+      }
+      _leaving = leaving;
+      _inFrom = inFrom;
       _outgoing = _current;
       _current = widget.index;
     });
@@ -109,23 +142,46 @@ class _SwitcherState extends State<Switcher> with SingleTickerProviderStateMixin
       builder: (context, _) {
         final turning = !_c.isCompleted;
         final t = TgCurves.easeOutQuint.transform(_c.value);
+        final exit = -dir * _shift; // the side a leaving pane departs to
         return Stack(fit: StackFit.expand, children: [
+          // every pane always sits in the same wrapper chain, only parameters
+          // change, so switching roles never remounts it and tabs keep their
+          // scroll and state; the current pane is last so ghosts draw under it
           for (var i = 0; i < widget.children.length; i++)
-            if (turning && i == _outgoing)
-              IgnorePointer(child: _slide(widget.children[i], t * dir * _shift, 1 - t))
-            else if (i == _current)
-              _slide(widget.children[i], (1 - t) * dir * _shift, t)
-            else
-              Offstage(child: widget.children[i]),
+            if (i != _current) _pane(i, turning, t, exit),
+          _pane(_current, turning, t, exit),
         ]);
       },
     );
   }
 
-  Widget _slide(Widget child, double dx, double opacity) => FractionalTranslation(
-        translation: Offset(dx, 0),
-        child: Opacity(opacity: opacity.clamp(0.0, 1.0), child: child),
-      );
+  Widget _pane(int i, bool turning, double t, double exit) {
+    final (dx, op) = _pose(i, turning, t, exit);
+    final leaving = turning && _leaving.any((r) => r.i == i);
+    final visible = i == _current || leaving;
+    return Offstage(
+      // keyed so a pane keeps its element (and state) even when its slot in
+      // the stack changes as the current pane moves to the end
+      key: ValueKey(i),
+      offstage: !visible,
+      child: IgnorePointer(
+        ignoring: leaving,
+        child: FractionalTranslation(
+          translation: Offset(dx, 0),
+          child: Opacity(opacity: op.clamp(0.0, 1.0), child: widget.children[i]),
+        ),
+      ),
+    );
+  }
+
+  (double, double) _pose(int i, bool turning, double t, double exit) {
+    if (!turning) return (0, 1);
+    if (i == _current) return (_inFrom.$1 * (1 - t), _inFrom.$2 + (1 - _inFrom.$2) * t);
+    for (final r in _leaving) {
+      if (r.i == i) return (r.dx + (exit - r.dx) * t, r.op * (1 - t));
+    }
+    return (0, 1);
+  }
 }
 
 EdgeInsets _listPad(BuildContext context) => EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom + 24);
@@ -415,13 +471,6 @@ class _AdvancedTab extends StatelessWidget {
               title: l.aiReplyStyle,
               value: s.replyMode == ReplyMode.full ? l.aiReplyStyleFull : l.aiReplyStyleCharacter,
               onTap: () => _pickReplyMode(context),
-            ),
-            TgCheckCell(
-              icon: Ic.palette,
-              title: l.aiStripMarkdown,
-              value: s.stripMarkdownInCharacterMode,
-              divider: false,
-              onChanged: (v) => cfg.update((x) => x.copyWith(stripMarkdownInCharacterMode: v)),
             ),
           ],
         ),

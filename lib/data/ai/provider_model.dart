@@ -310,7 +310,9 @@ class AiSettings {
     required this.replyMode,
     required this.temperature,
     required this.maxOutput,
-    required this.typewriterMs,
+    required this.firstBubbleDelayMs,
+    required this.bubbleGapScale,
+    required this.pacingJitter,
     required this.stripMarkdownInCharacterMode,
     required this.compaction,
   });
@@ -320,7 +322,15 @@ class AiSettings {
   final ReplyMode replyMode;
   final double temperature;
   final int maxOutput;
-  final int typewriterMs;
+
+  /// read time before the first bubble of a character mode turn
+  final int firstBubbleDelayMs;
+
+  /// multiplier on the pause between two character mode bubbles
+  final double bubbleGapScale;
+
+  /// 0 to 0.6, half span of the dice around every pacing value, 0 is a metronome
+  final double pacingJitter;
   final bool stripMarkdownInCharacterMode;
   final CompactionSettings compaction;
 
@@ -330,7 +340,9 @@ class AiSettings {
     ReplyMode? replyMode,
     double? temperature,
     int? maxOutput,
-    int? typewriterMs,
+    int? firstBubbleDelayMs,
+    double? bubbleGapScale,
+    double? pacingJitter,
     bool? stripMarkdownInCharacterMode,
     CompactionSettings? compaction,
   }) =>
@@ -340,7 +352,9 @@ class AiSettings {
         replyMode: replyMode ?? this.replyMode,
         temperature: temperature ?? this.temperature,
         maxOutput: maxOutput ?? this.maxOutput,
-        typewriterMs: typewriterMs ?? this.typewriterMs,
+        firstBubbleDelayMs: firstBubbleDelayMs ?? this.firstBubbleDelayMs,
+        bubbleGapScale: bubbleGapScale ?? this.bubbleGapScale,
+        pacingJitter: pacingJitter ?? this.pacingJitter,
         stripMarkdownInCharacterMode: stripMarkdownInCharacterMode ?? this.stripMarkdownInCharacterMode,
         compaction: compaction ?? this.compaction,
       );
@@ -351,7 +365,9 @@ class AiSettings {
         'replyMode': replyWire(replyMode),
         'temperature': temperature,
         'maxOutput': maxOutput,
-        'typewriterMs': typewriterMs,
+        'firstBubbleDelayMs': firstBubbleDelayMs,
+        'bubbleGapScale': bubbleGapScale,
+        'pacingJitter': pacingJitter,
         'stripMarkdownInCharacterMode': stripMarkdownInCharacterMode,
         'compaction': compaction.toJson(),
       };
@@ -362,7 +378,9 @@ class AiSettings {
         replyMode: replyModeOf(j['replyMode'] as String? ?? 'full'),
         temperature: (j['temperature'] as num?)?.toDouble() ?? 1,
         maxOutput: (j['maxOutput'] as num?)?.toInt() ?? 0,
-        typewriterMs: (j['typewriterMs'] as num?)?.toInt() ?? 50,
+        firstBubbleDelayMs: (j['firstBubbleDelayMs'] as num?)?.toInt() ?? 1000,
+        bubbleGapScale: (j['bubbleGapScale'] as num?)?.toDouble() ?? 1,
+        pacingJitter: (j['pacingJitter'] as num?)?.toDouble() ?? 0.35,
         stripMarkdownInCharacterMode: j['stripMarkdownInCharacterMode'] as bool? ?? true,
         compaction: j['compaction'] is Map ? CompactionSettings.fromJson(j['compaction'] as Map<String, dynamic>) : const CompactionSettings(),
       );

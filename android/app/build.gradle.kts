@@ -20,7 +20,11 @@ plugins {
 android {
     namespace = "fan.x0.para"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    // Pinned rather than taken from flutter.ndkVersion. The PTY JNI needs a
+    // CMake that knows posix_openpt and that has been true since 22, and an
+    // unpinned NDK is how a toolchain bump turns into a build failure on a
+    // machine nobody is watching.
+    ndkVersion = "28.2.13676358"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -44,6 +48,29 @@ android {
         // flag during build.
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+
+        // Flutter owns the APK's ABI list, including under --split-per-abi, so
+        // this only has to agree with it rather than drive it.
+        externalNativeBuild {
+            cmake {
+                abiFilters += listOf("armeabi-v7a", "arm64-v8a", "x86_64")
+            }
+        }
+    }
+
+    externalNativeBuild {
+        cmake {
+            path = file("src/main/cpp/CMakeLists.txt")
+        }
+    }
+
+    packaging {
+        jniLibs {
+            // Load bearing, not a preference. With the default the .so files
+            // stay compressed inside the APK and there is no file on disk to
+            // execve, so proot cannot start at all.
+            useLegacyPackaging = true
+        }
     }
 
     signingConfigs {
@@ -94,9 +121,54 @@ flutter {
     source = "../.."
 }
 
+val requiredWorkspaceLibs = listOf(
+    "armeabi-v7a/libproot_exec.so",
+    "armeabi-v7a/libproot_loader.so",
+    "armeabi-v7a/libtalloc.so",
+    "armeabi-v7a/libandroid-shmem.so",
+    "arm64-v8a/libproot_exec.so",
+    "arm64-v8a/libproot_loader.so",
+    "arm64-v8a/libtalloc.so",
+    "arm64-v8a/libandroid-shmem.so",
+    "x86_64/libproot_exec.so",
+    "x86_64/libproot_loader.so",
+    "x86_64/libtalloc.so",
+    "x86_64/libandroid-shmem.so",
+)
+
 dependencies {
+    // XZInputStream for RootfsExtractor. Debian rootfs images are tar.xz and
+    // java.util.zip has no xz, so without this a Debian install cannot unpack.
+    implementation("org.tukaani:xz:1.10")
+
     // Required by isCoreLibraryDesugaringEnabled above. 2.1.4 is the version that
     // works with AGP 9.x; the 1.2.2 that flutter_local_notifications pins in its own
     // module is not supported by this Gradle/AGP generation.
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
+}
+
+/**
+ * Fetches proot and its shared library dependencies into jniLibs.
+ *
+ * The binaries are gitignored: they are large, they come from a third party
+ * pool that rolls its versions, and checking in a binary nobody reviews is how
+ * a supply chain problem becomes permanent. The sha256 of every file is in
+ * tool/proot_checksums.txt and the script refuses to finish on a mismatch.
+ */
+val fetchWorkspaceLibs = tasks.register<Exec>("fetchWorkspaceLibs") {
+    workingDir = rootProject.projectDir
+    commandLine("bash", "tool/fetch_proot.sh")
+    // only when something is actually missing. The script itself is a network
+    // round trip and a build should not need one.
+    onlyIf {
+        requiredWorkspaceLibs.any { rel ->
+            val f = file("src/main/jniLibs/$rel")
+            !f.exists() || f.length() == 0L
+        }
+    }
+    outputs.upToDateWhen { false }
+}
+
+tasks.matching { it.name == "preBuild" }.configureEach {
+    dependsOn(fetchWorkspaceLibs)
 }

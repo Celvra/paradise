@@ -1,5 +1,3 @@
-import 'package:audioplayers/audioplayers.dart';
-import 'package:flutter_tts/flutter_tts.dart';
 import 'dart:io';
 import 'dart:math' as math;
 
@@ -14,6 +12,7 @@ import '../core/ui_kit.dart';
 import '../data/models.dart';
 import '../data/store.dart';
 import '../l10n/x.dart';
+import 'workspace/file_preview_page.dart';
 
 // painted stand in for a map tile used by the location tab and the location bubble
 class MapPainter extends CustomPainter {
@@ -208,23 +207,6 @@ Widget mediaBody(BuildContext context, {required Msg m, required Pal p, required
   final sub = TextStyle(color: out ? p.timeOut : p.timeIn, fontSize: 13, height: 1.2, decoration: TextDecoration.none, fontWeight: FontWeight.w400);
   final accent = out ? p.lineOut : p.lineIn;
   switch (m.kind) {
-    case MsgKind.voice:
-      final secs = (m.data['dur'] as num?)?.toInt() ?? 3;
-      final bars = List<double>.generate(22, (i) => 5 + ((i * 7 + secs * 3) % 11) * 1.6);
-      return GestureDetector(
-        onTap: onAction,
-        behavior: HitTestBehavior.opaque,
-        child: SizedBox(
-          width: math.min(width, 230),
-          child: Row(children: [
-            Container(width: 40, height: 40, decoration: BoxDecoration(color: out ? p.lineOut : p.accent, shape: BoxShape.circle), child: const Center(child: Text('▶', style: TextStyle(color: Color(0xFFFFFFFF), fontSize: 16, decoration: TextDecoration.none)))),
-            const SizedBox(width: 8),
-            Expanded(child: Row(crossAxisAlignment: CrossAxisAlignment.center, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [for (final h in bars) Container(width: 2.2, height: h, decoration: BoxDecoration(color: accent.withAlpha(190), borderRadius: BorderRadius.circular(1.5)))])),
-            const SizedBox(width: 8),
-            Text('0:${secs.toString().padLeft(2, '0')}', style: sub),
-          ]),
-        ),
-      );
     case MsgKind.transfer:
       return WalletCard(msg: m, width: width, onTap: onAction);
     case MsgKind.photo:
@@ -259,7 +241,14 @@ Widget mediaBody(BuildContext context, {required Msg m, required Pal p, required
       final dot = name.lastIndexOf('.');
       final ext = dot > 0 ? name.substring(dot + 1).toUpperCase() : '';
       if (music && dot > 0) name = name.substring(0, dot);
-      return SizedBox(
+      // a file the assistant produced opens in the workspace preview rather than
+      // doing nothing. The path is only there for files this app wrote; anything
+      // else falls through to the long press menu.
+      final path = m.data['path'] as String?;
+      final openable = !music && path != null && path.isNotEmpty && File(path).existsSync();
+      return Tap(
+        onTap: openable ? () => showFilePreview(context, File(path), title: name) : null,
+        child: SizedBox(
         width: width,
         child: Row(children: [
           Container(width: 48, height: 48, decoration: BoxDecoration(color: music ? const Color(0xFFF45255) : accent, shape: BoxShape.circle), child: Center(child: TgIcon(music ? Ic.music : Ic.file, color: const Color(0xFFFFFFFF), size: 26, stroke: 1.8))),
@@ -272,6 +261,7 @@ Widget mediaBody(BuildContext context, {required Msg m, required Pal p, required
             ]),
           ),
         ]),
+        ),
       );
     case MsgKind.location:
       final lat = (m.data['lat'] as num?) ?? 0;
@@ -492,23 +482,4 @@ Widget _stickerFace(Msg m) {
     borderRadius: BorderRadius.circular(10),
     child: remote ? Image.network(path, width: 150, height: 150, fit: BoxFit.cover, gaplessPlayback: true, errorBuilder: (_, __, ___) => const SizedBox(width: 150, height: 150)) : Image.file(File(path), width: 150, height: 150, fit: BoxFit.cover, gaplessPlayback: true),
   );
-}
-
-final AudioPlayer _voicePlayer = AudioPlayer();
-final FlutterTts _voiceTts = FlutterTts();
-
-/// plays the synthesized file, or reads the transcript with the system voice
-Future<void> playVoice(Msg m) async {
-  final path = '${m.data['path'] ?? ''}';
-  final speed = ((m.data['speed'] as num?) ?? 1).toDouble();
-  try {
-    if (path.isNotEmpty && File(path).existsSync()) {
-      await _voicePlayer.stop();
-      await _voicePlayer.setPlaybackRate(speed.clamp(0.5, 2.0));
-      await _voicePlayer.play(DeviceFileSource(path));
-    } else {
-      await _voiceTts.setSpeechRate((0.5 * speed).clamp(0.1, 1.0));
-      await _voiceTts.speak(m.text);
-    }
-  } catch (_) {}
 }

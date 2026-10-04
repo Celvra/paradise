@@ -8,7 +8,9 @@ import 'core/theme.dart';
 import 'data/ai_config.dart';
 import 'data/human/notifications.dart';
 import 'data/store.dart';
+import 'data/workspace/workspace_bootstrap.dart';
 import 'ui/human_data_pages.dart' show appNav, askToolPermission;
+import 'ui/workspace/write_review.dart';
 import 'l10n/x.dart';
 import 'ui/ai_model_picker.dart' show AiScope;
 import 'ui/dialogs_page.dart';
@@ -30,6 +32,21 @@ Future<void> main() async {
   // heartbeat and the periodic background job for killed-app delivery
   await Notifier.instance.init();
   store.human!.askHandler = askToolPermission;
+  final wsStack = await bootstrapWorkspace();
+  store.workspaceStack = wsStack;
+  watchExtractEvents(wsStack.channel);
+  // the workspace write gate. Separate from askHandler because that one is a
+  // standing per tool yes or no, while this asks about one specific change with
+  // the diff already computed and is only wired while a reply is running
+  store.wsReviewHandler = (write, chat) async {
+    final ok = await askWorkspaceWrite(appNav.currentState?.overlay?.context, write, allowAll: () {
+      chat.ws.allowAll = true;
+      store.saveChat(chat);
+    });
+    return ok;
+  };
+  // workspace runtime. registered before the first reply so an agent mode chat
+  // bound to a workspace can reach shell on its very first pass
   store.startHuman();
   unawaited(registerBackground());
   runApp(TgApp(store: store, ai: ai));

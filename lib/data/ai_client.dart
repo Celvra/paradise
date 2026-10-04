@@ -38,7 +38,9 @@ class AiClient {
       replyMode: ReplyMode.full,
       temperature: 1,
       maxOutput: 0,
-      typewriterMs: 0,
+      firstBubbleDelayMs: 1000,
+      bubbleGapScale: 1,
+      pacingJitter: 0.35,
       stripMarkdownInCharacterMode: false,
       compaction: const CompactionSettings(),
     );

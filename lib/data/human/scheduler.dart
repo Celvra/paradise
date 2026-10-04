@@ -306,6 +306,45 @@ class Scheduler {
     }
   }
 
+  /// The post reply dice: every finished answer rolls once more for whether
+  /// the assistant wants to speak again on its own soon. Without this the
+  /// proactive side only lived on the model remembering to call
+  /// schedule_message, which it forgets, and that read as coldness.
+  ///
+  /// The wait is minutes to a couple of hours, skewed short, and the type is
+  /// picked from how the conversation actually went. A task the user asked
+  /// to be left alone is never queued; the gate still vets the task at fire
+  /// time, so mood and quiet hours are honoured twice.
+  ScheduledTask? rollProactive({required String chatId, required HumanState s, required HumanSettings cfg, required int now, required HumanRandom rng, required bool userAnnoyed}) {
+    if (!cfg.proactive) return null;
+    if (userAnnoyed) return null;
+    if (s.consecutiveProactive >= cfg.maxConsecutive) return null;
+    if (s.stage == Stage.stranger) return null;
+    final will = s.proactiveWill(cfg, now);
+    if (!rng.chance(will * 0.45)) return null;
+    final type = s.silence(now) > 3 * 3600000 ? ProactiveType.checkin : (rng.chance(0.5) ? ProactiveType.share : ProactiveType.followup);
+    final wait = _postReplyWait(rng);
+    final t = schedule(
+      chatId: chatId,
+      delayMs: wait,
+      prompt: switch (type) {
+        ProactiveType.checkin => 'You were left with the last word a while ago. See how the user is doing, in your own tone.',
+        ProactiveType.share => 'Something from this chat or your day is worth sharing. Bring it up briefly.',
+        _ => 'Pick up the thread you two left hanging, without recapping.',
+      },
+      condition: 'user_silent',
+      type: type,
+      now: now,
+    );
+    return t;
+  }
+
+  /// minutes to about two hours, weighted toward the short end
+  int _postReplyWait(HumanRandom rng) {
+    final r = rng.next() * rng.next(); // triangular toward zero
+    return (3 * 60000 + r * 110 * 60000).round();
+  }
+
   List<Map<String, dynamic>> toJson() => [for (final t in tasks) t.toJson()];
   void loadJson(List<dynamic> raw) {
     tasks

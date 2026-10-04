@@ -15,6 +15,7 @@ import 'persona_card.dart';
 import 'profile_page.dart';
 import 'search_page.dart';
 import 'settings_page.dart';
+import 'workspace/workspace_prompts.dart' show askTypeDelete;
 
 // main tabs shell like MainTabsActivity with the glass tab row floating at the bottom
 class DialogsPage extends StatefulWidget {
@@ -207,14 +208,15 @@ class _ChatsTabState extends State<ChatsTab> {
             c.touch();
           }),
       const MenuItem.gap(),
-      MenuItem(l.menuClearHistory, Ic.trash, () => _confirm(l.dialogClearHistoryTitle, l.dialogClearHistoryMessage(c.persona.name), l.actionClear, () => st.clearHistory(c)), danger: true),
-      MenuItem(l.menuDeleteChat, Ic.close, () => _confirm(l.dialogDeleteChatTitle, l.dialogDeleteChatMessage(c.persona.name), l.actionDelete, () => st.deleteChat(c)), danger: true),
+      MenuItem(l.menuClearHistory, Ic.trash, () => _confirmDelete(l.dialogClearHistoryTitle, l.dialogClearHistoryMessage(c.persona.name), () => st.clearHistory(c)), danger: true),
+      MenuItem(l.menuDeleteChat, Ic.close, () => _confirmDelete(l.dialogDeleteChatTitle, l.dialogDeleteChatMessage(c.persona.name), () => st.deleteChat(c)), danger: true),
     ]);
   }
 
-  Future<void> _confirm(String title, String msg, String action, VoidCallback run) async {
-    final r = await showTgDialog<bool>(context, title: title, message: msg, actions: [DialogAction(context.l.actionCancel, false), DialogAction(action, true, danger: true)]);
-    if (r == true) run();
+  // typed confirm, a tap through a menu is too easy for what this takes away
+  Future<void> _confirmDelete(String title, String msg, VoidCallback run) async {
+    final ok = await askTypeDelete(context, title: title, message: msg);
+    if (ok) run();
   }
 
   void _topMenu(BuildContext ctx) {

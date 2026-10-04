@@ -1,10 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:math' show Random, max;
+import 'dart:math' show Random, max, min;
 
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
+import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -18,12 +19,13 @@ import 'ai/content.dart';
 import 'ai/errors.dart';
 import 'ai/prompt.dart';
 import 'ai/provider_model.dart';
-import 'ai/segmenter.dart';
+import 'ai/segmenter.dart' show Segmenter, humanDelay, jitterMs, typingMs;
 import 'ai/adapter.dart';
 import 'ai_client.dart';
 import 'ai/tool_wire.dart';
 import 'ai_config.dart';
 import 'backup.dart';
+import 'db.dart';
 import 'human/br_parser.dart';
 import 'human/hub.dart';
 import 'human/human_models.dart';
@@ -33,9 +35,17 @@ import 'human/notifications.dart';
 import 'human/scheduler.dart';
 import 'human/sticker_lib.dart';
 import 'models.dart';
+import 'workspace/host_file_tools.dart';
+import 'workspace/workspace.dart';
+import 'workspace/workspace_metadata.dart';
+import 'workspace/workspace_runtime.dart';
+import 'workspace/workspace_bootstrap.dart';
+import 'workspace/workspace_store.dart';
+import 'workspace/workspace_tools.dart';
 
 part 'store_human.dart';
 part 'store_agent.dart';
+part 'store_workspace.dart';
 part 'backup_store.dart';
 
 class _Run {
@@ -46,6 +56,13 @@ class _Run {
 
   /// bubbles that were cut but are still waiting for their pause
   final List<String> queued = [];
+
+  /// The trace row the tool call currently running is writing into. A tool
+  /// handler cannot reach the row any other way: HTool.run only sees the
+  /// arguments, not the call. The workspace tools use this to attach a diff that
+  /// belongs on screen and must not go into the transcript.
+  Msg? row;
+
   bool get cancelled => token.cancelled;
 }
 
@@ -59,8 +76,54 @@ class Store extends ChangeNotifier {
   final List<Chat> chats = [];
   final Map<String, _Run> _runs = {};
 
+  /// Message history storage. Null when SQLite is unavailable, which is the
+  /// test harness and any platform the plugin does not reach; the blob in
+  /// SharedPreferences carries the chats instead, exactly as before.
+  ChatDb? _db;
+
+  /// Ids of chats changed since the last flush. The listener marks; the flush
+  /// writes one chat per id, so a keystroke in one draft no longer rewrites
+  /// every conversation in the app. Ids rather than chat objects because a
+  /// backup restore can swap the object under a live id.
+  final Set<String> _dirtyIds = {};
+
+  /// Per chat listener closures. Tearoffs cannot carry the chat, and a fresh
+  /// `() => _onChat(c)` at remove time would not match the one at add time,
+  /// so the closure is kept where removal can find it.
+  final Map<Chat, VoidCallback> _chatListeners = {};
+
+  /// True once this install has been seen with chats, however that was
+  /// recorded: the legacy blob key, the marker, or rows in the database. A
+  /// user who deleted everything must not be handed the starter chats again
+  /// on the next boot, so first launch is the only seed trigger.
+  bool _everPopulated = false;
+
+  /// Sidebar position per chat id, database ordinals when SQLite is on and
+  /// list indexes when it is not. New chats take [maxOrd] + 1, so adding one
+  /// cannot shuffle the existing ones.
+  final Map<String, int> _chatOrd = {};
+
+  int get maxOrd => _chatOrd.values.fold(-1, (a, b) => a > b ? a : b);
+
   /// humanize layer: settings, memory, stickers, scheduler, wallet, MCP
   HumanHub? human;
+
+  /// workspace list and the feature switch. Its own notifier so the file
+  /// browser does not rebuild the chat list on every rename.
+  late final WorkspaceStore workspace;
+
+  /// The environment stack. Set at startup by main so the tool layer and the
+  /// environment page share one channel and one installer.
+  WorkspaceStack? workspaceStack;
+
+  /// Asked before a workspace write lands, with the diff already computed. Set
+  /// by main.dart next to askHandler. Null means a headless reply, which writes
+  /// without asking because there is nobody there to ask.
+  ///
+  /// The chat is passed in because "allow this for the rest of the conversation"
+  /// writes to its binding, and the tool handler has no argument for it.
+  Future<bool?> Function(WsPendingWrite write, Chat chat)? wsReviewHandler;
+
   Timer? _humanTimer;
   Timer? _saveTimer;
   int _seq = 0;
@@ -191,11 +254,12 @@ class Store extends ChangeNotifier {
   /// arb files are named after
   String? localeTag;
 
-  static Future<Store> load() async {
+  static Future<Store> load({String? dbPath}) async {
     final s = Store._(await SharedPreferences.getInstance());
     // base/key/model now live in AiConfig and are migrated there
     s._loadPersonas();
     s.human = await HumanHub.load(s._sp);
+    s.workspace = await WorkspaceStore.load(s._sp);
     s.userBio = s._sp.getString('userBio') ?? '';
     s.haptics = s._sp.getBool('haptics') ?? true;
     s.countMuted = s._sp.getBool('countMuted') ?? false;
@@ -216,23 +280,114 @@ class Store extends ChangeNotifier {
     s.recentSearch = s._sp.getStringList('recentSearch') ?? s._sp.getStringList('recentSearches') ?? [];
     final lang = s._sp.getString('locale');
     s.localeTag = lang == null || lang.isEmpty ? null : lang;
-    final raw = s._sp.getString('chats');
-    if (raw != null) {
-      try {
-        for (final j in jsonDecode(raw) as List) {
-          s.chats.add(Chat.fromJson(j as Map<String, dynamic>));
-        }
-      } catch (_) {
-        s.chats.clear();
-      }
-    } else {
-      s._seed();
-    }
-    for (final c in s.chats) {
-      c.addListener(s._onChat);
-    }
+    await s._loadChats(dbPath: dbPath);
     themeCtl.setDark(s.dark, animate: false);
     return s;
+  }
+
+  /// The chat list, from SQLite when there is a database and from the
+  /// SharedPreferences blob when there is not.
+  ///
+  /// Upgrading is automatic and safe to interrupt: a legacy blob is moved into
+  /// the database in one transaction, and the blob key is removed only after
+  /// the chats read back out of the database match what went in. If anything
+  /// disagrees, the blob stays and remains the source of truth for every
+  /// later run.
+  Future<void> _loadChats({String? dbPath}) async {
+    final raw = _sp.getString('chats');
+    // the key in any shape, even '[]', means a user was here before; the
+    // marker covers a store that was seeded on SQLite and saved straight to
+    // the database, where no blob key ever existed
+    _everPopulated = raw != null || (_sp.getBool('chatsSeen') ?? false);
+    try {
+      _db = await ChatDb.open(path: dbPath);
+    } catch (_) {
+      _db = null;
+    }
+
+    if (_db != null) {
+      await _migrateBlob(raw);
+      try {
+        chats.addAll(await _db!.loadChats());
+        final ords = await _db!.chatOrds();
+        // keep the positions the sidebar had, so new chats append after them
+        _chatOrd.addAll(ords);
+        for (var i = 0; i < chats.length; i++) {
+          _chatOrd.putIfAbsent(chats[i].id, () => i);
+        }
+        // every chat's history back into memory: the ui reads c.msgs directly
+        // and a chat without its rows would render empty
+        for (final c in chats) {
+          c.msgs.addAll(await _db!.loadMsgs(c.id));
+        }
+        if (chats.isNotEmpty) _everPopulated = true;
+      } catch (_) {
+        // a database that opened but cannot be read falls back to the blob,
+        // which the migration above has not touched in that case
+        _db = null;
+        chats.clear();
+        _chatOrd.clear();
+      }
+    }
+
+    // no database, or one that could not be read: the blob path, exactly as
+    // every build before this one
+    if (_db == null) {
+      if (raw != null) {
+        try {
+          for (final j in jsonDecode(raw) as List) {
+            chats.add(Chat.fromJson(j as Map<String, dynamic>));
+          }
+        } catch (_) {
+          chats.clear();
+        }
+      }
+    }
+
+    for (var i = 0; i < chats.length; i++) {
+      _chatOrd.putIfAbsent(chats[i].id, () => i);
+    }
+    if (chats.isNotEmpty) _everPopulated = true;
+    // seeding only on the true first launch: an explicit empty list or an
+    // empty database is a user who deleted everything, not a missed first run
+    if (!_everPopulated) {
+      _seed();
+      _dirtyIds.addAll(chats.map((e) => e.id));
+      // the marker set alone starts no timer, and an app the user never types
+      // into must still persist its starter chats
+      _scheduleSave();
+    }
+    // written on every load, not only when seeding: a store that arrived by
+    // migration and was later emptied must not look like a missed first run
+    _everPopulated = true;
+    _sp.setBool('chatsSeen', true);
+    for (final c in chats) {
+      _listen(c);
+    }
+  }
+
+  /// Moves the legacy chat blob into SQLite. Only runs while the blob key is
+  /// still present, so this is once per install. Migration runs in
+  /// [ChatDb.migrateFrom]'s transaction, and the key is dropped only when
+  /// what went in and what came back agree, so an interrupted upgrade finds
+  /// the blob still there rather than an empty database.
+  Future<void> _migrateBlob(String? raw) async {
+    if (raw is! String) return;
+    var migrated = 0;
+    var inBlob = 0;
+    try {
+      inBlob = (jsonDecode(raw) as List).length;
+    } catch (_) {
+      return; // an unreadable blob cannot be verified, leave it alone
+    }
+    try {
+      migrated = await _db!.migrateFrom(raw);
+    } catch (_) {
+      return; // the blob stays, next run tries again
+    }
+    if (migrated != inBlob) return; // unverifiable, keep the blob
+    await _sp.remove('chats');
+    _everPopulated = true;
   }
 
   static Store of(BuildContext c) => c.dependOnInheritedWidgetOfExactType<StoreScope>()!.notifier!;
@@ -323,9 +478,24 @@ class Store extends ChangeNotifier {
     return out;
   }
 
-  void _onChat() {
+  void _onChat(Chat c) {
+    _dirtyIds.add(c.id);
     notifyListeners();
     _scheduleSave();
+  }
+
+  /// Wires [c] so edits to it reach storage, the way every chat loaded at
+  /// startup is wired.
+  void _listen(Chat c) {
+    if (_chatListeners.containsKey(c)) return;
+    final fn = () => _onChat(c);
+    _chatListeners[c] = fn;
+    c.addListener(fn);
+  }
+
+  void _unlisten(Chat c) {
+    final fn = _chatListeners.remove(c);
+    if (fn != null) c.removeListener(fn);
   }
 
   void _scheduleSave() {
@@ -336,14 +506,50 @@ class Store extends ChangeNotifier {
   /// Says the chat list itself changed, rather than the contents of one chat.
   ///
   /// Public because the backup restore is an extension and an extension cannot
-  /// reach notifyListeners.
+  /// reach notifyListeners. The whole list is marked: a restore swaps or adds
+  /// chats wholesale, and each of them must be written back.
   void chatsChanged() {
+    _dirtyIds.addAll(chats.map((e) => e.id));
     notifyListeners();
     _scheduleSave();
   }
 
+  /// Persists what changed since the last flush: on SQLite the touched chats,
+  /// one transaction each, otherwise the whole list as the single blob.
+  ///
+  /// A dirty id without a live chat is the deletion path: its database row
+  /// has to go. The blob path cannot lose a deletion because it rewrites the
+  /// surviving list in full.
   void _save() {
-    _sp.setString('chats', jsonEncode(chats.map((e) => e.toJson()).toList()));
+    final db = _db;
+    if (db == null) {
+      _sp.setString('chats', jsonEncode(chats.map((e) => e.toJson()).toList()));
+      _dirtyIds.clear();
+      return;
+    }
+    if (_dirtyIds.isEmpty) return;
+    final ids = [..._dirtyIds];
+    _dirtyIds.clear();
+    unawaited(_saveChats(db, ids));
+  }
+
+  Future<void> _saveChats(ChatDb db, List<String> ids) async {
+    for (final id in ids) {
+      final at = chats.indexWhere((e) => e.id == id);
+      try {
+        if (at < 0) {
+          _chatOrd.remove(id);
+          await db.deleteChat(id);
+        } else {
+          final c = chats[at];
+          _chatOrd[id] ??= maxOrd + 1;
+          await db.saveChat(c, _chatOrd[id]!, msgs: c.msgs);
+        }
+      } catch (_) {
+        // a failed write must not take the run that touched the chat down
+        // with it; the in memory copy is intact, the row keeps its old shape
+      }
+    }
   }
 
   /// Writes into the first provider and the first chain node, so the old
@@ -698,6 +904,13 @@ class Store extends ChangeNotifier {
   }
 
   /// Sets or clears the wallpaper of one conversation. Null hands the chat back
+  /// Persists a chat that something outside the store changed, such as a
+  /// workspace binding picked in a menu.
+  void saveChat(Chat c) {
+    c.touch();
+    _scheduleSave();
+  }
+
   /// to the global choice, an empty string opts it out to the plain gradient.
   void setChatWallpaper(Chat c, String? path) {
     c.wallpaperPath = path;
@@ -765,8 +978,9 @@ class Store extends ChangeNotifier {
   Chat createChat(String name, String prompt, {String bio = '', String greeting = '', String emoji = '', String avatarPath = '', int? color, String modelProvider = '', String modelId = '', bool modelFallback = true, bool? thinking, bool? agent}) {
     final c = Chat(id: _id(), persona: Persona(name: name, prompt: prompt, color: color ?? name.hashCode.abs() % avatarColorCount, bio: bio, greeting: greeting, emoji: emoji, avatarPath: avatarPath, modelProvider: modelProvider, modelId: modelId, modelFallback: modelFallback, thinking: thinking, agent: agent));
     if (greeting.trim().isNotEmpty) c.msgs.add(Msg(id: _id(), out: false, text: greeting.trim(), time: DateTime.now().millisecondsSinceEpoch));
-    c.addListener(_onChat);
+    _listen(c);
     chats.add(c);
+    _dirtyIds.add(c.id);
     notifyListeners();
     _scheduleSave();
     return c;
@@ -791,8 +1005,11 @@ class Store extends ChangeNotifier {
 
   void deleteChat(Chat c) {
     stop(c);
-    c.removeListener(_onChat);
+    _unlisten(c);
     chats.remove(c);
+    // the id itself is the work order: at flush time the chat is gone from
+    // [chats], which is what turns the write into a row deletion
+    _dirtyIds.add(c.id);
     notifyListeners();
     _scheduleSave();
   }
@@ -1005,6 +1222,10 @@ class Store extends ChangeNotifier {
       'mcp': mcp,
       'args': call.args,
       'result': '',
+      // the chat a workspace tool needs in order to turn a model path back into
+      // a file. Trace rows live inside the chat json, so this is redundant while
+      // the chat is loaded and load bearing once one is rendered from history.
+      'chatId': c.id,
       't0': _nowMs,
       'state': 'run',
     });
@@ -1062,8 +1283,6 @@ class Store extends ChangeNotifier {
       case MsgKind.sticker:
         final emoji = '${m.data['emoji'] ?? ''}';
         return '[Sticker${m.data['sid'] == null ? '' : ' ${m.data['sid']}'}: ${emoji.isEmpty ? 'image sticker' : emoji}]';
-      case MsgKind.voice:
-        return '[Voice message: "${m.text}"]';
       case MsgKind.transfer:
         return '[${m.data['kind'] == 'redpacket' ? 'Red packet' : 'Transfer'} ${m.data['amount']} (${m.data['status']}): ${m.data['note'] ?? ''}]';
       case MsgKind.trace:
@@ -1195,6 +1414,11 @@ class Store extends ChangeNotifier {
     final run = _Run();
     _runs[c.id] = run;
     c.touch();
+    // the message reached the server the moment the run exists, the clock is
+    // for undelivered mail not for a pending reply, so it goes straight to
+    // the sent check and only turns into the double check when the answer
+    // actually lands
+    _advance(c, St.sending, St.sent);
 
     final charMode = cfg.settings.replyMode == ReplyMode.character;
     final segmenter = charMode ? Segmenter(strip: cfg.settings.stripMarkdownInCharacterMode) : null;
@@ -1204,7 +1428,7 @@ class Store extends ChangeNotifier {
     // assistant getting a tool table of its own.
     final showThink = thinkingFor(c);
     final agent = agentFor(c);
-    final table = agent ? <String, HTool>{for (final t in agentTools(c)) t.name: t} : <String, HTool>{};
+    final table = agent ? <String, HTool>{for (final t in await agentTools(c, _runs[c.id])) t.name: t} : <String, HTool>{};
     final specs = [for (final t in table.values) t.spec];
 
     final buf = StringBuffer();
@@ -1244,47 +1468,74 @@ class Store extends ChangeNotifier {
     final segQueue = <String>[];
     Timer? segTimer;
     String? segHolding;
-    var segNextAt = 0;
-    var segAny = false;
     final segRandom = Random();
+    final jitter = cfg.settings.pacingJitter;
+    // the first bubble waits a read delay the same way the humanize layer does
+    // otherwise the opening line lands while the user is still watching their
+    // own message go out
+    var segNextAt = _nowMs + jitterMs(cfg.settings.firstBubbleDelayMs, segRandom, jitter);
+    var segAny = false;
 
     void placeSeg(String text) {
       if (run.cancelled) return;
       final fresh = Msg(id: _id(), out: false, text: text, time: DateTime.now().millisecondsSinceEpoch);
       if (haptics) HapticFeedback.lightImpact();
-      _advance(c, St.sent, St.read);
       c.msgs.add(fresh);
       if (openId != c.id) c.unread++;
       c.typing = false;
-      segNextAt = _nowMs + humanDelay(text, random: segRandom);
+      segNextAt = _nowMs + humanDelay(text, random: segRandom, scale: cfg.settings.bubbleGapScale, spread: jitter);
       c.touch();
     }
 
+    // the bubble is typed out at keyboard pace, this is also where the double
+    // check lands: a reply being composed is proof the message was read
+    // three phases per bubble, hesitation dark, typing with the indicator up,
+    // then the bubble lands, one loop drives all of them
+    var segTypingUntil = 0;
     void pumpSeg([Completer<void>? done]) {
       segTimer?.cancel();
       segTimer = null;
-      for (;;) {
-        if (segHolding == null) {
-          if (segQueue.isEmpty || run.cancelled) {
-            if (run.cancelled) segQueue.clear();
-            if (done != null && !done.isCompleted) done.complete();
-            return;
-          }
-          final next = segQueue.removeAt(0);
-          if (next.trim().isEmpty) continue;
-          segHolding = next;
-        }
-        final wait = segNextAt - _nowMs;
-        if (wait > 0) {
-          c.typing = true;
-          c.touch();
-          segTimer = Timer(Duration(milliseconds: wait), () => pumpSeg(done));
+      if (run.cancelled) {
+        if (done != null && !done.isCompleted) done.complete();
+        return;
+      }
+      // mid typing phase, the bubble lands when the keyboard work is done
+      if (segTypingUntil > _nowMs) {
+        segTimer = Timer(Duration(milliseconds: segTypingUntil - _nowMs), () {
+          segTypingUntil = 0;
+          final text = segHolding!;
+          segHolding = null;
+          placeSeg(text);
+          pumpSeg(done);
+        });
+        return;
+      }
+      if (segHolding == null) {
+        if (segQueue.isEmpty) {
+          if (done != null && !done.isCompleted) done.complete();
           return;
         }
-        final text = segHolding!;
-        segHolding = null;
-        placeSeg(text);
+        final next = segQueue.removeAt(0);
+        if (next.trim().isEmpty) {
+          pumpSeg(done);
+          return;
+        }
+        segHolding = next;
       }
+      // hesitation first, a persona thinking between bubbles shows nothing
+      final wait = segNextAt - _nowMs;
+      if (wait > 0) {
+        segTimer = Timer(Duration(milliseconds: wait), () => pumpSeg(done));
+        return;
+      }
+      final text = segHolding!;
+      // composing is proof the message was read, the flip happens once the
+      // first bubble reaches the keyboard
+      _advance(c, St.sent, St.read);
+      c.typing = true;
+      c.touch();
+      segTypingUntil = _nowMs + typingMs(text, random: segRandom, spread: jitter);
+      pumpSeg(done);
     }
 
     void queueSegs(List<String> texts) {
@@ -1298,8 +1549,6 @@ class Store extends ChangeNotifier {
       if (run.cancelled) return;
       if (!accepted) {
         accepted = true;
-        _advance(c, St.sending, St.sent);
-        c.typing = true;
         c.touch();
       }
       if (segmenter != null) {
@@ -1323,7 +1572,7 @@ class Store extends ChangeNotifier {
 
     try {
       var turns = await _history(c);
-      final system = agent ? agentSystem(c) : _systemPrompt(c);
+      final system = agent ? await agentSystem(c) : _systemPrompt(c);
       // a plain reply is one pass, an agent reply keeps going while the model
       // asks for tools. Eight rounds is far past anything sane and only there
       // so a confused model cannot spin forever.

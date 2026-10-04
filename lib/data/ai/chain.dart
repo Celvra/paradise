@@ -138,6 +138,7 @@ Future<ChainOutcome> runChain({
           if (chunk.call != null) run.calls.add(chunk.call!);
           options.onChunk(chunk);
         }
+        if (options.cancel?.cancelled ?? false) return bail(AiError(AiErrorKind.aborted, 'Stopped', 0));
         if (!visible) throw AiError(AiErrorKind.empty, 'The model returned nothing', 0);
         if (run.blocks.isNotEmpty && run.blocks.last.text.isEmpty && run.blocks.last.ms >= 0) {
           run.blocks.removeLast();
@@ -147,9 +148,14 @@ Future<ChainOutcome> runChain({
         return ChainOutcome(toolCalls: run.calls, text: run.text, reasoningBlocks: run.blocks.where((b) => b.text.isNotEmpty).toList(), servedBy: run.servedBy, reports: reports);
       } catch (cause) {
         final error = toAiError(cause);
-        if (error.kind == AiErrorKind.aborted) {
-          reports.add(AttemptReport(node: node, ok: false, attempts: attempt + 1, error: error));
-          return bail(error);
+        // a stop tears the socket down mid stream, so the raw cause can be a
+        // connection error; whatever it looks like, once the token is cancelled
+        // the run is over and is reported as the stop it was, never retried
+        final stopped = error.kind == AiErrorKind.aborted || (options.cancel?.cancelled ?? false);
+        if (stopped) {
+          final abort = error.kind == AiErrorKind.aborted ? error : AiError(AiErrorKind.aborted, 'Stopped', 0);
+          reports.add(AttemptReport(node: node, ok: false, attempts: attempt + 1, error: abort));
+          return bail(abort);
         }
         if (visible) {
           // already on screen so keep the partial and do not switch provider

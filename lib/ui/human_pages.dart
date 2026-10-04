@@ -115,7 +115,6 @@ class HumanSettingsPage extends StatelessWidget {
           ]),
           TgSection(header: l.humanToolsHeader, children: [
             TgTextCell(title: l.humanToolsRow, icon: Ic.gear, value: '${h.mcp.tools.length} MCP', onTap: () => hOpen(c, const ToolsPage())),
-            TgTextCell(title: l.humanVoiceRow, icon: Ic.music, onTap: () => hOpen(c, const HumanVoicePage())),
             TgTextCell(title: l.humanWalletRow, icon: Ic.crown, value: h.wallet.balance.toStringAsFixed(2), divider: false, onTap: () => hOpen(c, const WalletPage())),
           ]),
           TgSection(header: l.humanDataHeader, children: [
@@ -175,8 +174,10 @@ class _BehaviorState extends State<HumanBehaviorPage> {
           TgSection(header: l.humanBrHeader, footer: l.humanBrFooter, children: [
             TgCheckCell(title: l.humanBrToggle, value: s.br, onChanged: (v) => set(() => s.br = v)),
             hSlider(p, l.humanBrPause, s.brDefaultMs.toDouble(), 100, 3000, (v) => set(() => s.brDefaultMs = (v / 50).round() * 50), fmt: (v) => '${v.round()} ms'),
+            hSlider(p, l.humanReplyDelay, s.replyDelayMs.toDouble(), 0, 8000, (v) => set(() => s.replyDelayMs = (v / 100).round() * 100), fmt: (v) => '${v.round()} ms'),
           ]),
           TgSection(header: l.humanRandomHeader, footer: l.humanRandomFooter, children: [
+            hSlider(p, l.humanPaceScale, s.paceScale, 0.5, 3, (v) => set(() => s.paceScale = (v * 20).round() / 20), fmt: (v) => '×${v.toStringAsFixed(2)}'),
             hSlider(p, l.humanTypingSpread, s.randomRange, 0, 0.6, (v) => set(() => s.randomRange = v), fmt: (v) => '±${_pct(v)}'),
             hSlider(p, l.humanTypoChance, s.typoProb, 0, 0.5, (v) => set(() => s.typoProb = v), fmt: _pct),
             hSlider(p, l.humanParticleChance, s.particleProb, 0, 1, (v) => set(() => s.particleProb = v), fmt: _pct),
@@ -344,43 +345,6 @@ class HumanRatingsPage extends StatelessWidget {
             TgCheckCell(title: l.humanRatingAuto, value: s.autoRate, divider: false, onChanged: (v) => set(() => s.autoRate = v)),
           ]),
           TgInfoCell('${l.humanRatingTuning}: ×${s.tuning.toStringAsFixed(2)}'),
-        ];
-      },
-    );
-  }
-}
-
-// ------------------------------------------------------------------- voice
-
-class HumanVoicePage extends StatelessWidget {
-  const HumanVoicePage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final l = context.l;
-    return HPage(
-      title: l.humanVoiceTitle,
-      body: (c, h, p) {
-        final s = h.settings;
-        void set(void Function() f) {
-          f();
-          h.changed();
-        }
-
-        Future<void> edit(String title, String cur, void Function(String) apply, {bool secret = false}) async {
-          final r = await hAsk(c, title, title, initial: cur);
-          if (r != null) set(() => apply(r.trim()));
-        }
-
-        return [
-          TgSection(footer: l.humanVoiceFooter, children: [
-            TgTextCell(title: l.humanVoiceEndpoint, value: s.ttsUrl.isEmpty ? l.humanNotSet : s.ttsUrl, onTap: () => edit(l.humanVoiceEndpoint, s.ttsUrl, (v) => s.ttsUrl = v)),
-            TgTextCell(title: l.provApiKey, value: s.ttsKey.isEmpty ? l.humanNotSet : '••••••', onTap: () => edit(l.provApiKey, s.ttsKey, (v) => s.ttsKey = v, secret: true)),
-            TgTextCell(title: l.humanVoiceModel, value: s.ttsModel, onTap: () => edit(l.humanVoiceModel, s.ttsModel, (v) => s.ttsModel = v)),
-            TgTextCell(title: l.humanVoiceVoice, value: s.ttsVoice, onTap: () => edit(l.humanVoiceVoice, s.ttsVoice, (v) => s.ttsVoice = v)),
-            hSlider(p, l.humanVoiceSpeed, s.ttsSpeed, 0.5, 2, (v) => set(() => s.ttsSpeed = double.parse(v.toStringAsFixed(2))), fmt: (v) => '${v.toStringAsFixed(2)}×'),
-            TgCheckCell(title: l.humanVoiceSystem, value: s.ttsSystem, divider: false, onChanged: (v) => set(() => s.ttsSystem = v)),
-          ]),
         ];
       },
     );

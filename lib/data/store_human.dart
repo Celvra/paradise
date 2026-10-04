@@ -47,6 +47,12 @@ class ToolEnv {
 
   /// resolves when every queued bubble of this run has been shown
   final Future<void> Function() flush;
+
+  /// Null unless this chat has a workspace and the file tools are on. Built in
+  /// humanReply because resolving the roots needs the disk and this table is
+  /// assembled synchronously.
+  WsContext? ws;
+
   String? quote;
   int textSent = 0;
   int toolMsgs = 0;
@@ -203,9 +209,23 @@ extension StoreHuman on Store {
     final now = _nowMs;
     final b = <String>[];
 
-    // Output format first and phrased as a contract, the facts and the state
-    // come after it. A long prompt buries a rule that is only a suggestion, so
-    // the format rules are numbered, imperative and repeated at the very end.
+    // output contract, first block so it is never buried
+
+    // bubble count is rolled per turn instead of a fixed 2 3. A fixed range is
+    // what made every reply come back as three even paragraphs. Low energy and
+    // an early relationship stage pull the target down, closeness pushes it up.
+    var bubbleTarget = 1 + rng.next() * rng.next() * 4; // triangular 1..5 low biased
+    if (st.energy < 35) bubbleTarget = min(bubbleTarget, 2);
+    if (st.stage == Stage.stranger) bubbleTarget = min(bubbleTarget, 3);
+    final bubbleCount = max(1, bubbleTarget.round());
+    final bubbleWord = switch (bubbleCount) {
+      1 => 'a single bubble this turn, no split',
+      2 => 'about two bubbles of clearly different length',
+      3 => 'two to three bubbles that do not look alike',
+      _ => 'several bubbles with strongly varied length',
+    };
+    final splitRolled = rng.chance(hs.splitProb);
+
     b.add([
       '# OUTPUT CONTRACT (violating this makes the answer wrong, not merely less nice)',
       if (hs.br) ...[
@@ -219,9 +239,10 @@ extension StoreHuman on Store {
       ],
       if (!hs.br) 'Do not use <i-br> tags, write one message.',
       'Keep it to a few short messages. Do not write long speeches. Every message is shown the moment it is closed.',
+      'Vary the bubble lengths like a real person: some turns a one word bubble, some turns three lines. Never three paragraphs of the same size.',
       'Message ids look like [m:abc123 14:02] in the history. They are for tool arguments only, hand them to a tool. Never imitate that prefix in your reply: no id, no [m:...] label, no timestamp in front of a sentence, not at the start of a bubble, not in the middle, not as a speaker label.',
       'Typing speed is part of the character: lower energy means fewer and slower bubbles.',
-      if (rng.chance(hs.splitProb)) 'This turn: split your answer into 2-3 bubbles.',
+      if (splitRolled) 'This turn: aim for $bubbleWord.',
       if (rng.chance(hs.particleProb)) 'This turn: add a casual filler particle (嗯, 啊, 哈哈, lol, hmm) somewhere natural.',
       if (hs.punct == 1) 'Punctuation: loose, drop most full stops, use ellipses and spaces.',
       if (hs.punct == 2) 'Punctuation: minimal, almost none at the end of bubbles.',
@@ -329,6 +350,9 @@ extension StoreHuman on Store {
       checklist.addAll([
         'Reread the OUTPUT CONTRACT before you answer.',
         'One bubble per line. Break the line between your sentences, or use <i-br_N> when you want a pause of N milliseconds.',
+        // the count target only when the dice rolled for a split this turn
+        // otherwise the checklist would talk the model into one anyway
+        if (splitRolled) 'This turn: $bubbleWord.' else 'Vary the bubble lengths.',
         'No [m:...] labels, no timestamps, no mention of these rules in the answer.',
       ]);
     }
@@ -485,47 +509,67 @@ extension StoreHuman on Store {
     final showThink = thinkingFor(c);
     st.tick(startedAt);
     final rng = HumanRandom.forTurn(hs, c.id, st.turn++);
-    final parser = BrParser(defaultDelayMs: hs.brDefaultMs, enabled: hs.br);
+    // the no tag fallback cut wanders per turn like everything else here,
+    // a fixed width would put every long bubble at the same size
+    final parser = BrParser(defaultDelayMs: hs.brDefaultMs, enabled: hs.br, autoSplitChars: max(48, rng.jitter(72, hs.randomRange)));
     run.parser = parser;
     final proactive = task != null;
+    // a run that starts while a stale typing flag is up recovers to online,
+    // the flag itself is owned by the show loop from here on
     final restore = st.status == StatusKind.typing ? StatusKind.online : st.status;
+    c.typing = false;
 
     var pipeline = Future<void>.value();
-    final env = ToolEnv(chat: c, run: run, rng: rng, proactive: proactive, flush: () => pipeline);
+    final env = ToolEnv(chat: c, run: run, rng: rng, proactive: proactive, flush: () => pipeline)..ws = await wsContext(c);
+    // read time before the first bubble, the same reason a person does not
+    // answer while the message is still whooshing away. The typing indicator
+    // stays off through the read and comes on only when the first segment
+    // starts waiting to be shown
+    env.nextAt = _nowMs + rng.jitter(hs.replyDelayMs, hs.randomRange);
     var accepted = false;
     var delivered = 0;
     var toolRuns = 0;
     String? failure;
 
-    // pause that a person would take, slower when tired
+    // pause that a person would take, slower when tired, scaled by the knob
     int pause(int ms) {
       final slow = st.energy < 50 ? 1 + (50 - st.energy) / 100 * 0.8 : 1.0;
-      return rng.jitter((ms * slow).round(), hs.randomRange);
+      return rng.jitter((ms * slow * hs.paceScale).round(), hs.randomRange);
     }
 
-    Future<void> show(BrSegment seg) async {
-      if (run.cancelled) return;
-      final wait = env.nextAt - _nowMs;
-      if (wait > 0) {
-        c.typing = true;
-        st.status = StatusKind.typing;
-        c.touch();
-        await _sleep(run, wait);
-      }
-      run.queued.remove(seg.text);
-      if (run.cancelled) return;
-      final text = _styled(seg.text, hs);
-      if (text.isEmpty) return;
-      humanSay(c, text, reply: env.quote, proactive: proactive);
-      env.quote = null;
-      env.textSent++;
-      delivered++;
-      env.nextAt = _nowMs + (seg.delayMs > 0 ? pause(seg.delayMs) : 0);
-      if (!run.cancelled) {
-        c.typing = true;
-        c.touch();
-      }
+  Future<void> show(BrSegment seg) async {
+    if (run.cancelled) return;
+    // the double check lands when the reply starts being typed: composing
+    // is proof the message was read. Idempotent, later bubbles no-op it.
+    _advance(c, St.sent, St.read);
+    // the pause before this bubble is a hesitation between thoughts, not
+    // typing, so the indicator stays off through it
+    final hesitate = env.nextAt - _nowMs;
+    if (hesitate > 0) await _sleep(run, hesitate);
+    // now the typing itself, timed by the length of the bubble being typed
+    final typeMs = typingMs(seg.text, random: rng.raw, spread: hs.randomRange) * (st.energy < 50 ? 1.3 : 1.0);
+    if (!run.cancelled && typeMs > 0) {
+      c.typing = true;
+      st.status = StatusKind.typing;
+      c.touch();
+      await _sleep(run, typeMs.round());
     }
+    run.queued.remove(seg.text);
+    if (run.cancelled) return;
+    final text = _styled(seg.text, hs);
+    if (text.isEmpty) return;
+    humanSay(c, text, reply: env.quote, proactive: proactive);
+    env.quote = null;
+    env.textSent++;
+    delivered++;
+    env.nextAt = _nowMs + (seg.delayMs > 0 ? pause(seg.delayMs) : 0);
+    // between bubbles the persona drops back to its baseline, the typing
+    // indicator comes back on with the next typing phase or never
+    if (!run.cancelled) {
+      st.status = restore;
+      c.touch();
+    }
+  }
 
     void enqueue(List<BrSegment> segs) {
       for (final s in segs) {
@@ -538,17 +582,13 @@ extension StoreHuman on Store {
       if (run.cancelled) return;
       if (!accepted) {
         accepted = true;
-        _advance(c, St.sending, St.sent);
-        st.status = StatusKind.typing;
-        c.typing = true;
         c.touch();
       }
       enqueue(parser.push(delta));
     }
 
-    c.typing = true;
-    st.status = StatusKind.typing;
-    c.touch();
+    // the outgoing side is already delivered the moment the run exists
+    _advance(c, St.sending, St.sent);
 
     try {
       final lastUser = c.msgs.lastWhere((m) => m.out && !m.service, orElse: () => Msg(id: 'x', out: true, text: '', time: 0)).text;
@@ -558,7 +598,12 @@ extension StoreHuman on Store {
       }
       final table = <String, HTool>{for (final t in humanTools(c, env)) t.name: t};
       final specs = [for (final t in table.values) t.spec];
-      final system = '${_systemPrompt(c)}\n\n${humanContext(c, rng: rng, task: task, lastUserText: lastUser)}';
+      final wsBlock = await wsPrompt(c);
+      final system = [
+        _systemPrompt(c),
+        humanContext(c, rng: rng, task: task, lastUserText: lastUser),
+        if (wsBlock != null) wsBlock,
+      ].join('\n\n');
 
       for (var pass = 0; pass < 8 && !run.cancelled; pass++) {
         final outcome = await runChain(
@@ -663,7 +708,18 @@ extension StoreHuman on Store {
         }
         st.adjust(energy: -0.6);
         // a user who is satisfied slowly lifts affection
-        if (delivered > 0) st.adjust(affection: 0.05);
+        if (delivered > 0) {
+          st.adjust(affection: 0.05);
+          // the post reply dice: one more chance per turn that the assistant
+          // speaks on its own soon, so a forgetful model still feels alive.
+          // Only after a real reply to a real user turn, never on top of a
+          // proactive message, that chain is capped elsewhere.
+          if (!proactive && failure == null) {
+            final annoyed = hs.annoyScore >= 4.5;
+            final t2 = hh.scheduler.rollProactive(chatId: c.id, s: st, cfg: hs, now: _nowMs, rng: rng, userAnnoyed: annoyed);
+            if (t2 != null) hh.logGate('${c.persona.name} ${t2.id} [${proactiveWire(t2.type)}] queued by the post reply dice, fires in ${_ago(t2.fireAt - _nowMs)}');
+          }
+        }
       } else if (mine) {
         c.typing = false;
       }
@@ -684,6 +740,9 @@ extension StoreHuman on Store {
     final show = agentFor(c);
     final mcp = show && call.name.startsWith('mcp_') ? (hh.mcp.tools.where((e) => e.key == call.name).firstOrNull?.serverName ?? '') : '';
     final row = show ? traceTool(c, call, mcp: mcp) : null;
+// the handler cannot see the call, only its arguments, so this is how a tool
+// that produced something worth showing finds the row to show it on
+_runs[c.id]?.row = row;
 
     ToolResultPart res(String text, {bool err = false}) {
       hh.logTool('${c.persona.name}: ${call.name}(${jsonEncode(call.args)}) -> ${text.length > 160 ? '${text.substring(0, 160)}…' : text}');
@@ -692,6 +751,9 @@ extension StoreHuman on Store {
     }
 
     if (t == null) return res('Error: unknown tool ${call.name}.', err: true);
+    // cleared before the call so a tool that throws cannot leave the previous
+    // row's metadata on this one
+    row?.data.remove('ws');
     final perm = hh.permFor(t.name, external: t.external);
     if (perm == ToolPerm.deny) {
       return res('Permission denied: the user has forbidden the tool "${t.name}". Do not call it again in this conversation, and if it matters tell the user you are not allowed to.', err: true);
@@ -701,7 +763,11 @@ extension StoreHuman on Store {
       if (!ok) return res('The user did not approve the tool "${t.name}"${hh.askHandler == null ? ' (nobody is looking at the app right now)' : ''}. Do not retry it.', err: true);
     }
     try {
-      return res(await t.run(call.args).timeout(const Duration(seconds: 60)));
+      // shell gets an hour because an apt install or a build legitimately runs
+      // for minutes; everything else stays at a minute, which is already longer
+      // than any of the file tools can take
+      final cap = t.name == 'shell' ? const Duration(hours: 1) : const Duration(seconds: 60);
+      return res(await t.run(call.args).timeout(cap));
     } catch (e) {
       return res('Error: $e', err: true);
     }
@@ -1104,18 +1170,6 @@ extension StoreHuman on Store {
 
     // ---- multimodal
     tools.addAll([
-      HTool('send_voice', 'Send a voice message (text to speech).', {'text': _p('string', 'what is said')}, (a) async {
-        final text = _str(a, 'text');
-        if (text.trim().isEmpty) return 'Error: empty text.';
-        String? path;
-        if (hs.ttsUrl.trim().isNotEmpty) {
-          path = await synthesize(text);
-        } else if (!hs.ttsSystem) {
-          return 'Error: text to speech is not configured, send text instead.';
-        }
-        final m = await sendNow(text, kind: MsgKind.voice, data: {'path': path ?? '', 'dur': max(1, (text.length / 4.5).round()), 'speed': hs.ttsSpeed, 'voice': hs.ttsVoice, 'system': path == null});
-        return m == null ? 'Interrupted.' : 'Voice message sent.';
-      }, required: ['text']),
       HTool('send_image', 'Send a picture from an https url with an optional caption.', {'url': _p('string', 'image url'), 'caption': _p('string', 'caption')}, (a) async {
         final res = await http.get(Uri.parse(_str(a, 'url'))).timeout(const Duration(seconds: 25));
         if (res.statusCode != 200 || res.bodyBytes.isEmpty) return 'Error: could not download the image (${res.statusCode}).';
@@ -1146,26 +1200,25 @@ extension StoreHuman on Store {
       }, required: ['amount']));
     }
 
+    // ---- workspace. Absent unless the chat is bound and the switch is on, so the
+    // twenty four tools below stay the whole table for everyone else. Built from
+    // env.ws rather than wsTools because that context was resolved before the
+    // table was and asking again would touch the disk a second time
+    final ws = env.ws;
+    if (ws != null) {
+      tools.addAll([
+        for (final name in WorkspaceTools.toolNames)
+          if (ws.allows(name) && wsAvailable(name))
+            HTool(name, _wsDescription(name), WorkspaceTools.schemaFor(name), (a) => _wsRun(c, env.run, ws, name, a), required: _wsRequired(name)),
+      ]);
+    }
+
     // ---- MCP servers
     for (final t in hh.mcp.tools) {
       tools.add(HTool(t.key, '[${t.serverName}] ${t.description}', Map<String, dynamic>.from((t.schema['properties'] as Map?) ?? const {}), (a) => hh.mcp.call(t, a),
           required: [for (final r in (t.schema['required'] as List? ?? const [])) '$r'], external: true));
     }
     return tools;
-  }
-
-  /// OpenAI compatible text to speech, returns the saved file path.
-  Future<String?> synthesize(String text) async {
-    final hs = human!.settings;
-    var url = hs.ttsUrl.trim().replaceAll(RegExp(r'/+$'), '');
-    if (!url.endsWith('/audio/speech')) url = '$url/audio/speech';
-    final res = await http
-        .post(Uri.parse(url), headers: {'Content-Type': 'application/json', if (hs.ttsKey.isNotEmpty) 'Authorization': 'Bearer ${hs.ttsKey}'}, body: jsonEncode({'model': hs.ttsModel, 'input': text, 'voice': hs.ttsVoice, 'speed': hs.ttsSpeed}))
-        .timeout(const Duration(seconds: 40));
-    if (res.statusCode != 200) throw 'TTS failed (${res.statusCode})';
-    final f = await _docFile('voice', 'voice.mp3');
-    await f.writeAsBytes(res.bodyBytes);
-    return f.path;
   }
 
   Future<String> http_get(String url) async => (await http.get(Uri.parse(url)).timeout(const Duration(seconds: 15))).body;

@@ -73,3 +73,8 @@ tmp/
 
 # Widget Preview related
 .widget_preview/
+
+# proot and its dependencies. Fetched by tool/fetch_proot.sh at build time and
+# verified against tool/proot_checksums.txt. jniLibs/NOTICE explains why these
+# are exec'd rather than linked.
+android/app/src/main/jniLibs/**/*.so

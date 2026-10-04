@@ -627,11 +627,77 @@ abstract class AppLocalizations {
   /// **'Sends several short messages like a real person'**
   String get aiReplyStyleCharacterSub;
 
-  /// Checkbox row
+  /// Row and selector title for the delay before the first bubble
   ///
   /// In en, this message translates to:
-  /// **'Strip markdown in character mode'**
-  String get aiStripMarkdown;
+  /// **'Read time before replying'**
+  String get aiFirstBubbleDelay;
+
+  /// Row and selector title for the inter bubble pause multiplier
+  ///
+  /// In en, this message translates to:
+  /// **'Pause between messages, scale'**
+  String get aiBubbleGapScale;
+
+  /// Value shown when a pacing delay is zero
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get aiPacingOff;
+
+  /// Subtitle of the zero delay option
+  ///
+  /// In en, this message translates to:
+  /// **'The first bubble lands at once'**
+  String get aiPacingDelayHint;
+
+  /// Row and selector title for the pacing jitter
+  ///
+  /// In en, this message translates to:
+  /// **'Timing randomness'**
+  String get aiPacingJitter;
+
+  /// One of the timing randomness levels
+  ///
+  /// In en, this message translates to:
+  /// **'Subtle'**
+  String get aiPacingJitterLow;
+
+  /// One of the timing randomness levels
+  ///
+  /// In en, this message translates to:
+  /// **'Normal'**
+  String get aiPacingJitterNormal;
+
+  /// One of the timing randomness levels
+  ///
+  /// In en, this message translates to:
+  /// **'Wild'**
+  String get aiPacingJitterWild;
+
+  /// Subtitle of the off level
+  ///
+  /// In en, this message translates to:
+  /// **'Every pause is exactly as long as set'**
+  String get aiPacingJitterHintOff;
+
+  /// Subtitle of the subtle level
+  ///
+  /// In en, this message translates to:
+  /// **'Pauses drift a little around the set values'**
+  String get aiPacingJitterHintLow;
+
+  /// Subtitle of the normal level
+  ///
+  /// In en, this message translates to:
+  /// **'A human unevenness in every pause'**
+  String get aiPacingJitterHintNormal;
+
+  /// Subtitle of the wild level
+  ///
+  /// In en, this message translates to:
+  /// **'Unpredictable, sometimes instant sometimes slow'**
+  String get aiPacingJitterHintWild;
 
   /// Section header of the sampling settings
   ///
@@ -1158,7 +1224,7 @@ abstract class AppLocalizations {
   /// Direct dependencies with their licence, the transitive tree is in the lockfile
   ///
   /// In en, this message translates to:
-  /// **'Dependencies:\n\naudioplayers 6.8.1 - voice messages  (MIT)\nhttps://github.com/bluefireteam/audioplayers/tree/master/packages/audioplayers\ncharacters 1.4.1 - grapheme clusters for text measurement  (BSD-3-Clause)\nhttps://github.com/dart-lang/core/tree/main/pkgs/characters\nfile_picker 13.1.0 - picking documents and audio files  (MIT)\nhttps://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker\nflutter_contacts 2.5.0 - sharing a contact card  (MIT)\nhttps://github.com/QuisApp/flutter_contacts\nflutter_local_notifications 18.0.1 - local notifications  (BSD-3-Clause)\nflutter_svg 2.3.0 - provider logos and vector icons  (MIT)\nhttps://github.com/flutter/packages/tree/main/third_party/packages/flutter_svg\nflutter_tts 4.2.5 - reading voice messages aloud  (MIT)\ngeolocator 13.0.4 - location attachments  (MIT)\nhttps://github.com/baseflow/flutter-geolocator/tree/main/geolocator\nhttp 1.6.0 - OpenAI compatible endpoints  (BSD-3-Clause)\nhttps://github.com/dart-lang/http/tree/master/pkgs/http\nimage_picker 1.2.3 - camera and gallery photos  (Apache-2.0)\nhttps://github.com/flutter/packages/tree/main/packages/image_picker/image_picker\nintl 0.20.3 - date and number formatting  (BSD-3-Clause)\nhttps://github.com/dart-lang/i18n/tree/main/pkgs/intl\npath_provider 2.1.6 - app directory for stickers and exports  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/path_provider/path_provider\nphoto_manager 3.12.0 - album access for attachments  (Apache-2.0)\nhttps://github.com/fluttercandies/flutter_photo_manager\nshared_preferences 2.5.5 - settings and chat storage  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/shared_preferences/shared_preferences\nsqflite 2.4.4 - message history and per chat paging  (BSD-2-Clause)\nhttps://github.com/tekartik/sqflite/tree/master/sqflite\ntimezone 0.10.1 - timezone data for scheduled messages  (BSD-2-Clause)\nhttps://github.com/srawlins/timezone\nurl_launcher 6.3.2 - the community link in this dialog  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/url_launcher/url_launcher\nworkmanager 0.10.10 - background delivery when the app is killed  (MIT)\nhttps://github.com/fluttercommunity/flutter_workmanager'**
+  /// **'Dependencies:\n\narchive 3.6.1 - zipping a workspace for export  (MIT)\nhttps://github.com/brendan-duncan/archive\nasync 2.13.0 - not used directly, pulled in by flutter_local_notifications  (BSD-2-Clause)\nhttps://github.com/dart-lang/async\ncharacters 1.4.1 - grapheme clusters for text measurement  (BSD-3-Clause)\nhttps://github.com/dart-lang/core/tree/main/pkgs/characters\ncrypto 3.0.7 - declared for the workspace, nothing on device is hashed yet  (BSD-3-Clause)\nhttps://github.com/dart-lang/core/tree/main/pkgs/crypto\nfile_picker 13.1.0 - picking documents and audio files  (MIT)\nhttps://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker\nflutter_contacts 2.5.0 - sharing a contact card  (MIT)\nhttps://github.com/QuisApp/flutter_contacts\nflutter_highlight 0.7.0 - colouring the code preview  (MIT)\nhttps://github.com/git-touch/highlight\nflutter_local_notifications 18.0.1 - local notifications  (BSD-3-Clause)\nhttps://github.com/MaikuB/flutter_local_notifications\nflutter_svg 2.3.0 - provider logos and vector icons  (MIT)\nhttps://github.com/flutter/packages/tree/main/third_party/packages/flutter_svg\ngeolocator 13.0.4 - location attachments  (MIT)\nhttps://github.com/baseflow/flutter-geolocator/tree/main/geolocator\nglob 2.2.0 - the workspace find tool  (BSD-3-Clause)\nhttps://github.com/dart-lang/tools/tree/main/pkgs/glob\nhighlight 0.7.0 - the grammar data behind the code preview  (MIT)\nhttps://github.com/pd4d10/highlight\nhttp 1.6.0 - OpenAI compatible endpoints  (BSD-3-Clause)\nhttps://github.com/dart-lang/http/tree/master/pkgs/http\nimage_picker 1.2.3 - camera and gallery photos  (Apache-2.0)\nhttps://github.com/flutter/packages/tree/main/packages/image_picker/image_picker\nintl 0.20.3 - date and number formatting  (BSD-3-Clause)\nhttps://github.com/dart-lang/i18n/tree/main/pkgs/intl\npath 1.9.1 - path arithmetic in the workspace sandbox  (BSD-3-Clause)\nhttps://github.com/dart-lang/core/tree/main/pkgs/path\npath_provider 2.1.6 - app directory for stickers and exports  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/path_provider/path_provider\nphoto_manager 3.12.0 - album access for attachments  (Apache-2.0)\nhttps://github.com/fluttercandies/flutter_photo_manager\nshared_preferences 2.5.5 - settings and chat storage  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/shared_preferences/shared_preferences\nsqflite 2.4.4 - message history and per chat paging  (BSD-2-Clause)\nhttps://github.com/tekartik/sqflite/tree/master/sqflite\ntimezone 0.10.1 - timezone data for scheduled messages  (BSD-2-Clause)\nhttps://github.com/srawlins/timezone\nurl_launcher 6.3.2 - the community link in this dialog  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/url_launcher/url_launcher\nwebview_flutter 4.14.1 - rendering html in a file preview  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/webview_flutter/webview_flutter\nworkmanager 0.10.10 - background delivery when the app is killed  (MIT)\nhttps://github.com/fluttercommunity/flutter_workmanager'**
   String get settingsAboutDeps;
 
   /// Community link in the about dialog, identical in every language
@@ -2445,12 +2511,6 @@ abstract class AppLocalizations {
   /// **'{name} recalled a message'**
   String msgRecalled(String name);
 
-  /// Preview lead for a voice message
-  ///
-  /// In en, this message translates to:
-  /// **'Voice message'**
-  String get msgVoice;
-
   /// Suffix on the timestamp of an edited message
   ///
   /// In en, this message translates to:
@@ -2553,6 +2613,12 @@ abstract class AppLocalizations {
   /// **'AI replies'**
   String get aiReplyTitle;
 
+  /// Section header of the reply style and pacing rows
+  ///
+  /// In en, this message translates to:
+  /// **'Pacing'**
+  String get aiReplyStyleHeader;
+
   /// Section header of the two reply switches
   ///
   /// In en, this message translates to:
@@ -2564,6 +2630,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Show thinking writes the reasoning of a thinking model into the chat, above the answer, as a step you can open. Agent mode lets the model call tools and adds a row per call with its arguments and its result.'**
   String get aiReplyVisibleFooter;
+
+  /// Switch that renders Markdown in bubbles
+  ///
+  /// In en, this message translates to:
+  /// **'Markdown'**
+  String get aiReplyMarkdown;
+
+  /// Switch subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Render bold, code blocks and headings in bubbles; off strips them in character mode'**
+  String get aiReplyMarkdownSub;
 
   /// Switch that writes the reasoning into the chat
   ///
@@ -3039,12 +3117,6 @@ abstract class AppLocalizations {
   /// **'Tools, MCP servers and permissions'**
   String get humanToolsRow;
 
-  /// Row that opens the voice page
-  ///
-  /// In en, this message translates to:
-  /// **'Voice (text to speech)'**
-  String get humanVoiceRow;
-
   /// Row that opens the wallet page
   ///
   /// In en, this message translates to:
@@ -3104,6 +3176,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Default pause'**
   String get humanBrPause;
+
+  /// Slider row label
+  ///
+  /// In en, this message translates to:
+  /// **'Read time before the first bubble'**
+  String get humanReplyDelay;
+
+  /// Slider row label
+  ///
+  /// In en, this message translates to:
+  /// **'Pause between bubbles, scale'**
+  String get humanPaceScale;
 
   /// Section header of the randomness settings
   ///
@@ -3482,48 +3566,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Proactive frequency multiplier'**
   String get humanRatingTuning;
-
-  /// Title of the voice page
-  ///
-  /// In en, this message translates to:
-  /// **'Voice'**
-  String get humanVoiceTitle;
-
-  /// Note at the top of the voice page
-  ///
-  /// In en, this message translates to:
-  /// **'Any OpenAI compatible /audio/speech endpoint. Without one, voice messages are read aloud by the system voice.'**
-  String get humanVoiceFooter;
-
-  /// Row that sets the speech endpoint
-  ///
-  /// In en, this message translates to:
-  /// **'Endpoint'**
-  String get humanVoiceEndpoint;
-
-  /// Row that sets the speech model
-  ///
-  /// In en, this message translates to:
-  /// **'Model'**
-  String get humanVoiceModel;
-
-  /// Row that sets the voice name
-  ///
-  /// In en, this message translates to:
-  /// **'Voice'**
-  String get humanVoiceVoice;
-
-  /// Slider row label
-  ///
-  /// In en, this message translates to:
-  /// **'Speed'**
-  String get humanVoiceSpeed;
-
-  /// Checkbox row
-  ///
-  /// In en, this message translates to:
-  /// **'Fall back to the system voice'**
-  String get humanVoiceSystem;
 
   /// Title of the backup page
   ///
@@ -4622,6 +4664,1098 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'A message was recalled'**
   String get msgRecalledAnonymous;
+
+  /// Settings row and page title for the workspace list
+  ///
+  /// In en, this message translates to:
+  /// **'Workspace'**
+  String get wsTitle;
+
+  /// Subtitle of the workspace settings row
+  ///
+  /// In en, this message translates to:
+  /// **'Give the assistant a directory of its own'**
+  String get wsSub;
+
+  /// Workspace row subtitle while the tool switch is off
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on file tools to let the assistant read and write here'**
+  String get wsSubOff;
+
+  /// Short note that the workspace file tools are switched off
+  ///
+  /// In en, this message translates to:
+  /// **'file tools off'**
+  String get wsToolsOff;
+
+  /// Shown for a chat that has not bound a workspace
+  ///
+  /// In en, this message translates to:
+  /// **'No workspace'**
+  String get wsNoWorkspace;
+
+  /// Switch that injects the workspace tools into the reply
+  ///
+  /// In en, this message translates to:
+  /// **'File tools'**
+  String get wsToolsOn;
+
+  /// Footer under the file tools switch
+  ///
+  /// In en, this message translates to:
+  /// **'When on, a chat bound to a workspace gets six file tools. Writes always show you the change first.'**
+  String get wsToolsFooter;
+
+  /// Switch that asks before each write lands
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm every write'**
+  String get wsConfirmWrites;
+
+  /// Footer under the confirm writes switch
+  ///
+  /// In en, this message translates to:
+  /// **'Off means the assistant writes without stopping to ask. The change is still shown on the step row afterwards.'**
+  String get wsConfirmWritesFooter;
+
+  /// Button that creates a workspace
+  ///
+  /// In en, this message translates to:
+  /// **'New workspace'**
+  String get wsNew;
+
+  /// Field label for the new workspace name
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get wsNewTitle;
+
+  /// Confirms creating a workspace
+  ///
+  /// In en, this message translates to:
+  /// **'Create'**
+  String get wsCreate;
+
+  /// Item in the workspace row menu
+  ///
+  /// In en, this message translates to:
+  /// **'Rename'**
+  String get wsRename;
+
+  /// Item in the workspace row menu
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get wsDelete;
+
+  /// Confirmation before removing a workspace
+  ///
+  /// In en, this message translates to:
+  /// **'Delete \"{name}\"?'**
+  String wsDeleteConfirm(String name);
+
+  /// Checkbox in the delete confirmation, managed workspaces only
+  ///
+  /// In en, this message translates to:
+  /// **'Also delete its files'**
+  String get wsDeleteFiles;
+
+  /// Footer under the delete files checkbox
+  ///
+  /// In en, this message translates to:
+  /// **'Off leaves the files on this device. A folder you picked yourself is never deleted either way.'**
+  String get wsDeleteFilesFooter;
+
+  /// How many chats point at this workspace
+  ///
+  /// In en, this message translates to:
+  /// **'Bound to {count} chat(s)'**
+  String wsBoundTo(int count);
+
+  /// A workspace that has never been bound to a chat
+  ///
+  /// In en, this message translates to:
+  /// **'never used'**
+  String get wsNeverUsed;
+
+  /// Tab in the workspace detail page
+  ///
+  /// In en, this message translates to:
+  /// **'Files'**
+  String get wsFiles;
+
+  /// Tab listing which file tools this workspace offers
+  ///
+  /// In en, this message translates to:
+  /// **'Tools'**
+  String get wsToolsTab;
+
+  /// No description provided for @wsToolShell.
+  ///
+  /// In en, this message translates to:
+  /// **'Shell'**
+  String get wsToolShell;
+
+  /// No description provided for @wsToolViewImage.
+  ///
+  /// In en, this message translates to:
+  /// **'View image'**
+  String get wsToolViewImage;
+
+  /// Footer under the per workspace tool switches
+  ///
+  /// In en, this message translates to:
+  /// **'A tool switched off here is not offered to the assistant at all. Switching one on does not override the permission you set on the tools page.'**
+  String get wsToolsTabFooter;
+
+  /// Row in the chat menu that opens the workspace picker
+  ///
+  /// In en, this message translates to:
+  /// **'Bind a workspace'**
+  String get wsBind;
+
+  /// Title of the workspace picker sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a workspace'**
+  String get wsBindTitle;
+
+  /// Picker entry that unbinds the chat
+  ///
+  /// In en, this message translates to:
+  /// **'No workspace'**
+  String get wsBindNone;
+
+  /// Removes the chat's workspace
+  ///
+  /// In en, this message translates to:
+  /// **'Unbind'**
+  String get wsUnbind;
+
+  /// Shown when unbinding a chat that already ran a workspace tool
+  ///
+  /// In en, this message translates to:
+  /// **'The assistant has already used this workspace in this chat. Unbind anyway?'**
+  String get wsUnbindConfirm;
+
+  /// Picker entry that swaps the bound workspace
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get wsChange;
+
+  /// Row showing the directory the tools start in
+  ///
+  /// In en, this message translates to:
+  /// **'Working directory'**
+  String get wsCwd;
+
+  /// Value of the working directory row when it is the root
+  ///
+  /// In en, this message translates to:
+  /// **'Workspace root'**
+  String get wsCwdEmpty;
+
+  /// Rejected when a typed working directory escapes the root
+  ///
+  /// In en, this message translates to:
+  /// **'That path is not inside the workspace'**
+  String get wsCwdInvalid;
+
+  /// Opens the file browser at the workspace root
+  ///
+  /// In en, this message translates to:
+  /// **'Show files'**
+  String get wsReveal;
+
+  /// Empty state of an empty workspace
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing here yet'**
+  String get wsEmpty;
+
+  /// Second line of the empty workspace state
+  ///
+  /// In en, this message translates to:
+  /// **'Ask the assistant to write a file and it will show up in this list.'**
+  String get wsEmptyHint;
+
+  /// Toggle in the file browser toolbar
+  ///
+  /// In en, this message translates to:
+  /// **'Show hidden files'**
+  String get wsShowHidden;
+
+  /// Opens the file browser sort sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Sort'**
+  String get wsSort;
+
+  /// Sort field
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get wsSortName;
+
+  /// Sort field
+  ///
+  /// In en, this message translates to:
+  /// **'Modified'**
+  String get wsSortModified;
+
+  /// Sort field
+  ///
+  /// In en, this message translates to:
+  /// **'Size'**
+  String get wsSortSize;
+
+  /// Toggle in the file browser sort sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Folders first'**
+  String get wsFoldersFirst;
+
+  /// File browser action
+  ///
+  /// In en, this message translates to:
+  /// **'New folder'**
+  String get wsNewFolder;
+
+  /// File browser action
+  ///
+  /// In en, this message translates to:
+  /// **'New file'**
+  String get wsNewFile;
+
+  /// Copies picked files into the current directory
+  ///
+  /// In en, this message translates to:
+  /// **'Import'**
+  String get wsImport;
+
+  /// Saves the selection out of the app
+  ///
+  /// In en, this message translates to:
+  /// **'Export'**
+  String get wsExport;
+
+  /// Zips the folder and offers to share it
+  ///
+  /// In en, this message translates to:
+  /// **'Export as zip'**
+  String get wsExportZip;
+
+  /// Item in the file row menu
+  ///
+  /// In en, this message translates to:
+  /// **'Move'**
+  String get wsMove;
+
+  /// Picker row that confirms a move
+  ///
+  /// In en, this message translates to:
+  /// **'Move here'**
+  String get wsMoveHere;
+
+  /// Item in the file row menu
+  ///
+  /// In en, this message translates to:
+  /// **'Copy path'**
+  String get wsCopyPath;
+
+  /// Toast after copying a path
+  ///
+  /// In en, this message translates to:
+  /// **'Path copied'**
+  String get wsCopiedPath;
+
+  /// Hands the file to another app
+  ///
+  /// In en, this message translates to:
+  /// **'Open with'**
+  String get wsOpenWith;
+
+  /// Opens the system share sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get wsShare;
+
+  /// Empty state inside a subfolder
+  ///
+  /// In en, this message translates to:
+  /// **'This folder is empty'**
+  String get wsEmptyDir;
+
+  /// Note under a capped file listing
+  ///
+  /// In en, this message translates to:
+  /// **'List cut short at {count} entries'**
+  String wsTruncated(int count);
+
+  /// Item in the file row menu
+  ///
+  /// In en, this message translates to:
+  /// **'Preview'**
+  String get wsPreview;
+
+  /// Shown when a preview is opened for a path that no longer exists
+  ///
+  /// In en, this message translates to:
+  /// **'That file is gone'**
+  String get wsPreviewMissing;
+
+  /// Shown when a file is past the preview size limit
+  ///
+  /// In en, this message translates to:
+  /// **'Too large to preview'**
+  String get wsPreviewTooBig;
+
+  /// Title of the binary file info card
+  ///
+  /// In en, this message translates to:
+  /// **'This file is not text'**
+  String get wsPreviewBinary;
+
+  /// Shown for a zero byte file
+  ///
+  /// In en, this message translates to:
+  /// **'Empty file'**
+  String get wsPreviewEmpty;
+
+  /// Toggle in the code preview header
+  ///
+  /// In en, this message translates to:
+  /// **'Wrap lines'**
+  String get wsWrap;
+
+  /// Increases the code preview font size
+  ///
+  /// In en, this message translates to:
+  /// **'Bigger text'**
+  String get wsZoomIn;
+
+  /// Decreases the code preview font size
+  ///
+  /// In en, this message translates to:
+  /// **'Smaller text'**
+  String get wsZoomOut;
+
+  /// Preview tab that shows the formatted file
+  ///
+  /// In en, this message translates to:
+  /// **'Rendered'**
+  String get wsRendered;
+
+  /// Preview tab that shows the raw text
+  ///
+  /// In en, this message translates to:
+  /// **'Source'**
+  String get wsSource;
+
+  /// Title of the write confirmation sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Allow this change?'**
+  String get wsWriteTitle;
+
+  /// Badge on a write that creates the file
+  ///
+  /// In en, this message translates to:
+  /// **'New file'**
+  String get wsWriteNew;
+
+  /// Badge on a write_file call
+  ///
+  /// In en, this message translates to:
+  /// **'Replacing the whole file'**
+  String get wsWriteReplace;
+
+  /// Badge on an edit_file call
+  ///
+  /// In en, this message translates to:
+  /// **'Replacing {count} line(s)'**
+  String wsWriteEdit(int count);
+
+  /// Added and removed line counts on the write confirmation
+  ///
+  /// In en, this message translates to:
+  /// **'+{added} −{removed}'**
+  String wsWriteCounts(int added, int removed);
+
+  /// Notes that the edit matched only after whitespace or an anchor was tolerated
+  ///
+  /// In en, this message translates to:
+  /// **'matched loosely'**
+  String get wsWriteLoose;
+
+  /// Approves this one write
+  ///
+  /// In en, this message translates to:
+  /// **'Allow'**
+  String get wsWriteAllow;
+
+  /// Approves this write and stops asking for the rest of the chat
+  ///
+  /// In en, this message translates to:
+  /// **'Allow all in this chat'**
+  String get wsWriteAllowAll;
+
+  /// Declines the write
+  ///
+  /// In en, this message translates to:
+  /// **'Refuse'**
+  String get wsWriteRefuse;
+
+  /// Toast after refusing a write
+  ///
+  /// In en, this message translates to:
+  /// **'You refused the change'**
+  String get wsWriteRefused;
+
+  /// Shown on a row whose write had nobody to confirm it
+  ///
+  /// In en, this message translates to:
+  /// **'This ran without asking'**
+  String get wsWriteNoUi;
+
+  /// Trace row title
+  ///
+  /// In en, this message translates to:
+  /// **'Read'**
+  String get wsToolRead;
+
+  /// Trace row title
+  ///
+  /// In en, this message translates to:
+  /// **'Write'**
+  String get wsToolWrite;
+
+  /// Trace row title
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get wsToolEdit;
+
+  /// Trace row title
+  ///
+  /// In en, this message translates to:
+  /// **'List'**
+  String get wsToolList;
+
+  /// Trace row title
+  ///
+  /// In en, this message translates to:
+  /// **'Find'**
+  String get wsToolGlob;
+
+  /// Trace row title
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get wsToolGrep;
+
+  /// Trace row status when the write was not allowed
+  ///
+  /// In en, this message translates to:
+  /// **'Refused'**
+  String get wsToolDenied;
+
+  /// Line count on a read trace row
+  ///
+  /// In en, this message translates to:
+  /// **'{count} lines'**
+  String wsLines(int count);
+
+  /// Result count on a list, glob or grep trace row
+  ///
+  /// In en, this message translates to:
+  /// **'{count} files'**
+  String wsFilesCount(int count);
+
+  /// Size on a write trace row
+  ///
+  /// In en, this message translates to:
+  /// **'{size}'**
+  String wsBytesCount(String size);
+
+  /// Opens the preview for a file on a trace row
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get wsOpenFile;
+
+  /// Rejection message in the file name dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Name it something'**
+  String get wsNameEmpty;
+
+  /// Rejection message in the file name dialog
+  ///
+  /// In en, this message translates to:
+  /// **'A name cannot contain a slash'**
+  String get wsNameSlash;
+
+  /// Rejection message in the file name dialog
+  ///
+  /// In en, this message translates to:
+  /// **'That name is not usable'**
+  String get wsNameDot;
+
+  /// Rejection message in the file name dialog
+  ///
+  /// In en, this message translates to:
+  /// **'A leading dot would hide the file'**
+  String get wsNameLeadingDot;
+
+  /// Workspace file browser and preview
+  ///
+  /// In en, this message translates to:
+  /// **'Only the first {count} lines are shown'**
+  String wsPreviewTruncatedLines(Object count);
+
+  /// Workspace file browser and preview
+  ///
+  /// In en, this message translates to:
+  /// **'Delete folder?'**
+  String get wsDeleteFolderTitle;
+
+  /// Workspace file browser and preview
+  ///
+  /// In en, this message translates to:
+  /// **'Delete file?'**
+  String get wsDeleteFileTitle;
+
+  /// Workspace file browser and preview
+  ///
+  /// In en, this message translates to:
+  /// **'Terminal'**
+  String get wsOpenTerminal;
+
+  /// Write confirmation sheet
+  ///
+  /// In en, this message translates to:
+  /// **'The previous content cannot be shown'**
+  String get wsWriteNoPreview;
+
+  /// Write confirmation sheet
+  ///
+  /// In en, this message translates to:
+  /// **'No change'**
+  String get wsWriteNoChange;
+
+  /// No description provided for @toolDescGetTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Read the current date, time zone and when either of you last wrote'**
+  String get toolDescGetTime;
+
+  /// No description provided for @toolDescSchedule.
+  ///
+  /// In en, this message translates to:
+  /// **'Let it write to you later by itself'**
+  String get toolDescSchedule;
+
+  /// No description provided for @toolDescCancelScheduled.
+  ///
+  /// In en, this message translates to:
+  /// **'Call off a message that has not arrived yet'**
+  String get toolDescCancelScheduled;
+
+  /// No description provided for @toolDescModifyScheduled.
+  ///
+  /// In en, this message translates to:
+  /// **'Change when, or what, it will say'**
+  String get toolDescModifyScheduled;
+
+  /// No description provided for @toolDescListScheduled.
+  ///
+  /// In en, this message translates to:
+  /// **'See everything it has queued up'**
+  String get toolDescListScheduled;
+
+  /// No description provided for @toolDescSetStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Set the presence shown on your chat list'**
+  String get toolDescSetStatus;
+
+  /// No description provided for @toolDescAdjustFeeling.
+  ///
+  /// In en, this message translates to:
+  /// **'Shift its mood or affection after a good or bad moment'**
+  String get toolDescAdjustFeeling;
+
+  /// No description provided for @toolDescWriteMemory.
+  ///
+  /// In en, this message translates to:
+  /// **'Store something worth remembering about you'**
+  String get toolDescWriteMemory;
+
+  /// No description provided for @toolDescReadMemory.
+  ///
+  /// In en, this message translates to:
+  /// **'Search what it already remembers'**
+  String get toolDescReadMemory;
+
+  /// No description provided for @toolDescCompleteTodo.
+  ///
+  /// In en, this message translates to:
+  /// **'Close a promise or a todo it wrote down'**
+  String get toolDescCompleteTodo;
+
+  /// No description provided for @toolDescLifeSchedule.
+  ///
+  /// In en, this message translates to:
+  /// **'Say it is busy, so it writes less while it is'**
+  String get toolDescLifeSchedule;
+
+  /// No description provided for @toolDescPinMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Pin or unpin a message in the chat'**
+  String get toolDescPinMessage;
+
+  /// No description provided for @toolDescEditMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Rewrite one of its own earlier messages'**
+  String get toolDescEditMessage;
+
+  /// No description provided for @toolDescQuoteMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Reply while showing which message it replies to'**
+  String get toolDescQuoteMessage;
+
+  /// No description provided for @toolDescCharacterCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Let it tune its own character sheet slowly'**
+  String get toolDescCharacterCard;
+
+  /// No description provided for @toolDescRating.
+  ///
+  /// In en, this message translates to:
+  /// **'Adjust how it tunes itself from how you replied'**
+  String get toolDescRating;
+
+  /// No description provided for @toolDescSendSticker.
+  ///
+  /// In en, this message translates to:
+  /// **'Send a sticker from the library'**
+  String get toolDescSendSticker;
+
+  /// No description provided for @toolDescSaveSticker.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep a meme you sent into the library'**
+  String get toolDescSaveSticker;
+
+  /// No description provided for @toolDescRecall.
+  ///
+  /// In en, this message translates to:
+  /// **'Take back a message it just sent, like a person would'**
+  String get toolDescRecall;
+
+  /// No description provided for @toolDescTypo.
+  ///
+  /// In en, this message translates to:
+  /// **'Send a message with a deliberate typo, then fix it'**
+  String get toolDescTypo;
+
+  /// No description provided for @toolDescSendImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Send a picture from a link'**
+  String get toolDescSendImage;
+
+  /// No description provided for @toolDescSendFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Write a text file and send it to you'**
+  String get toolDescSendFile;
+
+  /// No description provided for @toolDescSendTransfer.
+  ///
+  /// In en, this message translates to:
+  /// **'Send a pretend red packet, taps to accept'**
+  String get toolDescSendTransfer;
+
+  /// No description provided for @wsToolDescRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Read a file from the workspace as numbered lines'**
+  String get wsToolDescRead;
+
+  /// No description provided for @wsToolDescWrite.
+  ///
+  /// In en, this message translates to:
+  /// **'Create or replace a file, after you see the diff'**
+  String get wsToolDescWrite;
+
+  /// No description provided for @wsToolDescEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Replace one piece of text inside a file'**
+  String get wsToolDescEdit;
+
+  /// No description provided for @wsToolDescList.
+  ///
+  /// In en, this message translates to:
+  /// **'List the files in a directory'**
+  String get wsToolDescList;
+
+  /// No description provided for @wsToolDescGlob.
+  ///
+  /// In en, this message translates to:
+  /// **'Find files by name, for example all .dart files'**
+  String get wsToolDescGlob;
+
+  /// No description provided for @wsToolDescGrep.
+  ///
+  /// In en, this message translates to:
+  /// **'Search inside file contents with a regex'**
+  String get wsToolDescGrep;
+
+  /// No description provided for @toolNoUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'(no address)'**
+  String get toolNoUrl;
+
+  /// No description provided for @toolBuiltinFooter.
+  ///
+  /// In en, this message translates to:
+  /// **'The six file tools appear once you turn file tools on and bind a chat to a workspace.'**
+  String get toolBuiltinFooter;
+
+  /// No description provided for @wsSubOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Six file tools for every chat bound to a workspace'**
+  String get wsSubOn;
+
+  /// Tool row subtitle on the tools page
+  ///
+  /// In en, this message translates to:
+  /// **'Run a shell command inside the Linux environment'**
+  String get wsToolDescShell;
+
+  /// Tool row subtitle on the tools page
+  ///
+  /// In en, this message translates to:
+  /// **'Let the assistant look at an image file'**
+  String get wsToolDescViewImage;
+
+  /// Terminal workspace UI
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get actionClose;
+
+  /// Terminal workspace UI
+  ///
+  /// In en, this message translates to:
+  /// **'Terminal'**
+  String get termTitle;
+
+  /// Terminal workspace UI
+  ///
+  /// In en, this message translates to:
+  /// **'No Linux environment is installed'**
+  String get termNoEnvironment;
+
+  /// Terminal workspace UI
+  ///
+  /// In en, this message translates to:
+  /// **'Open environment settings'**
+  String get termOpenSettings;
+
+  /// Terminal workspace UI
+  ///
+  /// In en, this message translates to:
+  /// **'New shell'**
+  String get termNewShell;
+
+  /// Terminal workspace UI
+  ///
+  /// In en, this message translates to:
+  /// **'Rename shell'**
+  String get termRename;
+
+  /// Terminal workspace UI
+  ///
+  /// In en, this message translates to:
+  /// **'Copy everything'**
+  String get termCopyAll;
+
+  /// Terminal workspace UI
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get termClear;
+
+  /// Terminal workspace UI
+  ///
+  /// In en, this message translates to:
+  /// **'Bigger text'**
+  String get termFontBigger;
+
+  /// Terminal workspace UI
+  ///
+  /// In en, this message translates to:
+  /// **'Smaller text'**
+  String get termFontSmaller;
+
+  /// Terminal workspace UI
+  ///
+  /// In en, this message translates to:
+  /// **'Copied'**
+  String get termCopied;
+
+  /// Terminal workspace UI
+  ///
+  /// In en, this message translates to:
+  /// **'That shell has closed'**
+  String get termSessionDead;
+
+  /// Terminal workspace UI
+  ///
+  /// In en, this message translates to:
+  /// **'That link cannot be opened from here'**
+  String get termLinkUnsupported;
+
+  /// Terminal workspace UI
+  ///
+  /// In en, this message translates to:
+  /// **'Type a command below. Long press a tab to rename it.'**
+  String get termHint;
+
+  /// Terminal workspace UI
+  ///
+  /// In en, this message translates to:
+  /// **'Environment'**
+  String get termSettings;
+
+  /// Terminal workspace UI
+  ///
+  /// In en, this message translates to:
+  /// **'Install a Linux environment to use the terminal'**
+  String get termInstallEnvironment;
+
+  /// Terminal workspace UI
+  ///
+  /// In en, this message translates to:
+  /// **'Shell path'**
+  String get termShellPath;
+
+  /// Terminal workspace UI
+  ///
+  /// In en, this message translates to:
+  /// **'PRoot options'**
+  String get termProotArgs;
+
+  /// Terminal UI
+  ///
+  /// In en, this message translates to:
+  /// **'Paste'**
+  String get actionPaste;
+
+  /// Terminal UI
+  ///
+  /// In en, this message translates to:
+  /// **'Close this shell? Anything it is running will stop.'**
+  String get termCloseConfirm;
+
+  /// Terminal UI
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open a shell'**
+  String get termOpenFailedShort;
+
+  /// Linux environment settings
+  ///
+  /// In en, this message translates to:
+  /// **'Linux environment'**
+  String get envTitle;
+
+  /// Linux environment settings
+  ///
+  /// In en, this message translates to:
+  /// **'No environment installed'**
+  String get envNotInstalled;
+
+  /// Linux environment settings
+  ///
+  /// In en, this message translates to:
+  /// **'Ready'**
+  String get envReady;
+
+  /// Linux environment settings
+  ///
+  /// In en, this message translates to:
+  /// **'Install'**
+  String get envInstall;
+
+  /// Linux environment settings
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get envCancel;
+
+  /// Linux environment settings
+  ///
+  /// In en, this message translates to:
+  /// **'Remove environment'**
+  String get envRemove;
+
+  /// Linux environment settings
+  ///
+  /// In en, this message translates to:
+  /// **'Update available'**
+  String get envUpdate;
+
+  /// Linux environment settings
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading'**
+  String get envDownloading;
+
+  /// Linux environment settings
+  ///
+  /// In en, this message translates to:
+  /// **'Verifying archive'**
+  String get envVerifying;
+
+  /// Linux environment settings
+  ///
+  /// In en, this message translates to:
+  /// **'Extracting'**
+  String get envExtracting;
+
+  /// Linux environment settings
+  ///
+  /// In en, this message translates to:
+  /// **'Configuring'**
+  String get envPatching;
+
+  /// Linux environment settings
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a distribution'**
+  String get envChoose;
+
+  /// Linux environment settings
+  ///
+  /// In en, this message translates to:
+  /// **'Architecture'**
+  String get envArch;
+
+  /// Linux environment settings
+  ///
+  /// In en, this message translates to:
+  /// **'Install this Linux environment?'**
+  String get envInstallConfirm;
+
+  /// Linux environment settings
+  ///
+  /// In en, this message translates to:
+  /// **'Remove the installed Linux environment and downloaded archives?'**
+  String get envRemoveConfirm;
+
+  /// Linux environment settings
+  ///
+  /// In en, this message translates to:
+  /// **'{mb} MB free space required'**
+  String envMinFree(int mb);
+
+  /// Hint under the field of a typed delete confirmation
+  ///
+  /// In en, this message translates to:
+  /// **'Type delete to confirm'**
+  String get actionTypeDeleteHint;
+
+  /// Linux environment settings
+  ///
+  /// In en, this message translates to:
+  /// **'The environment operation failed'**
+  String get envUnknownError;
+
+  /// Linux environment settings
+  ///
+  /// In en, this message translates to:
+  /// **'Checking device support'**
+  String get envChecking;
+
+  /// Linux environment settings
+  ///
+  /// In en, this message translates to:
+  /// **'No distribution is available for this device'**
+  String get envUnsupported;
+
+  /// Linux environment settings
+  ///
+  /// In en, this message translates to:
+  /// **'No root filesystem is available for ABI {abi}'**
+  String envUnsupportedDevice(Object abi);
+
+  /// Linux environment settings
+  ///
+  /// In en, this message translates to:
+  /// **'The environment architecture does not match this app'**
+  String get envErrorArchitecture;
+
+  /// Linux environment settings
+  ///
+  /// In en, this message translates to:
+  /// **'PRoot is not available in this build'**
+  String get envErrorProot;
+
+  /// Linux environment settings
+  ///
+  /// In en, this message translates to:
+  /// **'There is not enough free storage'**
+  String get envErrorDisk;
+
+  /// Linux environment settings
+  ///
+  /// In en, this message translates to:
+  /// **'The download failed. Check the network and try again'**
+  String get envErrorNetwork;
+
+  /// Linux environment settings
+  ///
+  /// In en, this message translates to:
+  /// **'The downloaded archive failed its SHA-256 check'**
+  String get envErrorChecksum;
+
+  /// Linux environment settings
+  ///
+  /// In en, this message translates to:
+  /// **'The archive could not be extracted'**
+  String get envErrorExtract;
+
+  /// Linux environment settings
+  ///
+  /// In en, this message translates to:
+  /// **'The environment could not be configured'**
+  String get envErrorPatch;
+
+  /// Linux environment settings
+  ///
+  /// In en, this message translates to:
+  /// **'The operation was cancelled'**
+  String get envErrorCancelled;
+
+  /// Linux environment settings
+  ///
+  /// In en, this message translates to:
+  /// **'The installed environment is incomplete'**
+  String get envErrorInvalid;
 }
 
 class _AppLocalizationsDelegate

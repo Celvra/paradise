@@ -80,4 +80,33 @@ void main() {
     await settle(t, 600);
     expect(find.byKey(const Key('stepPanel')), findsNothing);
   });
+
+  testWidgets('a running preview chases the tail until the reader scrolls', (t) async {
+    t.view.physicalSize = const Size(1080, 2200);
+    t.view.devicePixelRatio = 2.75;
+    addTearDown(t.view.reset);
+
+    final body = 'word ' * 400; // long enough to overflow the running preview
+    await t.pumpWidget(wrap(TraceView(msg: think(body: body, state: 'run'), panelKey: const Key('stepPanel'))));
+    await settle(t);
+
+    final preview = find.descendant(of: find.byKey(const Key('stepPanel')), matching: find.byType(SingleChildScrollView));
+    final position = t.state<ScrollableState>(find.descendant(of: find.byKey(const Key('stepPanel')), matching: find.byType(Scrollable))).position;
+    // the chase has the tail on screen before the reader does anything
+    expect(position.pixels, closeTo(position.maxScrollExtent, 1));
+
+    // a hand scrolls up to read the beginning; the chase must yield and let
+    // the offset stay, not drag it back down on every running tick
+    await t.drag(preview, const Offset(0, 300));
+    await settle(t);
+    final parked = position.pixels;
+    expect(parked, lessThan(position.maxScrollExtent - 100));
+    await settle(t, 600);
+    expect(position.pixels, closeTo(parked, 1));
+
+    // landing back on the tail hands control straight back
+    await t.drag(preview, const Offset(0, -600));
+    await settle(t, 400);
+    expect(position.pixels, closeTo(position.maxScrollExtent, 1));
+  });
 }

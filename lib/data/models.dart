@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import '../l10n/x.dart';
 import 'human/human_models.dart';
 import 'observable.dart';
+import 'workspace/workspace.dart';
 
 class Persona {
   Persona({
@@ -202,7 +203,7 @@ class St {
 /// stretch of reasoning, or a tool call with its result. Trace rows are always
 /// service rows, so they stay out of the model history and out of search while
 /// still living in the chat json where the user can scroll back and open them.
-enum MsgKind { text, photo, file, music, location, contact, poll, sticker, voice, transfer, trace }
+enum MsgKind { text, photo, file, music, location, contact, poll, sticker, transfer, trace }
 
 class Msg {
   Msg({
@@ -371,8 +372,6 @@ class Msg {
         lead = '${data['q'] ?? l.msgLeadPoll}';
       case MsgKind.sticker:
         return '${data['emoji'] ?? ''} ${l.msgLeadSticker}';
-      case MsgKind.voice:
-        return '🎤 ${l.msgVoice}${t.isEmpty ? '' : ', $t'}';
       case MsgKind.transfer:
         // plain text, this one feeds search and list previews where a painted
         // glyph would not fit, so it leads with a word instead of an emoji
@@ -419,7 +418,6 @@ class Msg {
       'contact' => MsgKind.contact,
       'poll' => MsgKind.poll,
       'sticker' => MsgKind.sticker,
-      'voice' => MsgKind.voice,
       'transfer' => MsgKind.transfer,
       'trace' => MsgKind.trace,
       _ => MsgKind.text,
@@ -485,6 +483,11 @@ class Chat extends ChangeNotifier {
   /// in SillyTavern. Null means the globally selected card is used.
   String? personaId;
 
+  /// The workspace this chat's files live in. Unbound is the default and
+  /// serialises to nothing at all, so a chat that never picked one is byte
+  /// identical to one written before the feature existed.
+  WorkspaceBinding ws = WorkspaceBinding();
+
   Msg? get last {
     for (var i = msgs.length - 1; i >= 0; i--) {
       if (!msgs[i].service) return msgs[i];
@@ -519,7 +522,7 @@ class Chat extends ChangeNotifier {
 
   void touch() => notifyListeners();
 
-  Map<String, dynamic> toJson() => {'id': id, 'persona': persona.toJson(), 'msgs': msgs.map((e) => e.toJson()).toList(), 'unread': unread, 'pinned': pinned, 'muted': muted, 'draft': draft, 'markedUnread': markedUnread, 'personaId': personaId, if (wallpaperPath != null) 'wallpaperPath': wallpaperPath, 'human': human.toJson()};
+  Map<String, dynamic> toJson() => {'id': id, 'persona': persona.toJson(), 'msgs': msgs.map((e) => e.toJson()).toList(), 'unread': unread, 'pinned': pinned, 'muted': muted, 'draft': draft, 'markedUnread': markedUnread, 'personaId': personaId, if (wallpaperPath != null) 'wallpaperPath': wallpaperPath, if (ws.isBound) 'ws': ws.toJson(), 'human': human.toJson()};
   factory Chat.fromJson(Map<String, dynamic> j) => Chat(
         id: j['id'] as String,
         persona: Persona.fromJson(j['persona'] as Map<String, dynamic>),
@@ -531,7 +534,8 @@ class Chat extends ChangeNotifier {
         markedUnread: j['markedUnread'] as bool? ?? false,
         personaId: j['personaId'] as String?,
         wallpaperPath: j['wallpaperPath'] as String?,
-      )..human = j['human'] is Map ? HumanState.fromJson(Map<String, dynamic>.from(j['human'] as Map)) : HumanState();
+      )..human = j['human'] is Map ? HumanState.fromJson(Map<String, dynamic>.from(j['human'] as Map)) : HumanState()
+      ..ws = WorkspaceBinding.fromJson(j['ws'] is Map ? Map<String, dynamic>.from(j['ws'] as Map) : null);
 }
 
 // time helpers matching the dialog cell date rules

@@ -81,12 +81,15 @@ class Pal {
   List<Color> avatar(int index) => avatarGradient(accent, index);
 
   /// Gradient icon tile, on the wallpaper colour once one is set.
-  List<Color> iconTile(List<Color> stock) => seed == null ? stock : iconGradient(accent);
+  List<Color> iconTile(List<Color> stock) =>
+      seed == null ? stock : iconGradient(accent);
 
   /// Flat fill behind every icon block on the AI pages, so the header disc, the
   /// row tiles and the provider avatars are one colour. Grey when [ready] is
   /// false and no wallpaper colour has been picked.
-  Color aiIcon({required bool ready}) => seed == null ? (ready ? const Color(0xFF5A9EE8) : const Color(0xFF6E8397)) : accent;
+  Color aiIcon({required bool ready}) => seed == null
+      ? (ready ? const Color(0xFF5A9EE8) : const Color(0xFF6E8397))
+      : accent;
 
   /// Bulletin pill. The accent itself will not do, it is solved to read against
   /// the page and leaves white at 2.2:1, so the hue is pushed down to 0.15.
@@ -96,7 +99,9 @@ class Pal {
     return _tone(hsl.hue, hsl.saturation.clamp(0.30, 0.90), 0.15);
   }
 
-  static Pal lerp(Pal a, Pal b, double t) => Pal([for (var i = 0; i < a.c.length; i++) Color.lerp(a.c[i], b.c[i], t)!], t > .5 ? b.dark : a.dark);
+  static Pal lerp(Pal a, Pal b, double t) => Pal(
+      [for (var i = 0; i < a.c.length; i++) Color.lerp(a.c[i], b.c[i], t)!],
+      t > .5 ? b.dark : a.dark);
 
   /// A copy of this palette recoloured from [seed], which is a colour pulled out
   /// of the user's wallpaper.
@@ -147,7 +152,8 @@ class Pal {
     // lightest stop first, which is the order BubblePainter hands them to its
     // vertical gradient
     final bubble = <Color>[
-      for (final target in (dark ? _nightStops : _dayStops)[grad.index]) _tone(hue, sat, target),
+      for (final target in (dark ? _nightStops : _dayStops)[grad.index])
+        _tone(hue, sat, target),
     ];
     c2[22] = bubble[0];
     c2[23] = bubble[1];
@@ -260,7 +266,8 @@ class Pal {
 
   /// The darkest ink that still clears 4.5:1 against [bubble], as a luminance
   /// target for [_tone].
-  static double _inkCeiling(Color bubble) => (_relativeLuminance(bubble) + 0.05) / 4.5 - 0.05;
+  static double _inkCeiling(Color bubble) =>
+      (_relativeLuminance(bubble) + 0.05) / 4.5 - 0.05;
 
   /// The colour at this hue and saturation whose relative luminance is as close
   /// to [target] as it can get without going over it.
@@ -279,7 +286,8 @@ class Pal {
     var lo = 0.0, hi = 1.0;
     for (var i = 0; i < 20; i++) {
       final mid = (lo + hi) / 2;
-      if (_relativeLuminance(HSLColor.fromAHSL(1, hue, sat, mid).toColor()) < target) {
+      if (_relativeLuminance(HSLColor.fromAHSL(1, hue, sat, mid).toColor()) <
+          target) {
         lo = mid;
       } else {
         hi = mid;
@@ -290,7 +298,9 @@ class Pal {
 
   /// WCAG relative luminance.
   static double _relativeLuminance(Color c) {
-    double ch(double v) => v <= 0.03928 ? v / 12.92 : math.pow((v + 0.055) / 1.055, 2.4).toDouble();
+    double ch(double v) => v <= 0.03928
+        ? v / 12.92
+        : math.pow((v + 0.055) / 1.055, 2.4).toDouble();
     return 0.2126 * ch(c.r) + 0.7152 * ch(c.g) + 0.0722 * ch(c.b);
   }
 
@@ -425,7 +435,8 @@ class ThemeController extends ChangeNotifier {
   /// baking it into [pal] keeps the day and night animation below untouched:
   /// the fade still runs between the two stock palettes and the accent is laid
   /// over whatever the fade produced.
-  Pal get effective => _accent == null ? pal : pal.withAccent(Color(_accent!), grad: _grad);
+  Pal get effective =>
+      _accent == null ? pal : pal.withAccent(Color(_accent!), grad: _grad);
 
   /// Idempotent on purpose. main.dart calls this while it builds, and a setter
   /// that notified on an unchanged value would trip the build-phase guard.
@@ -465,8 +476,20 @@ class ThemeController extends ChangeNotifier {
 final ThemeController themeCtl = ThemeController();
 
 class ThemeScope extends InheritedNotifier<ThemeController> {
-  const ThemeScope({super.key, required ThemeController controller, required super.child}) : super(notifier: controller);
-  static Pal of(BuildContext c) => c.dependOnInheritedWidgetOfExactType<ThemeScope>()!.notifier!.effective;
+  const ThemeScope(
+      {super.key, required ThemeController controller, required super.child})
+      : super(notifier: controller);
+
+  /// The palette for [c], falling back to the ambient controller.
+  ///
+  /// The fallback is not defensive coding. Menus, sheets and dialogs are pushed
+  /// on the root navigator, which sits above the scope this widget installs, so
+  /// a plain lookup there returns null and the palette comes from the process
+  /// wide controller instead. Without it every popup opened from a page that
+  /// wraps itself in its own scope would fail to build.
+  static Pal of(BuildContext c) =>
+      c.dependOnInheritedWidgetOfExactType<ThemeScope>()?.notifier?.effective ??
+      themeCtl.effective;
 }
 
 extension PalX on BuildContext {

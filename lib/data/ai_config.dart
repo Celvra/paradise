@@ -67,7 +67,9 @@ AiSettings defaultAiSettings() => AiSettings(
       replyMode: ReplyMode.full,
       temperature: 1,
       maxOutput: 0,
-      typewriterMs: 50,
+      firstBubbleDelayMs: 1000,
+      bubbleGapScale: 1,
+      pacingJitter: 0.35,
       stripMarkdownInCharacterMode: true,
       compaction: const CompactionSettings(),
     );
@@ -102,7 +104,9 @@ AiSettings sanitizeAiSettings(Object? value) {
     replyMode: replyModeOf(raw['replyMode'] as String? ?? 'full'),
     temperature: (raw['temperature'] as num?)?.toDouble() ?? base.temperature,
     maxOutput: (raw['maxOutput'] as num?)?.toInt() ?? base.maxOutput,
-    typewriterMs: (raw['typewriterMs'] as num?)?.toInt() ?? base.typewriterMs,
+    firstBubbleDelayMs: (raw['firstBubbleDelayMs'] as num?)?.toInt() ?? base.firstBubbleDelayMs,
+    bubbleGapScale: (raw['bubbleGapScale'] as num?)?.toDouble() ?? base.bubbleGapScale,
+    pacingJitter: (raw['pacingJitter'] as num?)?.toDouble() ?? base.pacingJitter,
     stripMarkdownInCharacterMode: raw['stripMarkdownInCharacterMode'] as bool? ?? true,
     compaction: raw['compaction'] is Map ? CompactionSettings.fromJson((raw['compaction'] as Map).cast<String, dynamic>()) : base.compaction,
   );

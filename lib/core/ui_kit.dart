@@ -12,7 +12,12 @@ import 'theme.dart';
 
 // frosted pill used by the glass ui in chat and main tabs
 class Glass extends StatelessWidget {
-  const Glass({super.key, required this.child, this.radius = 22, this.width, this.height});
+  const Glass(
+      {super.key,
+      required this.child,
+      this.radius = 22,
+      this.width,
+      this.height});
   final Widget child;
   final double radius;
   final double? width;
@@ -30,7 +35,10 @@ class Glass extends StatelessWidget {
         child: BackdropFilter(
           filter: ui.ImageFilter.blur(sigmaX: 16, sigmaY: 16),
           child: DecoratedBox(
-            decoration: BoxDecoration(color: p.glassFill, borderRadius: r, border: Border.all(color: p.glassStroke, width: 0.6)),
+            decoration: BoxDecoration(
+                color: p.glassFill,
+                borderRadius: r,
+                border: Border.all(color: p.glassStroke, width: 0.6)),
             child: child,
           ),
         ),
@@ -39,18 +47,88 @@ class Glass extends StatelessWidget {
   }
 }
 
-enum Ic { back, more, search, close, pencil, send, stop, ai, pin, pinTilt, mute, unmute, down, reply, copy, regen, trash, chats, gear, moon, key, globe, textSize, corner, check, attach, smile, keyboard, sticker, image, file, pinLoc, music, poll, user, calendar, up, chevron, info, share, camera, link, unread, readAll, storage, palette, bell, plus, drag, list, backspace, check2, video, at, lock, crown, hongbao, wallet }
+enum Ic {
+  back,
+  more,
+  search,
+  close,
+  pencil,
+  send,
+  stop,
+  ai,
+  pin,
+  pinTilt,
+  mute,
+  unmute,
+  down,
+  reply,
+  copy,
+  regen,
+  trash,
+  chats,
+  gear,
+  moon,
+  key,
+  globe,
+  textSize,
+  corner,
+  check,
+  attach,
+  smile,
+  keyboard,
+  sticker,
+  image,
+  file,
+  pinLoc,
+  music,
+  poll,
+  user,
+  calendar,
+  up,
+  chevron,
+  info,
+  share,
+  camera,
+  link,
+  unread,
+  readAll,
+  storage,
+  palette,
+  bell,
+  plus,
+  minus,
+  drag,
+  list,
+  backspace,
+  check2,
+  video,
+  at,
+  lock,
+  crown,
+  hongbao,
+  wallet,
+  folder,
+  folderOpen,
+  fileCode,
+  terminal,
+  eye,
+  download,
+  wrap,
+  hidden
+}
 
 // every glyph is stroked on a 24 grid
 class TgIcon extends StatelessWidget {
-  const TgIcon(this.ic, {super.key, required this.color, this.size = 24, this.stroke = 2});
+  const TgIcon(this.ic,
+      {super.key, required this.color, this.size = 24, this.stroke = 2});
   final Ic ic;
   final Color color;
   final double size;
   final double stroke;
 
   @override
-  Widget build(BuildContext context) => CustomPaint(size: Size.square(size), painter: _IconPainter(ic, color, stroke));
+  Widget build(BuildContext context) => CustomPaint(
+      size: Size.square(size), painter: _IconPainter(ic, color, stroke));
 }
 
 class _IconPainter extends CustomPainter {
@@ -109,7 +187,10 @@ class _IconPainter extends CustomPainter {
           ..lineTo(18.5, 11.5);
         canvas.drawPath(p, sp..strokeWidth = stroke + .4);
       case Ic.stop:
-        canvas.drawRRect(RRect.fromRectAndRadius(const Rect.fromLTWH(7, 7, 10, 10), const Radius.circular(2.4)), fp);
+        canvas.drawRRect(
+            RRect.fromRectAndRadius(
+                const Rect.fromLTWH(7, 7, 10, 10), const Radius.circular(2.4)),
+            fp);
       case Ic.ai:
         final star = Path()
           ..moveTo(11, 3)
@@ -137,7 +218,8 @@ class _IconPainter extends CustomPainter {
           ..lineTo(9, 9.5)
           ..close();
         canvas.drawPath(p, fp);
-        canvas.drawLine(const Offset(12, 13), const Offset(12, 21), sp..strokeWidth = 2);
+        canvas.drawLine(
+            const Offset(12, 13), const Offset(12, 21), sp..strokeWidth = 2);
       // same pin turned 0.6rad and rescaled so its ink fills the whole 24 grid,
       // that lets the dialog row align it by its right edge with the date
       case Ic.pinTilt:
@@ -150,7 +232,8 @@ class _IconPainter extends CustomPainter {
           ..lineTo(8.62, 7.92)
           ..close();
         canvas.drawPath(p, fp);
-        canvas.drawLine(const Offset(9.34, 14.52), const Offset(2.84, 24), sp..strokeWidth = 1.8);
+        canvas.drawLine(const Offset(9.34, 14.52), const Offset(2.84, 24),
+            sp..strokeWidth = 1.8);
       case Ic.mute:
       case Ic.unmute:
         p
@@ -163,8 +246,10 @@ class _IconPainter extends CustomPainter {
           ..close();
         canvas.drawPath(p, ic == Ic.mute ? fp : sp);
         if (ic == Ic.mute) {
-          canvas.drawLine(const Offset(15.5, 9.5), const Offset(20.5, 14.5), sp..strokeWidth = 1.8);
-          canvas.drawLine(const Offset(20.5, 9.5), const Offset(15.5, 14.5), sp);
+          canvas.drawLine(const Offset(15.5, 9.5), const Offset(20.5, 14.5),
+              sp..strokeWidth = 1.8);
+          canvas.drawLine(
+              const Offset(20.5, 9.5), const Offset(15.5, 14.5), sp);
         } else {
           final w = Path()
             ..moveTo(15.5, 9)
@@ -186,21 +271,28 @@ class _IconPainter extends CustomPainter {
           ..lineTo(9.5, 17.5)
           ..moveTo(4.5, 12)
           ..lineTo(14, 12)
-          ..arcToPoint(const Offset(20, 18), radius: const Radius.circular(6), clockwise: true)
+          ..arcToPoint(const Offset(20, 18),
+              radius: const Radius.circular(6), clockwise: true)
           ..lineTo(20, 19);
         canvas.drawPath(p, sp);
       case Ic.copy:
-        canvas.drawRRect(RRect.fromRectAndRadius(const Rect.fromLTWH(8.5, 8.5, 11, 11), const Radius.circular(2.5)), sp);
+        canvas.drawRRect(
+            RRect.fromRectAndRadius(const Rect.fromLTWH(8.5, 8.5, 11, 11),
+                const Radius.circular(2.5)),
+            sp);
         p
           ..moveTo(15.5, 5.5)
           ..lineTo(15.5, 5.5)
           ..lineTo(6.5, 5.5)
-          ..arcToPoint(const Offset(4.5, 7.5), radius: const Radius.circular(2), clockwise: false)
+          ..arcToPoint(const Offset(4.5, 7.5),
+              radius: const Radius.circular(2), clockwise: false)
           ..lineTo(4.5, 15.5)
-          ..arcToPoint(const Offset(6.5, 17.5), radius: const Radius.circular(2), clockwise: false);
+          ..arcToPoint(const Offset(6.5, 17.5),
+              radius: const Radius.circular(2), clockwise: false);
         canvas.drawPath(p, sp);
       case Ic.regen:
-        canvas.drawArc(const Rect.fromLTWH(4.5, 4.5, 15, 15), -0.5, 5.2, false, sp);
+        canvas.drawArc(
+            const Rect.fromLTWH(4.5, 4.5, 15, 15), -0.5, 5.2, false, sp);
         p
           ..moveTo(15.2, 3.4)
           ..lineTo(18.6, 5.8)
@@ -255,8 +347,12 @@ class _IconPainter extends CustomPainter {
       case Ic.moon:
         p
           ..moveTo(20, 14.6)
-          ..arcToPoint(const Offset(9.4, 4), radius: const Radius.circular(8.6), clockwise: true, largeArc: true)
-          ..arcToPoint(const Offset(20, 14.6), radius: const Radius.circular(7), clockwise: false);
+          ..arcToPoint(const Offset(9.4, 4),
+              radius: const Radius.circular(8.6),
+              clockwise: true,
+              largeArc: true)
+          ..arcToPoint(const Offset(20, 14.6),
+              radius: const Radius.circular(7), clockwise: false);
         canvas.drawPath(p, sp);
       case Ic.key:
         canvas.drawCircle(const Offset(8, 15.5), 4, sp);
@@ -283,7 +379,8 @@ class _IconPainter extends CustomPainter {
         p
           ..moveTo(4.5, 19.5)
           ..lineTo(4.5, 12)
-          ..arcToPoint(const Offset(12, 4.5), radius: const Radius.circular(7.5))
+          ..arcToPoint(const Offset(12, 4.5),
+              radius: const Radius.circular(7.5))
           ..lineTo(19.5, 4.5);
         canvas.drawPath(p, sp);
       case Ic.check:
@@ -298,12 +395,18 @@ class _IconPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(_IconPainter o) => o.ic != ic || o.color != color || o.stroke != stroke;
+  bool shouldRepaint(_IconPainter o) =>
+      o.ic != ic || o.color != color || o.stroke != stroke;
 }
 
 // gradient circle avatar like dialog cells, a photo path wins over the initial
 class Avatar extends StatelessWidget {
-  const Avatar({super.key, required this.name, required this.color, this.size = 52, this.path = ''});
+  const Avatar(
+      {super.key,
+      required this.name,
+      required this.color,
+      this.size = 52,
+      this.path = ''});
   final String name;
   final int color;
   final double size;
@@ -312,7 +415,9 @@ class Avatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final g = context.p.avatar(color);
-    final ch = name.trim().isEmpty ? '?' : String.fromCharCodes(name.trim().runes.take(1)).toUpperCase();
+    final ch = name.trim().isEmpty
+        ? '?'
+        : String.fromCharCodes(name.trim().runes.take(1)).toUpperCase();
     if (path.isNotEmpty) {
       return ClipOval(
         child: Image.file(
@@ -324,8 +429,18 @@ class Avatar extends StatelessWidget {
             width: size,
             height: size,
             alignment: Alignment.center,
-            decoration: BoxDecoration(shape: BoxShape.circle, gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: g)),
-            child: Text(ch, style: TextStyle(color: const Color(0xFFFFFFFF), fontSize: size * .42, fontWeight: FontWeight.w500, height: 1.1)),
+            decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: g)),
+            child: Text(ch,
+                style: TextStyle(
+                    color: const Color(0xFFFFFFFF),
+                    fontSize: size * .42,
+                    fontWeight: FontWeight.w500,
+                    height: 1.1)),
           ),
         ),
       );
@@ -334,8 +449,18 @@ class Avatar extends StatelessWidget {
       width: size,
       height: size,
       alignment: Alignment.center,
-      decoration: BoxDecoration(shape: BoxShape.circle, gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: g)),
-      child: Text(ch, style: TextStyle(color: const Color(0xFFFFFFFF), fontSize: size * .42, fontWeight: FontWeight.w500, height: 1.1)),
+      decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: g)),
+      child: Text(ch,
+          style: TextStyle(
+              color: const Color(0xFFFFFFFF),
+              fontSize: size * .42,
+              fontWeight: FontWeight.w500,
+              height: 1.1)),
     );
   }
 }
@@ -349,8 +474,11 @@ class TypingDots extends StatefulWidget {
   State<TypingDots> createState() => _TypingDotsState();
 }
 
-class _TypingDotsState extends State<TypingDots> with SingleTickerProviderStateMixin {
-  late final AnimationController _c = AnimationController(vsync: this, duration: const Duration(milliseconds: 800))..repeat();
+class _TypingDotsState extends State<TypingDots>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _c = AnimationController(
+      vsync: this, duration: const Duration(milliseconds: 800))
+    ..repeat();
 
   @override
   void dispose() {
@@ -359,7 +487,8 @@ class _TypingDotsState extends State<TypingDots> with SingleTickerProviderStateM
   }
 
   @override
-  Widget build(BuildContext context) => CustomPaint(size: const Size(18, 14), painter: _DotsPainter(_c, widget.color));
+  Widget build(BuildContext context) => CustomPaint(
+      size: const Size(18, 14), painter: _DotsPainter(_c, widget.color));
 }
 
 class _DotsPainter extends CustomPainter {
@@ -375,7 +504,9 @@ class _DotsPainter extends CustomPainter {
     final paint = Paint()..color = color;
     for (var i = 0; i < 3; i++) {
       final ph = ((ms - 150 * i) % 800 + 800) % 800;
-      final s = ph < 320 ? 1.33 + _d(ph / 320) : (ph < 640 ? 1.33 + (1 - _d((ph - 320) / 320)) : 1.33);
+      final s = ph < 320
+          ? 1.33 + _d(ph / 320)
+          : (ph < 640 ? 1.33 + (1 - _d((ph - 320) / 320)) : 1.33);
       canvas.drawCircle(Offset(3.0 + 6 * i, 10), s, paint);
     }
   }
@@ -403,8 +534,18 @@ class TgSwitch extends StatelessWidget {
           width: 44,
           height: 26,
           child: Stack(children: [
-            Container(decoration: BoxDecoration(color: Color.lerp(p.unreadMuted, p.accent, t), borderRadius: BorderRadius.circular(13))),
-            Positioned(left: 3 + 18 * t, top: 3, child: Container(width: 20, height: 20, decoration: const BoxDecoration(color: Color(0xFFFFFFFF), shape: BoxShape.circle))),
+            Container(
+                decoration: BoxDecoration(
+                    color: Color.lerp(p.unreadMuted, p.accent, t),
+                    borderRadius: BorderRadius.circular(13))),
+            Positioned(
+                left: 3 + 18 * t,
+                top: 3,
+                child: Container(
+                    width: 20,
+                    height: 20,
+                    decoration: const BoxDecoration(
+                        color: Color(0xFFFFFFFF), shape: BoxShape.circle))),
           ]),
         ),
       ),
@@ -414,7 +555,11 @@ class TgSwitch extends StatelessWidget {
 
 // a row of mutually exclusive choices, the pill sliding between them
 class TgSegmented extends StatelessWidget {
-  const TgSegmented({super.key, required this.labels, required this.index, required this.onChanged});
+  const TgSegmented(
+      {super.key,
+      required this.labels,
+      required this.index,
+      required this.onChanged});
 
   final List<String> labels;
   final int index;
@@ -428,7 +573,8 @@ class TgSegmented extends StatelessWidget {
     return Container(
       height: 34,
       padding: const EdgeInsets.all(2),
-      decoration: BoxDecoration(color: p.gray, borderRadius: BorderRadius.circular(9)),
+      decoration:
+          BoxDecoration(color: p.gray, borderRadius: BorderRadius.circular(9)),
       child: Stack(fit: StackFit.expand, children: [
         // AnimatedAlign slides the pill and FractionallySizedBox keeps it a
         // third wide whatever the labels measure. Positioned will not do this:
@@ -439,12 +585,29 @@ class TgSegmented extends StatelessWidget {
             alignment: Alignment(-1 + 2 * index / (n - 1), 0),
             duration: const Duration(milliseconds: 180),
             curve: TgCurves.easeOut,
-            child: FractionallySizedBox(widthFactor: 1 / n, heightFactor: 1, child: DecoratedBox(decoration: BoxDecoration(color: p.bar, borderRadius: BorderRadius.circular(7)))),
+            child: FractionallySizedBox(
+                widthFactor: 1 / n,
+                heightFactor: 1,
+                child: DecoratedBox(
+                    decoration: BoxDecoration(
+                        color: p.bar, borderRadius: BorderRadius.circular(7)))),
           ),
         ),
         Row(children: [
           for (var i = 0; i < n; i++)
-            Expanded(child: Tap(scale: .94, onTap: () => onChanged(i), child: Center(child: Text(labels[i], style: TextStyle(color: i == index ? p.accent : p.subtitle, fontSize: 13, fontWeight: i == index ? FontWeight.w600 : FontWeight.w400, decoration: TextDecoration.none))))),
+            Expanded(
+                child: Tap(
+                    scale: .94,
+                    onTap: () => onChanged(i),
+                    child: Center(
+                        child: Text(labels[i],
+                            style: TextStyle(
+                                color: i == index ? p.accent : p.subtitle,
+                                fontSize: 13,
+                                fontWeight: i == index
+                                    ? FontWeight.w600
+                                    : FontWeight.w400,
+                                decoration: TextDecoration.none))))),
         ]),
       ]),
     );
@@ -453,7 +616,13 @@ class TgSegmented extends StatelessWidget {
 
 // seekbar with a thumb that grows while dragging
 class TgSlider extends StatefulWidget {
-  const TgSlider({super.key, required this.value, required this.min, required this.max, required this.onChanged, this.step = 1});
+  const TgSlider(
+      {super.key,
+      required this.value,
+      required this.min,
+      required this.max,
+      required this.onChanged,
+      this.step = 1});
   final double value;
   final double min;
   final double max;
@@ -501,7 +670,11 @@ class _TgSliderState extends State<TgSlider> {
           duration: const Duration(milliseconds: 150),
           builder: (_, r, __) => CustomPaint(
             size: Size(w, 40),
-            painter: _SliderPainter((widget.value - widget.min) / (widget.max - widget.min), r, p.accent, p.divider),
+            painter: _SliderPainter(
+                (widget.value - widget.min) / (widget.max - widget.min),
+                r,
+                p.accent,
+                p.divider),
           ),
         ),
       );
@@ -531,7 +704,8 @@ class _SliderPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(_SliderPainter o) => o.t != t || o.r != r || o.active != active;
+  bool shouldRepaint(_SliderPainter o) =>
+      o.t != t || o.r != r || o.active != active;
 }
 
 // bare EditableText with tap and long press wired up by hand
@@ -589,20 +763,25 @@ class _TgEditState extends State<TgEdit> {
       onTapUp: (d) {
         final s = _key.currentState;
         if (s == null) return;
-        s.renderEditable.selectPositionAt(from: d.globalPosition, cause: SelectionChangedCause.tap);
+        s.renderEditable.selectPositionAt(
+            from: d.globalPosition, cause: SelectionChangedCause.tap);
         s.requestKeyboard();
       },
       onLongPressStart: (d) {
         final s = _key.currentState;
         if (s == null) return;
         s.requestKeyboard();
-        s.renderEditable.selectWordsInRange(from: d.globalPosition, cause: SelectionChangedCause.longPress);
+        s.renderEditable.selectWordsInRange(
+            from: d.globalPosition, cause: SelectionChangedCause.longPress);
         s.showToolbar();
       },
       child: Stack(alignment: Alignment.centerLeft, children: [
         ValueListenableBuilder<TextEditingValue>(
           valueListenable: widget.controller,
-          builder: (_, v, __) => v.text.isEmpty ? IgnorePointer(child: Text(widget.hint, style: hintStyle, maxLines: 1)) : const SizedBox.shrink(),
+          builder: (_, v, __) => v.text.isEmpty
+              ? IgnorePointer(
+                  child: Text(widget.hint, style: hintStyle, maxLines: 1))
+              : const SizedBox.shrink(),
         ),
         EditableText(
           key: _key,
@@ -619,8 +798,13 @@ class _TgEditState extends State<TgEdit> {
           minLines: 1,
           obscureText: widget.obscure,
           autofocus: widget.autofocus,
-          keyboardType: widget.keyboardType ?? (widget.maxLines == 1 ? TextInputType.text : TextInputType.multiline),
-          textInputAction: widget.maxLines == 1 ? TextInputAction.done : TextInputAction.newline,
+          keyboardType: widget.keyboardType ??
+              (widget.maxLines == 1
+                  ? TextInputType.text
+                  : TextInputType.multiline),
+          textInputAction: widget.maxLines == 1
+              ? TextInputAction.done
+              : TextInputAction.newline,
           onSubmitted: widget.onSubmitted,
           onChanged: widget.onChanged,
           rendererIgnoresPointer: true,
@@ -632,7 +816,13 @@ class _TgEditState extends State<TgEdit> {
 
 // underlined field like EditTextBoldCursor used in dialogs
 class TgField extends StatefulWidget {
-  const TgField({super.key, required this.controller, required this.hint, this.maxLines = 1, this.obscure = false, this.autofocus = false});
+  const TgField(
+      {super.key,
+      required this.controller,
+      required this.hint,
+      this.maxLines = 1,
+      this.obscure = false,
+      this.autofocus = false});
   final TextEditingController controller;
   final String hint;
   final int? maxLines;
@@ -664,16 +854,30 @@ class _TgFieldState extends State<TgField> {
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
       Padding(
         padding: const EdgeInsets.only(top: 8, bottom: 8),
-        child: TgEdit(controller: widget.controller, hint: widget.hint, maxLines: widget.maxLines, obscure: widget.obscure, autofocus: widget.autofocus, focusNode: _f, style: TextStyle(color: p.title, fontSize: 17)),
+        child: TgEdit(
+            controller: widget.controller,
+            hint: widget.hint,
+            maxLines: widget.maxLines,
+            obscure: widget.obscure,
+            autofocus: widget.autofocus,
+            focusNode: _f,
+            style: TextStyle(color: p.title, fontSize: 17)),
       ),
-      AnimatedContainer(duration: const Duration(milliseconds: 200), height: _f.hasFocus ? 2 : 1, color: _f.hasFocus ? p.accent : p.divider),
+      AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          height: _f.hasFocus ? 2 : 1,
+          color: _f.hasFocus ? p.accent : p.divider),
     ]);
   }
 }
 
 // text button used at the bottom of sheets
 class TgButton extends StatelessWidget {
-  const TgButton({super.key, required this.label, required this.onTap, this.enabled = true});
+  const TgButton(
+      {super.key,
+      required this.label,
+      required this.onTap,
+      this.enabled = true});
   final String label;
   final VoidCallback onTap;
   final bool enabled;
@@ -690,8 +894,15 @@ class TgButton extends StatelessWidget {
         child: Container(
           height: 48,
           alignment: Alignment.center,
-          decoration: BoxDecoration(color: p.accent, borderRadius: BorderRadius.circular(10)),
-          child: Text(label, style: TextStyle(color: p.dark ? const Color(0xFF0F1A24) : const Color(0xFFFFFFFF), fontSize: 15, fontWeight: FontWeight.w500)),
+          decoration: BoxDecoration(
+              color: p.accent, borderRadius: BorderRadius.circular(10)),
+          child: Text(label,
+              style: TextStyle(
+                  color: p.dark
+                      ? const Color(0xFF0F1A24)
+                      : const Color(0xFFFFFFFF),
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500)),
         ),
       ),
     );

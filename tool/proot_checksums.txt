@@ -1,0 +1,17 @@
+# sha256  path-relative-to-repo-root
+# Verified by tool/fetch_proot.sh, which refuses to run without this file.
+# Regenerate with: tool/fetch_proot.sh --write-checksums
+#
+# Termux proot 5.1.107.96, libtalloc 2.5.0, libandroid-shmem 0.7
+c547730a38b32afc60e5dab770043526eda605b7cdd9e6d4b4ce6f01a243834d  android/app/src/main/jniLibs/armeabi-v7a/libproot_exec.so
+7c3d9f74b8c8a87c46766d8bbeebeabf24cc4de507690ab04ba7f0190a598500  android/app/src/main/jniLibs/armeabi-v7a/libproot_loader.so
+a376ac7cbd18e6777657328c701b4979610473811761edc0fdb0ec388d8504af  android/app/src/main/jniLibs/armeabi-v7a/libtalloc.so
+ef35602fa6c8bca9081af1594fabeacbd98b6e8921dd6be54484291933b8040f  android/app/src/main/jniLibs/armeabi-v7a/libandroid-shmem.so
+1545b85b312505db6eb6908ff8b2ded0a77a3bd689c50ae85aa7c1d8445dd717  android/app/src/main/jniLibs/arm64-v8a/libproot_exec.so
+cbdef0e652c2b78af25d867e1719fdebbb0915e25aae2dd35b3b5c1835f6b551  android/app/src/main/jniLibs/arm64-v8a/libproot_loader.so
+742b438c4d09e276985a61d44164c9de207b6d8cc268f3018cb3001961bcb309  android/app/src/main/jniLibs/arm64-v8a/libtalloc.so
+84475798e07c8174dbbfaec70a827fdb02f19ffa69a589380c13e7507fd0e731  android/app/src/main/jniLibs/arm64-v8a/libandroid-shmem.so
+9a1303a51e69b89d78beaf40e4ec829c5c2ca98cbd5672411bdb15eebd871316  android/app/src/main/jniLibs/x86_64/libproot_exec.so
+a836b0569c84b1661333d16bacf6b396ff08fea816a5c936a82e08ddeeca8341  android/app/src/main/jniLibs/x86_64/libproot_loader.so
+7fa6722a4320495b1b85832fc7fd02de0cb367b45f116c1921b2830a6936da90  android/app/src/main/jniLibs/x86_64/libtalloc.so
+092926060298acd3778e6239033d7aef1280dcb59aebe021a3719612e6a3465f  android/app/src/main/jniLibs/x86_64/libandroid-shmem.so

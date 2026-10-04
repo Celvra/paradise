@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:paradise/data/ai/adapter.dart';
@@ -344,36 +345,76 @@ void main() {
 
   group('segmenter', () {
     test('splits on newline', () {
-      final s = Segmenter(strip: false);
-      expect(s.push('你好呀\n今天'), ['你好呀']);
-      expect(s.push('怎么样？'), isEmpty);
-      expect(s.flush(), ['今天怎么样？']);
+      // the merge dice sometimes hold a short first line back, so the shape is
+      // asserted as the two extremes the dice can pick, never a mix
+      for (var i = 0; i < 20; i++) {
+        final s = Segmenter(strip: false, random: Random(i));
+        final a = s.push('你好呀\n今天');
+        s.push('怎么样？');
+        final f = s.flush();
+        if (a.isEmpty) {
+          // held back, everything fuses into the tail
+          expect(f, ['你好呀今天怎么样？'], reason: 'seed $i held the first line');
+        } else {
+          expect(a, ['你好呀'], reason: 'seed $i let the first line through');
+          expect(f, ['今天怎么样？'], reason: 'seed $i tail');
+        }
+      }
     });
 
     test('splits on br tags', () {
-      final s = Segmenter(strip: false);
-      expect(s.push('第一句<br/>第二句'), ['第一句']);
-      expect(s.push('<br>第三句'), ['第二句']);
-      expect(s.flush(), ['第三句']);
+      // the three char first bubble is inside merge dice range, both shapes
+      // are legal as long as nothing is dropped
+      for (var i = 0; i < 20; i++) {
+        final s = Segmenter(strip: false, random: Random(i));
+        final a = s.push('第一句<br/>第二句');
+        final b = s.push('<br>第三句');
+        final f = s.flush();
+        if (a.isEmpty) {
+          expect(b, ['第一句第二句'], reason: 'seed $i fused');
+          expect(f, ['第三句'], reason: 'seed $i');
+        } else {
+          expect(a, ['第一句'], reason: 'seed $i split');
+          expect(b, ['第二句'], reason: 'seed $i');
+          expect(f, ['第三句'], reason: 'seed $i');
+        }
+      }
     });
 
     test('length cap fires with no newline', () {
       final s = Segmenter(strip: false);
       final out = s.push('啊' * 200);
       expect(out, isNotEmpty);
-      expect(out.first.length, lessThanOrEqualTo(120));
+      expect(out.first.length, inInclusiveRange(80, 170));
     });
 
     test('tiny fragments merge instead of vanishing', () {
-      final s = Segmenter(strip: false);
-      expect(s.push('嗯\n'), isEmpty);
-      expect(s.push('好\n'), isEmpty);
-      expect(s.flush(), ['嗯好']);
+      // the merge dice decides whether the first fragment rides at once or
+      // fuses with the second, both ways nothing is dropped
+      for (var i = 0; i < 20; i++) {
+        final s = Segmenter(strip: false, random: Random(i));
+        final a = s.push('嗯\n');
+        final b = s.push('好\n');
+        final f = s.flush();
+        if (a.isEmpty) {
+          expect(b, ['嗯好'], reason: 'seed $i fused on the second push');
+          expect(f, isEmpty, reason: 'seed $i');
+        } else {
+          expect(a, ['嗯'], reason: 'seed $i let the fragment through');
+          expect(b, ['好'], reason: 'seed $i');
+        }
+      }
     });
 
     test('markdown is stripped in character mode', () {
-      final s = Segmenter(strip: true);
-      expect(s.push('**粗体**\n'), ['粗体']);
+      // the stripped bubble is two chars, the merge dice may hold it back so
+      // the shape is asserted across the seed range instead of pinned
+      for (var i = 0; i < 20; i++) {
+        final s = Segmenter(strip: true, random: Random(i));
+        final out = s.push('**粗体**\n');
+        final tail = s.flush();
+        expect([...out, ...tail], ['粗体'], reason: 'seed $i');
+      }
       expect(stripMarkdown('# 标题\n\n- 项目一'), contains('标题'));
       expect(stripMarkdown('```js\ncode\n```'), isNot(contains('```')));
     });
@@ -452,7 +493,9 @@ void main() {
           replyMode: ReplyMode.full,
           temperature: 1,
           maxOutput: 0,
-          typewriterMs: 50,
+          firstBubbleDelayMs: 0,
+          bubbleGapScale: 1,
+          pacingJitter: 0.35,
           stripMarkdownInCharacterMode: true,
           compaction: const CompactionSettings(),
         );

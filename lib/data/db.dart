@@ -62,25 +62,73 @@ class ChatDb {
   /// Loads every chat's metadata with its messages still unread.
   ///
   /// Ordering is by [ord], which is what the list was before, so the sidebar
-  /// does not reshuffle itself the first time after the migration.
+  /// does not reshuffle itself the first time after the migration. A head that
+  /// fails to parse is skipped rather than fatal: one bad row costs one chat,
+  /// not the history, which is the failure that killed the blob loader.
   Future<List<Chat>> loadChats() async {
     final rows = await _db.query('chats', orderBy: 'ord ASC');
     final out = <Chat>[];
     for (final r in rows) {
-      final head = jsonDecode(r['head']! as String) as Map<String, dynamic>;
-      out.add(Chat.fromJson({...head, 'msgs': <dynamic>[]}));
+      try {
+        final head = jsonDecode(r['head']! as String) as Map<String, dynamic>;
+        out.add(Chat.fromJson({...head, 'msgs': <dynamic>[]}));
+      } catch (_) {}
+    }
+    return out;
+  }
+
+  /// The list position of every chat, keyed by id. [loadChats] returns chats
+  /// already in this order; the caller keeps the number so a chat written
+  /// later lands back in the same slot.
+  Future<Map<String, int>> chatOrds() async {
+    final rows = await _db.query('chats', columns: ['id', 'ord'], orderBy: 'ord ASC');
+    return {for (final r in rows) r['id']! as String: (r['ord']! as num).toInt()};
+  }
+
+  Future<int> maxChatOrd() async {
+    final r = await _db.rawQuery('SELECT MAX(ord) AS m FROM chats');
+    return (r.first['m'] as num?)?.toInt() ?? -1;
+  }
+
+  /// Loads every message of a chat, oldest first. The store holds a chat's
+  /// whole history in memory, so this is the load path rather than a paging
+  /// one; a row that does not parse is skipped, not fatal.
+  Future<List<Msg>> loadMsgs(String chatId) async {
+    final rows = await _db.query('messages', columns: ['data'], where: 'chat_id = ?', whereArgs: [chatId], orderBy: 'ord ASC');
+    final out = <Msg>[];
+    for (final r in rows) {
+      try {
+        out.add(Msg.fromJson(jsonDecode(r['data']! as String) as Map<String, dynamic>));
+      } catch (_) {}
     }
     return out;
   }
 
   /// Writes a chat's metadata, leaving its messages alone.
-  Future<void> saveChat(Chat c, int ord) async {
+  ///
+  /// With [msgs] set, the whole message list is rewritten in the same
+  /// transaction, which is how the store persists a chat: one chat per flush,
+  /// never the whole list, and never a half saved chat.
+  Future<void> saveChat(Chat c, int ord, {List<Msg>? msgs}) async {
     final head = c.toJson()..remove('msgs');
-    await _db.insert(
-      'chats',
-      {'id': c.id, 'ord': ord, 'head': jsonEncode(head)},
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
+    await _db.transaction((txn) async {
+      await txn.insert(
+        'chats',
+        {'id': c.id, 'ord': ord, 'head': jsonEncode(head)},
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+      if (msgs == null) return;
+      await txn.delete('messages', where: 'chat_id = ?', whereArgs: [c.id]);
+      final batch = txn.batch();
+      for (var i = 0; i < msgs.length; i++) {
+        batch.insert(
+          'messages',
+          {'chat_id': c.id, 'ord': i.toDouble(), 'data': jsonEncode(msgs[i].toJson())},
+          conflictAlgorithm: ConflictAlgorithm.replace,
+        );
+      }
+      await batch.commit(noResult: true);
+    });
   }
 
   Future<void> saveChatOrder(Map<String, int> ords) async {
@@ -187,8 +235,8 @@ class ChatDb {
 
   /// Moves a SharedPreferences chat blob into the database, once.
   ///
-  /// The blob stays in SharedPreferences afterwards until [confirmMigration] is
-  /// called, so an interrupted first run finds it still there rather than
+  /// The blob is only removed by the caller once the migration has been
+  /// verified, so an interrupted first run finds it still there rather than
   /// discovering an empty database and an empty blob.
   Future<int> migrateFrom(String blob) async {
     final List decoded;

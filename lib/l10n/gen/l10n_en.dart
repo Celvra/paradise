@@ -312,7 +312,42 @@ class AppLocalizationsEn extends AppLocalizations {
       'Sends several short messages like a real person';
 
   @override
-  String get aiStripMarkdown => 'Strip markdown in character mode';
+  String get aiFirstBubbleDelay => 'Read time before replying';
+
+  @override
+  String get aiBubbleGapScale => 'Pause between messages, scale';
+
+  @override
+  String get aiPacingOff => 'Off';
+
+  @override
+  String get aiPacingDelayHint => 'The first bubble lands at once';
+
+  @override
+  String get aiPacingJitter => 'Timing randomness';
+
+  @override
+  String get aiPacingJitterLow => 'Subtle';
+
+  @override
+  String get aiPacingJitterNormal => 'Normal';
+
+  @override
+  String get aiPacingJitterWild => 'Wild';
+
+  @override
+  String get aiPacingJitterHintOff => 'Every pause is exactly as long as set';
+
+  @override
+  String get aiPacingJitterHintLow =>
+      'Pauses drift a little around the set values';
+
+  @override
+  String get aiPacingJitterHintNormal => 'A human unevenness in every pause';
+
+  @override
+  String get aiPacingJitterHintWild =>
+      'Unpredictable, sometimes instant sometimes slow';
 
   @override
   String get aiSamplingHeader => 'Sampling';
@@ -595,7 +630,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsAboutDeps =>
-      'Dependencies:\n\naudioplayers 6.8.1 - voice messages  (MIT)\nhttps://github.com/bluefireteam/audioplayers/tree/master/packages/audioplayers\ncharacters 1.4.1 - grapheme clusters for text measurement  (BSD-3-Clause)\nhttps://github.com/dart-lang/core/tree/main/pkgs/characters\nfile_picker 13.1.0 - picking documents and audio files  (MIT)\nhttps://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker\nflutter_contacts 2.5.0 - sharing a contact card  (MIT)\nhttps://github.com/QuisApp/flutter_contacts\nflutter_local_notifications 18.0.1 - local notifications  (BSD-3-Clause)\nflutter_svg 2.3.0 - provider logos and vector icons  (MIT)\nhttps://github.com/flutter/packages/tree/main/third_party/packages/flutter_svg\nflutter_tts 4.2.5 - reading voice messages aloud  (MIT)\ngeolocator 13.0.4 - location attachments  (MIT)\nhttps://github.com/baseflow/flutter-geolocator/tree/main/geolocator\nhttp 1.6.0 - OpenAI compatible endpoints  (BSD-3-Clause)\nhttps://github.com/dart-lang/http/tree/master/pkgs/http\nimage_picker 1.2.3 - camera and gallery photos  (Apache-2.0)\nhttps://github.com/flutter/packages/tree/main/packages/image_picker/image_picker\nintl 0.20.3 - date and number formatting  (BSD-3-Clause)\nhttps://github.com/dart-lang/i18n/tree/main/pkgs/intl\npath_provider 2.1.6 - app directory for stickers and exports  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/path_provider/path_provider\nphoto_manager 3.12.0 - album access for attachments  (Apache-2.0)\nhttps://github.com/fluttercandies/flutter_photo_manager\nshared_preferences 2.5.5 - settings and chat storage  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/shared_preferences/shared_preferences\nsqflite 2.4.4 - message history and per chat paging  (BSD-2-Clause)\nhttps://github.com/tekartik/sqflite/tree/master/sqflite\ntimezone 0.10.1 - timezone data for scheduled messages  (BSD-2-Clause)\nhttps://github.com/srawlins/timezone\nurl_launcher 6.3.2 - the community link in this dialog  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/url_launcher/url_launcher\nworkmanager 0.10.10 - background delivery when the app is killed  (MIT)\nhttps://github.com/fluttercommunity/flutter_workmanager';
+      'Dependencies:\n\narchive 3.6.1 - zipping a workspace for export  (MIT)\nhttps://github.com/brendan-duncan/archive\nasync 2.13.0 - not used directly, pulled in by flutter_local_notifications  (BSD-2-Clause)\nhttps://github.com/dart-lang/async\ncharacters 1.4.1 - grapheme clusters for text measurement  (BSD-3-Clause)\nhttps://github.com/dart-lang/core/tree/main/pkgs/characters\ncrypto 3.0.7 - declared for the workspace, nothing on device is hashed yet  (BSD-3-Clause)\nhttps://github.com/dart-lang/core/tree/main/pkgs/crypto\nfile_picker 13.1.0 - picking documents and audio files  (MIT)\nhttps://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker\nflutter_contacts 2.5.0 - sharing a contact card  (MIT)\nhttps://github.com/QuisApp/flutter_contacts\nflutter_highlight 0.7.0 - colouring the code preview  (MIT)\nhttps://github.com/git-touch/highlight\nflutter_local_notifications 18.0.1 - local notifications  (BSD-3-Clause)\nhttps://github.com/MaikuB/flutter_local_notifications\nflutter_svg 2.3.0 - provider logos and vector icons  (MIT)\nhttps://github.com/flutter/packages/tree/main/third_party/packages/flutter_svg\ngeolocator 13.0.4 - location attachments  (MIT)\nhttps://github.com/baseflow/flutter-geolocator/tree/main/geolocator\nglob 2.2.0 - the workspace find tool  (BSD-3-Clause)\nhttps://github.com/dart-lang/tools/tree/main/pkgs/glob\nhighlight 0.7.0 - the grammar data behind the code preview  (MIT)\nhttps://github.com/pd4d10/highlight\nhttp 1.6.0 - OpenAI compatible endpoints  (BSD-3-Clause)\nhttps://github.com/dart-lang/http/tree/master/pkgs/http\nimage_picker 1.2.3 - camera and gallery photos  (Apache-2.0)\nhttps://github.com/flutter/packages/tree/main/packages/image_picker/image_picker\nintl 0.20.3 - date and number formatting  (BSD-3-Clause)\nhttps://github.com/dart-lang/i18n/tree/main/pkgs/intl\npath 1.9.1 - path arithmetic in the workspace sandbox  (BSD-3-Clause)\nhttps://github.com/dart-lang/core/tree/main/pkgs/path\npath_provider 2.1.6 - app directory for stickers and exports  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/path_provider/path_provider\nphoto_manager 3.12.0 - album access for attachments  (Apache-2.0)\nhttps://github.com/fluttercandies/flutter_photo_manager\nshared_preferences 2.5.5 - settings and chat storage  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/shared_preferences/shared_preferences\nsqflite 2.4.4 - message history and per chat paging  (BSD-2-Clause)\nhttps://github.com/tekartik/sqflite/tree/master/sqflite\ntimezone 0.10.1 - timezone data for scheduled messages  (BSD-2-Clause)\nhttps://github.com/srawlins/timezone\nurl_launcher 6.3.2 - the community link in this dialog  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/url_launcher/url_launcher\nwebview_flutter 4.14.1 - rendering html in a file preview  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/webview_flutter/webview_flutter\nworkmanager 0.10.10 - background delivery when the app is killed  (MIT)\nhttps://github.com/fluttercommunity/flutter_workmanager';
 
   @override
   String get settingsAboutCommunityUrl => 'https://discord.gg/aQaNUHPsw';
@@ -1359,9 +1394,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get msgVoice => 'Voice message';
-
-  @override
   String get msgEdited => 'edited';
 
   @override
@@ -1417,11 +1449,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aiReplyTitle => 'AI replies';
 
   @override
+  String get aiReplyStyleHeader => 'Pacing';
+
+  @override
   String get aiReplyVisibleHeader => 'What you get to see';
 
   @override
   String get aiReplyVisibleFooter =>
       'Show thinking writes the reasoning of a thinking model into the chat, above the answer, as a step you can open. Agent mode lets the model call tools and adds a row per call with its arguments and its result.';
+
+  @override
+  String get aiReplyMarkdown => 'Markdown';
+
+  @override
+  String get aiReplyMarkdownSub =>
+      'Render bold, code blocks and headings in bubbles; off strips them in character mode';
 
   @override
   String get aiReplyShowThinking => 'Show thinking';
@@ -1682,9 +1724,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get humanToolsRow => 'Tools, MCP servers and permissions';
 
   @override
-  String get humanVoiceRow => 'Voice (text to speech)';
-
-  @override
   String get humanWalletRow => 'Wallet';
 
   @override
@@ -1714,6 +1753,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get humanBrPause => 'Default pause';
+
+  @override
+  String get humanReplyDelay => 'Read time before the first bubble';
+
+  @override
+  String get humanPaceScale => 'Pause between bubbles, scale';
 
   @override
   String get humanRandomHeader => 'Randomness';
@@ -1916,28 +1961,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get humanRatingTuning => 'Proactive frequency multiplier';
-
-  @override
-  String get humanVoiceTitle => 'Voice';
-
-  @override
-  String get humanVoiceFooter =>
-      'Any OpenAI compatible /audio/speech endpoint. Without one, voice messages are read aloud by the system voice.';
-
-  @override
-  String get humanVoiceEndpoint => 'Endpoint';
-
-  @override
-  String get humanVoiceModel => 'Model';
-
-  @override
-  String get humanVoiceVoice => 'Voice';
-
-  @override
-  String get humanVoiceSpeed => 'Speed';
-
-  @override
-  String get humanVoiceSystem => 'Fall back to the system voice';
 
   @override
   String get humanBackupTitle => 'Backup and import';
@@ -2531,4 +2554,601 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get msgRecalledAnonymous => 'A message was recalled';
+
+  @override
+  String get wsTitle => 'Workspace';
+
+  @override
+  String get wsSub => 'Give the assistant a directory of its own';
+
+  @override
+  String get wsSubOff =>
+      'Turn on file tools to let the assistant read and write here';
+
+  @override
+  String get wsToolsOff => 'file tools off';
+
+  @override
+  String get wsNoWorkspace => 'No workspace';
+
+  @override
+  String get wsToolsOn => 'File tools';
+
+  @override
+  String get wsToolsFooter =>
+      'When on, a chat bound to a workspace gets six file tools. Writes always show you the change first.';
+
+  @override
+  String get wsConfirmWrites => 'Confirm every write';
+
+  @override
+  String get wsConfirmWritesFooter =>
+      'Off means the assistant writes without stopping to ask. The change is still shown on the step row afterwards.';
+
+  @override
+  String get wsNew => 'New workspace';
+
+  @override
+  String get wsNewTitle => 'Name';
+
+  @override
+  String get wsCreate => 'Create';
+
+  @override
+  String get wsRename => 'Rename';
+
+  @override
+  String get wsDelete => 'Delete';
+
+  @override
+  String wsDeleteConfirm(String name) {
+    return 'Delete \"$name\"?';
+  }
+
+  @override
+  String get wsDeleteFiles => 'Also delete its files';
+
+  @override
+  String get wsDeleteFilesFooter =>
+      'Off leaves the files on this device. A folder you picked yourself is never deleted either way.';
+
+  @override
+  String wsBoundTo(int count) {
+    return 'Bound to $count chat(s)';
+  }
+
+  @override
+  String get wsNeverUsed => 'never used';
+
+  @override
+  String get wsFiles => 'Files';
+
+  @override
+  String get wsToolsTab => 'Tools';
+
+  @override
+  String get wsToolShell => 'Shell';
+
+  @override
+  String get wsToolViewImage => 'View image';
+
+  @override
+  String get wsToolsTabFooter =>
+      'A tool switched off here is not offered to the assistant at all. Switching one on does not override the permission you set on the tools page.';
+
+  @override
+  String get wsBind => 'Bind a workspace';
+
+  @override
+  String get wsBindTitle => 'Choose a workspace';
+
+  @override
+  String get wsBindNone => 'No workspace';
+
+  @override
+  String get wsUnbind => 'Unbind';
+
+  @override
+  String get wsUnbindConfirm =>
+      'The assistant has already used this workspace in this chat. Unbind anyway?';
+
+  @override
+  String get wsChange => 'Change';
+
+  @override
+  String get wsCwd => 'Working directory';
+
+  @override
+  String get wsCwdEmpty => 'Workspace root';
+
+  @override
+  String get wsCwdInvalid => 'That path is not inside the workspace';
+
+  @override
+  String get wsReveal => 'Show files';
+
+  @override
+  String get wsEmpty => 'Nothing here yet';
+
+  @override
+  String get wsEmptyHint =>
+      'Ask the assistant to write a file and it will show up in this list.';
+
+  @override
+  String get wsShowHidden => 'Show hidden files';
+
+  @override
+  String get wsSort => 'Sort';
+
+  @override
+  String get wsSortName => 'Name';
+
+  @override
+  String get wsSortModified => 'Modified';
+
+  @override
+  String get wsSortSize => 'Size';
+
+  @override
+  String get wsFoldersFirst => 'Folders first';
+
+  @override
+  String get wsNewFolder => 'New folder';
+
+  @override
+  String get wsNewFile => 'New file';
+
+  @override
+  String get wsImport => 'Import';
+
+  @override
+  String get wsExport => 'Export';
+
+  @override
+  String get wsExportZip => 'Export as zip';
+
+  @override
+  String get wsMove => 'Move';
+
+  @override
+  String get wsMoveHere => 'Move here';
+
+  @override
+  String get wsCopyPath => 'Copy path';
+
+  @override
+  String get wsCopiedPath => 'Path copied';
+
+  @override
+  String get wsOpenWith => 'Open with';
+
+  @override
+  String get wsShare => 'Share';
+
+  @override
+  String get wsEmptyDir => 'This folder is empty';
+
+  @override
+  String wsTruncated(int count) {
+    return 'List cut short at $count entries';
+  }
+
+  @override
+  String get wsPreview => 'Preview';
+
+  @override
+  String get wsPreviewMissing => 'That file is gone';
+
+  @override
+  String get wsPreviewTooBig => 'Too large to preview';
+
+  @override
+  String get wsPreviewBinary => 'This file is not text';
+
+  @override
+  String get wsPreviewEmpty => 'Empty file';
+
+  @override
+  String get wsWrap => 'Wrap lines';
+
+  @override
+  String get wsZoomIn => 'Bigger text';
+
+  @override
+  String get wsZoomOut => 'Smaller text';
+
+  @override
+  String get wsRendered => 'Rendered';
+
+  @override
+  String get wsSource => 'Source';
+
+  @override
+  String get wsWriteTitle => 'Allow this change?';
+
+  @override
+  String get wsWriteNew => 'New file';
+
+  @override
+  String get wsWriteReplace => 'Replacing the whole file';
+
+  @override
+  String wsWriteEdit(int count) {
+    return 'Replacing $count line(s)';
+  }
+
+  @override
+  String wsWriteCounts(int added, int removed) {
+    return '+$added −$removed';
+  }
+
+  @override
+  String get wsWriteLoose => 'matched loosely';
+
+  @override
+  String get wsWriteAllow => 'Allow';
+
+  @override
+  String get wsWriteAllowAll => 'Allow all in this chat';
+
+  @override
+  String get wsWriteRefuse => 'Refuse';
+
+  @override
+  String get wsWriteRefused => 'You refused the change';
+
+  @override
+  String get wsWriteNoUi => 'This ran without asking';
+
+  @override
+  String get wsToolRead => 'Read';
+
+  @override
+  String get wsToolWrite => 'Write';
+
+  @override
+  String get wsToolEdit => 'Edit';
+
+  @override
+  String get wsToolList => 'List';
+
+  @override
+  String get wsToolGlob => 'Find';
+
+  @override
+  String get wsToolGrep => 'Search';
+
+  @override
+  String get wsToolDenied => 'Refused';
+
+  @override
+  String wsLines(int count) {
+    return '$count lines';
+  }
+
+  @override
+  String wsFilesCount(int count) {
+    return '$count files';
+  }
+
+  @override
+  String wsBytesCount(String size) {
+    return '$size';
+  }
+
+  @override
+  String get wsOpenFile => 'Open';
+
+  @override
+  String get wsNameEmpty => 'Name it something';
+
+  @override
+  String get wsNameSlash => 'A name cannot contain a slash';
+
+  @override
+  String get wsNameDot => 'That name is not usable';
+
+  @override
+  String get wsNameLeadingDot => 'A leading dot would hide the file';
+
+  @override
+  String wsPreviewTruncatedLines(Object count) {
+    return 'Only the first $count lines are shown';
+  }
+
+  @override
+  String get wsDeleteFolderTitle => 'Delete folder?';
+
+  @override
+  String get wsDeleteFileTitle => 'Delete file?';
+
+  @override
+  String get wsOpenTerminal => 'Terminal';
+
+  @override
+  String get wsWriteNoPreview => 'The previous content cannot be shown';
+
+  @override
+  String get wsWriteNoChange => 'No change';
+
+  @override
+  String get toolDescGetTime =>
+      'Read the current date, time zone and when either of you last wrote';
+
+  @override
+  String get toolDescSchedule => 'Let it write to you later by itself';
+
+  @override
+  String get toolDescCancelScheduled =>
+      'Call off a message that has not arrived yet';
+
+  @override
+  String get toolDescModifyScheduled => 'Change when, or what, it will say';
+
+  @override
+  String get toolDescListScheduled => 'See everything it has queued up';
+
+  @override
+  String get toolDescSetStatus => 'Set the presence shown on your chat list';
+
+  @override
+  String get toolDescAdjustFeeling =>
+      'Shift its mood or affection after a good or bad moment';
+
+  @override
+  String get toolDescWriteMemory =>
+      'Store something worth remembering about you';
+
+  @override
+  String get toolDescReadMemory => 'Search what it already remembers';
+
+  @override
+  String get toolDescCompleteTodo => 'Close a promise or a todo it wrote down';
+
+  @override
+  String get toolDescLifeSchedule =>
+      'Say it is busy, so it writes less while it is';
+
+  @override
+  String get toolDescPinMessage => 'Pin or unpin a message in the chat';
+
+  @override
+  String get toolDescEditMessage => 'Rewrite one of its own earlier messages';
+
+  @override
+  String get toolDescQuoteMessage =>
+      'Reply while showing which message it replies to';
+
+  @override
+  String get toolDescCharacterCard =>
+      'Let it tune its own character sheet slowly';
+
+  @override
+  String get toolDescRating =>
+      'Adjust how it tunes itself from how you replied';
+
+  @override
+  String get toolDescSendSticker => 'Send a sticker from the library';
+
+  @override
+  String get toolDescSaveSticker => 'Keep a meme you sent into the library';
+
+  @override
+  String get toolDescRecall =>
+      'Take back a message it just sent, like a person would';
+
+  @override
+  String get toolDescTypo =>
+      'Send a message with a deliberate typo, then fix it';
+
+  @override
+  String get toolDescSendImage => 'Send a picture from a link';
+
+  @override
+  String get toolDescSendFile => 'Write a text file and send it to you';
+
+  @override
+  String get toolDescSendTransfer =>
+      'Send a pretend red packet, taps to accept';
+
+  @override
+  String get wsToolDescRead =>
+      'Read a file from the workspace as numbered lines';
+
+  @override
+  String get wsToolDescWrite =>
+      'Create or replace a file, after you see the diff';
+
+  @override
+  String get wsToolDescEdit => 'Replace one piece of text inside a file';
+
+  @override
+  String get wsToolDescList => 'List the files in a directory';
+
+  @override
+  String get wsToolDescGlob =>
+      'Find files by name, for example all .dart files';
+
+  @override
+  String get wsToolDescGrep => 'Search inside file contents with a regex';
+
+  @override
+  String get toolNoUrl => '(no address)';
+
+  @override
+  String get toolBuiltinFooter =>
+      'The six file tools appear once you turn file tools on and bind a chat to a workspace.';
+
+  @override
+  String get wsSubOn => 'Six file tools for every chat bound to a workspace';
+
+  @override
+  String get wsToolDescShell =>
+      'Run a shell command inside the Linux environment';
+
+  @override
+  String get wsToolDescViewImage => 'Let the assistant look at an image file';
+
+  @override
+  String get actionClose => 'Close';
+
+  @override
+  String get termTitle => 'Terminal';
+
+  @override
+  String get termNoEnvironment => 'No Linux environment is installed';
+
+  @override
+  String get termOpenSettings => 'Open environment settings';
+
+  @override
+  String get termNewShell => 'New shell';
+
+  @override
+  String get termRename => 'Rename shell';
+
+  @override
+  String get termCopyAll => 'Copy everything';
+
+  @override
+  String get termClear => 'Clear';
+
+  @override
+  String get termFontBigger => 'Bigger text';
+
+  @override
+  String get termFontSmaller => 'Smaller text';
+
+  @override
+  String get termCopied => 'Copied';
+
+  @override
+  String get termSessionDead => 'That shell has closed';
+
+  @override
+  String get termLinkUnsupported => 'That link cannot be opened from here';
+
+  @override
+  String get termHint => 'Type a command below. Long press a tab to rename it.';
+
+  @override
+  String get termSettings => 'Environment';
+
+  @override
+  String get termInstallEnvironment =>
+      'Install a Linux environment to use the terminal';
+
+  @override
+  String get termShellPath => 'Shell path';
+
+  @override
+  String get termProotArgs => 'PRoot options';
+
+  @override
+  String get actionPaste => 'Paste';
+
+  @override
+  String get termCloseConfirm =>
+      'Close this shell? Anything it is running will stop.';
+
+  @override
+  String get termOpenFailedShort => 'Could not open a shell';
+
+  @override
+  String get envTitle => 'Linux environment';
+
+  @override
+  String get envNotInstalled => 'No environment installed';
+
+  @override
+  String get envReady => 'Ready';
+
+  @override
+  String get envInstall => 'Install';
+
+  @override
+  String get envCancel => 'Cancel';
+
+  @override
+  String get envRemove => 'Remove environment';
+
+  @override
+  String get envUpdate => 'Update available';
+
+  @override
+  String get envDownloading => 'Downloading';
+
+  @override
+  String get envVerifying => 'Verifying archive';
+
+  @override
+  String get envExtracting => 'Extracting';
+
+  @override
+  String get envPatching => 'Configuring';
+
+  @override
+  String get envChoose => 'Choose a distribution';
+
+  @override
+  String get envArch => 'Architecture';
+
+  @override
+  String get envInstallConfirm => 'Install this Linux environment?';
+
+  @override
+  String get envRemoveConfirm =>
+      'Remove the installed Linux environment and downloaded archives?';
+
+  @override
+  String envMinFree(int mb) {
+    return '$mb MB free space required';
+  }
+
+  @override
+  String get actionTypeDeleteHint => 'Type delete to confirm';
+
+  @override
+  String get envUnknownError => 'The environment operation failed';
+
+  @override
+  String get envChecking => 'Checking device support';
+
+  @override
+  String get envUnsupported => 'No distribution is available for this device';
+
+  @override
+  String envUnsupportedDevice(Object abi) {
+    return 'No root filesystem is available for ABI $abi';
+  }
+
+  @override
+  String get envErrorArchitecture =>
+      'The environment architecture does not match this app';
+
+  @override
+  String get envErrorProot => 'PRoot is not available in this build';
+
+  @override
+  String get envErrorDisk => 'There is not enough free storage';
+
+  @override
+  String get envErrorNetwork =>
+      'The download failed. Check the network and try again';
+
+  @override
+  String get envErrorChecksum =>
+      'The downloaded archive failed its SHA-256 check';
+
+  @override
+  String get envErrorExtract => 'The archive could not be extracted';
+
+  @override
+  String get envErrorPatch => 'The environment could not be configured';
+
+  @override
+  String get envErrorCancelled => 'The operation was cancelled';
+
+  @override
+  String get envErrorInvalid => 'The installed environment is incomplete';
 }

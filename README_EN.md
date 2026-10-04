@@ -24,6 +24,7 @@ We have essentially finished the main requirements of this project and it has be
 - Immersive conversation. You talk to the AI the way you would talk to a person.
 - An affection system. You have to build up to a new character over time.
 - Persistent memory. The built-in memory system lets the AI create and edit long-term memories.
+- Workspace. Give the AI a directory of its own to read and write files in, with a file browser and a terminal to match; you see the change before it lands.
 - A fallback chain, so your conversation is never interrupted. (Can be turned off.)
 - Agent mode, which shows the AI's tool calls and its reasoning.
 - Export persona cards and memories. Session export and similar are planned.
@@ -40,6 +41,8 @@ For a better sense of immersion, this project offers:
 - A sticker system. The AI sends the right sticker at the right moment, and it also collects the ones you send into its library. You can of course manage it by hand too.
 - Proactive messages. The AI calls the proactive message tool and sets a time for its next message, so it can check on you and break the ice on its own.
 - Message splitting. The AI sends several messages in a row, like a person, to imitate the pauses in typing.
+- Read time and pacing. The AI reads your message for a moment before answering and pauses between its bubbles, and the overall pace is yours to set.
+- A follow-up dice. After a reply the AI may decide on its own to pick the thread back up, minutes to a couple of hours later.
 - Quick adjustment. You can adjust the AI's output style quickly. Short, standard or casual.
 - Presence status. The AI can change its own presence, to show read-but-not-replied, away, or do not disturb.
 - Ratings. During a conversation the AI picks up your attitude towards the current turn and adjusts its style and its sending frequency on its own.
@@ -50,8 +53,9 @@ Please see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Acknowledgements
 
-- [Kelivo](https://github.com/Chevey339/kelivo) — reference for ToolCall and MCP
+- [Kelivo](https://github.com/Chevey339/kelivo) — reference for ToolCall and MCP, the PRoot container and the sandbox
 - [SillyTavern](https://github.com/SillyTavern/SillyTavern) — reference for persona cards
+- [Telegram Android](https://github.com/DrKLO/Telegram) — reference for the UI and UX, ported to Flutter
 
 ### Translation
 
