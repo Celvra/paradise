@@ -157,7 +157,10 @@ dependencies {
  */
 val fetchWorkspaceLibs = tasks.register<Exec>("fetchWorkspaceLibs") {
     workingDir = rootProject.projectDir
-    commandLine("bash", "tool/fetch_proot.sh")
+    // absolute: the repo root is one above the Gradle root, and a relative
+    // path would resolve against workingDir, which is how a fresh checkout
+    // (CI) died with 127 while a tree that already had the .so files built fine
+    commandLine("bash", file("../../tool/fetch_proot.sh").absolutePath)
     // only when something is actually missing. The script itself is a network
     // round trip and a build should not need one.
     onlyIf {
