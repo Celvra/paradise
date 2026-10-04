@@ -9,6 +9,7 @@ import '../core/overlays.dart';
 import '../core/status.dart';
 import '../core/text_utils.dart';
 import '../core/theme.dart';
+import '../core/ui_kit.dart';
 import '../data/models.dart';
 import '../data/store.dart';
 import '../l10n/x.dart';
@@ -165,10 +166,19 @@ class _BubbleViewState extends State<BubbleView> {
       return m.state == St.failed && widget.onRetry != null ? Tap(onTap: widget.onRetry, child: s) : s;
     }
 
-    final stamp = '${m.pinned ? '📌 ' : ''}${m.edited ? '${L10n.current.msgEdited} ' : ''}${hm(m.time)}';
+    final stamp = '${m.edited ? '${L10n.current.msgEdited} ' : ''}${hm(m.time)}';
+    // the pin mark is drawn, not an emoji: it has to take the clock colour and
+    // read the same on every font the device may substitute for the codepoint
+    final pinMark = m.pinned
+        ? Padding(
+            padding: const EdgeInsets.only(right: 3),
+            child: TgIcon(Ic.pin, color: timeStyle.color!, size: 9, stroke: 3.2),
+          )
+        : null;
     final tp = TextPainter(text: TextSpan(text: stamp, style: timeStyle), textDirection: TextDirection.ltr)..layout();
-    final spacer = tp.width + (out ? 25 : 8);
+    final spacer = tp.width + (pinMark != null ? 12 : 0) + (out ? 25 : 8);
     final time = Row(mainAxisSize: MainAxisSize.min, children: [
+      if (pinMark != null) pinMark,
       Text(stamp, style: timeStyle),
       if (out) ...[const SizedBox(width: 4), status(wallet ? ink!.ink : p.checkOut)],
     ]);
