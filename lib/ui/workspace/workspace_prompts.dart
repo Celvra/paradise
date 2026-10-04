@@ -131,6 +131,9 @@ Future<bool> askTypeDelete(
     content: TgEdit(
       controller: ctl,
       autofocus: true,
+      // what the field wants, or the arm gesture is a guess: an empty grey box
+      // tells nobody it is waiting for the word delete
+      hint: l.actionTypeDeleteHint,
       style: TextStyle(
           color: context.p.title,
           fontSize: 16,
