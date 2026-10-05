@@ -19,6 +19,7 @@ import '../../data/workspace/host_file_tools.dart';
 import '../../l10n/x.dart';
 import 'preview_file_type.dart';
 import 'preview_kind.dart';
+import 'html_svg_view.dart';
 import 'workspace_prompts.dart';
 
 /// Opens a file, routed by what it is.
@@ -51,6 +52,9 @@ class FilePreviewPage extends StatefulWidget {
 
 class _FilePreviewPageState extends State<FilePreviewPage> {
   late PreviewKind _kind;
+
+  /// An html or svg file opens rendered; the reader can flip to the source.
+  bool _rendered = true;
 
   @override
   void initState() {
@@ -105,6 +109,12 @@ class _FilePreviewPageState extends State<FilePreviewPage> {
                             fontSize: 17,
                             fontWeight: FontWeight.w500,
                             decoration: TextDecoration.none))),
+                if (_kind == PreviewKind.html || _isSvg)
+                  TgIconButton(
+                      icon: _rendered ? Ic.fileCode : Ic.eye,
+                      size: 20,
+                      tooltip: context.l.wsPreviewRendered,
+                      onTap: () => setState(() => _rendered = !_rendered)),
                 TgIconButton(
                     icon: Ic.link,
                     size: 20,
@@ -132,6 +142,10 @@ class _FilePreviewPageState extends State<FilePreviewPage> {
       case PreviewKind.markdown:
         return _TextBody(file: widget.file, language: 'markdown');
       case PreviewKind.html:
+        if (_rendered) return _RenderedBody(file: widget.file);
+        return _TextBody(
+            file: widget.file,
+            language: previewLanguage(widget.file.path) ?? 'plaintext');
       case PreviewKind.csv:
         return _TextBody(
             file: widget.file,
@@ -139,6 +153,33 @@ class _FilePreviewPageState extends State<FilePreviewPage> {
       case PreviewKind.code:
         return _CodeBody(file: widget.file);
     }
+  }
+
+  /// A `.svg` routes to the html kind and previews as a rendered image, but
+  /// only while the bytes really are markup; the flip to source is always
+  /// available, so a broken file can still be read.
+  bool get _isSvg =>
+      widget.file.path.toLowerCase().endsWith('.svg');
+
+  /// The rendered half of an html or svg file, reading the file itself.
+  Widget _RenderedBody({required File file}) {
+    return FutureBuilder<String>(
+      future: file.readAsString(),
+      builder: (c, snap) {
+        if (snap.hasError) {
+          return WsEmpty(icon: Ic.info, title: '${snap.error}');
+        }
+        if (!snap.hasData) {
+          return Center(
+              child: CircularProgressIndicator(
+                  strokeWidth: 2, color: context.p.subtitle));
+        }
+        return HtmlSvgView(
+          kind: _isSvg ? PreviewKind.image : PreviewKind.html,
+          source: snap.data!,
+        );
+      },
+    );
   }
 }
 
@@ -265,10 +306,12 @@ class _BinaryBody extends StatelessWidget {
   }
 }
 
-/// markdown, csv and html all render as highlighted text here.
+/// markdown and csv render as highlighted text here.
 ///
-/// A separate markdown renderer and a webview would be three more dependencies
-/// for what a model actually produces, which is mostly prose and tables.
+/// A separate markdown renderer would be one more dependency for what a model
+/// actually produces, which is mostly prose and tables. Html and svg no longer
+/// come through here by default: they render through [HtmlSvgView] with a flip
+/// back to this view for the raw source.
 class _TextBody extends StatelessWidget {
   const _TextBody({required this.file, required this.language});
   final File file;

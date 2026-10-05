@@ -453,12 +453,12 @@ class _DialogBody extends StatelessWidget {
   }
 }
 
-Future<String?> showTgInput(BuildContext context, {required String title, required String initial, required String hint, bool obscure = false}) {
+Future<String?> showTgInput(BuildContext context, {required String title, required String initial, required String hint, bool obscure = false, int maxLines = 1}) {
   final ctl = TextEditingController(text: initial);
   return showTgDialog<String>(
     context,
     title: title,
-    content: TgField(controller: ctl, hint: hint, obscure: obscure, autofocus: true),
+    content: TgField(controller: ctl, hint: hint, obscure: obscure, autofocus: true, maxLines: maxLines),
     actions: [
       DialogAction(context.l.actionCancel, null),
       DialogAction(context.l.actionOk, '__ok__')

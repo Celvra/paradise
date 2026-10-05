@@ -89,6 +89,14 @@ class AiReplyPage extends StatelessWidget {
                 value: st.agentMode,
                 onChanged: st.setAgentMode,
               ),
+              // 0 means no cap, the loop runs while the model keeps asking
+              TgTextCell(
+                icon: Ic.regen,
+                title: l.aiReplyAgentPass,
+                subtitle: l.aiReplyAgentPassSub,
+                value: st.agentMaxPass <= 0 ? l.aiReplyAgentPassUnlimited : l.aiReplyAgentPassRounds(st.agentMaxPass),
+                onTap: () => _pickAgentMaxPass(context, st),
+              ),
               // stored as "strip markdown in character mode", shown the way
               // the user thinks about it: Markdown on means the bubbles keep
               // their bold, fences and headings
@@ -119,6 +127,22 @@ class AiReplyPage extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Future<void> _pickAgentMaxPass(BuildContext context, Store st) async {
+    final l = context.l;
+    const steps = [2, 4, 8, 16, 32, 64];
+    final v = await showAiSelect<int>(
+      context,
+      title: l.aiReplyAgentPass,
+      value: st.agentMaxPass,
+      options: [
+        for (final n in steps) (value: n, label: l.aiReplyAgentPassRounds(n), sub: null),
+        (value: 0, label: l.aiReplyAgentPassUnlimited, sub: l.aiReplyAgentPassUnlimitedSub),
+      ],
+    );
+    if (v == null || v == st.agentMaxPass) return;
+    st.setAgentMaxPass(v);
   }
 
   Future<void> _pickReplyMode(BuildContext context, AiConfig ai) async {

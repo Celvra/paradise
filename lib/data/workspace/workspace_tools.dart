@@ -129,7 +129,7 @@ class WorkspaceTools {
     b.writeln('This conversation has a workspace called "$name". Its files are the only ones you can reach.');
     b.writeln('- /workspace (writable) the workspace itself');
     b.writeln('- /chat/attachments and /chat/outputs (writable) this conversation\'s own files');
-    b.writeln('- /skills (read-only) installed skills');
+    b.writeln('- /skills (read-only) installed skills, listed under <available_skills> when any are enabled for this chat');
     b.writeln('- /tmp (writable) scratch space, cleared when the app closes');
     b.writeln('Everything else on this device is out of reach and a path there is an error, not a puzzle.');
     b.writeln('Cite a file you produced as [name](paradise://workspace/relative/path), one segment percent encoded at a time.');

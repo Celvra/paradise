@@ -183,6 +183,103 @@ class HumanSettings {
   }
 }
 
+/// A named temper: the handful of knobs the onboarding step offers, in the
+/// five gradations the user picks between. Applying one writes only the knobs
+/// it owns, so a hand tuned [quietStart] or an MCP server list survives.
+enum HumanTemper { balanced, clingy, cold, chatty, quiet }
+
+HumanTemper humanTemperOf(String raw) => HumanTemper.values.firstWhere(
+      (t) => t.name == raw,
+      orElse: () => HumanTemper.balanced,
+    );
+
+/// Reads the current settings back into a temper, so the picker can show
+/// which card is live. Exact matches only: a hand tuned setting is the user's
+/// own temper and matches nothing.
+HumanTemper? temperOf(HumanSettings s) {
+  for (final t in HumanTemper.values) {
+    final v = _temperValues[t];
+    if (v == null) continue;
+    if (s.proactive == v.proactive &&
+        s.splitProb == v.splitProb &&
+        s.typoProb == v.typoProb &&
+        s.particleProb == v.particleProb &&
+        s.stickerFreq == v.stickerFreq &&
+        s.paceScale == v.paceScale &&
+        s.replyDelayMs == v.replyDelayMs &&
+        s.recall == v.recall &&
+        s.maxConsecutive == v.maxConsecutive &&
+        s.icebreakDays == v.icebreakDays &&
+        s.greetMorning == v.greetMorning &&
+        s.greetEvening == v.greetEvening) {
+      return t;
+    }
+  }
+  return null;
+}
+
+/// Applies [t] onto [s] in place. Only the temperament knobs move; switches
+/// like wallet, quiet hours or tool permissions keep whatever the user had.
+void applyTemper(HumanSettings s, HumanTemper t) {
+  final v = _temperValues[t];
+  if (v == null) return;
+  s.proactive = v.proactive;
+  s.splitProb = v.splitProb;
+  s.typoProb = v.typoProb;
+  s.particleProb = v.particleProb;
+  s.stickerFreq = v.stickerFreq;
+  s.paceScale = v.paceScale;
+  s.replyDelayMs = v.replyDelayMs;
+  s.recall = v.recall;
+  s.maxConsecutive = v.maxConsecutive;
+  s.icebreakDays = v.icebreakDays;
+  s.greetMorning = v.greetMorning;
+  s.greetEvening = v.greetEvening;
+}
+
+const _temperValues = <HumanTemper, _Temper>{
+  // The factory defaults, spelled out so "balanced" also repairs a tuned
+  // setup instead of silently doing nothing.
+  HumanTemper.balanced: _Temper(proactive: true, splitProb: 0.6, typoProb: 0.05, particleProb: 0.2, stickerFreq: 0.35, paceScale: 1.0, replyDelayMs: 1500, recall: true, maxConsecutive: 3, icebreakDays: 3, greetMorning: true, greetEvening: true),
+  // texts first often, fast, everything arrives as it is thought
+  HumanTemper.clingy: _Temper(proactive: true, splitProb: 0.75, typoProb: 0.08, particleProb: 0.3, stickerFreq: 0.45, paceScale: 0.8, replyDelayMs: 900, recall: true, maxConsecutive: 5, icebreakDays: 1, greetMorning: true, greetEvening: true),
+  // replies when it has something, short, almost never first
+  HumanTemper.cold: _Temper(proactive: false, splitProb: 0.35, typoProb: 0.0, particleProb: 0.05, stickerFreq: 0.1, paceScale: 1.35, replyDelayMs: 3200, recall: false, maxConsecutive: 2, icebreakDays: 7, greetMorning: false, greetEvening: false),
+  // the split dial turned up to where every thought lands alone
+  HumanTemper.chatty: _Temper(proactive: true, splitProb: 0.9, typoProb: 0.06, particleProb: 0.35, stickerFreq: 0.5, paceScale: 0.9, replyDelayMs: 1100, recall: true, maxConsecutive: 4, icebreakDays: 2, greetMorning: true, greetEvening: true),
+  // never first, clean and quiet, barely reacts after the fact
+  HumanTemper.quiet: _Temper(proactive: false, splitProb: 0.45, typoProb: 0.0, particleProb: 0.0, stickerFreq: 0.15, paceScale: 1.1, replyDelayMs: 2000, recall: false, maxConsecutive: 2, icebreakDays: 30, greetMorning: false, greetEvening: false),
+};
+
+class _Temper {
+  const _Temper({
+    required this.proactive,
+    required this.splitProb,
+    required this.typoProb,
+    required this.particleProb,
+    required this.stickerFreq,
+    required this.paceScale,
+    required this.replyDelayMs,
+    required this.recall,
+    required this.maxConsecutive,
+    required this.icebreakDays,
+    required this.greetMorning,
+    required this.greetEvening,
+  });
+  final bool proactive;
+  final double splitProb;
+  final double typoProb;
+  final double particleProb;
+  final double stickerFreq;
+  final double paceScale;
+  final int replyDelayMs;
+  final bool recall;
+  final int maxConsecutive;
+  final int icebreakDays;
+  final bool greetMorning;
+  final bool greetEvening;
+}
+
 /// All dice go through here. With a fixed seed the sequence depends on the chat
 /// and on how many turns it has seen, so the same conversation replays alike.
 class HumanRandom {

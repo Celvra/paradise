@@ -5,27 +5,53 @@ import 'dart:math';
 // where the safety net cuts and whether a short bubble merges into the
 // next one are rolled per reply, so two replies rarely come out the
 // same shape even from the same model
+//
+// code fences are exempt from all of it: a fenced block is one bubble
+// however long, and the markdown strip never eats a fence
+final _fenceLine = RegExp(r'^\s*```');
+
+/// Blanks out markdown emphasis while keeping fenced code blocks whole.
+///
+/// The old version deleted every ```…``` span, which made the model's code
+/// vanish from a bubble that was otherwise plain text. Fences are kept here,
+/// with only the emphasis pass skipping their lines; inline backtick spans are
+/// unwrapped everywhere, fence or not.
+String stripMarkdown(String text) {
+  final out = <String>[];
+  var inCode = false;
+  for (final line in text.split('\n')) {
+    if (_fenceLine.hasMatch(line)) {
+      inCode = !inCode;
+      out.add(line);
+      continue;
+    }
+    if (inCode) {
+      out.add(line);
+      continue;
+    }
+    out.add(line
+        .replaceAll(RegExp(r'!\[[^\]]*\]\([^)]*\)'), ' ')
+        .replaceAllMapped(RegExp(r'\[([^\]]*)\]\([^)]*\)'), (m) => m.group(1) ?? '')
+        .replaceAll(RegExp(r'^\s{0,3}#{1,6}\s+'), '')
+        .replaceAll(RegExp(r'^\s{0,3}>\s?'), '')
+        .replaceAll(RegExp(r'^\s{0,3}([-*+]|\d+\.)\s+'), '')
+        .replaceAllMapped(RegExp(r'(\*\*|__)(.*?)\1'), (m) => m.group(2) ?? '')
+        .replaceAllMapped(RegExp(r'(\*|_)(.*?)\1'), (m) => m.group(2) ?? '')
+        .replaceAllMapped(RegExp(r'~~(.*?)~~'), (m) => m.group(1) ?? '')
+        .replaceAll('|', ' ')
+        // inline backticks unwrap only here, after the fence check, so the
+        // ``` markers themselves are never read as an empty inline span
+        .replaceAllMapped(RegExp(r'`([^`\n]*)`'), (m) => m.group(1) ?? ''));
+  }
+  return out.join('\n').trim();
+}
+
 final _break = RegExp(r'\r?\n|<\s*br\s*/?\s*>', caseSensitive: false);
 final _sentence = RegExp(r'[。！？!?…]');
 final _clause = RegExp(r'[，、,;；：:]');
 
 // a bubble shorter than this may be held back to ride with the next one
 const _mergeMax = 40;
-
-String stripMarkdown(String text) => text
-    .replaceAll(RegExp(r'```[\s\S]*?```'), ' ')
-    .replaceAllMapped(RegExp(r'`([^`]*)`'), (m) => m.group(1) ?? '')
-    .replaceAll(RegExp(r'!\[[^\]]*\]\([^)]*\)'), ' ')
-    .replaceAllMapped(RegExp(r'\[([^\]]*)\]\([^)]*\)'), (m) => m.group(1) ?? '')
-    .replaceAll(RegExp(r'^\s{0,3}#{1,6}\s+', multiLine: true), '')
-    .replaceAll(RegExp(r'^\s{0,3}>\s?', multiLine: true), '')
-    .replaceAll(RegExp(r'^\s{0,3}([-*+]|\d+\.)\s+', multiLine: true), '')
-    .replaceAllMapped(RegExp(r'(\*\*|__)(.*?)\1'), (m) => m.group(2) ?? '')
-    .replaceAllMapped(RegExp(r'(\*|_)(.*?)\1'), (m) => m.group(2) ?? '')
-    .replaceAllMapped(RegExp(r'~~(.*?)~~'), (m) => m.group(1) ?? '')
-    .replaceAll('|', ' ')
-    .replaceAll(RegExp(r'\n{2,}'), '\n')
-    .trim();
 
 class _Break {
   const _Break(this.cut, this.consumed);
@@ -86,10 +112,25 @@ class Segmenter {
   // fragments shorter than the minimum are never dropped
   // they ride along with the next segment instead
   var _carry = '';
+  // true while the tail of the buffer sits inside a ``` fence. A fenced block
+  // is one bubble however long it is: cutting one mid-body is how the reader
+  // ended up with half a snippet in two bubbles and no fences in either.
+  bool _fence = false;
 
+  /// [text] as a single bubble with fences kept whole and the markdown strip
+  /// never touching a fenced line.
   String _clean(String raw) {
     final trimmed = raw.trim();
     return _strip ? stripMarkdown(trimmed) : trimmed;
+  }
+
+  /// Whether position [i] of the current buffer sits inside a fence, tracked
+  /// by replaying the buffer's lines against the running state.
+  void _scanFences() {
+    _fence = false;
+    for (final line in _buffer.split('\n')) {
+      if (_fenceLine.hasMatch(line)) _fence = !_fence;
+    }
   }
 
   String? _finish(String text) {
@@ -126,11 +167,29 @@ class Segmenter {
     _buffer += delta;
     final out = <String>[];
     for (;;) {
+      _scanFences();
+      if (_fence) {
+        // an open fence waits for its closing line, but text that piled up
+        // ahead of it is still fair game: cutting there leaves the fence and
+        // its body as one bubble of its own
+        final open = _fenceStart(_buffer);
+        if (open <= 0) break;
+        final head = _buffer.substring(0, open);
+        final hit = _findBreak(head, _shape);
+        if (hit == null) break;
+        final text = _take(hit.cut, hit.consumed);
+        if (text != null) out.add(text);
+        continue;
+      }
       final hit = _findBreak(_buffer, _shape);
       if (hit == null) break;
+      // a fence may open inside the segment this cut would carve off; the
+      // break then has to wait until the fence has closed again
+      if (_opensFence(_buffer.substring(0, hit.cut))) break;
       final text = _take(hit.cut, hit.consumed);
       if (text != null) out.add(text);
     }
+    _scanFences();
     return out;
   }
 
@@ -147,6 +206,20 @@ class Segmenter {
     }
     return out;
   }
+}
+
+/// Whether a stretch of text opens a ``` fence it never closes, so a cut
+/// inside it would split a code block across bubbles.
+bool _opensFence(String text) => _fenceStart(text) >= 0;
+
+/// Where the first unclosed fence opens in [text], or -1 when there is none.
+int _fenceStart(String text) {
+  var at = 0;
+  for (final line in text.split('\n')) {
+    if (_fenceLine.hasMatch(line)) return at;
+    at += line.length + 1;
+  }
+  return -1;
 }
 
 // jitter stays inside the cap so long messages never stall for too long

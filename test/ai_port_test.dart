@@ -416,7 +416,10 @@ void main() {
         expect([...out, ...tail], ['粗体'], reason: 'seed $i');
       }
       expect(stripMarkdown('# 标题\n\n- 项目一'), contains('标题'));
-      expect(stripMarkdown('```js\ncode\n```'), isNot(contains('```')));
+      // the fence survives: a model's code block must reach the bubble whole,
+      // only the emphasis around it is stripped
+      expect(stripMarkdown('```js\ncode\n```'), contains('```'));
+      expect(stripMarkdown('**bold** and `code`'), 'bold and code');
     });
 
     test('human delays stay in range', () {

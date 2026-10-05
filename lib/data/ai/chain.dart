@@ -39,7 +39,7 @@ class ChainOutcome {
 }
 
 class ChainOptions {
-  const ChainOptions({required this.onChunk, this.onEvent, this.onCompact, this.cancel, this.backoffMs});
+  const ChainOptions({required this.onChunk, this.onEvent, this.onCompact, this.cancel, this.backoffMs, this.sessionId});
 
   final void Function(StreamChunk chunk) onChunk;
   final void Function(ChainEvent event)? onEvent;
@@ -48,6 +48,11 @@ class ChainOptions {
   final Future<void> Function()? onCompact;
   final AiCancel? cancel;
   final List<int>? backoffMs;
+
+  /// Stable id of the conversation this run belongs to, sent as the provider
+  /// session header when one is configured. Keep it constant per chat so
+  /// gateways that route on it keep a conversation on one backend.
+  final String? sessionId;
 }
 
 const _defaultBackoff = [1000, 2000, 4000];
@@ -115,6 +120,7 @@ Future<ChainOutcome> runChain({
           messages: messages,
           tools: tools,
           cancel: options.cancel,
+          sessionId: options.sessionId,
         )) {
           if (chunk.isReasoning) {
             if (visible) {
@@ -212,6 +218,7 @@ Stream<StreamChunk> _streamNode({
   required List<ChatTurn> messages,
   List<ToolSpec> tools = const [],
   AiCancel? cancel,
+  String? sessionId,
 }) async* {
   final provider = findProvider(settings, node.providerId);
   if (provider == null) throw AiError(AiErrorKind.auth, 'Provider ${node.providerId} no longer exists', 0);
@@ -229,6 +236,8 @@ Stream<StreamChunk> _streamNode({
     maxOutput: settings.maxOutput,
     tools: tools,
     cancel: cancel,
+    settings: settings,
+    sessionId: sessionId,
   ));
   await for (final chunk in stream) {
     if (chunk.delta.isNotEmpty || chunk.call != null) produced = true;

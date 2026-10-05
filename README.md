@@ -65,6 +65,10 @@ GNU Affero General Public License v3.0，即 AGPL v3.
 
 ## 社区
 
-我们仅提供 Discord 渠道，无中国大陆的社交渠道，例如 QQ。因此除了以下渠道的交流社区以外，均为非官方渠道，请谨慎鉴别。
+我们仅提供以下官方交流渠道，除此之外的交流社区均为非官方渠道，请谨慎鉴别。
 
+QQ 群：272298906
+https://qm.qq.com/q/BeQPYWuzVS
+
+Discord
 https://discord.gg/aQaNUHPsw

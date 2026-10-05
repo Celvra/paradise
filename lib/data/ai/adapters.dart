@@ -100,7 +100,7 @@ class _OpenAiChatAdapter implements ProviderAdapter {
   @override
   Stream<StreamChunk> stream(StreamRequest req) async* {
     final turns = makeTurns(req.messages);
-    final live = await postJson(joinUrl(req.provider.baseUrl, chatPathFor(req.provider)), headers: authHeaders(req.provider, req.apiKey), body: _buildBody(req, turns, req.system), cancel: req.cancel);
+    final live = await postJson(joinUrl(req.provider.baseUrl, chatPathFor(req.provider)), headers: authHeaders(req.provider, req.apiKey, settings: req.settings, sessionId: req.sessionId), body: _buildBody(req, turns, req.system), cancel: req.cancel);
     final splitter = ThinkSplitter();
     final tools = ToolAccumulator();
     await for (final event in readSse(live, cancel: req.cancel)) {
@@ -135,7 +135,7 @@ class _OpenAiResponsesAdapter implements ProviderAdapter {
     if (req.provider.id == 'openai' && (meta?.reasoning ?? false)) {
       body['reasoning'] = {'effort': 'medium'};
     }
-    final live = await postJson(joinUrl(req.provider.baseUrl, chatPathFor(req.provider)), headers: authHeaders(req.provider, req.apiKey), body: body, cancel: req.cancel);
+    final live = await postJson(joinUrl(req.provider.baseUrl, chatPathFor(req.provider)), headers: authHeaders(req.provider, req.apiKey, settings: req.settings, sessionId: req.sessionId), body: body, cancel: req.cancel);
     final tools = ToolAccumulator();
     await for (final event in readSse(live, cancel: req.cancel)) {
       final parsed = safeParse(event.data);
@@ -178,7 +178,7 @@ class _GeminiAdapter implements ProviderAdapter {
     if (req.tools.isNotEmpty) body['tools'] = geminiTools(req.tools);
     final live = await postJson(
       url,
-      headers: authHeaders(req.provider, req.provider.authStyle == AuthStyle.queryKey ? '' : req.apiKey),
+      headers: authHeaders(req.provider, req.provider.authStyle == AuthStyle.queryKey ? '' : req.apiKey, settings: req.settings, sessionId: req.sessionId),
       body: applyExtraBody(req.provider, body),
       cancel: req.cancel,
     );
@@ -223,7 +223,7 @@ class _AnthropicAdapter implements ProviderAdapter {
     final live = await postJson(
       joinUrl(req.provider.baseUrl, chatPathFor(req.provider)),
       headers: {
-        ...authHeaders(req.provider, req.apiKey),
+        ...authHeaders(req.provider, req.apiKey, settings: req.settings, sessionId: req.sessionId),
         'anthropic-version': '2023-06-01',
       },
       body: applyExtraBody(req.provider, body),

@@ -584,10 +584,12 @@ const kBuiltinTools = [
   'complete_todo', //
   'set_life_schedule', 'pin_message', 'edit_message', 'quote_message',
   'update_character_card', 'adjust_rating', 'send_sticker', 'save_sticker', //
-  'recall_message', 'send_typo', 'send_image', 'send_file',
+  'recall_message', 'send_typo', 'send_image', 'send_file', 'send_svg',
+  'send_html', 'send_latex', 'send_cetz',
   'send_transfer', //
+  'ask',
   'read_file', 'write_file', 'edit_file', 'list_dir', 'glob', 'grep', 'shell',
-  'view_image',
+  'view_image', 'read_skill',
 ];
 
 /// The ones that only exist once a chat is bound to a workspace. shell and

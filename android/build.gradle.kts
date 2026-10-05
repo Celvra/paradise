@@ -23,13 +23,15 @@ allprojects {
 }
 
 // file_picker 8.x pins compileSdk 34 but pulls flutter_plugin_android_lifecycle
-// which needs 36, so every plugin module is lifted to the same level
+// which needs 36, so every plugin module is lifted to the same level. 37 it is:
+// permission_handler_android 14.1 references ACCESS_LOCAL_NETWORK and
+// VERSION_CODES.CINNAMON_BUN, which only exist in the API 37 platform jar.
 subprojects {
     afterEvaluate {
         val ext = extensions.findByName("android")
         if (ext is com.android.build.gradle.BaseExtension) {
             @Suppress("DEPRECATION")
-            ext.compileSdkVersion(36)
+            ext.compileSdkVersion(37)
         }
     }
 }

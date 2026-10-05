@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math' show Random, max, min;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as p;
@@ -35,6 +36,9 @@ import 'human/notifications.dart';
 import 'human/scheduler.dart';
 import 'human/sticker_lib.dart';
 import 'models.dart';
+import 'skills/skill.dart';
+import 'skills/skill_prompt.dart';
+import 'skills/skill_store.dart';
 import 'workspace/host_file_tools.dart';
 import 'workspace/workspace.dart';
 import 'workspace/workspace_metadata.dart';
@@ -76,6 +80,12 @@ class Store extends ChangeNotifier {
   final List<Chat> chats = [];
   final Map<String, _Run> _runs = {};
 
+  /// Pending ask polls by message id. An `ask` tool call registers its
+  /// completer here and blocks; voting on the poll completes it, and a
+  /// stop / interrupt / regenerate cancels it. Keyed by message id so a
+  /// reloaded chat cannot complete the wrong wait.
+  final Map<String, Completer<String>> _askPending = {};
+
   /// Message history storage. Null when SQLite is unavailable, which is the
   /// test harness and any platform the plugin does not reach; the blob in
   /// SharedPreferences carries the chats instead, exactly as before.
@@ -92,12 +102,6 @@ class Store extends ChangeNotifier {
   /// so the closure is kept where removal can find it.
   final Map<Chat, VoidCallback> _chatListeners = {};
 
-  /// True once this install has been seen with chats, however that was
-  /// recorded: the legacy blob key, the marker, or rows in the database. A
-  /// user who deleted everything must not be handed the starter chats again
-  /// on the next boot, so first launch is the only seed trigger.
-  bool _everPopulated = false;
-
   /// Sidebar position per chat id, database ordinals when SQLite is on and
   /// list indexes when it is not. New chats take [maxOrd] + 1, so adding one
   /// cannot shuffle the existing ones.
@@ -111,6 +115,10 @@ class Store extends ChangeNotifier {
   /// workspace list and the feature switch. Its own notifier so the file
   /// browser does not rebuild the chat list on every rename.
   late final WorkspaceStore workspace;
+
+  /// Installed skills and the per role selection. Its own notifier so the
+  /// skills page does not rebuild the chat list on every toggle.
+  late final SkillStore skills;
 
   /// The environment stack. Set at startup by main so the tool layer and the
   /// environment page share one channel and one installer.
@@ -163,7 +171,7 @@ class Store extends ChangeNotifier {
   /// chain node that actually has a key behind it. Keys are per provider, so
   /// reading `providers.first` used to report an empty key even when the user
   /// had configured one on any other provider.
-  ({String baseUrl, String key, String model})? get _endpoint {
+  ({Provider provider, String baseUrl, String key, String model})? get _endpoint {
     final cfg = _ai;
     if (cfg == null) return null;
     for (final node in activeChain(cfg.settings)) {
@@ -171,16 +179,19 @@ class Store extends ChangeNotifier {
       if (provider == null) continue;
       final key = cfg.keyOf(provider.id);
       if (key.isEmpty) continue;
-      return (baseUrl: provider.baseUrl, key: key, model: node.modelId);
+      return (provider: provider, baseUrl: provider.baseUrl, key: key, model: node.modelId);
     }
     // no chain entry can run yet, so settle for any provider holding a key
     for (final provider in cfg.settings.providers) {
       final key = cfg.keyOf(provider.id);
       if (key.isEmpty) continue;
-      return (baseUrl: provider.baseUrl, key: key, model: provider.models.firstOrNull?.id ?? '');
+      return (provider: provider, baseUrl: provider.baseUrl, key: key, model: provider.models.firstOrNull?.id ?? '');
     }
     return null;
   }
+
+  /// The provider behind [baseUrl], for callers that must ride the same wire.
+  Provider? get endpointProvider => _endpoint?.provider;
 
   String get baseUrl => _endpoint?.baseUrl ?? 'https://api.openai.com/v1';
 
@@ -245,6 +256,17 @@ class Store extends ChangeNotifier {
   /// tools that layer already offers.
   bool agentMode = false;
 
+  /// How many tool passes one reply may run before the store pulls the brake.
+  /// 0 runs without a cap: the loop only spins while the model keeps asking
+  /// for tools, so a well behaved model never lands on the brake anyway.
+  /// Eight covers every sane agent task, which is why it is the default.
+  int agentMaxPass = 8;
+
+  /// False until the first-run wizard finishes. Every install starts false, so
+  /// an upgrade lands in the wizard exactly once too; the last step is the
+  /// only thing that flips it.
+  bool onboarded = false;
+
   /// Persona override wins, the global switch is the fallback. A persona that
   /// never touched the row has null on both halves and simply follows.
   bool thinkingFor(Chat c) => c.persona.thinking ?? showThinking;
@@ -254,17 +276,25 @@ class Store extends ChangeNotifier {
   /// arb files are named after
   String? localeTag;
 
+  /// Release tag the user asked not to be reminded of again. Empty means no
+  /// version is skipped: a new tag always shows, a skipped one only on a
+  /// manual check from settings.
+  String skippedRelease = '';
+
   static Future<Store> load({String? dbPath}) async {
     final s = Store._(await SharedPreferences.getInstance());
     // base/key/model now live in AiConfig and are migrated there
     s._loadPersonas();
     s.human = await HumanHub.load(s._sp);
     s.workspace = await WorkspaceStore.load(s._sp);
+    s.skills = await SkillStore.load(s._sp);
     s.userBio = s._sp.getString('userBio') ?? '';
     s.haptics = s._sp.getBool('haptics') ?? true;
     s.countMuted = s._sp.getBool('countMuted') ?? false;
     s.showThinking = s._sp.getBool('showThinking') ?? false;
     s.agentMode = s._sp.getBool('agentMode') ?? false;
+    s.agentMaxPass = s._sp.getInt('agentMaxPass') ?? 8;
+    s.onboarded = s._sp.getBool('onboarded') ?? false;
     s.dark = s._sp.getBool('dark') ?? false;
     s.textSize = s._sp.getDouble('textSize') ?? 16;
     s.bubbleRadius = s._sp.getDouble('radius') ?? 17;
@@ -280,6 +310,7 @@ class Store extends ChangeNotifier {
     s.recentSearch = s._sp.getStringList('recentSearch') ?? s._sp.getStringList('recentSearches') ?? [];
     final lang = s._sp.getString('locale');
     s.localeTag = lang == null || lang.isEmpty ? null : lang;
+    s.skippedRelease = s._sp.getString('skippedRelease') ?? '';
     await s._loadChats(dbPath: dbPath);
     themeCtl.setDark(s.dark, animate: false);
     return s;
@@ -295,10 +326,6 @@ class Store extends ChangeNotifier {
   /// later run.
   Future<void> _loadChats({String? dbPath}) async {
     final raw = _sp.getString('chats');
-    // the key in any shape, even '[]', means a user was here before; the
-    // marker covers a store that was seeded on SQLite and saved straight to
-    // the database, where no blob key ever existed
-    _everPopulated = raw != null || (_sp.getBool('chatsSeen') ?? false);
     try {
       _db = await ChatDb.open(path: dbPath);
     } catch (_) {
@@ -320,7 +347,6 @@ class Store extends ChangeNotifier {
         for (final c in chats) {
           c.msgs.addAll(await _db!.loadMsgs(c.id));
         }
-        if (chats.isNotEmpty) _everPopulated = true;
       } catch (_) {
         // a database that opened but cannot be read falls back to the blob,
         // which the migration above has not touched in that case
@@ -347,19 +373,11 @@ class Store extends ChangeNotifier {
     for (var i = 0; i < chats.length; i++) {
       _chatOrd.putIfAbsent(chats[i].id, () => i);
     }
-    if (chats.isNotEmpty) _everPopulated = true;
-    // seeding only on the true first launch: an explicit empty list or an
-    // empty database is a user who deleted everything, not a missed first run
-    if (!_everPopulated) {
-      _seed();
-      _dirtyIds.addAll(chats.map((e) => e.id));
-      // the marker set alone starts no timer, and an app the user never types
-      // into must still persist its starter chats
-      _scheduleSave();
-    }
-    // written on every load, not only when seeding: a store that arrived by
-    // migration and was later emptied must not look like a missed first run
-    _everPopulated = true;
+    // The starter chats moved into the onboarding: a fresh install now begins
+    // empty and the template picker on the last step creates the first ones.
+    // An explicit empty list or an empty database stays a user who deleted
+    // everything, not a missed first run. The marker is still written on every
+    // load so the migration bookkeeping keeps a single meaning.
     _sp.setBool('chatsSeen', true);
     for (final c in chats) {
       _listen(c);
@@ -387,7 +405,6 @@ class Store extends ChangeNotifier {
     }
     if (migrated != inBlob) return; // unverifiable, keep the blob
     await _sp.remove('chats');
-    _everPopulated = true;
   }
 
   static Store of(BuildContext c) => c.dependOnInheritedWidgetOfExactType<StoreScope>()!.notifier!;
@@ -414,21 +431,6 @@ class Store extends ChangeNotifier {
   }
 
   String _id() => '${DateTime.now().microsecondsSinceEpoch}_${_seq++}';
-
-  void _seed() {
-    final now = DateTime.now().millisecondsSinceEpoch;
-    Chat mk(String name, int color, String prompt, String hello, int ago, {int unread = 0, bool pinned = false}) {
-      final c = Chat(id: _id(), persona: Persona(name: name, prompt: prompt, color: color), unread: unread, pinned: pinned);
-      c.msgs.add(Msg(id: _id(), out: false, text: hello, time: now - ago));
-      return c;
-    }
-
-    chats.addAll([
-      mk('Assistant', 5, 'You are a helpful, concise assistant.', 'Hi! Ask me anything. Add your API key in **Settings** to start chatting.', 1000 * 30, unread: 1, pinned: true),
-      mk('Code Buddy', 3, 'You are a senior software engineer. Answer with short explanations and runnable code in fenced blocks.', 'Paste an error or describe what you are building and I will help.', 1000 * 60 * 60 * 5),
-      mk('Translator', 2, 'You translate between English and Chinese. Detect the language and reply only with the translation.', 'Send me any text and I will translate it.', 1000 * 60 * 60 * 30),
-    ]);
-  }
 
   // dialogs order pinned first then newest
   List<Chat> get sorted {
@@ -802,9 +804,12 @@ class Store extends ChangeNotifier {
   }
 
   // the photo lands on its own the moment it is picked, so it must not drag the
-  // half edited name and bio along with it
+  // half edited name and bio along with it. Makes the card first: on a fresh
+  // install there is none yet and writing onto the placeholder would look
+  // saved until the next restart, then be gone.
   void setAvatar(String path) {
-    activePersona.avatarPath = path;
+    final card = personas.isEmpty ? createPersonaCard() : activePersona;
+    card.avatarPath = path;
     _savePersonas();
     notifyListeners();
   }
@@ -830,6 +835,22 @@ class Store extends ChangeNotifier {
   void setAgentMode(bool v) {
     agentMode = v;
     _sp.setBool('agentMode', v);
+    notifyListeners();
+  }
+
+  void setAgentMaxPass(int v) {
+    agentMaxPass = v;
+    _sp.setInt('agentMaxPass', v);
+    notifyListeners();
+  }
+
+  /// Called by the last step of the onboarding. Flipping it rebuilds [TgApp]'s
+  /// home, which is how the wizard hands over to the dialog list without any
+  /// navigator surgery.
+  void setOnboarded(bool v) {
+    if (onboarded == v) return;
+    onboarded = v;
+    _sp.setBool('onboarded', v);
     notifyListeners();
   }
 
@@ -939,6 +960,21 @@ class Store extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Whether [tag] was skipped from the update sheet. An empty tag is never
+  /// skipped, so a broken release payload cannot mute a later real one.
+  bool isUpdateSkipped(String tag) => tag.isNotEmpty && skippedRelease == tag;
+
+  /// Remembers [tag] so the automatic check stops nagging about it. A manual
+  /// check from settings still shows it.
+  void setSkippedRelease(String tag) {
+    skippedRelease = tag.trim();
+    if (skippedRelease.isEmpty) {
+      _sp.remove('skippedRelease');
+    } else {
+      _sp.setString('skippedRelease', skippedRelease);
+    }
+  }
+
   // most recent first capped list
   List<String> _bump(List<String> l, String v, int cap) {
     final n = [v, ...l.where((e) => e != v)];
@@ -975,8 +1011,8 @@ class Store extends ChangeNotifier {
     notifyListeners();
   }
 
-  Chat createChat(String name, String prompt, {String bio = '', String greeting = '', String emoji = '', String avatarPath = '', int? color, String modelProvider = '', String modelId = '', bool modelFallback = true, bool? thinking, bool? agent}) {
-    final c = Chat(id: _id(), persona: Persona(name: name, prompt: prompt, color: color ?? name.hashCode.abs() % avatarColorCount, bio: bio, greeting: greeting, emoji: emoji, avatarPath: avatarPath, modelProvider: modelProvider, modelId: modelId, modelFallback: modelFallback, thinking: thinking, agent: agent));
+  Chat createChat(String name, String prompt, {String bio = '', String greeting = '', String emoji = '', String examples = '', String avatarPath = '', int? color, String modelProvider = '', String modelId = '', bool modelFallback = true, bool? thinking, bool? agent, List<String>? skillIds}) {
+    final c = Chat(id: _id(), persona: Persona(name: name, prompt: prompt, color: color ?? name.hashCode.abs() % avatarColorCount, bio: bio, greeting: greeting, emoji: emoji, examples: examples, avatarPath: avatarPath, modelProvider: modelProvider, modelId: modelId, modelFallback: modelFallback, thinking: thinking, agent: agent, skillIds: skillIds));
     if (greeting.trim().isNotEmpty) c.msgs.add(Msg(id: _id(), out: false, text: greeting.trim(), time: DateTime.now().millisecondsSinceEpoch));
     _listen(c);
     chats.add(c);
@@ -986,12 +1022,13 @@ class Store extends ChangeNotifier {
     return c;
   }
 
-  void editPersona(Chat c, String name, String prompt, {String? bio, String? greeting, String? emoji, String? avatarPath, int? color, String? modelProvider, String? modelId, bool? modelFallback, bool? thinking, bool? agent}) {
+  void editPersona(Chat c, String name, String prompt, {String? bio, String? greeting, String? emoji, String? examples, String? avatarPath, int? color, String? modelProvider, String? modelId, bool? modelFallback, bool? thinking, bool? agent, List<String>? skillIds, bool clearSkillIds = false}) {
     c.persona
       ..name = name
       ..prompt = prompt;
     if (bio != null) c.persona.bio = bio;
     if (greeting != null) c.persona.greeting = greeting;
+    if (examples != null) c.persona.examples = examples;
     if (emoji != null) c.persona.emoji = emoji;
     if (avatarPath != null) c.persona.avatarPath = avatarPath;
     if (color != null) c.persona.color = color;
@@ -1000,6 +1037,17 @@ class Store extends ChangeNotifier {
     if (modelFallback != null) c.persona.modelFallback = modelFallback;
     if (thinking != null) c.persona.thinking = thinking;
     if (agent != null) c.persona.agent = agent;
+    if (clearSkillIds) {
+      c.persona.skillIds = null;
+    } else if (skillIds != null) {
+      c.persona.skillIds = skillIds;
+    }
+    c.touch();
+  }
+
+  /// Replaces the skill selection of one role. Null follows the global set.
+  void setPersonaSkills(Chat c, List<String>? ids) {
+    c.persona.skillIds = ids == null ? null : List<String>.from(ids);
     c.touch();
   }
 
@@ -1025,6 +1073,17 @@ class Store extends ChangeNotifier {
   void deleteMsg(Chat c, Msg m) {
     c.msgs.remove(m);
     c.touch();
+  }
+
+  /// The native engine could not render a canvas card. Recording it on the
+  /// message is what turns the failure into feedback: the transcript tells the
+  /// model, which can resend a corrected card on its next turn.
+  void canvasRenderFailed(Chat c, Msg m, String error) {
+    final trimmed = error.length > 160 ? error.substring(0, 160) : error;
+    if ('${m.data['renderError'] ?? ''}' == trimmed) return;
+    m.data['renderError'] = trimmed;
+    c.touch();
+    if (kDebugMode) debugPrint('ParaStore: canvasRenderFailed [${m.kind.name}] $trimmed');
   }
 
   void togglePin(Chat c) {
@@ -1130,9 +1189,120 @@ class Store extends ChangeNotifier {
     d['votes'] = votes;
     d['mine'] = mine;
     c.touch();
+    // an ask poll blocks its tool call until the answer lands. Single choice
+    // closes on the first tap so one tap is one answer; multi choice only
+    // stages the selection and waits for submitAskPoll, so several options
+    // can be picked first. Non-ask polls keep the old toggle behaviour and
+    // never touch the pending table.
+    if (d['ask'] == true) {
+      final multiAsk = d['multi'] == true;
+      if (!multiAsk && mine.isNotEmpty) {
+        d['closed'] = true;
+        c.touch();
+        _completeAsk(m);
+      }
+      return;
+    }
+  }
+
+  /// Stages a custom text answer on an ask poll without closing it. The text
+  /// rides in `data['custom']` so it persists with the chat like votes do.
+  void setAskCustom(Chat c, Msg m, String text) {
+    final d = m.data;
+    if (d['ask'] != true || d['closed'] == true) return;
+    final t = text.trim();
+    if (t.length > 500) {
+      d['custom'] = t.substring(0, 500);
+    } else {
+      d['custom'] = t;
+    }
+    c.touch();
+  }
+
+  /// Submits an ask poll: closes the card and returns the answer to the
+  /// blocked tool call. Needs at least one selected option or a custom text,
+  /// unless the poll allows skipping (then use skipAskPoll instead).
+  /// Returns false when there is nothing to submit yet.
+  bool submitAskPoll(Chat c, Msg m) {
+    final d = m.data;
+    if (d['ask'] != true || d['closed'] == true) return false;
+    final mine = List<int>.from((d['mine'] as List?) ?? const []);
+    final custom = '${d['custom'] ?? ''}'.trim();
+    if (mine.isEmpty && custom.isEmpty) return false;
+    d['closed'] = true;
+    c.touch();
+    _completeAsk(m);
+    return true;
+  }
+
+  /// Skips an ask poll: closes the card and tells the blocked tool call the
+  /// user passed. Always succeeds on an open ask card.
+  void skipAskPoll(Chat c, Msg m) {
+    final d = m.data;
+    if (d['ask'] != true || d['closed'] == true) return;
+    d['skipped'] = true;
+    d['closed'] = true;
+    c.touch();
+    _completeAsk(m);
+  }
+
+  /// Formats one ask answer for the model. Plain words rather than JSON: the
+  /// chat models already read tool results as text, and a short sentence
+  /// survives compaction better than a payload.
+  String _askAnswerText(Msg m) {
+    final d = m.data;
+    if ('${d['skipped'] ?? ''}' == 'true' || d['skipped'] == true) {
+      return 'The user skipped the question.';
+    }
+    final opts = List<String>.from((d['opts'] as List?) ?? const []);
+    final mine = List<int>.from((d['mine'] as List?) ?? const []);
+    final picked = [for (final i in mine) if (i >= 0 && i < opts.length) opts[i]];
+    final custom = '${d['custom'] ?? ''}'.trim();
+    if (picked.isEmpty && custom.isEmpty) return 'The user gave no answer.';
+    final parts = <String>[];
+    if (picked.isNotEmpty) parts.add('chose: ${picked.join(', ')}');
+    if (custom.isNotEmpty) parts.add('wrote: $custom');
+    return 'The user answered "${d['q'] ?? ''}" — ${parts.join('; ')}.';
+  }
+
+  /// Completes the pending ask wait for [m], if any. No-op for ordinary
+  /// polls and for an ask that nobody is waiting on (a restart, a restored
+  /// chat, or a vote that arrived after the wait already ended).
+  void _completeAsk(Msg m) {
+    final waiter = _askPending.remove(m.id);
+    if (waiter == null || waiter.isCompleted) return;
+    waiter.complete(_askAnswerText(m));
+  }
+
+  /// Cancels every pending ask of one chat. Called on interrupt / stop /
+  /// regenerate / clear so a blocked tool call never hangs a dead run.
+  void cancelAskForChat(String chatId) {
+    final ids = <String>[];
+    for (final e in _askPending.entries) {
+      // the message id is the key; find its chat by scanning once. Pending
+      // tables are tiny (at most a few per chat), so no index is kept.
+      ids.add(e.key);
+    }
+    if (ids.isEmpty) return;
+    // only complete waits whose message belongs to this chat
+    final c = chats.where((e) => e.id == chatId).firstOrNull;
+    if (c == null) return;
+    final mine = {for (final m in c.msgs) m.id};
+    for (final id in ids) {
+      if (!mine.contains(id)) continue;
+      final waiter = _askPending.remove(id);
+      if (waiter == null || waiter.isCompleted) continue;
+      final m = c.byId(id);
+      if (m != null) {
+        m.data['closed'] = true;
+      }
+      waiter.complete('The user did not answer (cancelled).');
+    }
+    c.touch();
   }
 
   void regenerate(Chat c) {
+    cancelAskForChat(c.id);
     if (humanOn) {
       // one answer is often several bubbles, all of them go
       humanInterrupt(c);
@@ -1151,6 +1321,7 @@ class Store extends ChangeNotifier {
   bool busy(Chat c) => _runs.containsKey(c.id);
 
   void stop(Chat c) {
+    cancelAskForChat(c.id);
     if (humanOn) {
       humanInterrupt(c);
       return;
@@ -1279,7 +1450,15 @@ class Store extends ChangeNotifier {
         return '[Contact: ${m.data['name']}, ${m.data['phone']}]$cap';
       case MsgKind.poll:
         final opts = ((m.data['opts'] as List?) ?? const []).join(' / ');
-        return '[Poll: ${m.data['q']} options: $opts]';
+        final mine = List<int>.from((m.data['mine'] as List?) ?? const []);
+        final all = List<String>.from((m.data['opts'] as List?) ?? const []);
+        final picked = [for (final i in mine) if (i >= 0 && i < all.length) all[i]].join(', ');
+        final custom = '${m.data['custom'] ?? ''}'.trim();
+        final skipped = m.data['skipped'] == true || '${m.data['skipped'] ?? ''}' == 'true';
+        final extra = skipped
+            ? ' (skipped by the user)'
+            : (picked.isEmpty && custom.isEmpty ? '' : ' (answered: ${[if (picked.isNotEmpty) picked, if (custom.isNotEmpty) 'custom: $custom'].join('; ')})');
+        return '[Poll: ${m.data['q']} options: $opts]$extra';
       case MsgKind.sticker:
         final emoji = '${m.data['emoji'] ?? ''}';
         return '[Sticker${m.data['sid'] == null ? '' : ' ${m.data['sid']}'}: ${emoji.isEmpty ? 'image sticker' : emoji}]';
@@ -1289,6 +1468,18 @@ class Store extends ChangeNotifier {
         // a trace row is a service message and never reaches this, the case
         // exists so the switch stays total
         return '';
+      case MsgKind.html:
+      case MsgKind.latex:
+        // the source already sits in the tool call that sent it, repeating it
+        // here would only burn context. A card the engine refused is marked on
+        // the message, so the model learns the syntax was wrong and can send a
+        // fixed one; the user only sees the small notice.
+        final what = m.kind == MsgKind.html
+            ? 'HTML'
+            : (m.data['cetz'] == true ? 'CeTZ drawing' : 'LaTeX');
+        final err = '${m.data['renderError'] ?? ''}';
+        if (err.isNotEmpty) return '[$what card render FAILED: $err. The user sees a small notice, not the source. Send a corrected version or move on.]$cap';
+        return '[$what card rendered]$cap';
     }
   }
 
@@ -1316,17 +1507,85 @@ class Store extends ChangeNotifier {
   String _systemPrompt(Chat c) {
     final cfg = _ai;
     final card = personaFor(c);
-    return buildSystemPrompt(
+    final base = buildSystemPrompt(
       PromptInput(
         personaName: c.persona.name,
         personaPrompt: c.persona.prompt,
         personaBio: c.persona.bio,
+        personaExamples: c.persona.examples,
         userName: card.name,
         userBio: userBio,
         userDescription: expandMacros(card.description, c.persona.name, card.name),
         userPosition: card.position,
         replyMode: cfg?.settings.replyMode ?? ReplyMode.full,
       ),
+    );
+    final skillsBlock = skillFragmentFor(c);
+    if (skillsBlock.isEmpty) return base;
+    return '$base\n\n$skillsBlock';
+  }
+
+  /// Skills this chat's role sees, after the global enable switches and the
+  /// role's own selection. Empty when the store has none enabled for it.
+  List<Skill> skillsFor(Chat c) {
+    try {
+      return skills.resolveFor(c.persona.skillIds);
+    } catch (_) {
+      return const [];
+    }
+  }
+
+  /// Whether the next reply will offer the skill reader tool. The listing
+  /// is only injected when the tool is there to fetch with: a list the
+  /// model cannot open is noise, not help.
+  bool _skillsOffered(Chat c) {
+    if (skillsFor(c).isEmpty) return false;
+    if (humanOn) return true;
+    return agentFor(c);
+  }
+
+  /// The `<available_skills>` block for one chat, or empty when there is
+  /// nothing to offer. Synchronous on purpose: the records live in memory
+  /// after load, so every reply path (plain, agent, humanized) shares it
+  /// through [_systemPrompt] without turning async.
+  String skillFragmentFor(Chat c) {
+    if (!_skillsOffered(c)) return '';
+    final list = skillsFor(c);
+    if (list.isEmpty) return '';
+    try {
+      return buildAvailableSkillsFragment(list);
+    } catch (_) {
+      return '';
+    }
+  }
+
+  /// The dedicated skill reader. Unlike the workspace file tools it needs
+  /// no binding: skills live under the app directory and are readable in
+  /// every chat that lists them. A successful read counts as a use so the
+  /// listing can put frequently used skills first.
+  HTool? skillToolFor(Chat c) {
+    if (skillsFor(c).isEmpty) return null;
+    return HTool(
+      'read_skill',
+      'Read an installed skill by its id and follow the returned instructions. Call it before doing a task that matches a skill description.',
+      {
+        'skill': _p('string', 'Skill id as listed in <available_skills>, for example "pdf-tools".'),
+      },
+      (a) async {
+        final raw = a['skill'] ?? a['id'] ?? a['name'] ?? '';
+        final id = '$raw'.trim();
+        if (id.isEmpty) {
+          final ids = skillsFor(c).map((s) => s.id).join(', ');
+          return 'Error: skill is required. Available: $ids.';
+        }
+        final body = await skills.readSkill(id);
+        if (body == null) {
+          final ids = skillsFor(c).map((s) => s.id).join(', ');
+          return 'Error: no enabled skill named "$id". Available: $ids.';
+        }
+        return body;
+      },
+      required: const ['skill'],
     );
   }
 
@@ -1574,10 +1833,10 @@ class Store extends ChangeNotifier {
       var turns = await _history(c);
       final system = agent ? await agentSystem(c) : _systemPrompt(c);
       // a plain reply is one pass, an agent reply keeps going while the model
-      // asks for tools. Eight rounds is far past anything sane and only there
-      // so a confused model cannot spin forever.
-      final maxPass = agent ? 8 : 1;
-      for (var pass = 0; pass < maxPass; pass++) {
+      // asks for tools. The cap is the agentMaxPass setting: a confused model
+      // cannot spin forever unless the user opened the cap to none.
+      final maxPass = agent ? agentMaxPass : 1;
+      for (var pass = 0; maxPass <= 0 || pass < maxPass; pass++) {
         final outcome = await runChain(
           settings: cfg.settings,
           apiKeys: cfg.apiKeys,
@@ -1587,6 +1846,7 @@ class Store extends ChangeNotifier {
           tools: specs,
           options: ChainOptions(
             cancel: run.token,
+            sessionId: c.id,
             onChunk: (chunk) {
               if (chunk.isText) {
                 onText(chunk.delta);

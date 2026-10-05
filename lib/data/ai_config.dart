@@ -5,12 +5,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../l10n/x.dart';
 import 'ai/compaction.dart';
+import 'ai/fetcher.dart';
 import 'ai/provider_model.dart';
 import 'ai/registry.dart';
 
 const _settingsKey = 'ai.settings';
 
-// the six providers the app ships with
+// the providers the app ships with
 List<Provider> _seedProviders() => [
       Provider.defaults(
         id: 'openai',
@@ -59,7 +60,28 @@ List<Provider> _seedProviders() => [
         baseUrl: 'https://api.siliconflow.cn/v1',
         builtIn: true,
       ),
+      // the community relay behind the onboarding one-tap. Serves a daily
+      // blind-test model list under the shared key `public`, and only accepts
+      // clients that send the app's own User-Agent, which every request here
+      // already carries. `relay: true` keeps its `auto` id away from the
+      // cross-provider catalog match (and OpenRouter's 2M window with it).
+      Provider.defaults(
+        id: 'relay',
+        name: 'Object2 Relay',
+        kind: ProviderKind.openaiChat,
+        baseUrl: 'https://relay.x0.fan/v1',
+        builtIn: true,
+        relay: true,
+      ),
     ];
+
+/// The id of the built-in free relay provider, the one the onboarding enables.
+const relayProviderId = 'relay';
+
+/// The shared key the relay accepts. Not a secret: access is gated on the
+/// client User-Agent, the key only marks the request as coming through the
+/// public lane.
+const relayPublicKey = 'public';
 
 AiSettings defaultAiSettings() => AiSettings(
       providers: _seedProviders(),
@@ -109,6 +131,8 @@ AiSettings sanitizeAiSettings(Object? value) {
     pacingJitter: (raw['pacingJitter'] as num?)?.toDouble() ?? base.pacingJitter,
     stripMarkdownInCharacterMode: raw['stripMarkdownInCharacterMode'] as bool? ?? true,
     compaction: raw['compaction'] is Map ? CompactionSettings.fromJson((raw['compaction'] as Map).cast<String, dynamic>()) : base.compaction,
+    userAgent: raw['userAgent'] as String? ?? '',
+    globalHeaders: [if (raw['globalHeaders'] is List) for (final e in raw['globalHeaders'] as List) if (e is Map) KeyValue.fromJson(e.cast<String, dynamic>())],
   );
 }
 
@@ -178,6 +202,7 @@ class AiConfig extends ChangeNotifier {
       } catch (_) {
         c._settings = defaultAiSettings();
       }
+      c._ensureBuiltIns();
     }
 
     for (final p in c._settings.providers) {
@@ -186,6 +211,16 @@ class AiConfig extends ChangeNotifier {
     }
     c._loadCompactions();
     return c;
+  }
+
+  /// A stored provider list predates the built-in relay on upgrades. Re-add
+  /// any missing built-in seed, keeping the stored copy when it is there (the
+  /// user may have edited its name or list, and their copy wins).
+  void _ensureBuiltIns() {
+    final missing = _seedProviders().where((seed) => !_settings.providers.any((p) => p.id == seed.id)).toList();
+    if (missing.isEmpty) return;
+    _settings = _settings.copyWith(providers: [..._settings.providers, ...missing]);
+    _save();
   }
 
   /// The pre chain build stored one flat base/key/model triple.
@@ -275,6 +310,50 @@ class AiConfig extends ChangeNotifier {
         providers: s.providers.where((p) => p.id != providerId).toList(),
         chain: s.chain.where((n) => n.providerId != providerId).toList(),
       ));
+
+  Provider? providerOf(String providerId) => findProvider(_settings, providerId);
+
+  /// Whether the built-in relay is usable: the provider exists and its key is
+  /// set. The onboarding step and the settings row both read this.
+  bool get relayEnabled => keyOf(relayProviderId).trim().isNotEmpty && providerOf(relayProviderId) != null;
+
+  /// Turns the free relay on: stores the shared key and builds the default
+  /// chain of just `auto`. Returns the warning text from the fetch, empty
+  /// when the list came back clean.
+  ///
+  /// The chain replaces only previous relay-only nodes; a user chain with
+  /// their own provider stays untouched because this is only called before
+  /// one exists (first run) or from the relay card itself.
+  Future<String> enableRelay() async {
+    final provider = providerOf(relayProviderId);
+    if (provider == null) return 'The relay provider is missing';
+    saveApiKey(relayProviderId, relayPublicKey);
+
+    final result = await fetchProviderModels(provider, relayPublicKey, settings: _settings);
+    if (result.ok) {
+      patchProvider(relayProviderId, (p) {
+        p.models = result.models;
+        p.modelsFetchedAt = result.fetchedAt;
+        p.modelsSource = result.source;
+      });
+    }
+
+    // Auto only. The model list is still fetched and cached so the picker can
+    // show everything, but the fallback chain stays on the one moving target
+    // instead of pinning the free models of the day.
+    update((s) => s.copyWith(chain: [
+          ...s.chain.where((n) => n.providerId != relayProviderId),
+          ChainNode(id: 'node_relay_auto', providerId: relayProviderId, modelId: 'auto', retries: 1, enabled: true),
+        ]));
+    return result.warning ?? '';
+  }
+
+  /// Drops the relay key and every relay chain node, the off switch of the
+  /// onboarding card and the settings row.
+  void disableRelay() {
+    saveApiKey(relayProviderId, '');
+    update((s) => s.copyWith(chain: s.chain.where((n) => n.providerId != relayProviderId).toList()));
+  }
 
   void addChainNode(String providerId, String modelId) {
     if (_settings.chain.any((n) => n.providerId == providerId && n.modelId == modelId)) return;

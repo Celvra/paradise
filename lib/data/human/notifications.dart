@@ -35,10 +35,26 @@ class Notifier {
     try {
       tzdata.initializeTimeZones();
       await _plugin.initialize(const InitializationSettings(android: AndroidInitializationSettings('@mipmap/ic_launcher')));
-      await _plugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.requestNotificationsPermission();
+      // The ask moved into the onboarding permissions step: requesting here
+      // fired the system dialog on the very first launch, before the wizard
+      // could explain why, and the wizard would then ask a second time.
       _ready = true;
     } catch (_) {
       // desktop and test runs have no notification plugin, stay silent
+    }
+  }
+
+  /// The system permission ask, invoked by the onboarding permissions step.
+  /// Returns whether notifications are allowed afterwards. Safe to call when
+  /// the plugin never came up: a test run answers true so the step shows done.
+  Future<bool> requestPermission() async {
+    if (!_ready) return true;
+    try {
+      final impl = await _plugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
+      final granted = await impl?.requestNotificationsPermission() ?? true;
+      return granted;
+    } catch (_) {
+      return true;
     }
   }
 

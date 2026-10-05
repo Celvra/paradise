@@ -22,6 +22,10 @@ void main() {
     final store = await Store.load();
     final ai = await AiConfig.load();
     store.attachAi(ai);
+    // starter chats now come from the onboarding, so the test seeds its own
+    store.createChat('Assistant', 'You are a helpful, concise assistant.');
+    // the tests drive in-app screens, not the wizard
+    store.onboarded = true;
     await t.pumpWidget(TgApp(store: store, ai: ai));
     await settle(t);
     expect(find.text('Chats'), findsWidgets);
@@ -67,6 +71,8 @@ void main() {
     final store = await Store.load();
     final ai = await AiConfig.load();
     store.attachAi(ai);
+    // the tests drive in-app screens, not the wizard
+    store.onboarded = true;
     await t.pumpWidget(TgApp(store: store, ai: ai));
     await settle(t);
     await t.tap(find.text('Search'));

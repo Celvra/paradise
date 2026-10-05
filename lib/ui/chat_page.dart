@@ -20,6 +20,7 @@ import '../l10n/x.dart';
 import 'attach_sheet.dart';
 import 'bubble.dart';
 import 'calendar_sheet.dart';
+import 'canvas_cards.dart';
 import 'emoji_panel.dart';
 import 'input_bar.dart';
 import 'media_bubbles.dart';
@@ -76,6 +77,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    TypstPackageStore.warm();
     _store = Store.read(context);
     _store.openId = chat.id;
     chat.unread = 0;
@@ -232,7 +234,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
     });
   }
 
-  void _menu(Msg m, Rect rect, Widget ghost) {
+  void _menu(Msg m, Rect rect, Widget? ghost) {
     final lastReal = chat.last;
     final l = context.l;
     showTgMenu(context, anchor: rect, blur: true, ghost: ghost, items: [
@@ -643,6 +645,42 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
           ),
         ),
       );
+    } else if ((m.kind == MsgKind.html || m.kind == MsgKind.latex) && !m.recalled) {
+      // a rendered document is not a speech bubble: it lies flat on the page,
+      // spans the full column width and grows to its own height. The long
+      // press lands on the rendered thing itself and opens the same menu.
+      row = Padding(
+        padding: EdgeInsets.only(top: grouped ? 1 : 5, left: 4, right: 4),
+        child: CanvasCard(
+          source: '${m.data['source'] ?? ''}',
+          latex: m.kind == MsgKind.latex,
+          cetz: m.data['cetz'] == true,
+          align: parseCardAlign(m.data['align']),
+          // remembered height so a re-entered chat starts at the right size
+          // instead of flashing from the placeholder up; reported back into
+          // the row so a restart keeps it too. Clamped: a height from the old
+          // viewport-inclusive measurement could be enormously tall and would
+          // otherwise stick forever.
+          initialHeight: () {
+            final v = (m.data['h'] as num?)?.toDouble();
+            return (v != null && v > 0 && v <= 2000) ? v : null;
+          }(),
+          onHeight: (h) {
+            final old = (m.data['h'] as num?)?.toDouble();
+            if (old == null || (h - old).abs() > 1) {
+              m.data['h'] = h;
+              // ObservableMap alone does not mark the chat dirty (Msg.onChange
+              // is never wired), so touch explicitly or the height dies with
+              // the process and the next entry flashes again.
+              chat.touch();
+            }
+          },
+          onLongPress: (rect) => _menu(m, rect, null),
+          // the engine refused the source: mark the message so the transcript
+          // tells the model, which can resend a corrected card
+          onFailed: (err) => st.canvasRenderFailed(chat, m, err),
+        ),
+      );
     } else {
       final tail = !_grouped(m, newer);
       final replyTo = chat.byId(m.reply);
@@ -658,6 +696,10 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
             query: q,
             onRetry: () => _store.retry(chat, m),
             onVote: (i) => _store.votePoll(chat, m, i),
+            onAskVote: (i) => _store.votePoll(chat, m, i),
+            onAskSubmit: () => _store.submitAskPoll(chat, m),
+            onAskSkip: () => _store.skipAskPoll(chat, m),
+            onAskCustom: (t) => _store.setAskCustom(chat, m, t),
             onPhoto: () => openPhotoViewer(context, photos, m),
             onAction: () => _openWallet(m),
             onFileLink: ghost ? null : (link) => _openFileLink(link),

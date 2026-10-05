@@ -213,11 +213,17 @@ const _latestAliases = {'latest', 'preview'};
 
 /// Searches the fetched models.dev feed first, then the bundled subset, so an
 /// upstream model list that carries no metadata of its own still gets filled.
-CatalogModel? _lookupAnywhere(String providerId, String modelId, [String? modelName]) =>
-    _lookupIn(_remote ?? const {}, providerId, modelId, modelName) ??
-    _lookupIn(modelCatalog, providerId, modelId, modelName) ??
-    _matchModelId(_remote ?? const {}, modelId) ??
-    _matchModelId(modelCatalog, modelId);
+///
+/// [crossProvider] turns off the last two fallbacks, the by-id search across
+/// every provider. A relay hands out ids under its own name, so `auto` there
+/// must not inherit the window of OpenRouter's `openrouter/auto` (2M context)
+/// merely because the tokens match.
+CatalogModel? _lookupAnywhere(String providerId, String modelId, [String? modelName, bool crossProvider = true]) {
+  final hit = _lookupIn(_remote ?? const {}, providerId, modelId, modelName) ?? _lookupIn(modelCatalog, providerId, modelId, modelName);
+  if (hit != null) return hit;
+  if (!crossProvider) return null;
+  return _matchModelId(_remote ?? const {}, modelId) ?? _matchModelId(modelCatalog, modelId);
+}
 
 /// Pulls the remote feed into memory once. Later synchronous lookups see it.
 Future<void> warmCatalog() => _loadRemote().then((_) {});
@@ -241,10 +247,10 @@ ModelMeta _toMeta(CatalogModel m, String id, String? name, ModelSource source) =
     );
 
 // fill missing capability fields from the catalog without overwriting api data
-ModelMeta enrich(ModelMeta model, String providerId) {
+ModelMeta enrich(ModelMeta model, String providerId, {bool crossProvider = true}) {
   // a bare upstream entry carries no limits at all, so match it against the
   // fetched models.dev feed by id and by name, then the bundled subset
-  final hit = _lookupAnywhere(providerId, model.id, model.name);
+  final hit = _lookupAnywhere(providerId, model.id, model.name, crossProvider);
   if (hit == null) {
     // an id the catalog missed still carries capability hints
     final g = guessFromModelId(model.id);
@@ -298,28 +304,28 @@ Future<List<ModelMeta>> catalogModels(String providerId) async {
   return const [];
 }
 
+/// Every successful pull replaces the previous upstream list: an id the server
+/// no longer returns disappears instead of lingering as a zombie. Hand-added
+/// entries are user data rather than upstream state, so they survive the pull
+/// unless the new list already carries the same id (the fresh api row wins).
 List<ModelMeta> mergeModels(Provider provider, List<ModelMeta> fetched) {
-  final byId = <String, ModelMeta>{for (final m in provider.models) m.id: m};
+  final cross = !provider.relay;
+  final byId = <String, ModelMeta>{};
   for (final model in fetched) {
-    final existing = byId[model.id];
-    // an entry stored by an earlier fetch may carry zeros from when the
-    // catalog was unreachable, so enrich the merged result rather than only
-    // the incoming one, otherwise those zeros are permanent
-    byId[model.id] = existing == null ? enrich(model, provider.id) : enrich(_mergeOne(existing, model), provider.id);
+    if (model.id.trim().isEmpty) continue;
+    // Enrich the fresh row itself; the stored copy is deliberately ignored so
+    // stale windows and capabilities cannot survive a re-pull.
+    // Relay providers skip the cross-provider match: their ids are their own,
+    // and a plain `auto` must never grow OpenRouter's 2M window.
+    byId[model.id] = enrich(model, provider.id, crossProvider: cross);
+  }
+  for (final m in provider.models) {
+    if (m.source == ModelSource.manual && !byId.containsKey(m.id)) {
+      byId[m.id] = m;
+    }
   }
   return byId.values.toList();
 }
-
-ModelMeta _mergeOne(ModelMeta existing, ModelMeta incoming) => ModelMeta(
-      id: existing.id,
-      name: existing.name.isNotEmpty ? existing.name : incoming.name,
-      contextWindow: existing.contextWindow != 0 ? existing.contextWindow : incoming.contextWindow,
-      maxOutput: existing.maxOutput != 0 ? existing.maxOutput : incoming.maxOutput,
-      vision: existing.vision || incoming.vision,
-      textToImage: existing.textToImage || incoming.textToImage,
-      reasoning: existing.reasoning || incoming.reasoning,
-      source: existing.source == ModelSource.api ? ModelSource.api : incoming.source,
-    );
 
 // the store owns persistence, this is the seam the registry reads through
 abstract class AiRegistryCache {

@@ -1194,7 +1194,7 @@ abstract class AppLocalizations {
   /// Settings row subtitle of the about entry
   ///
   /// In en, this message translates to:
-  /// **'Version 1.0.1'**
+  /// **'Version 1.0.2'**
   String get settingsAboutSub;
 
   /// Licence and ownership notice in the about dialog
@@ -1224,7 +1224,7 @@ abstract class AppLocalizations {
   /// Direct dependencies with their licence, the transitive tree is in the lockfile
   ///
   /// In en, this message translates to:
-  /// **'Dependencies:\n\narchive 3.6.1 - zipping a workspace for export  (MIT)\nhttps://github.com/brendan-duncan/archive\nasync 2.13.0 - not used directly, pulled in by flutter_local_notifications  (BSD-2-Clause)\nhttps://github.com/dart-lang/async\ncharacters 1.4.1 - grapheme clusters for text measurement  (BSD-3-Clause)\nhttps://github.com/dart-lang/core/tree/main/pkgs/characters\ncrypto 3.0.7 - declared for the workspace, nothing on device is hashed yet  (BSD-3-Clause)\nhttps://github.com/dart-lang/core/tree/main/pkgs/crypto\nfile_picker 13.1.0 - picking documents and audio files  (MIT)\nhttps://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker\nflutter_contacts 2.5.0 - sharing a contact card  (MIT)\nhttps://github.com/QuisApp/flutter_contacts\nflutter_highlight 0.7.0 - colouring the code preview  (MIT)\nhttps://github.com/git-touch/highlight\nflutter_local_notifications 18.0.1 - local notifications  (BSD-3-Clause)\nhttps://github.com/MaikuB/flutter_local_notifications\nflutter_svg 2.3.0 - provider logos and vector icons  (MIT)\nhttps://github.com/flutter/packages/tree/main/third_party/packages/flutter_svg\ngeolocator 13.0.4 - location attachments  (MIT)\nhttps://github.com/baseflow/flutter-geolocator/tree/main/geolocator\nglob 2.2.0 - the workspace find tool  (BSD-3-Clause)\nhttps://github.com/dart-lang/tools/tree/main/pkgs/glob\nhighlight 0.7.0 - the grammar data behind the code preview  (MIT)\nhttps://github.com/pd4d10/highlight\nhttp 1.6.0 - OpenAI compatible endpoints  (BSD-3-Clause)\nhttps://github.com/dart-lang/http/tree/master/pkgs/http\nimage_picker 1.2.3 - camera and gallery photos  (Apache-2.0)\nhttps://github.com/flutter/packages/tree/main/packages/image_picker/image_picker\nintl 0.20.3 - date and number formatting  (BSD-3-Clause)\nhttps://github.com/dart-lang/i18n/tree/main/pkgs/intl\npath 1.9.1 - path arithmetic in the workspace sandbox  (BSD-3-Clause)\nhttps://github.com/dart-lang/core/tree/main/pkgs/path\npath_provider 2.1.6 - app directory for stickers and exports  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/path_provider/path_provider\nphoto_manager 3.12.0 - album access for attachments  (Apache-2.0)\nhttps://github.com/fluttercandies/flutter_photo_manager\nshared_preferences 2.5.5 - settings and chat storage  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/shared_preferences/shared_preferences\nsqflite 2.4.4 - message history and per chat paging  (BSD-2-Clause)\nhttps://github.com/tekartik/sqflite/tree/master/sqflite\ntimezone 0.10.1 - timezone data for scheduled messages  (BSD-2-Clause)\nhttps://github.com/srawlins/timezone\nurl_launcher 6.3.2 - the community link in this dialog  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/url_launcher/url_launcher\nwebview_flutter 4.14.1 - rendering html in a file preview  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/webview_flutter/webview_flutter\nworkmanager 0.10.10 - background delivery when the app is killed  (MIT)\nhttps://github.com/fluttercommunity/flutter_workmanager'**
+  /// **'Dependencies:\n\narchive 4.3.0 - zipping a workspace for export  (MIT)\nhttps://github.com/brendan-duncan/archive\nasync 2.13.0 - not used directly, pulled in by flutter_local_notifications  (BSD-2-Clause)\nhttps://github.com/dart-lang/async\ncharacters 1.4.1 - grapheme clusters for text measurement  (BSD-3-Clause)\nhttps://github.com/dart-lang/core/tree/main/pkgs/characters\ncrypto 3.0.7 - declared for the workspace, nothing on device is hashed yet  (BSD-3-Clause)\nhttps://github.com/dart-lang/core/tree/main/pkgs/crypto\nfile_picker 13.1.0 - picking documents and audio files  (MIT)\nhttps://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker\nflutter_contacts 2.5.0 - sharing a contact card  (MIT)\nhttps://github.com/QuisApp/flutter_contacts\nflutter_highlight 0.7.0 - colouring the code preview  (MIT)\nhttps://github.com/git-touch/highlight\nflutter_local_notifications 18.0.1 - local notifications  (BSD-3-Clause)\nhttps://github.com/MaikuB/flutter_local_notifications\nflutter_math_fork 0.7.4 - inline TeX math in a bubble  (Apache-2.0)\nhttps://github.com/simplezhli/flutter_math_fork\nflutter_svg 2.3.0 - provider logos and vector icons  (MIT)\nhttps://github.com/flutter/packages/tree/main/third_party/packages/flutter_svg\ngeolocator 13.0.4 - location attachments  (MIT)\nhttps://github.com/baseflow/flutter-geolocator/tree/main/geolocator\nglob 2.2.0 - the workspace find tool  (BSD-3-Clause)\nhttps://github.com/dart-lang/tools/tree/main/pkgs/glob\nhighlight 0.7.0 - the grammar data behind the code preview  (MIT)\nhttps://github.com/pd4d10/highlight\nhttp 1.6.0 - OpenAI compatible endpoints  (BSD-3-Clause)\nhttps://github.com/dart-lang/http/tree/master/pkgs/http\nimage_picker 1.2.3 - camera and gallery photos  (Apache-2.0)\nhttps://github.com/flutter/packages/tree/main/packages/image_picker/image_picker\nintl 0.20.3 - date and number formatting  (BSD-3-Clause)\nhttps://github.com/dart-lang/i18n/tree/main/pkgs/intl\npath 1.9.1 - path arithmetic in the workspace sandbox  (BSD-3-Clause)\nhttps://github.com/dart-lang/core/tree/main/pkgs/path\npath_provider 2.1.6 - app directory for stickers and exports  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/path_provider/path_provider\npermission_handler 13.0.2 - one place to ask for photos, contacts, location and notifications  (MIT)\nhttps://github.com/baseflow/flutter-permission-handler\nphoto_manager 3.12.0 - album access for attachments  (Apache-2.0)\nhttps://github.com/fluttercandies/flutter_photo_manager\nratex_flutter 0.1.14 - the native LaTeX math card  (MIT)\nhttps://github.com/erweixin/RaTeX\nshared_preferences 2.5.5 - settings and chat storage  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/shared_preferences/shared_preferences\nsqflite 2.4.4 - message history and per chat paging  (BSD-2-Clause)\nhttps://github.com/tekartik/sqflite/tree/master/sqflite\ntimezone 0.10.1 - timezone data for scheduled messages  (BSD-2-Clause)\nhttps://github.com/srawlins/timezone\ntypst_flutter 3.0.0 - the embedded Typst compiler behind the CeTZ drawing card  (Apache-2.0)\nhttps://github.com/ajmalbuv/typst_flutter\nurl_launcher 6.3.2 - the community link in this dialog  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/url_launcher/url_launcher\nwebview_flutter 4.14.1 - rendering html in a file preview  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/webview_flutter/webview_flutter\nworkmanager 0.10.10 - background delivery when the app is killed  (MIT)\nhttps://github.com/fluttercommunity/flutter_workmanager'**
   String get settingsAboutDeps;
 
   /// Community link in the about dialog, identical in every language
@@ -1232,6 +1232,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'https://discord.gg/aQaNUHPsw'**
   String get settingsAboutCommunityUrl;
+
+  /// Label in front of the QQ group link in the about dialog
+  ///
+  /// In en, this message translates to:
+  /// **'QQ group 272298906:'**
+  String get settingsAboutQqGroup;
+
+  /// QQ group link in the about dialog, identical in every language
+  ///
+  /// In en, this message translates to:
+  /// **'https://qm.qq.com/q/BeQPYWuzVS'**
+  String get settingsAboutQqGroupUrl;
 
   /// Small print at the bottom of settings
   ///
@@ -2181,6 +2193,48 @@ abstract class AppLocalizations {
   /// **'{kind} · Multiple answers'**
   String pollKindMultiple(String kind);
 
+  /// Ask card subtitle, an answer unblocks the waiting tool call
+  ///
+  /// In en, this message translates to:
+  /// **'Question · tap to answer'**
+  String get askKind;
+
+  /// Ask card subtitle in multi choice mode
+  ///
+  /// In en, this message translates to:
+  /// **'Question · pick any, then submit'**
+  String get askKindMulti;
+
+  /// Ask card subtitle after the answer was submitted
+  ///
+  /// In en, this message translates to:
+  /// **'Answered'**
+  String get askDone;
+
+  /// Ask card subtitle after the user skipped it
+  ///
+  /// In en, this message translates to:
+  /// **'Skipped'**
+  String get askSkipped;
+
+  /// Hint of the custom answer field on an ask card
+  ///
+  /// In en, this message translates to:
+  /// **'Or write your own answer…'**
+  String get askOtherHint;
+
+  /// Button that submits the answer on an ask card
+  ///
+  /// In en, this message translates to:
+  /// **'Submit'**
+  String get askSubmit;
+
+  /// Button that skips an ask card without answering
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get askSkip;
+
   /// Photo viewer header counter
   ///
   /// In en, this message translates to:
@@ -2666,6 +2720,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Tools and MCP calls, each step shown as it runs'**
   String get aiReplyAgentModeSub;
+
+  /// Row that opens the tool pass limit picker
+  ///
+  /// In en, this message translates to:
+  /// **'Tool pass limit'**
+  String get aiReplyAgentPass;
+
+  /// Subtitle of the tool pass limit row
+  ///
+  /// In en, this message translates to:
+  /// **'How many tool rounds one reply may run before it is stopped'**
+  String get aiReplyAgentPassSub;
+
+  /// Label of the no cap option
+  ///
+  /// In en, this message translates to:
+  /// **'Unlimited'**
+  String get aiReplyAgentPassUnlimited;
+
+  /// Subtitle of the no cap option
+  ///
+  /// In en, this message translates to:
+  /// **'Run tool rounds until the model stops on its own'**
+  String get aiReplyAgentPassUnlimitedSub;
+
+  /// Value of a numeric cap option
+  ///
+  /// In en, this message translates to:
+  /// **'{count} rounds'**
+  String aiReplyAgentPassRounds(int count);
 
   /// Section header of the tools entry
   ///
@@ -5385,6 +5469,12 @@ abstract class AppLocalizations {
   /// **'Send a pretend red packet, taps to accept'**
   String get toolDescSendTransfer;
 
+  /// No description provided for @toolDescAsk.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask you a question with tappable options and wait for the answer'**
+  String get toolDescAsk;
+
   /// No description provided for @wsToolDescRead.
   ///
   /// In en, this message translates to:
@@ -5756,6 +5846,1032 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The installed environment is incomplete'**
   String get envErrorInvalid;
+
+  /// Section header of the request wire settings
+  ///
+  /// In en, this message translates to:
+  /// **'Network'**
+  String get aiNetworkHeader;
+
+  /// Section footer of the request wire settings
+  ///
+  /// In en, this message translates to:
+  /// **'Applied to every AI request: chat, tools, model list and the one off calls. Leave empty for defaults.'**
+  String get aiNetworkFooter;
+
+  /// Row and prompt title of the user agent override
+  ///
+  /// In en, this message translates to:
+  /// **'User-Agent'**
+  String get aiUserAgent;
+
+  /// Placeholder of the user agent prompt
+  ///
+  /// In en, this message translates to:
+  /// **'User-Agent header value'**
+  String get aiUserAgentHint;
+
+  /// Row and prompt title of the global header override
+  ///
+  /// In en, this message translates to:
+  /// **'Custom request headers'**
+  String get aiGlobalHeaders;
+
+  /// Subtitle when no extra headers are set
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get aiHeadersNone;
+
+  /// Placeholder of the headers prompt
+  ///
+  /// In en, this message translates to:
+  /// **'One per line, Name: Value'**
+  String get aiHeadersHint;
+
+  /// Title of the page that renders an html or svg code block; also the tooltip of the button that opens it
+  ///
+  /// In en, this message translates to:
+  /// **'Preview'**
+  String get codePreview;
+
+  /// Tooltip of the button that flips an html or svg file preview between the rendered document and the raw source
+  ///
+  /// In en, this message translates to:
+  /// **'Toggle rendered view'**
+  String get wsPreviewRendered;
+
+  /// Preview lead for a message that renders an html card
+  ///
+  /// In en, this message translates to:
+  /// **'Rendered page'**
+  String get msgLeadHtml;
+
+  /// Preview lead for a message that renders a LaTeX card
+  ///
+  /// In en, this message translates to:
+  /// **'LaTeX'**
+  String get msgLeadLatex;
+
+  /// The small quiet notice shown in place of an html or latex card the engine could not render
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t render this'**
+  String get canvasRenderFailed;
+
+  /// Row that picks how the API key is sent
+  ///
+  /// In en, this message translates to:
+  /// **'Auth style'**
+  String get provAuthStyle;
+
+  /// Subtitle of the bearer option
+  ///
+  /// In en, this message translates to:
+  /// **'Sent as the Authorization header'**
+  String get provAuthBearerSub;
+
+  /// Subtitle of the query key option
+  ///
+  /// In en, this message translates to:
+  /// **'Appended to the url as a query parameter'**
+  String get provAuthQuerySub;
+
+  /// Row that names a per conversation routing header
+  ///
+  /// In en, this message translates to:
+  /// **'Session header'**
+  String get provSessionHeader;
+
+  /// Subtitle when no session header is set
+  ///
+  /// In en, this message translates to:
+  /// **'Off, add one if the gateway routes on it'**
+  String get provSessionHeaderEmpty;
+
+  /// Placeholder of the session header prompt
+  ///
+  /// In en, this message translates to:
+  /// **'Header name, the value is filled in'**
+  String get provSessionHeaderHint;
+
+  /// Row that overrides the user agent for one provider
+  ///
+  /// In en, this message translates to:
+  /// **'User-Agent'**
+  String get provUserAgent;
+
+  /// Subtitle when the provider has no user agent of its own
+  ///
+  /// In en, this message translates to:
+  /// **'Follows the global setting'**
+  String get provUserAgentDefault;
+
+  /// Placeholder of the provider user agent prompt
+  ///
+  /// In en, this message translates to:
+  /// **'User-Agent for this provider only'**
+  String get provUserAgentHint;
+
+  /// Row and prompt title of the per provider headers
+  ///
+  /// In en, this message translates to:
+  /// **'Custom request headers'**
+  String get provExtraHeaders;
+
+  /// Subtitle when no extra headers are set
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get provHeadersNone;
+
+  /// Placeholder of the headers prompt
+  ///
+  /// In en, this message translates to:
+  /// **'One per line, Name: Value'**
+  String get provHeadersHint;
+
+  /// No description provided for @toolDescSendSvg.
+  ///
+  /// In en, this message translates to:
+  /// **'Draw a vector picture and send it as a card'**
+  String get toolDescSendSvg;
+
+  /// No description provided for @toolDescSendHtml.
+  ///
+  /// In en, this message translates to:
+  /// **'Render an html page straight into the chat'**
+  String get toolDescSendHtml;
+
+  /// No description provided for @toolDescSendLatex.
+  ///
+  /// In en, this message translates to:
+  /// **'Render LaTeX math straight into the chat'**
+  String get toolDescSendLatex;
+
+  /// No description provided for @toolDescSendCetz.
+  ///
+  /// In en, this message translates to:
+  /// **'Draw a diagram with CeTZ straight into the chat'**
+  String get toolDescSendCetz;
+
+  /// Onboarding top-right skip
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get onboardSkip;
+
+  /// Onboarding next step button
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get onboardNext;
+
+  /// Onboarding previous step button
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get onboardBack;
+
+  /// Onboarding final button, enters the app
+  ///
+  /// In en, this message translates to:
+  /// **'Start'**
+  String get onboardStart;
+
+  /// Splash screen tagline
+  ///
+  /// In en, this message translates to:
+  /// **'Loading the other shore'**
+  String get onboardSplashTagline;
+
+  /// Brand step title
+  ///
+  /// In en, this message translates to:
+  /// **'Paradise'**
+  String get onboardBrandTitle;
+
+  /// Brand step tagline
+  ///
+  /// In en, this message translates to:
+  /// **'A Telegram-style immersive AI chat app.'**
+  String get onboardBrandTagline;
+
+  /// Brand step body
+  ///
+  /// In en, this message translates to:
+  /// **'Local first. Bring your own key. Give every assistant a workspace, a memory and a temper of its own.'**
+  String get onboardBrandBody;
+
+  /// Brand step license line
+  ///
+  /// In en, this message translates to:
+  /// **'Licensed AGPL v3. © 殘月'**
+  String get onboardBrandLicense;
+
+  /// Permissions step title
+  ///
+  /// In en, this message translates to:
+  /// **'Permissions'**
+  String get onboardPermTitle;
+
+  /// Permissions step body
+  ///
+  /// In en, this message translates to:
+  /// **'Everything below is optional. Denying any of them never blocks chatting, and you can change them any time in system settings.'**
+  String get onboardPermBody;
+
+  /// Permissions step allow button
+  ///
+  /// In en, this message translates to:
+  /// **'Allow'**
+  String get onboardPermAllow;
+
+  /// Permissions step granted state
+  ///
+  /// In en, this message translates to:
+  /// **'Granted'**
+  String get onboardPermGranted;
+
+  /// Permissions step permanently denied state
+  ///
+  /// In en, this message translates to:
+  /// **'Denied. Enable it in system settings.'**
+  String get onboardPermDenied;
+
+  /// Permission row name
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get onboardPermNotifName;
+
+  /// Permission row reason
+  ///
+  /// In en, this message translates to:
+  /// **'Proactive messages and scheduled replies need notifications to reach you in time.'**
+  String get onboardPermNotifWhy;
+
+  /// Permission row name
+  ///
+  /// In en, this message translates to:
+  /// **'Photos'**
+  String get onboardPermPhotosName;
+
+  /// Permission row reason
+  ///
+  /// In en, this message translates to:
+  /// **'Sending pictures and saving stickers.'**
+  String get onboardPermPhotosWhy;
+
+  /// Privacy step title
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy'**
+  String get onboardPrivacyTitle;
+
+  /// Privacy step intro
+  ///
+  /// In en, this message translates to:
+  /// **'Read this before you start. It is short on purpose.'**
+  String get onboardPrivacyIntro;
+
+  /// Privacy clause title
+  ///
+  /// In en, this message translates to:
+  /// **'Local first'**
+  String get onboardPrivacy1Title;
+
+  /// Privacy clause body
+  ///
+  /// In en, this message translates to:
+  /// **'Chats, personas, memories and workspace files all stay on this device.'**
+  String get onboardPrivacy1Body;
+
+  /// Privacy clause title
+  ///
+  /// In en, this message translates to:
+  /// **'We collect nothing'**
+  String get onboardPrivacy2Title;
+
+  /// Privacy clause body
+  ///
+  /// In en, this message translates to:
+  /// **'No account, no server, no telemetry. The developer cannot see any of your data.'**
+  String get onboardPrivacy2Body;
+
+  /// Privacy clause title
+  ///
+  /// In en, this message translates to:
+  /// **'You bring your own key'**
+  String get onboardPrivacy3Title;
+
+  /// Privacy clause body
+  ///
+  /// In en, this message translates to:
+  /// **'Messages go straight to the AI provider you configure, under that provider\'s own privacy policy. With the built-in free relay, messages pass through the relay too.'**
+  String get onboardPrivacy3Body;
+
+  /// Privacy clause title
+  ///
+  /// In en, this message translates to:
+  /// **'Permissions are optional'**
+  String get onboardPrivacy4Title;
+
+  /// Privacy clause body
+  ///
+  /// In en, this message translates to:
+  /// **'Contacts, photos, location and notifications can all be denied without losing basic chat.'**
+  String get onboardPrivacy4Body;
+
+  /// Privacy clause title
+  ///
+  /// In en, this message translates to:
+  /// **'Open source'**
+  String get onboardPrivacy5Title;
+
+  /// Privacy clause body
+  ///
+  /// In en, this message translates to:
+  /// **'This app is distributed under AGPL v3. The source is in the repository.'**
+  String get onboardPrivacy5Body;
+
+  /// Privacy accept button
+  ///
+  /// In en, this message translates to:
+  /// **'Agree and start'**
+  String get onboardPrivacyAgree;
+
+  /// Privacy decline button
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get onboardPrivacyDecline;
+
+  /// Decline dialog title
+  ///
+  /// In en, this message translates to:
+  /// **'The app needs your agreement'**
+  String get onboardPrivacyDeclineTitle;
+
+  /// Decline dialog body
+  ///
+  /// In en, this message translates to:
+  /// **'You can decline for now and read it again later, but the app cannot start until you agree.'**
+  String get onboardPrivacyDeclineBody;
+
+  /// Model step title
+  ///
+  /// In en, this message translates to:
+  /// **'Model'**
+  String get onboardModelTitle;
+
+  /// Model step body
+  ///
+  /// In en, this message translates to:
+  /// **'One tap to start with the free relay, or plug in your own provider. You can change this any time in Settings.'**
+  String get onboardModelBody;
+
+  /// Relay card title
+  ///
+  /// In en, this message translates to:
+  /// **'Use the free relay'**
+  String get onboardModelRelayTitle;
+
+  /// Relay card body
+  ///
+  /// In en, this message translates to:
+  /// **'A blind-test lane: the model list changes daily, and auto picks one at random. No key of your own needed.'**
+  String get onboardModelRelayBody;
+
+  /// Relay notice, shown verbatim
+  ///
+  /// In en, this message translates to:
+  /// **'This provider is run by 殘月. Models come from different upstreams and channels, stability is not guaranteed, and it is recommended for temporary use only.'**
+  String get onboardModelRelayNotice;
+
+  /// Relay card enabled state
+  ///
+  /// In en, this message translates to:
+  /// **'Relay on'**
+  String get onboardModelRelayOn;
+
+  /// Relay enable button
+  ///
+  /// In en, this message translates to:
+  /// **'Enable'**
+  String get onboardModelRelayEnable;
+
+  /// Relay enable failure
+  ///
+  /// In en, this message translates to:
+  /// **'Could not reach the relay. Check the network and try again.'**
+  String get onboardModelRelayEnableFailed;
+
+  /// Own provider card title
+  ///
+  /// In en, this message translates to:
+  /// **'Use your own provider'**
+  String get onboardModelOwnTitle;
+
+  /// Own provider card body
+  ///
+  /// In en, this message translates to:
+  /// **'OpenAI, Anthropic, Gemini, DeepSeek, OpenRouter, SiliconFlow, or any OpenAI-compatible endpoint with your key.'**
+  String get onboardModelOwnBody;
+
+  /// Display name of the relay's auto model
+  ///
+  /// In en, this message translates to:
+  /// **'Auto model'**
+  String get relayAutoModel;
+
+  /// Workspace step title
+  ///
+  /// In en, this message translates to:
+  /// **'Workspace'**
+  String get onboardWsTitle;
+
+  /// Workspace step body
+  ///
+  /// In en, this message translates to:
+  /// **'Give assistants a folder of their own: read and write files, browse, run a terminal. Every write can ask you first.'**
+  String get onboardWsBody;
+
+  /// Workspace tools switch
+  ///
+  /// In en, this message translates to:
+  /// **'Tools on'**
+  String get onboardWsTools;
+
+  /// Workspace confirm-writes switch
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm writes'**
+  String get onboardWsConfirm;
+
+  /// Workspace environment card title
+  ///
+  /// In en, this message translates to:
+  /// **'Linux environment'**
+  String get onboardWsEnvTitle;
+
+  /// Workspace environment card body
+  ///
+  /// In en, this message translates to:
+  /// **'Optional. Downloads a small Ubuntu rootfs so the terminal and package tools actually run.'**
+  String get onboardWsEnvBody;
+
+  /// Environment install button
+  ///
+  /// In en, this message translates to:
+  /// **'Download and install'**
+  String get onboardWsEnvInstall;
+
+  /// Environment installed state
+  ///
+  /// In en, this message translates to:
+  /// **'Environment ready'**
+  String get onboardWsEnvReady;
+
+  /// Humanize step title
+  ///
+  /// In en, this message translates to:
+  /// **'Immersive chat'**
+  String get onboardHumanTitle;
+
+  /// Humanize step body
+  ///
+  /// In en, this message translates to:
+  /// **'Assistants can type like people: split replies, hesitate, mistype and take it back, message you first. Pick a temper, tune it later.'**
+  String get onboardHumanBody;
+
+  /// Humanize master switch
+  ///
+  /// In en, this message translates to:
+  /// **'Immersive replies'**
+  String get onboardHumanEnabled;
+
+  /// Humanize preset section header
+  ///
+  /// In en, this message translates to:
+  /// **'Temper'**
+  String get onboardHumanPresetHeader;
+
+  /// No description provided for @onboardHumanPresetClingy.
+  ///
+  /// In en, this message translates to:
+  /// **'Clingy'**
+  String get onboardHumanPresetClingy;
+
+  /// Humanize preset subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Messages first, types fast, never lets a topic drop'**
+  String get onboardHumanPresetClingySub;
+
+  /// No description provided for @onboardHumanPresetCold.
+  ///
+  /// In en, this message translates to:
+  /// **'Aloof'**
+  String get onboardHumanPresetCold;
+
+  /// Humanize preset subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Replies late and short, almost never texts first'**
+  String get onboardHumanPresetColdSub;
+
+  /// No description provided for @onboardHumanPresetChatty.
+  ///
+  /// In en, this message translates to:
+  /// **'Chatty'**
+  String get onboardHumanPresetChatty;
+
+  /// Humanize preset subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Splits everything into many small messages'**
+  String get onboardHumanPresetChattySub;
+
+  /// No description provided for @onboardHumanPresetQuiet.
+  ///
+  /// In en, this message translates to:
+  /// **'Quiet'**
+  String get onboardHumanPresetQuiet;
+
+  /// Humanize preset subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Never texts first, clean punctuation, no typos'**
+  String get onboardHumanPresetQuietSub;
+
+  /// No description provided for @onboardHumanPresetBalanced.
+  ///
+  /// In en, this message translates to:
+  /// **'Balanced'**
+  String get onboardHumanPresetBalanced;
+
+  /// Humanize preset subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'The default feel'**
+  String get onboardHumanPresetBalancedSub;
+
+  /// Balanced preset subtitle when settings changed
+  ///
+  /// In en, this message translates to:
+  /// **'The defaults, in case you tuned them before'**
+  String get onboardHumanPresetBalancedSub2;
+
+  /// Humanize fine-tune section header
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get onboardHumanStickerHeader;
+
+  /// Typo switch row
+  ///
+  /// In en, this message translates to:
+  /// **'Typos and recalls'**
+  String get onboardHumanTypo;
+
+  /// Proactive switch row
+  ///
+  /// In en, this message translates to:
+  /// **'Messages first'**
+  String get onboardHumanProactive;
+
+  /// Self persona step title
+  ///
+  /// In en, this message translates to:
+  /// **'You'**
+  String get onboardSelfTitle;
+
+  /// Self persona step body
+  ///
+  /// In en, this message translates to:
+  /// **'Who the assistants are talking to. Your card goes into every prompt, and your name and photo show across the app.'**
+  String get onboardSelfBody;
+
+  /// Self name field label
+  ///
+  /// In en, this message translates to:
+  /// **'Your name'**
+  String get onboardSelfName;
+
+  /// Self title field label
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get onboardSelfTitleLabel;
+
+  /// Self description field label
+  ///
+  /// In en, this message translates to:
+  /// **'About you'**
+  String get onboardSelfDesc;
+
+  /// Self description hint
+  ///
+  /// In en, this message translates to:
+  /// **'Anything you want the characters to know: how to call you, what you do, what you like.'**
+  String get onboardSelfDescHint;
+
+  /// Self avatar button
+  ///
+  /// In en, this message translates to:
+  /// **'Set photo'**
+  String get onboardSelfPhoto;
+
+  /// Self prompt position label
+  ///
+  /// In en, this message translates to:
+  /// **'Injected as'**
+  String get onboardSelfInjected;
+
+  /// Self role label
+  ///
+  /// In en, this message translates to:
+  /// **'Injected as role'**
+  String get onboardSelfRole;
+
+  /// Persona templates step title
+  ///
+  /// In en, this message translates to:
+  /// **'Personas'**
+  String get onboardPersonaTitle;
+
+  /// Persona templates step body
+  ///
+  /// In en, this message translates to:
+  /// **'Pick who is waiting for you on the other shore. Tap to add, tap again to remove. Everything is editable later.'**
+  String get onboardPersonaBody;
+
+  /// Persona step create button
+  ///
+  /// In en, this message translates to:
+  /// **'Create {n} chats'**
+  String onboardPersonaCreate(int n);
+
+  /// Boyfriend template persona name
+  ///
+  /// In en, this message translates to:
+  /// **'Shen Yu'**
+  String get personaBoyfriendName;
+
+  /// Boyfriend template one liner
+  ///
+  /// In en, this message translates to:
+  /// **'A warm architect boyfriend who teases you and remembers every little thing.'**
+  String get personaBoyfriendBio;
+
+  /// Boyfriend template first message
+  ///
+  /// In en, this message translates to:
+  /// **'Just got out of a meeting, head still foggy. How was your day? Did you eat?'**
+  String get personaBoyfriendGreeting;
+
+  /// Girlfriend template persona name
+  ///
+  /// In en, this message translates to:
+  /// **'Lin Wan'**
+  String get personaGirlfriendName;
+
+  /// Girlfriend template one liner
+  ///
+  /// In en, this message translates to:
+  /// **'A clingy, playful girlfriend whose moods arrive fast and melt fast.'**
+  String get personaGirlfriendBio;
+
+  /// Girlfriend template first message
+  ///
+  /// In en, this message translates to:
+  /// **'What are you up to? I drew all afternoon and my hand is dead. Did you miss me?'**
+  String get personaGirlfriendGreeting;
+
+  /// Catgirl template persona name
+  ///
+  /// In en, this message translates to:
+  /// **'Mimi'**
+  String get personaCatgirlName;
+
+  /// Catgirl template one liner
+  ///
+  /// In en, this message translates to:
+  /// **'A catgirl who talks, changes moods without warning, and only clings to you.'**
+  String get personaCatgirlBio;
+
+  /// Catgirl template first message
+  ///
+  /// In en, this message translates to:
+  /// **'Meow. You are back. Mimi waited forever. Headpats first, talk later.'**
+  String get personaCatgirlGreeting;
+
+  /// Maid template persona name
+  ///
+  /// In en, this message translates to:
+  /// **'Vera'**
+  String get personaMaidName;
+
+  /// Maid template one liner
+  ///
+  /// In en, this message translates to:
+  /// **'A composed, capable maid who lets a little real feeling slip through.'**
+  String get personaMaidBio;
+
+  /// Maid template first message
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome home, Master. The tea is ready. Rest first, or tell me what happened today?'**
+  String get personaMaidGreeting;
+
+  /// CEO template persona name
+  ///
+  /// In en, this message translates to:
+  /// **'Gu Yan'**
+  String get personaCeoName;
+
+  /// CEO template one liner
+  ///
+  /// In en, this message translates to:
+  /// **'A terse, controlling CEO who loosens his tie only for you.'**
+  String get personaCeoBio;
+
+  /// CEO template first message
+  ///
+  /// In en, this message translates to:
+  /// **'You are here. Sit. Tell me the worst thing that happened today, from the start.'**
+  String get personaCeoGreeting;
+
+  /// Engineer template persona name
+  ///
+  /// In en, this message translates to:
+  /// **'Ada'**
+  String get personaEngineerName;
+
+  /// Engineer template one liner
+  ///
+  /// In en, this message translates to:
+  /// **'A pragmatic, low-words, code-first senior engineer.'**
+  String get personaEngineerBio;
+
+  /// Engineer template first message
+  ///
+  /// In en, this message translates to:
+  /// **'Here. Paste the full stack trace if there is an error. Otherwise tell me what you are trying to do and where you are stuck.'**
+  String get personaEngineerGreeting;
+
+  /// No description provided for @onboardModelOwnOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open settings'**
+  String get onboardModelOwnOpen;
+
+  /// Theme step title
+  ///
+  /// In en, this message translates to:
+  /// **'Theme'**
+  String get onboardThemeTitle;
+
+  /// Theme step body
+  ///
+  /// In en, this message translates to:
+  /// **'Night mode, a wallpaper and the size of every bubble. Everything here is a tap away in Settings later.'**
+  String get onboardThemeBody;
+
+  /// Title of the update bottom sheet
+  ///
+  /// In en, this message translates to:
+  /// **'New update available'**
+  String get updateTitle;
+
+  /// Version line under the update title
+  ///
+  /// In en, this message translates to:
+  /// **'Current {current} · Latest {latest}'**
+  String updateSubtitle(String current, String latest);
+
+  /// Primary button that opens the release page
+  ///
+  /// In en, this message translates to:
+  /// **'Download'**
+  String get updateDownload;
+
+  /// Button that dismisses the update sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get updateClose;
+
+  /// Checkbox that mutes the automatic prompt for this release
+  ///
+  /// In en, this message translates to:
+  /// **'Skip this version'**
+  String get updateSkipVersion;
+
+  /// Bulletin after a manual check with nothing newer
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re already up to date'**
+  String get updateUpToDate;
+
+  /// Bulletin when the release fetch fails
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t check for updates, try again later'**
+  String get updateCheckFailed;
+
+  /// Settings row that checks GitHub releases by hand
+  ///
+  /// In en, this message translates to:
+  /// **'Check for updates'**
+  String get updateCheckTitle;
+
+  /// Subtitle of the manual update row
+  ///
+  /// In en, this message translates to:
+  /// **'Current version {version}'**
+  String updateCheckSub(String version);
+
+  /// Shown when the release body is empty
+  ///
+  /// In en, this message translates to:
+  /// **'No release notes.'**
+  String get updateNoNotes;
+
+  /// Settings row and page title for skills
+  ///
+  /// In en, this message translates to:
+  /// **'Skills'**
+  String get skillTitle;
+
+  /// Subtitle of the skills row when none is installed
+  ///
+  /// In en, this message translates to:
+  /// **'Teach the assistant reusable abilities'**
+  String get skillSubEmpty;
+
+  /// Subtitle of the skills row with installed count
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 skill} other{{count} skills}}'**
+  String skillSubCount(int count);
+
+  /// Empty skills page headline
+  ///
+  /// In en, this message translates to:
+  /// **'No skills yet'**
+  String get skillEmptyTitle;
+
+  /// Empty skills page body
+  ///
+  /// In en, this message translates to:
+  /// **'Import a SKILL.md file, a zip, or paste the text. The assistant reads the list and opens one only when the task matches.'**
+  String get skillEmptyBody;
+
+  /// Button that opens the skill import choices
+  ///
+  /// In en, this message translates to:
+  /// **'Import skill'**
+  String get skillImport;
+
+  /// Import choice
+  ///
+  /// In en, this message translates to:
+  /// **'Paste text'**
+  String get skillImportPaste;
+
+  /// Import choice
+  ///
+  /// In en, this message translates to:
+  /// **'From file'**
+  String get skillImportFile;
+
+  /// Import choice
+  ///
+  /// In en, this message translates to:
+  /// **'From URL'**
+  String get skillImportUrl;
+
+  /// Title of the paste sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Paste SKILL.md'**
+  String get skillPasteTitle;
+
+  /// Placeholder of the paste field
+  ///
+  /// In en, this message translates to:
+  /// **'Paste the SKILL.md text…'**
+  String get skillPasteHint;
+
+  /// Title of the URL sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Import from URL'**
+  String get skillUrlTitle;
+
+  /// Placeholder of the URL field
+  ///
+  /// In en, this message translates to:
+  /// **'https://github.com/owner/repo/…'**
+  String get skillUrlHint;
+
+  /// Bulletin when a URL import fails
+  ///
+  /// In en, this message translates to:
+  /// **'That URL could not be read as a skill.'**
+  String get skillUrlError;
+
+  /// Bulletin when a file import fails
+  ///
+  /// In en, this message translates to:
+  /// **'That file is not a valid skill.'**
+  String get skillInvalid;
+
+  /// Confirmation title
+  ///
+  /// In en, this message translates to:
+  /// **'Delete skill'**
+  String get skillDeleteTitle;
+
+  /// Confirmation body
+  ///
+  /// In en, this message translates to:
+  /// **'Delete \"{name}\"? The files go with it.'**
+  String skillDeleteMessage(String name);
+
+  /// Skill row subtitle when on
+  ///
+  /// In en, this message translates to:
+  /// **'Enabled'**
+  String get skillEnabled;
+
+  /// Skill row subtitle when off
+  ///
+  /// In en, this message translates to:
+  /// **'Disabled'**
+  String get skillDisabled;
+
+  /// How many times a skill was read
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{Never used} =1{Used once} other{Used {count} times}}'**
+  String skillDetailUses(int count);
+
+  /// Note on the skill detail page
+  ///
+  /// In en, this message translates to:
+  /// **'The instructions live in SKILL.md.'**
+  String get skillOpenFile;
+
+  /// Section header of the role skill picker
+  ///
+  /// In en, this message translates to:
+  /// **'Skills'**
+  String get personaSkillsHeader;
+
+  /// Section footer of the role skill picker
+  ///
+  /// In en, this message translates to:
+  /// **'Follow global uses every enabled skill. Custom picks exactly the ones this role may use.'**
+  String get personaSkillsFooter;
+
+  /// Role skill mode that inherits all enabled skills
+  ///
+  /// In en, this message translates to:
+  /// **'Follow global'**
+  String get personaSkillsFollowGlobal;
+
+  /// Role skill mode with an explicit list
+  ///
+  /// In en, this message translates to:
+  /// **'Custom'**
+  String get personaSkillsCustom;
+
+  /// How many skills a role picked
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No skill} =1{1 selected} other{{count} selected}}'**
+  String personaSkillsCount(int count);
+
+  /// Title of the role skill picker
+  ///
+  /// In en, this message translates to:
+  /// **'Skills for this role'**
+  String get personaSkillsPickTitle;
+
+  /// Tools page description
+  ///
+  /// In en, this message translates to:
+  /// **'Reads an installed skill by id'**
+  String get toolDescReadSkill;
+
+  /// Bulletin while a skill archive downloads
+  ///
+  /// In en, this message translates to:
+  /// **'Importing…'**
+  String get skillImporting;
 }
 
 class _AppLocalizationsDelegate

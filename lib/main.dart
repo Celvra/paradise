@@ -10,10 +10,12 @@ import 'data/human/notifications.dart';
 import 'data/store.dart';
 import 'data/workspace/workspace_bootstrap.dart';
 import 'ui/human_data_pages.dart' show appNav, askToolPermission;
+import 'ui/update_sheet.dart' show checkAndShowUpdate;
 import 'ui/workspace/write_review.dart';
 import 'l10n/x.dart';
 import 'ui/ai_model_picker.dart' show AiScope;
 import 'ui/dialogs_page.dart';
+import 'ui/onboarding/onboarding_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,6 +23,10 @@ Future<void> main() async {
   final store = await Store.load();
   final ai = await AiConfig.load();
   store.attachAi(ai);
+  // Read the installed skills off disk once the binding is up. Kept out of
+  // Store.load because a widget test's fake-async zone never completes the
+  // file I/O, and every test would hang on the load.
+  await store.skills.rescan();
   // The wallpaper accent lives in the store but colours the palette, so the two
   // are kept in step here rather than either reaching into the other: once at
   // startup for the saved value, then on every store change. setAccent is a
@@ -50,6 +56,15 @@ Future<void> main() async {
   store.startHuman();
   unawaited(registerBackground());
   runApp(TgApp(store: store, ai: ai));
+  // one automatic update check per launch, a couple of seconds after the
+  // first frame so it never covers the launch paint. Lives here rather than
+  // in a widget initState so widget tests pumping TgApp directly never see
+  // the timer or the network call.
+  Future.delayed(const Duration(seconds: 2), () {
+    final ctx = appNav.currentState?.overlay?.context;
+    if (ctx == null) return;
+    unawaited(checkAndShowUpdate(ctx));
+  });
 }
 
 // android reports zh_TW and zh_HK without a script tag often enough that the
@@ -109,7 +124,7 @@ class TgApp extends StatelessWidget {
                   child: child!,
                 ),
               ),
-              home: const DialogsPage(),
+              home: st.onboarded ? const DialogsPage() : const OnboardingPage(),
             ),
           );
         }),

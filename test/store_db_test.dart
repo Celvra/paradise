@@ -141,13 +141,16 @@ void main() {
     expect(again.chats, isEmpty);
   });
 
-  test('a true first launch seeds, and the seed reaches the database', () async {
+  test('a true first launch starts empty and stays stable across restarts', () async {
+    // starter chats moved into the onboarding, so a fresh store is empty; the
+    // restart round trip must still keep whatever the user later creates
     final s = await boot({});
-    expect(s.chats, isNotEmpty);
+    expect(s.chats, isEmpty);
+    s.createChat('Later', 'p');
     await flush();
 
     final again = await restart();
-    expect(again.chats.map((c) => c.id), s.chats.map((c) => c.id));
+    expect(again.chats.single.persona.name, 'Later');
   });
 
   test('a new chat lands after the migrated ones', () async {

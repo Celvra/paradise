@@ -149,6 +149,9 @@ class Provider {
     required this.modelsFetchedAt,
     required this.modelsSource,
     required this.builtIn,
+    this.sessionHeader = '',
+    this.userAgent = '',
+    this.relay = false,
   });
 
   factory Provider.defaults({
@@ -160,7 +163,10 @@ class Provider {
     String? modelsPath,
     String? chatPath,
     AuthStyle authStyle = AuthStyle.bearer,
+    String sessionHeader = '',
+    String userAgent = '',
     bool builtIn = false,
+    bool relay = false,
     List<ModelMeta> models = const [],
   }) =>
       Provider(
@@ -172,12 +178,15 @@ class Provider {
         modelsPath: modelsPath ?? '/models',
         chatPath: chatPath ?? '/chat/completions',
         authStyle: authStyle,
+        sessionHeader: sessionHeader,
+        userAgent: userAgent,
         extraHeaders: const [],
         extraBody: const [],
         models: models,
         modelsFetchedAt: 0,
         modelsSource: ModelSource.none,
         builtIn: builtIn,
+        relay: relay,
       );
 
   final String id;
@@ -189,6 +198,20 @@ class Provider {
   String modelsPath;
   String chatPath;
   AuthStyle authStyle;
+
+  /// Header some gateways use to pin a conversation to one backend. The app
+  /// fills the value with a stable per chat id, this only names the header.
+  String sessionHeader;
+
+  /// User-Agent for this provider alone. Empty falls back to the global
+  /// setting, then to a User-Agent in either header list, then to the default.
+  String userAgent;
+  /// True when this provider fronts a blind-test relay whose model ids are its
+  /// own (`auto` among them). Those ids are never matched against the
+  /// cross-provider catalog fallback, so `auto` cannot inherit OpenRouter's
+  /// 2M context window by token accident, and the display layer can rename
+  /// them (auto shows as a localized "Auto model").
+  bool relay;
   List<KeyValue> extraHeaders;
   List<KeyValue> extraBody;
   List<ModelMeta> models;
@@ -205,12 +228,15 @@ class Provider {
         modelsPath: modelsPath,
         chatPath: chatPath,
         authStyle: authStyle,
+        sessionHeader: sessionHeader,
+        userAgent: userAgent,
         extraHeaders: [...extraHeaders],
         extraBody: [...extraBody],
         models: [...models],
         modelsFetchedAt: modelsFetchedAt,
         modelsSource: modelsSource,
         builtIn: builtIn,
+        relay: relay,
       );
 
   Map<String, dynamic> toJson() => {
@@ -222,12 +248,15 @@ class Provider {
         'modelsPath': modelsPath,
         'chatPath': chatPath,
         'authStyle': authWire(authStyle),
+        'sessionHeader': sessionHeader,
+        'userAgent': userAgent,
         'extraHeaders': extraHeaders.map((e) => e.toJson()).toList(),
         'extraBody': extraBody.map((e) => e.toJson()).toList(),
         'models': models.map((e) => e.toJson()).toList(),
         'modelsFetchedAt': modelsFetchedAt,
         'modelsSource': sourceWire(modelsSource),
         'builtIn': builtIn,
+        'relay': relay,
       };
 
   static Provider fromJson(Map<String, dynamic> j) => Provider(
@@ -239,6 +268,9 @@ class Provider {
         modelsPath: j['modelsPath'] as String? ?? '/models',
         chatPath: j['chatPath'] as String? ?? '/chat/completions',
         authStyle: authStyleOf(j['authStyle'] as String? ?? 'bearer'),
+        sessionHeader: j['sessionHeader'] as String? ?? '',
+        userAgent: j['userAgent'] as String? ?? '',
+        relay: j['relay'] as bool? ?? false,
         extraHeaders: _kvList(j['extraHeaders']),
         extraBody: _kvList(j['extraBody']),
         models: ((j['models'] as List?) ?? const []).map((e) => ModelMeta.fromJson(e as Map<String, dynamic>)).toList(),
@@ -315,6 +347,8 @@ class AiSettings {
     required this.pacingJitter,
     required this.stripMarkdownInCharacterMode,
     required this.compaction,
+    this.userAgent = '',
+    this.globalHeaders = const [],
   });
 
   final List<Provider> providers;
@@ -334,6 +368,14 @@ class AiSettings {
   final bool stripMarkdownInCharacterMode;
   final CompactionSettings compaction;
 
+  /// Sent as User-Agent on every ai request. Empty keeps [defaultUserAgent],
+  /// which names the app and its version rather than bare runtime.
+  final String userAgent;
+
+  /// Headers sent with every ai request to every provider, under the
+  /// per provider ones so a provider can override a key.
+  final List<KeyValue> globalHeaders;
+
   AiSettings copyWith({
     List<Provider>? providers,
     List<ChainNode>? chain,
@@ -345,6 +387,8 @@ class AiSettings {
     double? pacingJitter,
     bool? stripMarkdownInCharacterMode,
     CompactionSettings? compaction,
+    String? userAgent,
+    List<KeyValue>? globalHeaders,
   }) =>
       AiSettings(
         providers: providers ?? this.providers,
@@ -357,6 +401,8 @@ class AiSettings {
         pacingJitter: pacingJitter ?? this.pacingJitter,
         stripMarkdownInCharacterMode: stripMarkdownInCharacterMode ?? this.stripMarkdownInCharacterMode,
         compaction: compaction ?? this.compaction,
+        userAgent: userAgent ?? this.userAgent,
+        globalHeaders: globalHeaders ?? this.globalHeaders,
       );
 
   Map<String, dynamic> toJson() => {
@@ -370,6 +416,8 @@ class AiSettings {
         'pacingJitter': pacingJitter,
         'stripMarkdownInCharacterMode': stripMarkdownInCharacterMode,
         'compaction': compaction.toJson(),
+        'userAgent': userAgent,
+        'globalHeaders': globalHeaders.map((e) => e.toJson()).toList(),
       };
 
   static AiSettings fromJson(Map<String, dynamic> j) => AiSettings(
@@ -383,6 +431,8 @@ class AiSettings {
         pacingJitter: (j['pacingJitter'] as num?)?.toDouble() ?? 0.35,
         stripMarkdownInCharacterMode: j['stripMarkdownInCharacterMode'] as bool? ?? true,
         compaction: j['compaction'] is Map ? CompactionSettings.fromJson(j['compaction'] as Map<String, dynamic>) : const CompactionSettings(),
+        userAgent: j['userAgent'] as String? ?? '',
+        globalHeaders: ((j['globalHeaders'] as List?) ?? const []).map((e) => KeyValue.fromJson(e as Map<String, dynamic>)).toList(),
       );
 }
 
@@ -402,6 +452,18 @@ ModelMeta? findModel(AiSettings settings, String providerId, String modelId) {
     if (m.id == modelId) return m;
   }
   return null;
+}
+
+/// What a chain node or model row shows as its title. The relay's `auto` is a
+/// lane, not a model name, so it renders as a localized "Auto model" wherever
+/// a raw id would otherwise read like gibberish to a beginner. [autoLabel]
+/// supplies that word; everything else keeps its id.
+String modelDisplayLabel(AiSettings settings, String providerId, String modelId, String Function() autoLabel) {
+  if (modelId == 'auto') {
+    final p = findProvider(settings, providerId);
+    if (p?.relay ?? false) return autoLabel();
+  }
+  return modelId;
 }
 
 List<ChainNode> activeChain(AiSettings settings) => settings.chain.where((n) => n.enabled).toList();

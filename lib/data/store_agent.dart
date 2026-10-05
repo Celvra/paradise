@@ -24,7 +24,7 @@ const _agentNote = [
 /// The three always-present tools. The workspace tools are counted separately
 /// because they come and go with the binding, and a constant that had to be
 /// kept in step by hand is a constant that would eventually be wrong.
-const agentLocalToolCount = 3;
+const agentLocalToolCount = 4;
 
 extension StoreAgent on Store {
   /// The plain chat system prompt with the tool rules appended. Under humanize
@@ -37,7 +37,8 @@ extension StoreAgent on Store {
   Future<String> agentSystem(Chat c) async {
     final mcp = human?.mcp.tools.length ?? 0;
     final ws = await wsPrompt(c);
-    final local = agentLocalToolCount + wsLocalToolCount(c);
+    final skillCount = skillToolFor(c) == null ? 0 : 1;
+    final local = agentLocalToolCount + wsLocalToolCount(c) + skillCount;
     return [
       _systemPrompt(c),
       '# Tools',
@@ -57,6 +58,37 @@ extension StoreAgent on Store {
   Future<List<HTool>> agentTools(Chat c, [_Run? run]) async {
     final tools = <HTool>[
       HTool('get_time', 'Current date, time, time zone and the unix timestamp. Call it before anything that depends on the current moment.', {}, (a) async => agentTimeBlock(c)),
+      HTool('ask', 'Ask the user a question with tappable options when you need a decision or clarification before continuing. Sends a poll card and waits for the answer. Use single for one choice, multi when several may apply.', {
+        'question': _p('string', 'The question shown on the card.'),
+        'options': _arr('2-10 short options the user can tap.'),
+        'type': _p('string', 'single (default) or multi.', values: ['single', 'multi']),
+      }, (a) async {
+        final q = _str(a, 'question').trim();
+        final opts = [for (final o in (a['options'] as List? ?? const [])) '$o'.trim()].where((e) => e.isNotEmpty).take(10).toList();
+        if (q.isEmpty) return 'Error: question is required.';
+        if (opts.length < 2) return 'Error: give at least 2 options.';
+        final multi = _str(a, 'type').trim().toLowerCase() == 'multi';
+        final m = Msg(id: _id(), out: false, text: '', time: _nowMs, kind: MsgKind.poll, data: {'q': q, 'opts': opts, 'votes': List<int>.filled(opts.length, 0), 'mine': <int>[], 'multi': multi, 'quiz': false, 'anon': true, 'ask': true, 'closed': false});
+        c.msgs.add(m);
+        c.touch();
+        final waiter = Completer<String>();
+        _askPending[m.id] = waiter;
+        final live = run ?? _runs[c.id];
+        void wake() {
+          final w = _askPending.remove(m.id);
+          if (w == null || w.isCompleted) return;
+          m.data['closed'] = true;
+          w.complete('The user did not answer (cancelled).');
+        }
+
+        live?.token.addListener(wake);
+        try {
+          return await waiter.future;
+        } finally {
+          live?.token.removeListener(wake);
+          _askPending.remove(m.id);
+        }
+      }, required: ['question', 'options']),
       HTool('fetch_url', 'Download one url and return the readable text of the page. Useful for a link the user pasted or a fact you need to check.', {
         'url': _p('string', 'the full http or https url'),
         'max_chars': _p('integer', 'how much of the page to return, 500-20000, default 6000.'),
@@ -91,6 +123,10 @@ extension StoreAgent on Store {
     // exactly the three tools it always did. wsTools holds the availability
     // rule, so this does not re-state it
     if (run != null) tools.addAll(await wsTools(c, run));
+
+    // installed skills, readable without a workspace binding
+    final skillTool = skillToolFor(c);
+    if (skillTool != null) tools.add(skillTool);
 
     // every enabled server contributed its tools at the last refresh, they are
     // the only tools the user did not have to type in themselves

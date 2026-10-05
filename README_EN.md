@@ -69,6 +69,10 @@ Developer: 殘月. You may not redistribute or commercialise it without publishi
 
 ## Community
 
-Discord is the only channel we provide. We have no social channels inside mainland China, QQ being the obvious example, so anywhere other than the community linked below is unofficial. Please check carefully before you trust it.
+These are the only official channels we provide, so anywhere else is unofficial. Please check carefully before you trust it.
 
+QQ group: 272298906
+https://qm.qq.com/q/BeQPYWuzVS
+
+Discord
 https://discord.gg/aQaNUHPsw

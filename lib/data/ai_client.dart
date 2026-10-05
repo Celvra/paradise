@@ -14,13 +14,17 @@ class AiClient {
   /// Runs [messages] against a single throwaway provider and returns the text.
   ///
   /// [baseUrl] and [key] are passed explicitly so the caller can probe an
-  /// endpoint that is not saved yet.
+  /// endpoint that is not saved yet. When [base] is given the probe inherits
+  /// its protocol, auth style and headers, so a one off call rides the same
+  /// wire a chat through that provider would.
   Future<String> complete({
     required String baseUrl,
     required String key,
     required String model,
     required List<Map<String, String>> messages,
     AiCancel? cancel,
+    Provider? base,
+    AiSettings? settings,
   }) async {
     const probeId = 'probe';
     final system = messages.firstWhere((m) => m['role'] == 'system', orElse: () => const {'role': 'system', 'content': ''})['content'] ?? '';
@@ -28,26 +32,34 @@ class AiClient {
     final provider = Provider.defaults(
       id: probeId,
       name: 'probe',
+      kind: base?.kind ?? ProviderKind.openaiCompatible,
       baseUrl: baseUrl,
+      chatPath: base?.chatPath,
+      authStyle: base?.authStyle ?? AuthStyle.bearer,
+      sessionHeader: base?.sessionHeader ?? '',
+      userAgent: base?.userAgent ?? '',
       models: [emptyModel(model, model)],
     );
+    provider.extraHeaders = [...?base?.extraHeaders];
+    provider.extraBody = [...?base?.extraBody];
 
-    final settings = AiSettings(
-      providers: [provider],
-      chain: const [],
-      replyMode: ReplyMode.full,
-      temperature: 1,
-      maxOutput: 0,
-      firstBubbleDelayMs: 1000,
-      bubbleGapScale: 1,
-      pacingJitter: 0.35,
-      stripMarkdownInCharacterMode: false,
-      compaction: const CompactionSettings(),
-    );
+    final probeSettings = (settings ?? const AiSettings(
+          providers: [],
+          chain: [],
+          replyMode: ReplyMode.full,
+          temperature: 1,
+          maxOutput: 0,
+          firstBubbleDelayMs: 1000,
+          bubbleGapScale: 1,
+          pacingJitter: 0.35,
+          stripMarkdownInCharacterMode: false,
+          compaction: CompactionSettings(),
+        ))
+        .copyWith(providers: [provider]);
 
     var collected = '';
     final outcome = await runChain(
-      settings: settings,
+      settings: probeSettings,
       apiKeys: {probeId: key},
       system: system,
       messages: [

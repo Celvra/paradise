@@ -1,1528 +1,3211 @@
 {
   "@@locale": "zh_Hant",
-
   "appTitle": "彼岸雙生",
-  "@appTitle": { "description": "Application name, launcher and task switcher" },
+  "@appTitle": {
+    "description": "Application name, launcher and task switcher"
+  },
   "actionOk": "確定",
-  "@actionOk": { "description": "Generic confirm button" },
+  "@actionOk": {
+    "description": "Generic confirm button"
+  },
   "actionCancel": "取消",
-  "@actionCancel": { "description": "Generic dismiss button" },
+  "@actionCancel": {
+    "description": "Generic dismiss button"
+  },
   "actionClear": "清除",
-  "@actionClear": { "description": "Generic clear button" },
+  "@actionClear": {
+    "description": "Generic clear button"
+  },
   "actionDelete": "刪除",
-  "@actionDelete": { "description": "Generic delete button" },
+  "@actionDelete": {
+    "description": "Generic delete button"
+  },
   "actionDone": "完成",
-  "@actionDone": { "description": "Closes a bottom sheet" },
+  "@actionDone": {
+    "description": "Closes a bottom sheet"
+  },
   "actionSave": "儲存",
-  "@actionSave": { "description": "Generic save button" },
+  "@actionSave": {
+    "description": "Generic save button"
+  },
   "actionRetry": "重試",
-  "@actionRetry": { "description": "Generic retry button" },
+  "@actionRetry": {
+    "description": "Generic retry button"
+  },
   "actionCopy": "複製",
-  "@actionCopy": { "description": "Copy to clipboard" },
+  "@actionCopy": {
+    "description": "Copy to clipboard"
+  },
   "actionAdd": "新增",
-  "@actionAdd": { "description": "Generic add button" },
+  "@actionAdd": {
+    "description": "Generic add button"
+  },
   "actionRemove": "移除",
-  "@actionRemove": { "description": "Generic remove button" },
+  "@actionRemove": {
+    "description": "Generic remove button"
+  },
   "actionDiscard": "捨棄",
-  "@actionDiscard": { "description": "Throws unsaved edits away" },
+  "@actionDiscard": {
+    "description": "Throws unsaved edits away"
+  },
   "accountTitle": "編輯個人資料",
-  "@accountTitle": { "description": "Action bar title of My Account" },
+  "@accountTitle": {
+    "description": "Action bar title of My Account"
+  },
   "accountNameHeader": "你的名字",
-  "@accountNameHeader": { "description": "Section header" },
+  "@accountNameHeader": {
+    "description": "Section header"
+  },
   "accountNameFooter": "填寫你的名字，並可選擇新增頭像。下方的人設會保留各自的名稱。",
-  "@accountNameFooter": { "description": "Section footer" },
+  "@accountNameFooter": {
+    "description": "Section footer"
+  },
   "accountNameHint": "名字",
-  "@accountNameHint": { "description": "Field placeholder for the profile name" },
+  "@accountNameHint": {
+    "description": "Field placeholder for the profile name"
+  },
   "accountBioHeader": "個人簡介",
-  "@accountBioHeader": { "description": "Section header" },
+  "@accountBioHeader": {
+    "description": "Section header"
+  },
   "accountBioFooter": "可以寫幾句關於自己的話。角色可能會讀取它，以更了解你。",
-  "@accountBioFooter": { "description": "Section footer" },
+  "@accountBioFooter": {
+    "description": "Section footer"
+  },
   "accountBioHint": "簡介",
-  "@accountBioHint": { "description": "Field placeholder for the profile bio" },
+  "@accountBioHint": {
+    "description": "Field placeholder for the profile bio"
+  },
   "accountPhotoFooter": "長按上方頭像即可快速移除照片。",
-  "@accountPhotoFooter": { "description": "Section footer when a photo is set" },
+  "@accountPhotoFooter": {
+    "description": "Section footer when a photo is set"
+  },
   "accountSetNewPhoto": "設定新照片",
-  "@accountSetNewPhoto": { "description": "Photo row when one is already set" },
+  "@accountSetNewPhoto": {
+    "description": "Photo row when one is already set"
+  },
   "accountSetPhoto": "設定頭像",
-  "@accountSetPhoto": { "description": "Photo row when none is set" },
+  "@accountSetPhoto": {
+    "description": "Photo row when none is set"
+  },
   "accountRemovePhoto": "移除照片",
-  "@accountRemovePhoto": { "description": "Photo row that drops the current photo" },
+  "@accountRemovePhoto": {
+    "description": "Photo row that drops the current photo"
+  },
   "accountRemovePhotoTitle": "移除照片",
-  "@accountRemovePhotoTitle": { "description": "Confirmation title" },
+  "@accountRemovePhotoTitle": {
+    "description": "Confirmation title"
+  },
   "accountRemovePhotoMessage": "確定要移除你的頭像嗎？",
-  "@accountRemovePhotoMessage": { "description": "Confirmation body" },
+  "@accountRemovePhotoMessage": {
+    "description": "Confirmation body"
+  },
   "accountPhotoRemoved": "照片已移除",
-  "@accountPhotoRemoved": { "description": "Bulletin after the photo is dropped" },
+  "@accountPhotoRemoved": {
+    "description": "Bulletin after the photo is dropped"
+  },
   "accountPhotoActionSet": "設定照片",
-  "@accountPhotoActionSet": { "description": "Button under the avatar when no photo is set" },
+  "@accountPhotoActionSet": {
+    "description": "Button under the avatar when no photo is set"
+  },
   "accountPhotoActionChange": "更換照片",
-  "@accountPhotoActionChange": { "description": "Button under the avatar when a photo is set" },
+  "@accountPhotoActionChange": {
+    "description": "Button under the avatar when a photo is set"
+  },
   "accountOnlineFallback": "線上",
-  "@accountOnlineFallback": { "description": "Shown under the name when the bio is empty" },
+  "@accountOnlineFallback": {
+    "description": "Shown under the name when the bio is empty"
+  },
   "accountNameEmptyPreview": "你的名字",
-  "@accountNameEmptyPreview": { "description": "Avatar preview while the name field is still empty" },
+  "@accountNameEmptyPreview": {
+    "description": "Avatar preview while the name field is still empty"
+  },
   "accountNameRequired": "名字不能空白",
-  "@accountNameRequired": { "description": "Bulletin when saving with an empty name" },
+  "@accountNameRequired": {
+    "description": "Bulletin when saving with an empty name"
+  },
   "accountDiscardTitle": "捨棄變更？",
-  "@accountDiscardTitle": { "description": "Confirmation title when leaving with unsaved edits" },
+  "@accountDiscardTitle": {
+    "description": "Confirmation title when leaving with unsaved edits"
+  },
   "accountDiscardMessage": "你的個人資料還有尚未儲存的變更。",
-  "@accountDiscardMessage": { "description": "Confirmation body when leaving with unsaved edits" },
+  "@accountDiscardMessage": {
+    "description": "Confirmation body when leaving with unsaved edits"
+  },
   "galleryUnavailable": "相簿無法使用",
-  "@galleryUnavailable": { "description": "Bulletin when the system gallery cannot be opened" },
+  "@galleryUnavailable": {
+    "description": "Bulletin when the system gallery cannot be opened"
+  },
   "actionEdit": "編輯",
-  "@actionEdit": { "description": "Generic edit button" },
+  "@actionEdit": {
+    "description": "Generic edit button"
+  },
   "actionSend": "傳送",
-  "@actionSend": { "description": "Generic send button" },
+  "@actionSend": {
+    "description": "Generic send button"
+  },
   "actionRemoveShort": "移除",
-  "@actionRemoveShort": { "description": "Menu entry that drops one row" },
+  "@actionRemoveShort": {
+    "description": "Menu entry that drops one row"
+  },
   "actionEnable": "啟用",
-  "@actionEnable": { "description": "Turn a chain node on" },
+  "@actionEnable": {
+    "description": "Turn a chain node on"
+  },
   "actionDisable": "停用",
-  "@actionDisable": { "description": "Turn a chain node off" },
+  "@actionDisable": {
+    "description": "Turn a chain node off"
+  },
   "actionMoveUp": "上移",
-  "@actionMoveUp": { "description": "Reorder a chain node" },
+  "@actionMoveUp": {
+    "description": "Reorder a chain node"
+  },
   "actionMoveDown": "下移",
-  "@actionMoveDown": { "description": "Reorder a chain node" },
+  "@actionMoveDown": {
+    "description": "Reorder a chain node"
+  },
   "actionCurrent": "目前",
-  "@actionCurrent": { "description": "Marks the value already in use" },
+  "@actionCurrent": {
+    "description": "Marks the value already in use"
+  },
   "aiTabProviders": "服務商",
-  "@aiTabProviders": { "description": "Tab label on the AI screen" },
+  "@aiTabProviders": {
+    "description": "Tab label on the AI screen"
+  },
   "aiTabChain": "兜底鏈",
-  "@aiTabChain": { "description": "Tab label on the AI screen" },
+  "@aiTabChain": {
+    "description": "Tab label on the AI screen"
+  },
   "aiTabAdvanced": "進階",
-  "@aiTabAdvanced": { "description": "Tab label on the AI screen" },
+  "@aiTabAdvanced": {
+    "description": "Tab label on the AI screen"
+  },
   "aiTitle": "AI 設定",
-  "@aiTitle": { "description": "Action bar title of the AI screen" },
+  "@aiTitle": {
+    "description": "Action bar title of the AI screen"
+  },
   "aiReadyTitle": "AI 已就緒",
-  "@aiReadyTitle": { "description": "Header headline when the chain can run" },
+  "@aiReadyTitle": {
+    "description": "Header headline when the chain can run"
+  },
   "aiNotReadyTitle": "AI 尚未設定",
-  "@aiNotReadyTitle": { "description": "Header headline when nothing can run yet" },
+  "@aiNotReadyTitle": {
+    "description": "Header headline when nothing can run yet"
+  },
   "aiNotReadyMessage": "先為某個服務商新增 API 金鑰，再把它的一個模型放到兜底鏈上。",
-  "@aiNotReadyMessage": { "description": "Header body when nothing can run yet" },
+  "@aiNotReadyMessage": {
+    "description": "Header body when nothing can run yet"
+  },
   "aiOnChainCount": "{count, plural, =1{兜底鏈上有 1 個模型} other{兜底鏈上有 {count} 個模型}}",
-  "@aiOnChainCount": { "description": "Chip under the AI header showing how many models are live" },
+  "@aiOnChainCount": {
+    "description": "Chip under the AI header showing how many models are live"
+  },
   "aiProvidersHeader": "服務商",
-  "@aiProvidersHeader": { "description": "Section header of the provider list" },
+  "@aiProvidersHeader": {
+    "description": "Section header of the provider list"
+  },
   "aiProvidersFooter": "模型能力取自服務商 API 與內建目錄，上下文視窗決定了記錄在什麼時候被壓縮。",
-  "@aiProvidersFooter": { "description": "Section footer of the provider list" },
+  "@aiProvidersFooter": {
+    "description": "Section footer of the provider list"
+  },
   "aiAddProvider": "新增服務商",
-  "@aiAddProvider": { "description": "Row that creates a custom provider" },
+  "@aiAddProvider": {
+    "description": "Row that creates a custom provider"
+  },
   "aiAddProviderTitle": "新增服務商",
-  "@aiAddProviderTitle": { "description": "Dialog title for naming a new custom provider" },
+  "@aiAddProviderTitle": {
+    "description": "Dialog title for naming a new custom provider"
+  },
   "aiAddProviderHint": "名稱，例如 My Relay",
-  "@aiAddProviderHint": { "description": "Field placeholder for naming a new custom provider" },
+  "@aiAddProviderHint": {
+    "description": "Field placeholder for naming a new custom provider"
+  },
   "aiKeySet": "已設定 API 金鑰",
-  "@aiKeySet": { "description": "Provider row subtitle when a key is present" },
+  "@aiKeySet": {
+    "description": "Provider row subtitle when a key is present"
+  },
   "aiNoKey": "未設定 API 金鑰",
-  "@aiNoKey": { "description": "Provider row subtitle when no key is present" },
+  "@aiNoKey": {
+    "description": "Provider row subtitle when no key is present"
+  },
   "aiProviderOnChain": "{count, plural, =1{1 個模型} other{{count} 個模型}} 在兜底鏈中",
-  "@aiProviderOnChain": { "description": "Provider row subtitle, how many of its models are on the chain" },
+  "@aiProviderOnChain": {
+    "description": "Provider row subtitle, how many of its models are on the chain"
+  },
   "aiProviderModels": "{count, plural, =1{1 個模型} other{{count} 個模型}}",
-  "@aiProviderModels": { "description": "Provider row subtitle, how many models it knows" },
+  "@aiProviderModels": {
+    "description": "Provider row subtitle, how many models it knows"
+  },
   "aiChainHeader": "兜底鏈",
-  "@aiChainHeader": { "description": "Section header of the fallback chain" },
+  "@aiChainHeader": {
+    "description": "Section header of the fallback chain"
+  },
   "aiChainActiveCount": "{total} 個中啟用 {active} 個",
-  "@aiChainActiveCount": { "description": "Header trailing, how many chain nodes are enabled" },
+  "@aiChainActiveCount": {
+    "description": "Header trailing, how many chain nodes are enabled"
+  },
   "aiChainEmpty": "尚未設定兜底鏈",
-  "@aiChainEmpty": { "description": "Placeholder when nothing is on the chain" },
+  "@aiChainEmpty": {
+    "description": "Placeholder when nothing is on the chain"
+  },
   "aiChainEmptyHint": "兜底鏈是空的。加一個模型後，請求會優先傳給它。",
-  "@aiChainEmptyHint": { "description": "Hint under an empty chain" },
+  "@aiChainEmptyHint": {
+    "description": "Hint under an empty chain"
+  },
   "aiChainFooter": "請求會依序逐一嘗試。點模型可調整順序、修改重試次數或移除。驗證與計費失敗不會重試，直接跳到下一個模型。",
-  "@aiChainFooter": { "description": "Note explaining how the chain is walked" },
+  "@aiChainFooter": {
+    "description": "Note explaining how the chain is walked"
+  },
   "aiAddModel": "新增模型",
-  "@aiAddModel": { "description": "Row that appends a model to the chain" },
+  "@aiAddModel": {
+    "description": "Row that appends a model to the chain"
+  },
   "aiCompactionHeader": "上下文壓縮",
-  "@aiCompactionHeader": { "description": "Section header of the compaction settings" },
+  "@aiCompactionHeader": {
+    "description": "Section header of the compaction settings"
+  },
   "aiCompactionFooter": "上下文溢出時會重試一次壓縮，仍失敗就直接截斷歷史記錄。",
-  "@aiCompactionFooter": { "description": "Section footer of the compaction settings" },
+  "@aiCompactionFooter": {
+    "description": "Section footer of the compaction settings"
+  },
   "aiCompactionToggle": "壓縮過長的對話",
-  "@aiCompactionToggle": { "description": "Checkbox row" },
+  "@aiCompactionToggle": {
+    "description": "Checkbox row"
+  },
   "aiCompactionToggleSub": "較早的對話會被濃縮成摘要",
-  "@aiCompactionToggleSub": { "description": "Checkbox row subtitle" },
+  "@aiCompactionToggleSub": {
+    "description": "Checkbox row subtitle"
+  },
   "aiSummaryModel": "摘要模型",
-  "@aiSummaryModel": { "description": "Row that picks the model used for summaries" },
+  "@aiSummaryModel": {
+    "description": "Row that picks the model used for summaries"
+  },
   "aiSummaryModelFollows": "跟隨兜底鏈上的第一個模型",
-  "@aiSummaryModelFollows": { "description": "Subtitle when the summary model follows the chain" },
+  "@aiSummaryModelFollows": {
+    "description": "Subtitle when the summary model follows the chain"
+  },
   "aiSummaryLength": "摘要長度",
-  "@aiSummaryLength": { "description": "Row that picks the summary budget" },
+  "@aiSummaryLength": {
+    "description": "Row that picks the summary budget"
+  },
   "aiAddToChainTitle": "新增至兜底鏈",
-  "@aiAddToChainTitle": { "description": "Model picker title when appending to the chain" },
+  "@aiAddToChainTitle": {
+    "description": "Model picker title when appending to the chain"
+  },
   "aiSummaryModelPickerTitle": "用於產生摘要的模型",
-  "@aiSummaryModelPickerTitle": { "description": "Model picker title for the summary model" },
+  "@aiSummaryModelPickerTitle": {
+    "description": "Model picker title for the summary model"
+  },
   "aiSummaryLengthTitle": "摘要長度",
-  "@aiSummaryLengthTitle": { "description": "Selector sheet title for the summary budget" },
+  "@aiSummaryLengthTitle": {
+    "description": "Selector sheet title for the summary budget"
+  },
   "aiLengthTight": "精簡",
-  "@aiLengthTight": { "description": "Descriptor for a short summary budget" },
+  "@aiLengthTight": {
+    "description": "Descriptor for a short summary budget"
+  },
   "aiLengthBalanced": "適中",
-  "@aiLengthBalanced": { "description": "Descriptor for a medium summary budget" },
+  "@aiLengthBalanced": {
+    "description": "Descriptor for a medium summary budget"
+  },
   "aiLengthDetailed": "詳盡",
-  "@aiLengthDetailed": { "description": "Descriptor for a long summary budget" },
+  "@aiLengthDetailed": {
+    "description": "Descriptor for a long summary budget"
+  },
   "aiChainMenuRetries": "重試次數",
-  "@aiChainMenuRetries": { "description": "Menu entry that opens the retry count" },
+  "@aiChainMenuRetries": {
+    "description": "Menu entry that opens the retry count"
+  },
   "aiRetriesTitle": "換下一個模型前的重試次數",
-  "@aiRetriesTitle": { "description": "Selector sheet title for the retry count" },
+  "@aiRetriesTitle": {
+    "description": "Selector sheet title for the retry count"
+  },
   "aiRetriesNone": "不重試",
-  "@aiRetriesNone": { "description": "Option for zero retries" },
+  "@aiRetriesNone": {
+    "description": "Option for zero retries"
+  },
   "aiRepliesHeader": "回覆",
-  "@aiRepliesHeader": { "description": "Section header of the reply settings" },
+  "@aiRepliesHeader": {
+    "description": "Section header of the reply settings"
+  },
   "aiRepliesFooter": "人格化模式會把一則回覆拆成幾則短訊息，就像真人傳訊息那樣。",
-  "@aiRepliesFooter": { "description": "Section footer of the reply settings" },
+  "@aiRepliesFooter": {
+    "description": "Section footer of the reply settings"
+  },
   "aiReplyStyle": "回覆風格",
-  "@aiReplyStyle": { "description": "Row and selector title for the reply style" },
+  "@aiReplyStyle": {
+    "description": "Row and selector title for the reply style"
+  },
   "aiReplyStyleFull": "完整",
-  "@aiReplyStyleFull": { "description": "One of the two reply styles" },
+  "@aiReplyStyleFull": {
+    "description": "One of the two reply styles"
+  },
   "aiReplyStyleCharacter": "人格化",
-  "@aiReplyStyleCharacter": { "description": "One of the two reply styles" },
+  "@aiReplyStyleCharacter": {
+    "description": "One of the two reply styles"
+  },
   "aiReplyStyleFullSub": "逐字串流輸出，並顯示思考過程",
-  "@aiReplyStyleFullSub": { "description": "Subtitle of the full reply style" },
+  "@aiReplyStyleFullSub": {
+    "description": "Subtitle of the full reply style"
+  },
   "aiReplyStyleCharacterSub": "像真人一樣分成幾則短訊息發送",
-  "@aiReplyStyleCharacterSub": { "description": "Subtitle of the character reply style" },
+  "@aiReplyStyleCharacterSub": {
+    "description": "Subtitle of the character reply style"
+  },
   "aiFirstBubbleDelay": "回覆前的讀訊息時間",
-  "@aiFirstBubbleDelay": { "description": "Row and selector title for the delay before the first bubble" },
+  "@aiFirstBubbleDelay": {
+    "description": "Row and selector title for the delay before the first bubble"
+  },
   "aiBubbleGapScale": "訊息間停頓倍率",
-  "@aiBubbleGapScale": { "description": "Row and selector title for the inter bubble pause multiplier" },
+  "@aiBubbleGapScale": {
+    "description": "Row and selector title for the inter bubble pause multiplier"
+  },
   "aiPacingOff": "關閉",
-  "@aiPacingOff": { "description": "Value shown when a pacing delay is zero" },
+  "@aiPacingOff": {
+    "description": "Value shown when a pacing delay is zero"
+  },
   "aiPacingDelayHint": "第一則訊息立即送達",
-  "@aiPacingDelayHint": { "description": "Subtitle of the zero delay option" },
+  "@aiPacingDelayHint": {
+    "description": "Subtitle of the zero delay option"
+  },
   "aiPacingJitter": "節奏隨機幅度",
-  "@aiPacingJitter": { "description": "Row and selector title for the pacing jitter" },
+  "@aiPacingJitter": {
+    "description": "Row and selector title for the pacing jitter"
+  },
   "aiPacingJitterLow": "輕微",
-  "@aiPacingJitterLow": { "description": "One of the timing randomness levels" },
+  "@aiPacingJitterLow": {
+    "description": "One of the timing randomness levels"
+  },
   "aiPacingJitterNormal": "標準",
-  "@aiPacingJitterNormal": { "description": "One of the timing randomness levels" },
+  "@aiPacingJitterNormal": {
+    "description": "One of the timing randomness levels"
+  },
   "aiPacingJitterWild": "狂放",
-  "@aiPacingJitterWild": { "description": "One of the timing randomness levels" },
+  "@aiPacingJitterWild": {
+    "description": "One of the timing randomness levels"
+  },
   "aiPacingJitterHintOff": "每個停頓都和設定值一樣長",
-  "@aiPacingJitterHintOff": { "description": "Subtitle of the off level" },
+  "@aiPacingJitterHintOff": {
+    "description": "Subtitle of the off level"
+  },
   "aiPacingJitterHintLow": "停頓在設定值附近輕微浮動",
-  "@aiPacingJitterHintLow": { "description": "Subtitle of the subtle level" },
+  "@aiPacingJitterHintLow": {
+    "description": "Subtitle of the subtle level"
+  },
   "aiPacingJitterHintNormal": "每個停頓都有人類式的不均勻",
-  "@aiPacingJitterHintNormal": { "description": "Subtitle of the normal level" },
+  "@aiPacingJitterHintNormal": {
+    "description": "Subtitle of the normal level"
+  },
   "aiPacingJitterHintWild": "難以預測，有時秒回有時磨蹭",
-  "@aiPacingJitterHintWild": { "description": "Subtitle of the wild level" },
+  "@aiPacingJitterHintWild": {
+    "description": "Subtitle of the wild level"
+  },
   "aiSamplingHeader": "取樣",
-  "@aiSamplingHeader": { "description": "Section header of the sampling settings" },
+  "@aiSamplingHeader": {
+    "description": "Section header of the sampling settings"
+  },
   "aiSamplingFooter": "對話裡不會顯示任何模型細節。",
-  "@aiSamplingFooter": { "description": "Section footer of the sampling settings" },
+  "@aiSamplingFooter": {
+    "description": "Section footer of the sampling settings"
+  },
   "aiTemperature": "溫度",
-  "@aiTemperature": { "description": "Row and selector title for the sampling temperature" },
+  "@aiTemperature": {
+    "description": "Row and selector title for the sampling temperature"
+  },
   "aiTempDeterministic": "穩定",
-  "@aiTempDeterministic": { "description": "Descriptor for temperature zero" },
+  "@aiTempDeterministic": {
+    "description": "Descriptor for temperature zero"
+  },
   "aiTempFocused": "專注",
-  "@aiTempFocused": { "description": "Descriptor for a low temperature" },
+  "@aiTempFocused": {
+    "description": "Descriptor for a low temperature"
+  },
   "aiTempBalanced": "均衡",
-  "@aiTempBalanced": { "description": "Descriptor for a medium temperature" },
+  "@aiTempBalanced": {
+    "description": "Descriptor for a medium temperature"
+  },
   "aiTempLoose": "奔放",
-  "@aiTempLoose": { "description": "Descriptor for a high temperature" },
+  "@aiTempLoose": {
+    "description": "Descriptor for a high temperature"
+  },
   "aiMaxOutput": "最大輸出",
-  "@aiMaxOutput": { "description": "Row and selector title for the output token cap" },
+  "@aiMaxOutput": {
+    "description": "Row and selector title for the output token cap"
+  },
   "aiModelDefault": "預設模型",
-  "@aiModelDefault": { "description": "Shown when a cap is left to the model" },
+  "@aiModelDefault": {
+    "description": "Shown when a cap is left to the model"
+  },
   "aiUseCatalogDefault": "使用目錄預設值",
-  "@aiUseCatalogDefault": { "description": "Subtitle of the model default option" },
+  "@aiUseCatalogDefault": {
+    "description": "Subtitle of the model default option"
+  },
+  "aiNetworkHeader": "網路",
+  "@aiNetworkHeader": {
+    "description": "Section header of the request wire settings"
+  },
+  "aiNetworkFooter": "作用於所有 AI 請求：聊天、工具、模型列表與一次性呼叫。留空保持預設。",
+  "@aiNetworkFooter": {
+    "description": "Section footer of the request wire settings"
+  },
+  "aiUserAgent": "User-Agent",
+  "@aiUserAgent": {
+    "description": "Row and prompt title of the user agent override"
+  },
+  "aiUserAgentHint": "User-Agent 標頭的值",
+  "@aiUserAgentHint": {
+    "description": "Placeholder of the user agent prompt"
+  },
+  "aiGlobalHeaders": "自訂請求標頭",
+  "@aiGlobalHeaders": {
+    "description": "Row and prompt title of the global header override"
+  },
+  "aiHeadersNone": "無",
+  "@aiHeadersNone": {
+    "description": "Subtitle when no extra headers are set"
+  },
+  "aiHeadersHint": "每行一個，格式：名稱: 值",
+  "@aiHeadersHint": {
+    "description": "Placeholder of the headers prompt"
+  },
   "aiSummaryNoNodes": "兜底鏈還沒有節點",
-  "@aiSummaryNoNodes": { "description": "Chain summary when a key exists but nothing is on the chain" },
+  "@aiSummaryNoNodes": {
+    "description": "Chain summary when a key exists but nothing is on the chain"
+  },
   "aiSummaryNoKey": "尚未設定 API 金鑰",
-  "@aiSummaryNoKey": { "description": "Chain summary when no key is configured at all" },
+  "@aiSummaryNoKey": {
+    "description": "Chain summary when no key is configured at all"
+  },
   "aiCapsReasoning": "思考",
-  "@aiCapsReasoning": { "description": "Capability tag on a chain node" },
+  "@aiCapsReasoning": {
+    "description": "Capability tag on a chain node"
+  },
   "aiCapsVision": "視覺",
-  "@aiCapsVision": { "description": "Capability tag on a chain node" },
+  "@aiCapsVision": {
+    "description": "Capability tag on a chain node"
+  },
   "aiTokensUnknown": "未知",
-  "@aiTokensUnknown": { "description": "Shown for a context window the catalog does not know" },
+  "@aiTokensUnknown": {
+    "description": "Shown for a context window the catalog does not know"
+  },
   "tabChats": "聊天",
-  "@tabChats": { "description": "Bottom tab label, chat list" },
+  "@tabChats": {
+    "description": "Bottom tab label, chat list"
+  },
   "tabSettings": "設定",
-  "@tabSettings": { "description": "Bottom tab label, settings" },
+  "@tabSettings": {
+    "description": "Bottom tab label, settings"
+  },
   "tabProfile": "我的",
-  "@tabProfile": { "description": "Bottom tab label, own profile" },
+  "@tabProfile": {
+    "description": "Bottom tab label, own profile"
+  },
   "chatsTitle": "聊天",
-  "@chatsTitle": { "description": "Chat list header" },
+  "@chatsTitle": {
+    "description": "Chat list header"
+  },
   "chatsSearchHint": "搜尋",
-  "@chatsSearchHint": { "description": "Search pill placeholder on the chat list" },
+  "@chatsSearchHint": {
+    "description": "Search pill placeholder on the chat list"
+  },
   "chatsEmptyTitle": "還沒有聊天",
-  "@chatsEmptyTitle": { "description": "Empty chat list headline" },
+  "@chatsEmptyTitle": {
+    "description": "Empty chat list headline"
+  },
   "chatsEmptySub": "建立一個人設，開始聊天。",
-  "@chatsEmptySub": { "description": "Empty chat list explanation" },
+  "@chatsEmptySub": {
+    "description": "Empty chat list explanation"
+  },
   "chatsNewPersona": "新增人設",
-  "@chatsNewPersona": { "description": "Creates a persona card and opens a chat with it" },
+  "@chatsNewPersona": {
+    "description": "Creates a persona card and opens a chat with it"
+  },
   "chatsMenuReadAll": "全部已讀",
-  "@chatsMenuReadAll": { "description": "Marks every chat as read" },
+  "@chatsMenuReadAll": {
+    "description": "Marks every chat as read"
+  },
   "chatsRowTyping": "正在輸入",
-  "@chatsRowTyping": { "description": "Chat list subtitle while the assistant is generating" },
+  "@chatsRowTyping": {
+    "description": "Chat list subtitle while the assistant is generating"
+  },
   "chatsRowDraft": "草稿：",
-  "@chatsRowDraft": { "description": "Chat list subtitle prefix for an unsent message" },
+  "@chatsRowDraft": {
+    "description": "Chat list subtitle prefix for an unsent message"
+  },
   "chatsRowEmpty": "還沒有訊息",
-  "@chatsRowEmpty": { "description": "Chat list subtitle for a chat without messages" },
+  "@chatsRowEmpty": {
+    "description": "Chat list subtitle for a chat without messages"
+  },
   "chatsRowYou": "你：",
-  "@chatsRowYou": { "description": "Chat list subtitle prefix for my own last message" },
+  "@chatsRowYou": {
+    "description": "Chat list subtitle prefix for my own last message"
+  },
   "menuPin": "置頂",
-  "@menuPin": { "description": "Pin chat to the top" },
+  "@menuPin": {
+    "description": "Pin chat to the top"
+  },
   "menuUnpin": "取消置頂",
-  "@menuUnpin": { "description": "Remove the pin" },
+  "@menuUnpin": {
+    "description": "Remove the pin"
+  },
   "menuMute": "勿擾",
-  "@menuMute": { "description": "Silence notifications for one chat" },
+  "@menuMute": {
+    "description": "Silence notifications for one chat"
+  },
   "menuUnmute": "取消勿擾",
-  "@menuUnmute": { "description": "Turn notifications back on" },
+  "@menuUnmute": {
+    "description": "Turn notifications back on"
+  },
   "menuMarkAsRead": "標為已讀",
-  "@menuMarkAsRead": { "description": "Clear the unread badge" },
+  "@menuMarkAsRead": {
+    "description": "Clear the unread badge"
+  },
   "menuClearHistory": "清除紀錄",
-  "@menuClearHistory": { "description": "Menu entry that empties a chat" },
+  "@menuClearHistory": {
+    "description": "Menu entry that empties a chat"
+  },
   "menuDeleteChat": "刪除對話",
-  "@menuDeleteChat": { "description": "Menu entry that removes a chat" },
+  "@menuDeleteChat": {
+    "description": "Menu entry that removes a chat"
+  },
   "dialogClearHistoryTitle": "清除對話紀錄",
-  "@dialogClearHistoryTitle": { "description": "Confirmation title for emptying a chat" },
+  "@dialogClearHistoryTitle": {
+    "description": "Confirmation title for emptying a chat"
+  },
   "dialogClearHistoryMessage": "刪除 {personaName} 中的所有訊息？",
-  "@dialogClearHistoryMessage": { "description": "Confirmation body for emptying a chat" },
+  "@dialogClearHistoryMessage": {
+    "description": "Confirmation body for emptying a chat"
+  },
   "dialogDeleteChatTitle": "刪除聊天",
-  "@dialogDeleteChatTitle": { "description": "Confirmation title for removing a chat" },
+  "@dialogDeleteChatTitle": {
+    "description": "Confirmation title for removing a chat"
+  },
   "dialogDeleteChatMessage": "這會移除 {personaName} 及其對話紀錄。",
-  "@dialogDeleteChatMessage": { "description": "Confirmation body for removing a chat" },
+  "@dialogDeleteChatMessage": {
+    "description": "Confirmation body for removing a chat"
+  },
   "chatEmptyPill": "這裡還沒有訊息...",
-  "@chatEmptyPill": { "description": "Pill shown in an empty chat" },
+  "@chatEmptyPill": {
+    "description": "Pill shown in an empty chat"
+  },
   "chatSearchHint": "搜尋訊息",
-  "@chatSearchHint": { "description": "Placeholder inside the chat search field" },
+  "@chatSearchHint": {
+    "description": "Placeholder inside the chat search field"
+  },
   "chatSearchNoResults": "沒有結果",
-  "@chatSearchNoResults": { "description": "Chat search counter when nothing matched" },
+  "@chatSearchNoResults": {
+    "description": "Chat search counter when nothing matched"
+  },
   "chatSearchCount": "第 {index} 則，共 {total} 則",
-  "@chatSearchCount": { "description": "Chat search hit counter, one based" },
+  "@chatSearchCount": {
+    "description": "Chat search hit counter, one based"
+  },
   "chatSearchModeChat": "對話",
-  "@chatSearchModeChat": { "description": "Toggle back to the chat while search results are listed" },
+  "@chatSearchModeChat": {
+    "description": "Toggle back to the chat while search results are listed"
+  },
   "chatSearchModeList": "清單",
-  "@chatSearchModeList": { "description": "Toggle to the flat list of search results" },
+  "@chatSearchModeList": {
+    "description": "Toggle to the flat list of search results"
+  },
   "chatStatusTyping": "正在輸入",
-  "@chatStatusTyping": { "description": "Chat header subtitle while generating" },
+  "@chatStatusTyping": {
+    "description": "Chat header subtitle while generating"
+  },
   "chatStatusBot": "機器人",
-  "@chatStatusBot": { "description": "Chat header subtitle for the model" },
+  "@chatStatusBot": {
+    "description": "Chat header subtitle for the model"
+  },
   "chatMenuReply": "回覆",
-  "@chatMenuReply": { "description": "Message menu entry" },
+  "@chatMenuReply": {
+    "description": "Message menu entry"
+  },
   "chatMenuCopy": "複製",
-  "@chatMenuCopy": { "description": "Message menu entry" },
+  "@chatMenuCopy": {
+    "description": "Message menu entry"
+  },
   "chatMenuRegenerate": "重新生成",
-  "@chatMenuRegenerate": { "description": "Message menu entry that asks the model again" },
+  "@chatMenuRegenerate": {
+    "description": "Message menu entry that asks the model again"
+  },
   "chatMenuDelete": "刪除",
-  "@chatMenuDelete": { "description": "Message menu entry" },
+  "@chatMenuDelete": {
+    "description": "Message menu entry"
+  },
   "toastMessageCopied": "訊息已複製",
-  "@toastMessageCopied": { "description": "Bulletin after copying a message" },
+  "@toastMessageCopied": {
+    "description": "Bulletin after copying a message"
+  },
   "headerMenuSearch": "搜尋",
-  "@headerMenuSearch": { "description": "Chat header menu entry" },
+  "@headerMenuSearch": {
+    "description": "Chat header menu entry"
+  },
   "headerMenuViewProfile": "查看個人檔案",
-  "@headerMenuViewProfile": { "description": "Chat header menu entry" },
+  "@headerMenuViewProfile": {
+    "description": "Chat header menu entry"
+  },
   "headerMenuEditPersona": "編輯人設",
-  "@headerMenuEditPersona": { "description": "Chat header menu entry" },
+  "@headerMenuEditPersona": {
+    "description": "Chat header menu entry"
+  },
   "headerMenuMutedSub": "通知已關閉",
-  "@headerMenuMutedSub": { "description": "Chat header menu subtitle for a muted chat" },
+  "@headerMenuMutedSub": {
+    "description": "Chat header menu subtitle for a muted chat"
+  },
   "headerMenuLockPersona": "鎖定我的人設",
-  "@headerMenuLockPersona": { "description": "Chat header menu entry, pins one persona card to the chat" },
+  "@headerMenuLockPersona": {
+    "description": "Chat header menu entry, pins one persona card to the chat"
+  },
   "headerMenuClearHistory": "清除記錄",
-  "@headerMenuClearHistory": { "description": "Chat header menu entry" },
+  "@headerMenuClearHistory": {
+    "description": "Chat header menu entry"
+  },
   "headerMenuDeleteChat": "刪除對話",
-  "@headerMenuDeleteChat": { "description": "Chat header menu entry" },
+  "@headerMenuDeleteChat": {
+    "description": "Chat header menu entry"
+  },
   "dialogClearHistoryHereTitle": "清除對話紀錄",
-  "@dialogClearHistoryHereTitle": { "description": "Confirmation title inside a chat" },
+  "@dialogClearHistoryHereTitle": {
+    "description": "Confirmation title inside a chat"
+  },
   "dialogClearHistoryHereMessage": "刪除此聊天中的所有訊息？",
-  "@dialogClearHistoryHereMessage": { "description": "Confirmation body inside a chat" },
+  "@dialogClearHistoryHereMessage": {
+    "description": "Confirmation body inside a chat"
+  },
   "dialogDeleteChatHereTitle": "刪除聊天",
-  "@dialogDeleteChatHereTitle": { "description": "Confirmation title inside a chat" },
+  "@dialogDeleteChatHereTitle": {
+    "description": "Confirmation title inside a chat"
+  },
   "lockSheetTitle": "鎖定我的人設",
-  "@lockSheetTitle": { "description": "Title of the persona lock bottom sheet" },
+  "@lockSheetTitle": {
+    "description": "Title of the persona lock bottom sheet"
+  },
   "lockSheetSub": "此聊天一律以你選擇的卡片身分回覆。",
-  "@lockSheetSub": { "description": "Subtitle of the persona lock bottom sheet" },
+  "@lockSheetSub": {
+    "description": "Subtitle of the persona lock bottom sheet"
+  },
   "lockSheetUnnamed": "未命名",
-  "@lockSheetUnnamed": { "description": "Placeholder for a persona card without a name" },
+  "@lockSheetUnnamed": {
+    "description": "Placeholder for a persona card without a name"
+  },
   "lockSheetNone": "不鎖定",
-  "@lockSheetNone": { "description": "Row that clears the persona lock" },
+  "@lockSheetNone": {
+    "description": "Row that clears the persona lock"
+  },
   "lockSheetNoneSub": "使用「我的帳號」中選取的卡片",
-  "@lockSheetNoneSub": { "description": "Subtitle of the row that clears the persona lock" },
+  "@lockSheetNoneSub": {
+    "description": "Subtitle of the row that clears the persona lock"
+  },
   "lockSheetEmpty": "還沒有人設卡片。到「我的帳號」建立一張。",
-  "@lockSheetEmpty": { "description": "Shown when there is no persona card to lock" },
+  "@lockSheetEmpty": {
+    "description": "Shown when there is no persona card to lock"
+  },
   "settingsTitle": "設定",
-  "@settingsTitle": { "description": "Settings tab header" },
+  "@settingsTitle": {
+    "description": "Settings tab header"
+  },
   "settingsAccount": "我的帳號",
-  "@settingsAccount": { "description": "Settings row" },
+  "@settingsAccount": {
+    "description": "Settings row"
+  },
   "settingsAccountSub": "名稱與簡介",
-  "@settingsAccountSub": { "description": "Settings row subtitle" },
+  "@settingsAccountSub": {
+    "description": "Settings row subtitle"
+  },
   "settingsAi": "AI",
-  "@settingsAi": { "description": "Settings row for the model chain" },
+  "@settingsAi": {
+    "description": "Settings row for the model chain"
+  },
   "settingsAiSubNone": "兜底鏈中沒有模型",
-  "@settingsAiSubNone": { "description": "Settings row subtitle when no model is configured" },
+  "@settingsAiSubNone": {
+    "description": "Settings row subtitle when no model is configured"
+  },
   "settingsAppearance": "對話外觀",
-  "@settingsAppearance": { "description": "Settings row" },
+  "@settingsAppearance": {
+    "description": "Settings row"
+  },
   "settingsAppearanceSub": "夜間模式、字級、圓角",
-  "@settingsAppearanceSub": { "description": "Settings row subtitle" },
+  "@settingsAppearanceSub": {
+    "description": "Settings row subtitle"
+  },
   "settingsNotifications": "通知",
-  "@settingsNotifications": { "description": "Settings row" },
+  "@settingsNotifications": {
+    "description": "Settings row"
+  },
   "settingsVibrationOn": "震動已開啟",
-  "@settingsVibrationOn": { "description": "Settings row subtitle" },
+  "@settingsVibrationOn": {
+    "description": "Settings row subtitle"
+  },
   "settingsVibrationOff": "震動已關閉",
-  "@settingsVibrationOff": { "description": "Settings row subtitle" },
+  "@settingsVibrationOff": {
+    "description": "Settings row subtitle"
+  },
   "settingsData": "資料與儲存空間",
-  "@settingsData": { "description": "Settings row" },
+  "@settingsData": {
+    "description": "Settings row"
+  },
   "settingsDataSub": "{chats, plural, =1{1 個對話} other{{chats} 個對話}} · 媒體 {size}",
-  "@settingsDataSub": { "description": "Settings row subtitle with chat count and media size" },
+  "@settingsDataSub": {
+    "description": "Settings row subtitle with chat count and media size"
+  },
   "settingsAbout": "關於",
-  "@settingsAbout": { "description": "Settings row" },
+  "@settingsAbout": {
+    "description": "Settings row"
+  },
   "aboutLinkFailed": "無法開啟連結",
-  "@aboutLinkFailed": { "description": "Bulletin when the community link cannot be opened" },
-  "settingsAboutSub": "版本 1.0.1",
-  "@settingsAboutSub": { "description": "Settings row subtitle of the about entry" },
+  "@aboutLinkFailed": {
+    "description": "Bulletin when the community link cannot be opened"
+  },
+  "settingsAboutSub": "版本 1.0.2",
+  "@settingsAboutSub": {
+    "description": "Settings row subtitle of the about entry"
+  },
   "settingsAboutLicense": "開發者: 殘月。請遵守 AGPL 3.0 開源授權，這意味著您不得在閉源的前提下二次分發和商業化本項目，若違反，我們將依法處理。",
-  "@settingsAboutLicense": { "description": "Licence and ownership notice in the about dialog" },
+  "@settingsAboutLicense": {
+    "description": "Licence and ownership notice in the about dialog"
+  },
   "settingsAboutCommunity": "加入交流群:",
-  "@settingsAboutCommunity": { "description": "Label in front of the community link in the about dialog" },
+  "@settingsAboutCommunity": {
+    "description": "Label in front of the community link in the about dialog"
+  },
   "settingsAboutRepo": "本項目地址:\nhttps://github.com/Celvra/paradise",
-  "@settingsAboutRepo": { "description": "Repository link in the about dialog" },
+  "@settingsAboutRepo": {
+    "description": "Repository link in the about dialog"
+  },
   "settingsAboutThanks": "鳴謝:\n\nKelivo - ToolCall 參考\nhttps://github.com/Chevey339/kelivo\n\nSillyTavern - 人設卡參考\nhttps://github.com/SillyTavern/SillyTavern",
-  "@settingsAboutThanks": { "description": "Acknowledgements to the projects this one was modelled on" },
-  "settingsAboutDeps": "依賴庫:\n\ncharacters 1.4.1 - 字形叢集，用於正確計算文字寬度  (BSD-3-Clause)\nhttps://github.com/dart-lang/core/tree/main/pkgs/characters\nfile_picker 13.1.0 - 檔案與音訊選擇  (MIT)\nhttps://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker\nflutter_contacts 2.5.0 - 分享聯絡人名片  (MIT)\nhttps://github.com/QuisApp/flutter_contacts\nflutter_local_notifications 18.0.1 - 本機通知  (BSD-3-Clause)\nflutter_svg 2.3.0 - 服務商圖示與向量圖示  (MIT)\nhttps://github.com/flutter/packages/tree/main/third_party/packages/flutter_svg\ngeolocator 13.0.4 - 位置附件  (MIT)\nhttps://github.com/baseflow/flutter-geolocator/tree/main/geolocator\nhttp 1.6.0 - OpenAI 相容介面請求  (BSD-3-Clause)\nhttps://github.com/dart-lang/http/tree/master/pkgs/http\nimage_picker 1.2.3 - 相機與相簿圖片  (Apache-2.0)\nhttps://github.com/flutter/packages/tree/main/packages/image_picker/image_picker\nintl 0.20.3 - 日期與數字格式化  (BSD-3-Clause)\nhttps://github.com/dart-lang/i18n/tree/main/pkgs/intl\npath_provider 2.1.6 - 應用程式目錄，用於表情與匯出檔案  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/path_provider/path_provider\nphoto_manager 3.12.0 - 相簿存取，用於附件  (Apache-2.0)\nhttps://github.com/fluttercandies/flutter_photo_manager\nshared_preferences 2.5.5 - 設定與對話紀錄儲存  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/shared_preferences/shared_preferences\nsqflite 2.4.4 - 訊息歷史與對話分頁  (BSD-2-Clause)\nhttps://github.com/tekartik/sqflite/tree/master/sqflite\ntimezone 0.10.1 - 排程訊息的時區資料  (BSD-2-Clause)\nhttps://github.com/srawlins/timezone\nurl_launcher 6.3.2 - 本彈出視窗中的交流群連結  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/url_launcher/url_launcher\nworkmanager 0.10.10 - 應用程式被關閉後的背景送達  (MIT)\nhttps://github.com/fluttercommunity/flutter_workmanager",
-  "@settingsAboutDeps": { "description": "Direct dependencies with their licence, the transitive tree is in the lockfile" },
+  "@settingsAboutThanks": {
+    "description": "Acknowledgements to the projects this one was modelled on"
+  },
+  "settingsAboutDeps": "依賴庫:\n\ncharacters 1.4.1 - 字形叢集，用於正確計算文字寬度  (BSD-3-Clause)\nhttps://github.com/dart-lang/core/tree/main/pkgs/characters\nfile_picker 13.1.0 - 檔案與音訊選擇  (MIT)\nhttps://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker\nflutter_contacts 2.5.0 - 分享聯絡人名片  (MIT)\nhttps://github.com/QuisApp/flutter_contacts\nflutter_highlight 0.7.0 - 程式碼預覽配色  (MIT)\nhttps://github.com/git-touch/highlight\nflutter_local_notifications 18.0.1 - 本機通知  (BSD-3-Clause)\nflutter_math_fork 0.7.4 - 氣泡內渲染 LaTeX  (Apache-2.0)\nhttps://github.com/simplezhli/flutter_math_fork\nflutter_svg 2.3.0 - 服務商圖示與向量圖示  (MIT)\nhttps://github.com/flutter/packages/tree/main/third_party/packages/flutter_svg\ngeolocator 13.0.4 - 位置附件  (MIT)\nhttps://github.com/baseflow/flutter-geolocator/tree/main/geolocator\nhttp 1.6.0 - OpenAI 相容介面請求  (BSD-3-Clause)\nhttps://github.com/dart-lang/http/tree/master/pkgs/http\nimage_picker 1.2.3 - 相機與相簿圖片  (Apache-2.0)\nhttps://github.com/flutter/packages/tree/main/packages/image_picker/image_picker\nintl 0.20.3 - 日期與數字格式化  (BSD-3-Clause)\nhttps://github.com/dart-lang/i18n/tree/main/pkgs/intl\npath_provider 2.1.6 - 應用程式目錄，用於表情與匯出檔案  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/path_provider/path_provider\npermission_handler 13.0.2 - 照片、聯絡人、位置與通知權限的統一申請入口  (MIT)\nhttps://github.com/baseflow/flutter-permission-handler\nphoto_manager 3.12.0 - 相簿存取，用於附件  (Apache-2.0)\nhttps://github.com/fluttercandies/flutter_photo_manager\nratex_flutter 0.1.14 - 原生渲染 LaTeX 數學卡片  (MIT)\nhttps://github.com/erweixin/RaTeX\nshared_preferences 2.5.5 - 設定與對話紀錄儲存  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/shared_preferences/shared_preferences\nsqflite 2.4.4 - 訊息歷史與對話分頁  (BSD-2-Clause)\nhttps://github.com/tekartik/sqflite/tree/master/sqflite\ntimezone 0.10.1 - 排程訊息的時區資料  (BSD-2-Clause)\nhttps://github.com/srawlins/timezone\ntypst_flutter 3.0.0 - CeTZ 繪圖卡片背後的內嵌 Typst 編譯器  (Apache-2.0)\nhttps://github.com/ajmalbuv/typst_flutter\nurl_launcher 6.3.2 - 本彈出視窗中的交流群連結  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/url_launcher/url_launcher\nworkmanager 0.10.10 - 應用程式被關閉後的背景送達  (MIT)\nhttps://github.com/fluttercommunity/flutter_workmanager",
+  "@settingsAboutDeps": {
+    "description": "Direct dependencies with their licence, the transitive tree is in the lockfile"
+  },
   "settingsAboutCommunityUrl": "https://discord.gg/aQaNUHPsw",
-  "@settingsAboutCommunityUrl": { "description": "Community link in the about dialog, identical in every language" },
+  "@settingsAboutCommunityUrl": {
+    "description": "Community link in the about dialog, identical in every language"
+  },
+  "settingsAboutQqGroup": "QQ 群 272298906:",
+  "@settingsAboutQqGroup": {
+    "description": "Label in front of the QQ group link in the about dialog"
+  },
+  "settingsAboutQqGroupUrl": "https://qm.qq.com/q/BeQPYWuzVS",
+  "@settingsAboutQqGroupUrl": {
+    "description": "QQ group link in the about dialog, identical in every language"
+  },
   "settingsFooter": "Developed by Celvra",
-  "@settingsFooter": { "description": "Small print at the bottom of settings" },
+  "@settingsFooter": {
+    "description": "Small print at the bottom of settings"
+  },
   "previewSampleIncoming": "早安！今天有什麼可以幫你的？",
-  "@previewSampleIncoming": { "description": "Incoming bubble text in the message preview on the appearance page" },
+  "@previewSampleIncoming": {
+    "description": "Incoming bubble text in the message preview on the appearance page"
+  },
   "previewSampleOutgoing": "說說 transformers 是怎麼運作的",
-  "@previewSampleOutgoing": { "description": "Outgoing bubble text in the message preview on the appearance page" },
+  "@previewSampleOutgoing": {
+    "description": "Outgoing bubble text in the message preview on the appearance page"
+  },
   "settingsLanguage": "語言",
-  "@settingsLanguage": { "description": "Settings row that opens the language picker" },
+  "@settingsLanguage": {
+    "description": "Settings row that opens the language picker"
+  },
   "settingsLanguageSystem": "跟隨系統",
-  "@settingsLanguageSystem": { "description": "Language picker entry that follows the device language" },
+  "@settingsLanguageSystem": {
+    "description": "Language picker entry that follows the device language"
+  },
   "languageEnglish": "English",
-  "@languageEnglish": { "description": "Language name in its own language" },
+  "@languageEnglish": {
+    "description": "Language name in its own language"
+  },
   "languageChineseSimplified": "简体中文",
-  "@languageChineseSimplified": { "description": "Language name in its own language" },
+  "@languageChineseSimplified": {
+    "description": "Language name in its own language"
+  },
   "languageChineseTraditional": "繁體中文",
-  "@languageChineseTraditional": { "description": "Language name in its own language" },
+  "@languageChineseTraditional": {
+    "description": "Language name in its own language"
+  },
   "appearanceTheme": "主題",
-  "@appearanceTheme": { "description": "Settings section header" },
+  "@appearanceTheme": {
+    "description": "Settings section header"
+  },
   "wallpaperHeader": "聊天壁紙",
-  "@wallpaperHeader": { "description": "Settings section header for the wallpaper" },
+  "@wallpaperHeader": {
+    "description": "Settings section header for the wallpaper"
+  },
   "wallpaperRow": "壁紙",
-  "@wallpaperRow": { "description": "Settings row that opens the wallpaper picker" },
+  "@wallpaperRow": {
+    "description": "Settings row that opens the wallpaper picker"
+  },
   "wallpaperDefault": "預設",
-  "@wallpaperDefault": { "description": "Wallpaper picker entry that keeps the stock gradient" },
+  "@wallpaperDefault": {
+    "description": "Wallpaper picker entry that keeps the stock gradient"
+  },
   "wallpaperChoose": "選擇圖片",
-  "@wallpaperChoose": { "description": "Wallpaper picker entry that opens the gallery" },
+  "@wallpaperChoose": {
+    "description": "Wallpaper picker entry that opens the gallery"
+  },
   "wallpaperNone": "純色漸層",
-  "@wallpaperNone": { "description": "Subtitle when no picture is chosen" },
+  "@wallpaperNone": {
+    "description": "Subtitle when no picture is chosen"
+  },
   "wallpaperFollowGlobal": "跟隨全域",
-  "@wallpaperFollowGlobal": { "description": "Per chat entry that uses the global wallpaper" },
+  "@wallpaperFollowGlobal": {
+    "description": "Per chat entry that uses the global wallpaper"
+  },
   "wallpaperBlur": "模糊壁紙",
-  "@wallpaperBlur": { "description": "Toggle that blurs the wallpaper" },
+  "@wallpaperBlur": {
+    "description": "Toggle that blurs the wallpaper"
+  },
   "wallpaperBlurSub": "讓氣泡在照片上依然清晰",
-  "@wallpaperBlurSub": { "description": "Toggle subtitle" },
+  "@wallpaperBlurSub": {
+    "description": "Toggle subtitle"
+  },
   "wallpaperColorHeader": "壁紙取色",
-  "@wallpaperColorHeader": { "description": "Section header above the extracted colour swatches" },
+  "@wallpaperColorHeader": {
+    "description": "Section header above the extracted colour swatches"
+  },
   "wallpaperColorFooter": "選一個顏色，用於強調色和你發出的氣泡。",
-  "@wallpaperColorFooter": { "description": "Note under the colour swatches" },
+  "@wallpaperColorFooter": {
+    "description": "Note under the colour swatches"
+  },
   "wallpaperColorNone": "預設",
-  "@wallpaperColorNone": { "description": "Swatch that clears the extracted accent" },
+  "@wallpaperColorNone": {
+    "description": "Swatch that clears the extracted accent"
+  },
   "wallpaperNoColors": "這張圖沒有可取的顏色",
-  "@wallpaperNoColors": { "description": "Shown when extraction found nothing" },
+  "@wallpaperNoColors": {
+    "description": "Shown when extraction found nothing"
+  },
   "wallpaperBubbleGrad": "氣泡漸層",
-  "@wallpaperBubbleGrad": { "description": "Title of the outgoing bubble gradient picker" },
+  "@wallpaperBubbleGrad": {
+    "description": "Title of the outgoing bubble gradient picker"
+  },
   "wallpaperBubbleGradSubtle": "輕微",
-  "@wallpaperBubbleGradSubtle": { "description": "Weakest outgoing bubble gradient" },
+  "@wallpaperBubbleGradSubtle": {
+    "description": "Weakest outgoing bubble gradient"
+  },
   "wallpaperBubbleGradMedium": "適中",
-  "@wallpaperBubbleGradMedium": { "description": "Middle outgoing bubble gradient" },
+  "@wallpaperBubbleGradMedium": {
+    "description": "Middle outgoing bubble gradient"
+  },
   "wallpaperBubbleGradStrong": "明顯",
-  "@wallpaperBubbleGradStrong": { "description": "Widest outgoing bubble gradient" },
+  "@wallpaperBubbleGradStrong": {
+    "description": "Widest outgoing bubble gradient"
+  },
   "wallpaperBubbleGradSub": "控制你發出的氣泡從上到下的深淺跨度。",
-  "@wallpaperBubbleGradSub": { "description": "Note under the gradient picker" },
+  "@wallpaperBubbleGradSub": {
+    "description": "Note under the gradient picker"
+  },
   "wallpaperRemoved": "已移除壁紙",
-  "@wallpaperRemoved": { "description": "Bulletin after clearing a wallpaper" },
+  "@wallpaperRemoved": {
+    "description": "Bulletin after clearing a wallpaper"
+  },
   "wallpaperChatTitle": "本對話壁紙",
-  "@wallpaperChatTitle": { "description": "Title of the per chat wallpaper sheet" },
+  "@wallpaperChatTitle": {
+    "description": "Title of the per chat wallpaper sheet"
+  },
   "appearanceNightMode": "夜間模式",
-  "@appearanceNightMode": { "description": "Toggle row" },
+  "@appearanceNightMode": {
+    "description": "Toggle row"
+  },
   "appearancePreview": "訊息預覽",
-  "@appearancePreview": { "description": "Settings section header" },
+  "@appearancePreview": {
+    "description": "Settings section header"
+  },
   "appearanceTextSize": "訊息字級",
-  "@appearanceTextSize": { "description": "Settings section header" },
+  "@appearanceTextSize": {
+    "description": "Settings section header"
+  },
   "appearanceSize": "字級",
-  "@appearanceSize": { "description": "Slider row label" },
+  "@appearanceSize": {
+    "description": "Slider row label"
+  },
   "appearanceCorners": "訊息圓角",
-  "@appearanceCorners": { "description": "Settings section header" },
+  "@appearanceCorners": {
+    "description": "Settings section header"
+  },
   "appearanceRadius": "圓角",
-  "@appearanceRadius": { "description": "Slider row label" },
+  "@appearanceRadius": {
+    "description": "Slider row label"
+  },
   "appearanceReset": "回復預設",
-  "@appearanceReset": { "description": "Row that restores the default text size and corner radius" },
+  "@appearanceReset": {
+    "description": "Row that restores the default text size and corner radius"
+  },
   "notifAlerts": "提醒",
-  "@notifAlerts": { "description": "Settings section header" },
+  "@notifAlerts": {
+    "description": "Settings section header"
+  },
   "notifVibrate": "回覆時震動",
-  "@notifVibrate": { "description": "Toggle row" },
+  "@notifVibrate": {
+    "description": "Toggle row"
+  },
   "notifVibrateSub": "收到回答時輕震一下",
-  "@notifVibrateSub": { "description": "Toggle row subtitle" },
+  "@notifVibrateSub": {
+    "description": "Toggle row subtitle"
+  },
   "notifCountMuted": "統計勿擾對話",
-  "@notifCountMuted": { "description": "Toggle row" },
+  "@notifCountMuted": {
+    "description": "Toggle row"
+  },
   "notifCountMutedSub": "把它們計入分頁標籤的角標",
-  "@notifCountMutedSub": { "description": "Toggle row subtitle" },
+  "@notifCountMutedSub": {
+    "description": "Toggle row subtitle"
+  },
   "notifFooter": "每個對話也可以從它的選單或個人檔頁設為勿擾。",
-  "@notifFooter": { "description": "Note at the bottom of the notifications page" },
+  "@notifFooter": {
+    "description": "Note at the bottom of the notifications page"
+  },
   "dataUsage": "用量",
-  "@dataUsage": { "description": "Settings section header" },
+  "@dataUsage": {
+    "description": "Settings section header"
+  },
   "dataChats": "對話",
-  "@dataChats": { "description": "Usage row label" },
+  "@dataChats": {
+    "description": "Usage row label"
+  },
   "dataMessages": "訊息",
-  "@dataMessages": { "description": "Usage row label" },
+  "@dataMessages": {
+    "description": "Usage row label"
+  },
   "dataMedia": "媒體與檔案",
-  "@dataMedia": { "description": "Usage row label" },
+  "@dataMedia": {
+    "description": "Usage row label"
+  },
   "dataClear": "清除",
-  "@dataClear": { "description": "Settings section header" },
+  "@dataClear": {
+    "description": "Settings section header"
+  },
   "dataClearSearch": "清除搜尋記錄",
-  "@dataClearSearch": { "description": "Row that forgets recent searches" },
+  "@dataClearSearch": {
+    "description": "Row that forgets recent searches"
+  },
   "dataClearMedia": "清除媒體與檔案",
-  "@dataClearMedia": { "description": "Row that drops every attachment" },
+  "@dataClearMedia": {
+    "description": "Row that drops every attachment"
+  },
   "dataClearMediaTitle": "清除媒體",
-  "@dataClearMediaTitle": { "description": "Confirmation title" },
+  "@dataClearMediaTitle": {
+    "description": "Confirmation title"
+  },
   "dataClearMediaMessage": "所有對話中的照片、檔案和音樂都會被刪除。",
-  "@dataClearMediaMessage": { "description": "Confirmation body" },
+  "@dataClearMediaMessage": {
+    "description": "Confirmation body"
+  },
   "dataClearAll": "清除所有對話",
-  "@dataClearAll": { "description": "Row that removes every chat" },
+  "@dataClearAll": {
+    "description": "Row that removes every chat"
+  },
   "dataClearAllTitle": "清除所有對話",
-  "@dataClearAllTitle": { "description": "Confirmation title" },
+  "@dataClearAllTitle": {
+    "description": "Confirmation title"
+  },
   "dataClearAllMessage": "這會刪除所有聊天裡的每一則訊息，人設會保留。",
-  "@dataClearAllMessage": { "description": "Confirmation body" },
+  "@dataClearAllMessage": {
+    "description": "Confirmation body"
+  },
   "dataBackup": "備份",
-  "@dataBackup": { "description": "Section header above the backup rows" },
+  "@dataBackup": {
+    "description": "Section header above the backup rows"
+  },
   "dataBackupExportSub": "對話、人格卡、表情與設定",
-  "@dataBackupExportSub": { "description": "Subtitle of the export row" },
+  "@dataBackupExportSub": {
+    "description": "Subtitle of the export row"
+  },
   "dataBackupImportSub": "從之前匯出的檔案還原",
-  "@dataBackupImportSub": { "description": "Subtitle of the import row" },
+  "@dataBackupImportSub": {
+    "description": "Subtitle of the import row"
+  },
   "dataBackupRestored": "{chats} 個對話，{messages} 則訊息",
-  "@dataBackupRestored": { "description": "Bulletin after a restore that changed something" },
+  "@dataBackupRestored": {
+    "description": "Bulletin after a restore that changed something"
+  },
   "dataBackupNothing": "這個檔案裡沒有可還原的內容",
-  "@dataBackupNothing": { "description": "Bulletin after a restore that found nothing to do" },
+  "@dataBackupNothing": {
+    "description": "Bulletin after a restore that found nothing to do"
+  },
   "dataBackupSaved": "備份已儲存",
-  "@dataBackupSaved": { "description": "Bulletin after the backup is written where the user chose" },
+  "@dataBackupSaved": {
+    "description": "Bulletin after the backup is written where the user chose"
+  },
   "dataBackupSaveFailed": "無法儲存檔案",
-  "@dataBackupSaveFailed": { "description": "Bulletin when the save dialog could not be used" },
+  "@dataBackupSaveFailed": {
+    "description": "Bulletin when the save dialog could not be used"
+  },
   "dayToday": "今天",
-  "@dayToday": { "description": "Date separator for messages from today" },
+  "@dayToday": {
+    "description": "Date separator for messages from today"
+  },
   "dayYesterday": "昨天",
-  "@dayYesterday": { "description": "Date separator for messages from yesterday" },
+  "@dayYesterday": {
+    "description": "Date separator for messages from yesterday"
+  },
   "emojiSearchHint": "輸入以搜尋",
-  "@emojiSearchHint": { "description": "Empty search results in the emoji panel" },
+  "@emojiSearchHint": {
+    "description": "Empty search results in the emoji panel"
+  },
   "emojiNothingFound": "找不到",
-  "@emojiNothingFound": { "description": "Empty search results in the emoji panel" },
+  "@emojiNothingFound": {
+    "description": "Empty search results in the emoji panel"
+  },
   "personaDiscardExisting": "你對這個人設的修改將會遺失。",
-  "@personaDiscardExisting": { "description": "Confirmation body when leaving an existing persona with unsaved edits" },
+  "@personaDiscardExisting": {
+    "description": "Confirmation body when leaving an existing persona with unsaved edits"
+  },
   "personaDiscardNew": "這個人設還沒建立。",
-  "@personaDiscardNew": { "description": "Confirmation body when leaving a brand new persona" },
+  "@personaDiscardNew": {
+    "description": "Confirmation body when leaving a brand new persona"
+  },
   "personaNameHeader": "名稱",
-  "@personaNameHeader": { "description": "Section header of the persona name field" },
+  "@personaNameHeader": {
+    "description": "Section header of the persona name field"
+  },
   "personaNameHint": "人設名稱",
-  "@personaNameHint": { "description": "Field placeholder for the persona name" },
+  "@personaNameHint": {
+    "description": "Field placeholder for the persona name"
+  },
   "personaAboutHeader": "關於",
-  "@personaAboutHeader": { "description": "Section header of the persona bio field" },
+  "@personaAboutHeader": {
+    "description": "Section header of the persona bio field"
+  },
   "personaAboutFooter": "顯示在個人資料頁上的一句話，不會傳送給模型。",
-  "@personaAboutFooter": { "description": "Section footer of the persona bio field" },
+  "@personaAboutFooter": {
+    "description": "Section footer of the persona bio field"
+  },
   "personaInstructionsHeader": "指令",
-  "@personaInstructionsHeader": { "description": "Section header of the system prompt field" },
+  "@personaInstructionsHeader": {
+    "description": "Section header of the system prompt field"
+  },
   "personaInstructionsFooter": "這段內容會成為本對話中每一次請求的系統提示詞。",
-  "@personaInstructionsFooter": { "description": "Section footer of the system prompt field" },
+  "@personaInstructionsFooter": {
+    "description": "Section footer of the system prompt field"
+  },
   "personaInstructionsHint": "你希望 AI 如何表現？",
-  "@personaInstructionsHint": { "description": "Field placeholder for the system prompt" },
+  "@personaInstructionsHint": {
+    "description": "Field placeholder for the system prompt"
+  },
   "personaGreetingHeader": "問候",
-  "@personaGreetingHeader": { "description": "Section header of the greeting field" },
+  "@personaGreetingHeader": {
+    "description": "Section header of the greeting field"
+  },
   "personaGreetingFooter": "選填。開啟對話時會作為第一則訊息傳送。",
-  "@personaGreetingFooter": { "description": "Section footer of the greeting field" },
+  "@personaGreetingFooter": {
+    "description": "Section footer of the greeting field"
+  },
   "personaGreetingHint": "人設的第一則訊息",
-  "@personaGreetingHint": { "description": "Field placeholder for the greeting" },
+  "@personaGreetingHint": {
+    "description": "Field placeholder for the greeting"
+  },
   "personaSave": "儲存變更",
-  "@personaSave": { "description": "Bottom button when editing an existing persona" },
+  "@personaSave": {
+    "description": "Bottom button when editing an existing persona"
+  },
   "personaCreate": "建立人設",
-  "@personaCreate": { "description": "Bottom button when creating a persona" },
+  "@personaCreate": {
+    "description": "Bottom button when creating a persona"
+  },
   "personaTemplatesHeader": "從範本開始",
-  "@personaTemplatesHeader": { "description": "Section header of the preset chips" },
+  "@personaTemplatesHeader": {
+    "description": "Section header of the preset chips"
+  },
   "personaAppearanceHeader": "外觀",
-  "@personaAppearanceHeader": { "description": "Section header of the avatar and colour picker" },
+  "@personaAppearanceHeader": {
+    "description": "Section header of the avatar and colour picker"
+  },
   "personaAppearanceFooterPhoto": "設定照片後，所有顯示大頭貼的地方都會以照片取代表情符號。",
-  "@personaAppearanceFooterPhoto": { "description": "Section footer when a photo is set" },
+  "@personaAppearanceFooterPhoto": {
+    "description": "Section footer when a photo is set"
+  },
   "personaAppearanceFooterColor": "這個顏色用於大頭貼與個人資料頁封面。",
-  "@personaAppearanceFooterColor": { "description": "Section footer when only a colour is set" },
+  "@personaAppearanceFooterColor": {
+    "description": "Section footer when only a colour is set"
+  },
   "personaPhotoTitle": "照片",
-  "@personaPhotoTitle": { "description": "Avatar row title when a photo is set" },
+  "@personaPhotoTitle": {
+    "description": "Avatar row title when a photo is set"
+  },
   "personaPhotoTitleEmpty": "大頭貼照片",
-  "@personaPhotoTitleEmpty": { "description": "Avatar row title when no photo is set" },
+  "@personaPhotoTitleEmpty": {
+    "description": "Avatar row title when no photo is set"
+  },
   "personaPhotoSubFull": "點擊更換，長按移除",
-  "@personaPhotoSubFull": { "description": "Avatar row subtitle when a photo is set" },
+  "@personaPhotoSubFull": {
+    "description": "Avatar row subtitle when a photo is set"
+  },
   "personaPhotoSubEmpty": "新增一張照片，或沿用下面的顏色",
-  "@personaPhotoSubEmpty": { "description": "Avatar row subtitle when no photo is set" },
+  "@personaPhotoSubEmpty": {
+    "description": "Avatar row subtitle when no photo is set"
+  },
   "personaChoose": "選擇",
-  "@personaChoose": { "description": "Text button that opens the gallery" },
+  "@personaChoose": {
+    "description": "Text button that opens the gallery"
+  },
   "personaModelForThis": "此人設使用的模型",
-  "@personaModelForThis": { "description": "Model picker title from the persona editor" },
+  "@personaModelForThis": {
+    "description": "Model picker title from the persona editor"
+  },
   "personaModelGlobal": "全域",
-  "@personaModelGlobal": { "description": "Follow chain row title from the persona editor" },
+  "@personaModelGlobal": {
+    "description": "Follow chain row title from the persona editor"
+  },
   "personaModelGlobalSub": "依循兜底鏈目前的設定",
-  "@personaModelGlobalSub": { "description": "Follow chain row subtitle from the persona editor" },
+  "@personaModelGlobalSub": {
+    "description": "Follow chain row subtitle from the persona editor"
+  },
   "personaModelFooterOverride": "關閉後，這個模型失敗會直接結束回覆，不再嘗試全域兜底鏈。",
-  "@personaModelFooterOverride": { "description": "Model section footer when an override is set" },
+  "@personaModelFooterOverride": {
+    "description": "Model section footer when an override is set"
+  },
   "personaModelFooterGlobal": "全域模式下使用「設定 > AI」裡的兜底鏈。選一個模型就能讓人設單獨使用它。",
-  "@personaModelFooterGlobal": { "description": "Model section footer when no override is set" },
+  "@personaModelFooterGlobal": {
+    "description": "Model section footer when no override is set"
+  },
   "personaModelGlobalChain": "全域兜底鏈",
-  "@personaModelGlobalChain": { "description": "Model row title when no override is set" },
+  "@personaModelGlobalChain": {
+    "description": "Model row title when no override is set"
+  },
   "personaModelOnlyThis": "僅此人設",
-  "@personaModelOnlyThis": { "description": "Model row subtitle tail when an override is set" },
+  "@personaModelOnlyThis": {
+    "description": "Model row subtitle tail when an override is set"
+  },
   "personaModelFollowsSettings": "依循「設定 > AI」",
-  "@personaModelFollowsSettings": { "description": "Model row subtitle when no override is set" },
+  "@personaModelFollowsSettings": {
+    "description": "Model row subtitle when no override is set"
+  },
   "personaModelChange": "更改",
-  "@personaModelChange": { "description": "Trailing value inviting the user to pick a model" },
+  "@personaModelChange": {
+    "description": "Trailing value inviting the user to pick a model"
+  },
   "personaModelFallback": "回退到全域兜底鏈",
-  "@personaModelFallback": { "description": "Checkbox row under a model override" },
+  "@personaModelFallback": {
+    "description": "Checkbox row under a model override"
+  },
   "personaModelUseGlobal": "使用全域兜底鏈",
-  "@personaModelUseGlobal": { "description": "Row that drops the model override" },
+  "@personaModelUseGlobal": {
+    "description": "Row that drops the model override"
+  },
   "presetAssistantBio": "沉穩冷靜的萬能幫手",
-  "@presetAssistantBio": { "description": "One liner of the Assistant template" },
+  "@presetAssistantBio": {
+    "description": "One liner of the Assistant template"
+  },
   "presetCoderBio": "以閱讀堆疊資訊為樂",
-  "@presetCoderBio": { "description": "One liner of the Coder template" },
+  "@presetCoderBio": {
+    "description": "One liner of the Coder template"
+  },
   "presetTranslatorBio": "中英雙向翻譯",
-  "@presetTranslatorBio": { "description": "One liner of the Translator template" },
+  "@presetTranslatorBio": {
+    "description": "One liner of the Translator template"
+  },
   "presetWriterBio": "把每句話都精煉一遍",
-  "@presetWriterBio": { "description": "One liner of the Writer template" },
+  "@presetWriterBio": {
+    "description": "One liner of the Writer template"
+  },
   "presetTutorBio": "像朋友一樣講給你聽",
-  "@presetTutorBio": { "description": "One liner of the Tutor template" },
+  "@presetTutorBio": {
+    "description": "One liner of the Tutor template"
+  },
   "aiFollowChain": "跟隨鏈上的第一個節點",
-  "@aiFollowChain": { "description": "Default title of the follow chain row in the model picker" },
+  "@aiFollowChain": {
+    "description": "Default title of the follow chain row in the model picker"
+  },
   "aiFollowChainSub": "總結時使用目前的主模型",
-  "@aiFollowChainSub": { "description": "Default subtitle of the follow chain row in the model picker" },
+  "@aiFollowChainSub": {
+    "description": "Default subtitle of the follow chain row in the model picker"
+  },
   "aiSearchModels": "搜尋模型",
-  "@aiSearchModels": { "description": "Search field placeholder in the model picker" },
+  "@aiSearchModels": {
+    "description": "Search field placeholder in the model picker"
+  },
   "aiNoModelsLoaded": "還沒有載入模型。\n請先從服務商取得一份清單。",
-  "@aiNoModelsLoaded": { "description": "Model picker empty state before any provider was queried" },
+  "@aiNoModelsLoaded": {
+    "description": "Model picker empty state before any provider was queried"
+  },
   "aiNoModelMatches": "沒有符合「{query}」的結果",
-  "@aiNoModelMatches": { "description": "Model picker empty state for a query that hit nothing" },
+  "@aiNoModelMatches": {
+    "description": "Model picker empty state for a query that hit nothing"
+  },
   "codeGeneric": "程式碼",
-  "@codeGeneric": { "description": "Language label of a fenced code block with no language given" },
+  "@codeGeneric": {
+    "description": "Language label of a fenced code block with no language given"
+  },
   "toastCodeCopied": "程式碼已複製",
-  "@toastCodeCopied": { "description": "Bulletin after copying a code block" },
+  "@toastCodeCopied": {
+    "description": "Bulletin after copying a code block"
+  },
+  "codePreview": "預覽",
+  "@codePreview": {
+    "description": "Title of the page that renders an html or svg code block; also the tooltip of the button that opens it"
+  },
+  "wsPreviewRendered": "切換渲染視圖",
+  "@wsPreviewRendered": {
+    "description": "Tooltip of the button that flips an html or svg file preview between the rendered document and the raw source"
+  },
   "searchFilterAll": "全部",
-  "@searchFilterAll": { "description": "Search strip chip that clears the filter" },
+  "@searchFilterAll": {
+    "description": "Search strip chip that clears the filter"
+  },
   "searchRecent": "最近",
-  "@searchRecent": { "description": "Header of the recent queries block" },
+  "@searchRecent": {
+    "description": "Header of the recent queries block"
+  },
   "searchPeople": "人",
-  "@searchPeople": { "description": "Header of the persona shortcut row" },
+  "@searchPeople": {
+    "description": "Header of the persona shortcut row"
+  },
   "searchNoResultsTitle": "沒有結果",
-  "@searchNoResultsTitle": { "description": "Empty results headline" },
+  "@searchNoResultsTitle": {
+    "description": "Empty results headline"
+  },
   "searchEmptyBody": "還沒有分享過這類內容。",
-  "@searchEmptyBody": { "description": "Empty results body before a query was typed" },
+  "@searchEmptyBody": {
+    "description": "Empty results body before a query was typed"
+  },
   "searchNoResultsBody": "找不到與「{query}」相關的結果，換個關鍵字再試試。",
-  "@searchNoResultsBody": { "description": "Empty results body after a query returned nothing" },
+  "@searchNoResultsBody": {
+    "description": "Empty results body after a query returned nothing"
+  },
   "profileButtonEdit": "編輯",
-  "@profileButtonEdit": { "description": "Button tile on my own profile" },
+  "@profileButtonEdit": {
+    "description": "Button tile on my own profile"
+  },
   "profileButtonShare": "分享",
-  "@profileButtonShare": { "description": "Button tile on my own profile" },
+  "@profileButtonShare": {
+    "description": "Button tile on my own profile"
+  },
   "profileButtonMessage": "傳訊息",
-  "@profileButtonMessage": { "description": "Button tile on a persona profile" },
+  "@profileButtonMessage": {
+    "description": "Button tile on a persona profile"
+  },
   "profileButtonSearch": "搜尋",
-  "@profileButtonSearch": { "description": "Button tile on a persona profile" },
+  "@profileButtonSearch": {
+    "description": "Button tile on a persona profile"
+  },
   "profileCopied": "個人檔案已複製",
-  "@profileCopied": { "description": "Bulletin after copying the profile" },
+  "@profileCopied": {
+    "description": "Bulletin after copying the profile"
+  },
   "profileLabelName": "名稱",
-  "@profileLabelName": { "description": "Info cell label" },
+  "@profileLabelName": {
+    "description": "Info cell label"
+  },
   "profileLabelBio": "簡介",
-  "@profileLabelBio": { "description": "Info cell label" },
+  "@profileLabelBio": {
+    "description": "Info cell label"
+  },
   "profileLabelPersonaCard": "人設卡片",
-  "@profileLabelPersonaCard": { "description": "Info cell label" },
+  "@profileLabelPersonaCard": {
+    "description": "Info cell label"
+  },
   "profileLabelActivity": "動態",
-  "@profileLabelActivity": { "description": "Info cell label" },
+  "@profileLabelActivity": {
+    "description": "Info cell label"
+  },
   "profileLabelAbout": "關於",
-  "@profileLabelAbout": { "description": "Info cell label" },
+  "@profileLabelAbout": {
+    "description": "Info cell label"
+  },
   "profileLabelInstructions": "指令",
-  "@profileLabelInstructions": { "description": "Info cell label" },
+  "@profileLabelInstructions": {
+    "description": "Info cell label"
+  },
   "profileLabelModel": "模型",
-  "@profileLabelModel": { "description": "Info cell label" },
+  "@profileLabelModel": {
+    "description": "Info cell label"
+  },
   "profileLabelNotifications": "通知",
-  "@profileLabelNotifications": { "description": "Row label of the per chat notification switch" },
+  "@profileLabelNotifications": {
+    "description": "Row label of the per chat notification switch"
+  },
   "profileBioEmpty": "寫幾句關於自己的話",
-  "@profileBioEmpty": { "description": "Placeholder value of the bio cell when it is still empty" },
+  "@profileBioEmpty": {
+    "description": "Placeholder value of the bio cell when it is still empty"
+  },
   "profileCardEmpty": "告訴 AI 你是誰",
-  "@profileCardEmpty": { "description": "Placeholder value of the persona card cell when it is still empty" },
+  "@profileCardEmpty": {
+    "description": "Placeholder value of the persona card cell when it is still empty"
+  },
   "profileActivity": "{chats, plural, =1{1 個對話} other{{chats} 個對話}} · {sent, plural, =1{已送出 1 則} other{已送出 {sent} 則}}",
-  "@profileActivity": { "description": "Activity cell value, chats and messages I sent" },
+  "@profileActivity": {
+    "description": "Activity cell value, chats and messages I sent"
+  },
   "profileOn": "開",
-  "@profileOn": { "description": "Switch value when notifications are on" },
+  "@profileOn": {
+    "description": "Switch value when notifications are on"
+  },
   "profileOff": "關",
-  "@profileOff": { "description": "Switch value when notifications are off" },
+  "@profileOff": {
+    "description": "Switch value when notifications are off"
+  },
   "profileHeaderTyping": "正在輸入...",
-  "@profileHeaderTyping": { "description": "Profile header subtitle while the persona is generating" },
+  "@profileHeaderTyping": {
+    "description": "Profile header subtitle while the persona is generating"
+  },
   "toastCopiedLabel": "已複製{label}",
-  "@toastCopiedLabel": { "description": "Bulletin after copying a labelled value" },
+  "@toastCopiedLabel": {
+    "description": "Bulletin after copying a labelled value"
+  },
   "profileTabMedia": "媒體",
-  "@profileTabMedia": { "description": "Shared content tab" },
+  "@profileTabMedia": {
+    "description": "Shared content tab"
+  },
   "profileTabFiles": "檔案",
-  "@profileTabFiles": { "description": "Shared content tab" },
+  "@profileTabFiles": {
+    "description": "Shared content tab"
+  },
   "profileTabMusic": "音樂",
-  "@profileTabMusic": { "description": "Shared content tab" },
+  "@profileTabMusic": {
+    "description": "Shared content tab"
+  },
   "profileTabLinks": "連結",
-  "@profileTabLinks": { "description": "Shared content tab" },
+  "@profileTabLinks": {
+    "description": "Shared content tab"
+  },
   "profileSharedEmptyMedia": "還沒有媒體",
-  "@profileSharedEmptyMedia": { "description": "Empty state of the media tab" },
+  "@profileSharedEmptyMedia": {
+    "description": "Empty state of the media tab"
+  },
   "profileSharedEmptyFiles": "還沒有檔案",
-  "@profileSharedEmptyFiles": { "description": "Empty state of the files tab" },
+  "@profileSharedEmptyFiles": {
+    "description": "Empty state of the files tab"
+  },
   "profileSharedEmptyMusic": "還沒有音樂",
-  "@profileSharedEmptyMusic": { "description": "Empty state of the music tab" },
+  "@profileSharedEmptyMusic": {
+    "description": "Empty state of the music tab"
+  },
   "profileSharedEmptyLinks": "還沒有連結",
-  "@profileSharedEmptyLinks": { "description": "Empty state of the links tab" },
+  "@profileSharedEmptyLinks": {
+    "description": "Empty state of the links tab"
+  },
   "msgLeadPhoto": "照片",
-  "@msgLeadPhoto": { "description": "Preview lead for a photo message" },
+  "@msgLeadPhoto": {
+    "description": "Preview lead for a photo message"
+  },
   "msgLeadMusic": "音樂",
-  "@msgLeadMusic": { "description": "Preview lead for a music message" },
+  "@msgLeadMusic": {
+    "description": "Preview lead for a music message"
+  },
   "msgLeadContact": "聯絡人",
-  "@msgLeadContact": { "description": "Preview lead for a contact message" },
+  "@msgLeadContact": {
+    "description": "Preview lead for a contact message"
+  },
   "msgLeadPoll": "投票",
-  "@msgLeadPoll": { "description": "Preview lead for a poll message" },
+  "@msgLeadPoll": {
+    "description": "Preview lead for a poll message"
+  },
   "msgLeadSticker": "表情",
-  "@msgLeadSticker": { "description": "Preview lead for a sticker message" },
+  "@msgLeadSticker": {
+    "description": "Preview lead for a sticker message"
+  },
+  "msgLeadHtml": "網頁卡片",
+  "@msgLeadHtml": {
+    "description": "Preview lead for a message that renders an html card"
+  },
+  "msgLeadLatex": "LaTeX",
+  "@msgLeadLatex": {
+    "description": "Preview lead for a message that renders a LaTeX card"
+  },
+  "canvasRenderFailed": "這個沒渲染出來",
+  "@canvasRenderFailed": {
+    "description": "The small quiet notice shown in place of an html or latex card the engine could not render"
+  },
   "attachAudioFallback": "音訊",
-  "@attachAudioFallback": { "description": "Row title of a music attachment with no name" },
+  "@attachAudioFallback": {
+    "description": "Row title of a music attachment with no name"
+  },
   "attachFileFallback": "檔案",
-  "@attachFileFallback": { "description": "Row title of a file attachment with no name" },
+  "@attachFileFallback": {
+    "description": "Row title of a file attachment with no name"
+  },
   "attachLocationTitle": "位置",
-  "@attachLocationTitle": { "description": "Title of a location attachment" },
+  "@attachLocationTitle": {
+    "description": "Title of a location attachment"
+  },
   "attachLocationCopied": "座標已複製",
-  "@attachLocationCopied": { "description": "Bulletin after copying coordinates" },
+  "@attachLocationCopied": {
+    "description": "Bulletin after copying coordinates"
+  },
   "attachNoPhone": "沒有電話號碼",
-  "@attachNoPhone": { "description": "Shown for a contact card with no phone number" },
+  "@attachNoPhone": {
+    "description": "Shown for a contact card with no phone number"
+  },
   "pollKindQuiz": "問答",
-  "@pollKindQuiz": { "description": "Poll subtitle when it is a quiz" },
+  "@pollKindQuiz": {
+    "description": "Poll subtitle when it is a quiz"
+  },
   "pollKindPublic": "公開投票",
-  "@pollKindPublic": { "description": "Poll subtitle when results are visible" },
+  "@pollKindPublic": {
+    "description": "Poll subtitle when results are visible"
+  },
   "pollKindAnonymous": "匿名投票",
-  "@pollKindAnonymous": { "description": "Poll subtitle when results are hidden" },
+  "@pollKindAnonymous": {
+    "description": "Poll subtitle when results are hidden"
+  },
   "pollKindMultiple": "{kind} · 多選",
-  "@pollKindMultiple": { "description": "Poll subtitle when more than one answer is allowed" },
+  "@pollKindMultiple": {
+    "description": "Poll subtitle when more than one answer is allowed"
+  },
+  "askKind": "提問 · 點擊作答",
+  "@askKind": {
+    "description": "Ask card subtitle, an answer unblocks the waiting tool call"
+  },
+  "askKindMulti": "提問 · 可多選，選完提交",
+  "@askKindMulti": {
+    "description": "Ask card subtitle in multi choice mode"
+  },
+  "askDone": "已回答",
+  "@askDone": {
+    "description": "Ask card subtitle after the answer was submitted"
+  },
+  "askSkipped": "已跳過",
+  "@askSkipped": {
+    "description": "Ask card subtitle after the user skipped it"
+  },
+  "askOtherHint": "或者自己寫…",
+  "@askOtherHint": {
+    "description": "Hint of the custom answer field on an ask card"
+  },
+  "askSubmit": "提交",
+  "@askSubmit": {
+    "description": "Button that submits the answer on an ask card"
+  },
+  "askSkip": "跳過",
+  "@askSkip": {
+    "description": "Button that skips an ask card without answering"
+  },
   "photoCounter": "第 {index} 張，共 {total} 張",
-  "@photoCounter": { "description": "Photo viewer header counter" },
+  "@photoCounter": {
+    "description": "Photo viewer header counter"
+  },
   "profileFileFallback": "檔案",
-  "@profileFileFallback": { "description": "Row title when an attachment carries no name" },
+  "@profileFileFallback": {
+    "description": "Row title when an attachment carries no name"
+  },
   "errorAuth": "API 金鑰無效或沒有存取權限",
-  "@errorAuth": { "description": "Shown when the provider rejects the key" },
+  "@errorAuth": {
+    "description": "Shown when the provider rejects the key"
+  },
   "errorQuota": "服務商額度已用盡",
-  "@errorQuota": { "description": "Shown when the account has no balance left" },
+  "@errorQuota": {
+    "description": "Shown when the account has no balance left"
+  },
   "errorRate": "被服務商限流",
-  "@errorRate": { "description": "Shown on HTTP 429" },
+  "@errorRate": {
+    "description": "Shown on HTTP 429"
+  },
   "errorContextOverflow": "上下文比模型的視窗更長",
-  "@errorContextOverflow": { "description": "Shown when the prompt does not fit the model" },
+  "@errorContextOverflow": {
+    "description": "Shown when the prompt does not fit the model"
+  },
   "errorServer": "服務商回傳了一個錯誤",
-  "@errorServer": { "description": "Shown on HTTP 5xx" },
+  "@errorServer": {
+    "description": "Shown on HTTP 5xx"
+  },
   "errorNetwork": "網路連線失敗",
-  "@errorNetwork": { "description": "Shown when the request never reached the provider" },
+  "@errorNetwork": {
+    "description": "Shown when the request never reached the provider"
+  },
   "errorAborted": "生成已停止",
-  "@errorAborted": { "description": "Shown when the user stopped the reply" },
+  "@errorAborted": {
+    "description": "Shown when the user stopped the reply"
+  },
   "errorEmpty": "模型沒有回傳內容",
-  "@errorEmpty": { "description": "Shown when the reply body was empty" },
+  "@errorEmpty": {
+    "description": "Shown when the reply body was empty"
+  },
   "errorUnknown": "請求失敗",
-  "@errorUnknown": { "description": "Fallback for an unclassified failure" },
+  "@errorUnknown": {
+    "description": "Fallback for an unclassified failure"
+  },
   "errorStoppedEarly": "提前停止：{reason}",
-  "@errorStoppedEarly": { "description": "Service message when the chain fell back to another node" },
+  "@errorStoppedEarly": {
+    "description": "Service message when the chain fell back to another node"
+  },
   "pluralChats": "{count, plural, =1{1 個對話} other{{count} 個對話}}",
-  "@pluralChats": { "description": "Count of chats" },
+  "@pluralChats": {
+    "description": "Count of chats"
+  },
   "pluralVotes": "{count, plural, =0{還沒有人投票} =1{1 票} other{{count} 票}}",
-  "@pluralVotes": { "description": "Count of votes on a poll, also covers zero" },
+  "@pluralVotes": {
+    "description": "Count of votes on a poll, also covers zero"
+  },
   "pluralSelected": "{count, plural, other{已選 {count} 個}}",
-  "@pluralSelected": { "description": "Count of picked attachments" },
+  "@pluralSelected": {
+    "description": "Count of picked attachments"
+  },
   "pluralModels": "{count, plural, =1{1 個模型} other{{count} 個模型}}",
-  "@pluralModels": { "description": "Count of models known to a provider" },
+  "@pluralModels": {
+    "description": "Count of models known to a provider"
+  },
   "pluralRetries": "{count, plural, =1{重試 1 次} other{重試 {count} 次}}",
-  "@pluralRetries": { "description": "Count of retries before the chain moves on" },
+  "@pluralRetries": {
+    "description": "Count of retries before the chain moves on"
+  },
   "pluralOptions": "{count, plural, other{{count} 個選項}}",
-  "@pluralOptions": { "description": "Count of poll options" },
+  "@pluralOptions": {
+    "description": "Count of poll options"
+  },
   "pluralChars": "{count, plural, other{{count} 個字元}}",
-  "@pluralChars": { "description": "Count of characters for the summary length" },
+  "@pluralChars": {
+    "description": "Count of characters for the summary length"
+  },
   "pluralTokens": "{count, plural, other{{count} 個 token}}",
-  "@pluralTokens": { "description": "Count of tokens" },
+  "@pluralTokens": {
+    "description": "Count of tokens"
+  },
   "cardCreate": "建立卡片",
-  "@cardCreate": { "description": "" },
+  "@cardCreate": {
+    "description": ""
+  },
   "cardDeleteThisCard": "這張卡片",
-  "@cardDeleteThisCard": { "description": "" },
+  "@cardDeleteThisCard": {
+    "description": ""
+  },
   "cardDeleteTitle": "刪除卡片",
-  "@cardDeleteTitle": { "description": "" },
+  "@cardDeleteTitle": {
+    "description": ""
+  },
   "cardDeleted": "卡片已刪除",
-  "@cardDeleted": { "description": "" },
+  "@cardDeleted": {
+    "description": ""
+  },
   "cardDescHint": "你是誰、你怎麼說話、你的喜好",
-  "@cardDescHint": { "description": "" },
+  "@cardDescHint": {
+    "description": ""
+  },
   "cardDuplicate": "複製",
-  "@cardDuplicate": { "description": "" },
+  "@cardDuplicate": {
+    "description": ""
+  },
   "cardDuplicated": "卡片已複製",
-  "@cardDuplicated": { "description": "" },
+  "@cardDuplicated": {
+    "description": ""
+  },
   "cardEditing": "編輯卡片",
-  "@cardEditing": { "description": "" },
+  "@cardEditing": {
+    "description": ""
+  },
   "cardEmptyBody": "建立一張人設卡片，讓 AI 知道你是誰。",
-  "@cardEmptyBody": { "description": "" },
+  "@cardEmptyBody": {
+    "description": ""
+  },
   "cardEmptyTitle": "還沒有人設卡片",
-  "@cardEmptyTitle": { "description": "" },
+  "@cardEmptyTitle": {
+    "description": ""
+  },
   "cardFieldDescription": "描述",
-  "@cardFieldDescription": { "description": "" },
+  "@cardFieldDescription": {
+    "description": ""
+  },
   "cardFieldName": "名稱",
-  "@cardFieldName": { "description": "" },
+  "@cardFieldName": {
+    "description": ""
+  },
   "cardFieldNameHint": "AI 對你的稱呼",
-  "@cardFieldNameHint": { "description": "" },
+  "@cardFieldNameHint": {
+    "description": ""
+  },
   "cardFieldTitle": "標題",
-  "@cardFieldTitle": { "description": "" },
+  "@cardFieldTitle": {
+    "description": ""
+  },
   "cardFieldTitleHint": "僅在列表中顯示",
-  "@cardFieldTitleHint": { "description": "" },
+  "@cardFieldTitleHint": {
+    "description": ""
+  },
   "cardInfoFooter": "每次請求都會把這段描述一併傳送給模型。",
-  "@cardInfoFooter": { "description": "" },
+  "@cardInfoFooter": {
+    "description": ""
+  },
   "cardNew": "新增卡片",
-  "@cardNew": { "description": "" },
+  "@cardNew": {
+    "description": ""
+  },
   "cardPlaceholdersHint": "使用 user 與 char 佔位符。",
-  "@cardPlaceholdersHint": { "description": "" },
+  "@cardPlaceholdersHint": {
+    "description": ""
+  },
   "cardPositionTitle": "在提示詞中的位置",
-  "@cardPositionTitle": { "description": "" },
+  "@cardPositionTitle": {
+    "description": ""
+  },
   "cardRoleTitle": "注入訊息的角色",
-  "@cardRoleTitle": { "description": "" },
+  "@cardRoleTitle": {
+    "description": ""
+  },
   "posAtDepth": "按深度插入",
-  "@posAtDepth": { "description": "" },
+  "@posAtDepth": {
+    "description": ""
+  },
   "posAtDepthSub": "從最新一則往回數，插入到幾則訊息之前",
-  "@posAtDepthSub": { "description": "" },
+  "@posAtDepthSub": {
+    "description": ""
+  },
   "posBottomNote": "底部備註",
-  "@posBottomNote": { "description": "" },
+  "@posBottomNote": {
+    "description": ""
+  },
   "posBottomNoteSub": "對話開始前讀到的最後一段內容",
-  "@posBottomNoteSub": { "description": "" },
+  "@posBottomNoteSub": {
+    "description": ""
+  },
   "posInPrompt": "併入提示詞",
-  "@posInPrompt": { "description": "" },
+  "@posInPrompt": {
+    "description": ""
+  },
   "posInPromptSub": "合併進系統提示詞",
-  "@posInPromptSub": { "description": "" },
+  "@posInPromptSub": {
+    "description": ""
+  },
   "posNone": "關閉",
-  "@posNone": { "description": "" },
+  "@posNone": {
+    "description": ""
+  },
   "posNoneSub": "不會傳送這張卡片",
-  "@posNoneSub": { "description": "" },
+  "@posNoneSub": {
+    "description": ""
+  },
   "posTopNote": "頂部備註",
-  "@posTopNote": { "description": "" },
+  "@posTopNote": {
+    "description": ""
+  },
   "posTopNoteSub": "在其他所有內容之前",
-  "@posTopNoteSub": { "description": "" },
+  "@posTopNoteSub": {
+    "description": ""
+  },
   "roleAssistant": "助理",
-  "@roleAssistant": { "description": "" },
+  "@roleAssistant": {
+    "description": ""
+  },
   "roleSystem": "系統",
-  "@roleSystem": { "description": "" },
+  "@roleSystem": {
+    "description": ""
+  },
   "roleUser": "使用者",
-  "@roleUser": { "description": "" },
+  "@roleUser": {
+    "description": ""
+  },
   "cardDeleteMessage": "刪除 {name}？此操作無法復原。",
-  "@cardDeleteMessage": { "description": "" },
+  "@cardDeleteMessage": {
+    "description": ""
+  },
   "msgRecalled": "{name} 收回了一則訊息",
-  "@msgRecalled": { "description": "Stamp on a recalled bubble, names whoever recalled it", "placeholders": {"name": {"type": "String"}} },
+  "@msgRecalled": {
+    "description": "Stamp on a recalled bubble, names whoever recalled it",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "msgEdited": "編輯過",
-  "@msgEdited": { "description": "Suffix on the timestamp of an edited message" },
+  "@msgEdited": {
+    "description": "Suffix on the timestamp of an edited message"
+  },
   "msgPinned": "已置頂的訊息",
-  "@msgPinned": { "description": "Bar at the top of a chat holding a pinned message" },
+  "@msgPinned": {
+    "description": "Bar at the top of a chat holding a pinned message"
+  },
   "traceThinking": "思考",
-  "@traceThinking": { "description": "Tag over the reasoning block" },
+  "@traceThinking": {
+    "description": "Tag over the reasoning block"
+  },
   "traceThinkingNow": "思考中…",
-  "@traceThinkingNow": { "description": "Reasoning block title while it is still generating" },
+  "@traceThinkingNow": {
+    "description": "Reasoning block title while it is still generating"
+  },
   "traceThoughtFor": "思考了 {seconds}",
-  "@traceThoughtFor": { "description": "Reasoning block title once it is done, with the duration" },
+  "@traceThoughtFor": {
+    "description": "Reasoning block title once it is done, with the duration"
+  },
   "traceRunning": "執行中",
-  "@traceRunning": { "description": "Tag over a tool call that is still running" },
+  "@traceRunning": {
+    "description": "Tag over a tool call that is still running"
+  },
   "traceFailed": "失敗",
-  "@traceFailed": { "description": "State of a tool call that failed" },
+  "@traceFailed": {
+    "description": "State of a tool call that failed"
+  },
   "traceArguments": "引數",
-  "@traceArguments": { "description": "Tag over the argument dump of a tool call" },
+  "@traceArguments": {
+    "description": "Tag over the argument dump of a tool call"
+  },
   "traceResult": "結果",
-  "@traceResult": { "description": "Tag over the result of a tool call" },
+  "@traceResult": {
+    "description": "Tag over the result of a tool call"
+  },
   "traceSeconds": "{value}s",
-  "@traceSeconds": { "description": "Duration in the trace rows" },
+  "@traceSeconds": {
+    "description": "Duration in the trace rows"
+  },
   "statusOnline": "線上",
-  "@statusOnline": { "description": "Presence label when the character is reachable" },
+  "@statusOnline": {
+    "description": "Presence label when the character is reachable"
+  },
   "statusAway": "離開",
-  "@statusAway": { "description": "Presence label when the character stepped away" },
+  "@statusAway": {
+    "description": "Presence label when the character stepped away"
+  },
   "statusDnd": "勿擾",
-  "@statusDnd": { "description": "Presence label of the do not disturb state" },
+  "@statusDnd": {
+    "description": "Presence label of the do not disturb state"
+  },
   "statusRead": "已讀",
-  "@statusRead": { "description": "Presence label of the read but no answer state" },
+  "@statusRead": {
+    "description": "Presence label of the read but no answer state"
+  },
   "searchGeneric": "搜尋",
-  "@searchGeneric": { "description": "Placeholder of a bare search field" },
+  "@searchGeneric": {
+    "description": "Placeholder of a bare search field"
+  },
   "inputMessageHint": "訊息",
-  "@inputMessageHint": { "description": "Placeholder of the composer" },
+  "@inputMessageHint": {
+    "description": "Placeholder of the composer"
+  },
   "aiReplyTitle": "AI 回覆",
-  "@aiReplyTitle": { "description": "Title of the AI replies page" },
+  "@aiReplyTitle": {
+    "description": "Title of the AI replies page"
+  },
   "aiReplyStyleHeader": "節奏",
-  "@aiReplyStyleHeader": { "description": "Section header of the reply style and pacing rows" },
+  "@aiReplyStyleHeader": {
+    "description": "Section header of the reply style and pacing rows"
+  },
   "aiReplyVisibleHeader": "你能看到的內容",
-  "@aiReplyVisibleHeader": { "description": "Section header of the two reply switches" },
+  "@aiReplyVisibleHeader": {
+    "description": "Section header of the two reply switches"
+  },
   "aiReplyVisibleFooter": "開啟顯示思考後，思考模型的推理過程會作為可展開的步驟寫在答案上方。Agent 模式讓模型呼叫工具，並為每次呼叫加上一列，顯示它的參數與結果。",
-  "@aiReplyVisibleFooter": { "description": "Section footer of the two reply switches" },
+  "@aiReplyVisibleFooter": {
+    "description": "Section footer of the two reply switches"
+  },
   "aiReplyMarkdown": "Markdown",
-  "@aiReplyMarkdown": { "description": "Switch that renders Markdown in bubbles" },
+  "@aiReplyMarkdown": {
+    "description": "Switch that renders Markdown in bubbles"
+  },
   "aiReplyMarkdownSub": "在氣泡裡渲染粗體、程式碼區塊與標題；關閉後人格化模式會去掉這些標記",
-  "@aiReplyMarkdownSub": { "description": "Switch subtitle" },
+  "@aiReplyMarkdownSub": {
+    "description": "Switch subtitle"
+  },
   "aiReplyShowThinking": "顯示思考",
-  "@aiReplyShowThinking": { "description": "Switch that writes the reasoning into the chat" },
+  "@aiReplyShowThinking": {
+    "description": "Switch that writes the reasoning into the chat"
+  },
   "aiReplyShowThinkingSub": "把推理過程寫進對話裡，而不是藏起來",
-  "@aiReplyShowThinkingSub": { "description": "Switch subtitle" },
+  "@aiReplyShowThinkingSub": {
+    "description": "Switch subtitle"
+  },
   "aiReplyAgentMode": "Agent 模式",
-  "@aiReplyAgentMode": { "description": "Switch that lets the model call tools" },
+  "@aiReplyAgentMode": {
+    "description": "Switch that lets the model call tools"
+  },
   "aiReplyAgentModeSub": "工具與 MCP 呼叫，每一步即時顯示",
-  "@aiReplyAgentModeSub": { "description": "Switch subtitle" },
+  "@aiReplyAgentModeSub": {
+    "description": "Switch subtitle"
+  },
+  "aiReplyAgentPass": "工具輪次上限",
+  "@aiReplyAgentPass": {
+    "description": "Row that opens the tool pass limit picker"
+  },
+  "aiReplyAgentPassSub": "一次回覆最多執行多少輪工具呼叫",
+  "@aiReplyAgentPassSub": {
+    "description": "Subtitle of the tool pass limit row"
+  },
+  "aiReplyAgentPassUnlimited": "無限制",
+  "@aiReplyAgentPassUnlimited": {
+    "description": "Label of the no cap option"
+  },
+  "aiReplyAgentPassUnlimitedSub": "一直執行工具輪次，直到模型自己停下",
+  "@aiReplyAgentPassUnlimitedSub": {
+    "description": "Subtitle of the no cap option"
+  },
+  "aiReplyAgentPassRounds": "{count} 輪",
+  "@aiReplyAgentPassRounds": {
+    "description": "Value of a numeric cap option",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "aiReplyToolsHeader": "工具",
-  "@aiReplyToolsHeader": { "description": "Section header of the tools entry" },
+  "@aiReplyToolsHeader": {
+    "description": "Section header of the tools entry"
+  },
   "aiReplyToolsFooter": "Agent 模式會給模型三個內建工具（時間、抓取網頁、列出 MCP 伺服器），再加上你的 MCP 伺服器提供的全部工具。每個工具都能在工具頁設為詢問、允許或拒絕。",
-  "@aiReplyToolsFooter": { "description": "Section footer of the tools entry" },
+  "@aiReplyToolsFooter": {
+    "description": "Section footer of the tools entry"
+  },
   "aiReplyToolsRow": "工具、MCP 伺服器與權限",
-  "@aiReplyToolsRow": { "description": "Row that opens the tools page" },
+  "@aiReplyToolsRow": {
+    "description": "Row that opens the tools page"
+  },
   "aiReplyToolsCount": "可用 MCP 工具 {count} 個",
-  "@aiReplyToolsCount": { "description": "Subtitle of the tools row, how many MCP tools are live" },
+  "@aiReplyToolsCount": {
+    "description": "Subtitle of the tools row, how many MCP tools are live"
+  },
   "aiReplyPersonaFooter": "人設卡片可以為自己的聊天單獨覆寫這兩個開關中的任一個。選擇跟隨全域時，則沿用上面的設定。",
-  "@aiReplyPersonaFooter": { "description": "Note explaining the per persona override" },
+  "@aiReplyPersonaFooter": {
+    "description": "Note explaining the per persona override"
+  },
   "aiReplySummaryThinking": "思考",
-  "@aiReplySummaryThinking": { "description": "Chip in the settings row summary" },
+  "@aiReplySummaryThinking": {
+    "description": "Chip in the settings row summary"
+  },
   "aiReplySummaryAgent": "agent",
-  "@aiReplySummaryAgent": { "description": "Chip in the settings row summary" },
+  "@aiReplySummaryAgent": {
+    "description": "Chip in the settings row summary"
+  },
   "aiReplySummaryNone": "一般回覆",
-  "@aiReplySummaryNone": { "description": "Settings row summary when both switches are off" },
+  "@aiReplySummaryNone": {
+    "description": "Settings row summary when both switches are off"
+  },
   "personaReplyUseGlobal": "使用「設定」裡的全域開關",
-  "@personaReplyUseGlobal": { "description": "Option subtitle of the follow global state" },
+  "@personaReplyUseGlobal": {
+    "description": "Option subtitle of the follow global state"
+  },
   "personaReplyAlwaysOn": "該人設一律開啟",
-  "@personaReplyAlwaysOn": { "description": "Option subtitle of the on state" },
+  "@personaReplyAlwaysOn": {
+    "description": "Option subtitle of the on state"
+  },
   "personaReplyAlwaysOff": "該人設一律關閉",
-  "@personaReplyAlwaysOff": { "description": "Option subtitle of the off state" },
+  "@personaReplyAlwaysOff": {
+    "description": "Option subtitle of the off state"
+  },
   "personaReplyFollowingGlobal": "依循全域開關",
-  "@personaReplyFollowingGlobal": { "description": "Row subtitle when the override is unset" },
+  "@personaReplyFollowingGlobal": {
+    "description": "Row subtitle when the override is unset"
+  },
   "personaReplyFollowGlobal": "依循全域",
-  "@personaReplyFollowGlobal": { "description": "Tri state row value, the persona has no opinion and the global switch decides" },
+  "@personaReplyFollowGlobal": {
+    "description": "Tri state row value, the persona has no opinion and the global switch decides"
+  },
   "personaReplyFooter": "僅為該人設覆寫「設定 > AI」裡的回覆開關。它只改變使用者在這個聊天中看到的內容，不影響人設說話的方式。",
-  "@personaReplyFooter": { "description": "Section footer of the per persona reply section" },
+  "@personaReplyFooter": {
+    "description": "Section footer of the per persona reply section"
+  },
   "chatEditMessageTitle": "編輯訊息",
-  "@chatEditMessageTitle": { "description": "Dialog title when editing a message" },
+  "@chatEditMessageTitle": {
+    "description": "Dialog title when editing a message"
+  },
   "chatEditHistoryTitle": "編輯記錄",
-  "@chatEditHistoryTitle": { "description": "Dialog title of the edit history, also a menu entry" },
+  "@chatEditHistoryTitle": {
+    "description": "Dialog title of the edit history, also a menu entry"
+  },
   "chatEditCurrentMark": "目前",
-  "@chatEditCurrentMark": { "description": "Marks the entry the message is at now" },
+  "@chatEditCurrentMark": {
+    "description": "Marks the entry the message is at now"
+  },
   "chatWalletOpened": "已拆開 ¥{amount}",
-  "@chatWalletOpened": { "description": "Bulletin after taking a red packet" },
+  "@chatWalletOpened": {
+    "description": "Bulletin after taking a red packet"
+  },
   "chatWalletReceived": "已收到 ¥{amount}",
-  "@chatWalletReceived": { "description": "Bulletin after taking a transfer" },
+  "@chatWalletReceived": {
+    "description": "Bulletin after taking a transfer"
+  },
   "walletRedPacket": "紅包",
-  "@walletRedPacket": { "description": "Title of a red packet card" },
+  "@walletRedPacket": {
+    "description": "Title of a red packet card"
+  },
   "walletTransfer": "轉帳",
-  "@walletTransfer": { "description": "Title of a transfer card" },
+  "@walletTransfer": {
+    "description": "Title of a transfer card"
+  },
   "walletReceived": "已收",
-  "@walletReceived": { "description": "State of a claimed red packet" },
+  "@walletReceived": {
+    "description": "State of a claimed red packet"
+  },
   "walletReturned": "已退回",
-  "@walletReturned": { "description": "State of a declined red packet" },
+  "@walletReturned": {
+    "description": "State of a declined red packet"
+  },
   "walletWaitingOpen": "等待開啟",
-  "@walletWaitingOpen": { "description": "State of a red packet I sent that nobody opened" },
+  "@walletWaitingOpen": {
+    "description": "State of a red packet I sent that nobody opened"
+  },
   "walletTapOpen": "點擊拆開",
-  "@walletTapOpen": { "description": "Hint that taking the card needs a tap" },
+  "@walletTapOpen": {
+    "description": "Hint that taking the card needs a tap"
+  },
   "walletBestWishes": "恭喜發財",
-  "@walletBestWishes": { "description": "Default note of a red packet" },
+  "@walletBestWishes": {
+    "description": "Default note of a red packet"
+  },
   "walletNoNote": "暫無留言",
-  "@walletNoNote": { "description": "Shown when a transfer carries no note" },
+  "@walletNoNote": {
+    "description": "Shown when a transfer carries no note"
+  },
   "walletBalance": "餘額",
-  "@walletBalance": { "description": "Wallet card label" },
+  "@walletBalance": {
+    "description": "Wallet card label"
+  },
   "walletPretendNote": "假裝的錢，只是為了應景",
-  "@walletPretendNote": { "description": "Small print under the balance" },
+  "@walletPretendNote": {
+    "description": "Small print under the balance"
+  },
   "walletRecords": "記錄",
-  "@walletRecords": { "description": "Section header of the transaction list" },
+  "@walletRecords": {
+    "description": "Section header of the transaction list"
+  },
   "walletEmpty": "還沒有轉帳紀錄。對 AI 好一點吧。",
-  "@walletEmpty": { "description": "Empty transaction list" },
+  "@walletEmpty": {
+    "description": "Empty transaction list"
+  },
   "walletReset": "重設錢包",
-  "@walletReset": { "description": "Row that empties the transaction list" },
+  "@walletReset": {
+    "description": "Row that empties the transaction list"
+  },
   "walletResetTitle": "重設錢包？",
-  "@walletResetTitle": { "description": "Confirmation title" },
+  "@walletResetTitle": {
+    "description": "Confirmation title"
+  },
   "walletResetAction": "重設",
-  "@walletResetAction": { "description": "Confirmation button" },
+  "@walletResetAction": {
+    "description": "Confirmation button"
+  },
   "stickerSettingsTitle": "表情",
-  "@stickerSettingsTitle": { "description": "Title of the sticker library page" },
+  "@stickerSettingsTitle": {
+    "description": "Title of the sticker library page"
+  },
   "stickerMyStickers": "我的表情",
-  "@stickerMyStickers": { "description": "Section header of the sticker tab in the panel" },
+  "@stickerMyStickers": {
+    "description": "Section header of the sticker tab in the panel"
+  },
   "stickerTabAll": "表情",
-  "@stickerTabAll": { "description": "Section header of the sticker tab in the panel" },
+  "@stickerTabAll": {
+    "description": "Section header of the sticker tab in the panel"
+  },
   "stickerFavorites": "收藏",
-  "@stickerFavorites": { "description": "Chip that filters to the favourite stickers" },
+  "@stickerFavorites": {
+    "description": "Chip that filters to the favourite stickers"
+  },
   "stickerEmptyPanel": "暫時還是空的，你傳送的 GIF 與梗圖都會存在這裡",
-  "@stickerEmptyPanel": { "description": "Empty state of the sticker tab" },
+  "@stickerEmptyPanel": {
+    "description": "Empty state of the sticker tab"
+  },
   "stickerSearchHint": "搜尋名稱、情緒、標籤",
-  "@stickerSearchHint": { "description": "Placeholder of the sticker library search" },
+  "@stickerSearchHint": {
+    "description": "Placeholder of the sticker library search"
+  },
   "stickerRecent": "最近",
-  "@stickerRecent": { "description": "Chip that filters to the recently used stickers" },
+  "@stickerRecent": {
+    "description": "Chip that filters to the recently used stickers"
+  },
   "stickerSelectAll": "全選",
-  "@stickerSelectAll": { "description": "Chip that picks everything the filter shows" },
+  "@stickerSelectAll": {
+    "description": "Chip that picks everything the filter shows"
+  },
   "stickerEmptyLibrary": "這裡還沒有內容。點 + 新增一個，或讓助手自動儲存你傳送的梗圖。",
-  "@stickerEmptyLibrary": { "description": "Empty state of the sticker library" },
+  "@stickerEmptyLibrary": {
+    "description": "Empty state of the sticker library"
+  },
   "stickerLibraryFooter": "點一下表情可編輯、加標籤或刪除，長按可選取多個並一次處理。助手會依情緒與語境從中挑選。",
-  "@stickerLibraryFooter": { "description": "Note at the bottom of the sticker library" },
+  "@stickerLibraryFooter": {
+    "description": "Note at the bottom of the sticker library"
+  },
   "stickerCountSelected": "已選 {count} 個",
-  "@stickerCountSelected": { "description": "Title of the batch sheet and the batch bar" },
+  "@stickerCountSelected": {
+    "description": "Title of the batch sheet and the batch bar"
+  },
   "stickerBatchActions": "批次操作",
-  "@stickerBatchActions": { "description": "Batch bar button that opens the batch sheet" },
+  "@stickerBatchActions": {
+    "description": "Batch bar button that opens the batch sheet"
+  },
   "stickerBatchMove": "移動到分類",
-  "@stickerBatchMove": { "description": "Batch sheet entry" },
+  "@stickerBatchMove": {
+    "description": "Batch sheet entry"
+  },
   "stickerBatchDeleteTitle": "刪除 {count} 個表情？",
-  "@stickerBatchDeleteTitle": { "description": "Confirmation title of the batch delete" },
+  "@stickerBatchDeleteTitle": {
+    "description": "Confirmation title of the batch delete"
+  },
   "stickerBatchUndo": "此操作無法復原。",
-  "@stickerBatchUndo": { "description": "Confirmation body of the batch delete" },
+  "@stickerBatchUndo": {
+    "description": "Confirmation body of the batch delete"
+  },
   "stickerBatchNow": "目前：{category}",
-  "@stickerBatchNow": { "description": "Hint of the move to category prompt" },
+  "@stickerBatchNow": {
+    "description": "Hint of the move to category prompt"
+  },
   "stickerAddTitle": "新增表情",
-  "@stickerAddTitle": { "description": "Dialog title of the add sticker flow" },
+  "@stickerAddTitle": {
+    "description": "Dialog title of the add sticker flow"
+  },
   "stickerAddGallery": "相簿",
-  "@stickerAddGallery": { "description": "Source entry of the add sticker flow" },
+  "@stickerAddGallery": {
+    "description": "Source entry of the add sticker flow"
+  },
   "stickerAddUrl": "連結",
-  "@stickerAddUrl": { "description": "Source entry of the add sticker flow" },
+  "@stickerAddUrl": {
+    "description": "Source entry of the add sticker flow"
+  },
   "stickerEmotionOptional": "情緒詞（選填）",
-  "@stickerEmotionOptional": { "description": "Prompt asking for the emotion of a sticker" },
+  "@stickerEmotionOptional": {
+    "description": "Prompt asking for the emotion of a sticker"
+  },
   "stickerEmotionExample": "例如 lol、無言",
-  "@stickerEmotionExample": { "description": "Placeholder of the emotion prompt" },
+  "@stickerEmotionExample": {
+    "description": "Placeholder of the emotion prompt"
+  },
   "stickerFieldName": "名稱",
-  "@stickerFieldName": { "description": "Field placeholder of the sticker editor" },
+  "@stickerFieldName": {
+    "description": "Field placeholder of the sticker editor"
+  },
   "stickerFieldEmotion": "情緒",
-  "@stickerFieldEmotion": { "description": "Field placeholder of the sticker editor" },
+  "@stickerFieldEmotion": {
+    "description": "Field placeholder of the sticker editor"
+  },
   "stickerFieldTags": "標籤，以逗號分隔",
-  "@stickerFieldTags": { "description": "Field placeholder of the sticker editor" },
+  "@stickerFieldTags": {
+    "description": "Field placeholder of the sticker editor"
+  },
   "stickerFieldCategory": "分類",
-  "@stickerFieldCategory": { "description": "Field placeholder of the sticker editor and of the move prompt" },
+  "@stickerFieldCategory": {
+    "description": "Field placeholder of the sticker editor and of the move prompt"
+  },
   "stickerLink": "連結",
-  "@stickerLink": { "description": "Prompt asking for the image url" },
+  "@stickerLink": {
+    "description": "Prompt asking for the image url"
+  },
   "stickerUnfavorite": "取消收藏",
-  "@stickerUnfavorite": { "description": "Menu entry that drops the star" },
+  "@stickerUnfavorite": {
+    "description": "Menu entry that drops the star"
+  },
   "stickerFavorite": "收藏",
-  "@stickerFavorite": { "description": "Menu entry that sets the star" },
+  "@stickerFavorite": {
+    "description": "Menu entry that sets the star"
+  },
   "stickerAiBadge": "AI",
-  "@stickerAiBadge": { "description": "Badge on a sticker the assistant saved itself" },
+  "@stickerAiBadge": {
+    "description": "Badge on a sticker the assistant saved itself"
+  },
   "humanTitle": "擬人化",
-  "@humanTitle": { "description": "Title of the humanize settings page" },
+  "@humanTitle": {
+    "description": "Title of the humanize settings page"
+  },
   "humanSubtitle": "正在輸入、主動發信、表情、記憶",
-  "@humanSubtitle": { "description": "Settings row subtitle of the humanize entry" },
+  "@humanSubtitle": {
+    "description": "Settings row subtitle of the humanize entry"
+  },
   "humanFooter": "截斷標籤、主動發信、表情、撤回、心情與記憶。關閉後就能回到樸素的助理模式。",
-  "@humanFooter": { "description": "Note at the top of the humanize page" },
+  "@humanFooter": {
+    "description": "Note at the top of the humanize page"
+  },
   "humanEnabled": "擬人化模式",
-  "@humanEnabled": { "description": "Master switch of the humanize layer" },
+  "@humanEnabled": {
+    "description": "Master switch of the humanize layer"
+  },
   "humanBehaviour": "行為",
-  "@humanBehaviour": { "description": "Section header" },
+  "@humanBehaviour": {
+    "description": "Section header"
+  },
   "humanBehaviourRow": "正在輸入、隨機與撤回",
-  "@humanBehaviourRow": { "description": "Row that opens the behaviour page" },
+  "@humanBehaviourRow": {
+    "description": "Row that opens the behaviour page"
+  },
   "humanProactive": "主動發信",
-  "@humanProactive": { "description": "Row and page title of the proactive settings" },
+  "@humanProactive": {
+    "description": "Row and page title of the proactive settings"
+  },
   "humanStickersRow": "表情",
-  "@humanStickersRow": { "description": "Row that opens the sticker library" },
+  "@humanStickersRow": {
+    "description": "Row that opens the sticker library"
+  },
   "humanMemoryRow": "長期記憶",
-  "@humanMemoryRow": { "description": "Row that opens the memory page" },
+  "@humanMemoryRow": {
+    "description": "Row that opens the memory page"
+  },
   "humanChatsRow": "對話：心情、角色卡、日程",
-  "@humanChatsRow": { "description": "Row that opens the per conversation pages" },
+  "@humanChatsRow": {
+    "description": "Row that opens the per conversation pages"
+  },
   "humanToolsHeader": "工具",
-  "@humanToolsHeader": { "description": "Section header" },
+  "@humanToolsHeader": {
+    "description": "Section header"
+  },
   "humanToolsRow": "工具、MCP 伺服器與權限",
-  "@humanToolsRow": { "description": "Row that opens the tools page" },
+  "@humanToolsRow": {
+    "description": "Row that opens the tools page"
+  },
   "humanWalletRow": "錢包",
-  "@humanWalletRow": { "description": "Row that opens the wallet page" },
+  "@humanWalletRow": {
+    "description": "Row that opens the wallet page"
+  },
   "humanDataHeader": "反饋與資料",
-  "@humanDataHeader": { "description": "Section header" },
+  "@humanDataHeader": {
+    "description": "Section header"
+  },
   "humanRatingsRow": "評分與調校",
-  "@humanRatingsRow": { "description": "Row that opens the ratings page" },
+  "@humanRatingsRow": {
+    "description": "Row that opens the ratings page"
+  },
   "humanBackupRow": "備份與匯入",
-  "@humanBackupRow": { "description": "Row that opens the backup page" },
+  "@humanBackupRow": {
+    "description": "Row that opens the backup page"
+  },
   "humanSchedDebugRow": "排程器除錯面板",
-  "@humanSchedDebugRow": { "description": "Row that opens the scheduler debug page" },
+  "@humanSchedDebugRow": {
+    "description": "Row that opens the scheduler debug page"
+  },
   "humanBehaviourTitle": "正在輸入與隨機性",
-  "@humanBehaviourTitle": { "description": "Title of the behaviour page" },
+  "@humanBehaviourTitle": {
+    "description": "Title of the behaviour page"
+  },
   "humanBrHeader": "截斷標籤 <i-br>",
-  "@humanBrHeader": { "description": "Section header of the break tag settings" },
+  "@humanBrHeader": {
+    "description": "Section header of the break tag settings"
+  },
   "humanBrFooter": "模型會在氣泡之間寫入 <i-br_500>，停頓自上一則氣泡顯示的那一刻開始計算。",
-  "@humanBrFooter": { "description": "Section footer of the break tag settings" },
+  "@humanBrFooter": {
+    "description": "Section footer of the break tag settings"
+  },
   "humanBrToggle": "用 <i-br> 拆分訊息",
-  "@humanBrToggle": { "description": "Checkbox row" },
+  "@humanBrToggle": {
+    "description": "Checkbox row"
+  },
   "humanBrPause": "預設停頓",
-  "@humanBrPause": { "description": "Slider row label" },
+  "@humanBrPause": {
+    "description": "Slider row label"
+  },
   "humanReplyDelay": "首則訊息前的讀訊息時間",
-  "@humanReplyDelay": { "description": "Slider row label" },
+  "@humanReplyDelay": {
+    "description": "Slider row label"
+  },
   "humanPaceScale": "訊息間停頓倍率",
-  "@humanPaceScale": { "description": "Slider row label" },
+  "@humanPaceScale": {
+    "description": "Slider row label"
+  },
   "humanRandomHeader": "隨機性",
-  "@humanRandomHeader": { "description": "Section header of the randomness settings" },
+  "@humanRandomHeader": {
+    "description": "Section header of the randomness settings"
+  },
   "humanRandomFooter": "固定種子會讓同一段對話的同一輪重現相同結果，除錯時很方便；留空則每次都重新擲點。",
-  "@humanRandomFooter": { "description": "Section footer of the randomness settings" },
+  "@humanRandomFooter": {
+    "description": "Section footer of the randomness settings"
+  },
   "humanTypingSpread": "正在輸入速度的浮動範圍",
-  "@humanTypingSpread": { "description": "Slider row label" },
+  "@humanTypingSpread": {
+    "description": "Slider row label"
+  },
   "humanTypoChance": "錯字機率",
-  "@humanTypoChance": { "description": "Slider row label" },
+  "@humanTypoChance": {
+    "description": "Slider row label"
+  },
   "humanParticleChance": "語氣詞出現機率",
-  "@humanParticleChance": { "description": "Slider row label" },
+  "@humanParticleChance": {
+    "description": "Slider row label"
+  },
   "humanSplitChance": "拆成多則氣泡",
-  "@humanSplitChance": { "description": "Slider row label" },
+  "@humanSplitChance": {
+    "description": "Slider row label"
+  },
   "humanPunctStyle": "標點風格",
-  "@humanPunctStyle": { "description": "Row that cycles the punctuation style" },
+  "@humanPunctStyle": {
+    "description": "Row that cycles the punctuation style"
+  },
   "humanPunctNormal": "標準",
-  "@humanPunctNormal": { "description": "One of the three punctuation styles" },
+  "@humanPunctNormal": {
+    "description": "One of the three punctuation styles"
+  },
   "humanPunctLoose": "隨意",
-  "@humanPunctLoose": { "description": "One of the three punctuation styles" },
+  "@humanPunctLoose": {
+    "description": "One of the three punctuation styles"
+  },
   "humanPunctMinimal": "極簡",
-  "@humanPunctMinimal": { "description": "One of the three punctuation styles" },
+  "@humanPunctMinimal": {
+    "description": "One of the three punctuation styles"
+  },
   "humanSeedHint": "隨機種子（數字，留空即隨機）",
-  "@humanSeedHint": { "description": "Field placeholder of the random seed" },
+  "@humanSeedHint": {
+    "description": "Field placeholder of the random seed"
+  },
   "humanRecallHeader": "撤回",
-  "@humanRecallHeader": { "description": "Section header of the recall settings" },
+  "@humanRecallHeader": {
+    "description": "Section header of the recall settings"
+  },
   "humanRecallFooter": "只有已經顯示過的氣泡才能撤回。",
-  "@humanRecallFooter": { "description": "Section footer of the recall settings" },
+  "@humanRecallFooter": {
+    "description": "Section footer of the recall settings"
+  },
   "humanRecallToggle": "允許撤回訊息",
-  "@humanRecallToggle": { "description": "Checkbox row" },
+  "@humanRecallToggle": {
+    "description": "Checkbox row"
+  },
   "humanRecallPerHour": "每小時撤回次數",
-  "@humanRecallPerHour": { "description": "Slider row label" },
+  "@humanRecallPerHour": {
+    "description": "Slider row label"
+  },
   "humanRecallWindow": "撤回時限",
-  "@humanRecallWindow": { "description": "Slider row label" },
+  "@humanRecallWindow": {
+    "description": "Slider row label"
+  },
   "humanStickerFreq": "傳送表情的頻率",
-  "@humanStickerFreq": { "description": "Slider row label" },
+  "@humanStickerFreq": {
+    "description": "Slider row label"
+  },
   "humanAiSaveSticker": "允許 AI 儲存表情",
-  "@humanAiSaveSticker": { "description": "Checkbox row" },
+  "@humanAiSaveSticker": {
+    "description": "Checkbox row"
+  },
   "humanStickerOnly": "允許只發表情的回覆",
-  "@humanStickerOnly": { "description": "Checkbox row" },
+  "@humanStickerOnly": {
+    "description": "Checkbox row"
+  },
   "humanStickerHeader": "表情",
-  "@humanStickerHeader": { "description": "Section header of the sticker behaviour settings" },
+  "@humanStickerHeader": {
+    "description": "Section header of the sticker behaviour settings"
+  },
   "proactiveFooter": "助手以 schedule_message 決定何時主動開口，以下是圍繞它的限制。",
-  "@proactiveFooter": { "description": "Note at the top of the proactive page" },
+  "@proactiveFooter": {
+    "description": "Note at the top of the proactive page"
+  },
   "proactiveToggle": "允許主動發信",
-  "@proactiveToggle": { "description": "Master switch of proactive messages" },
+  "@proactiveToggle": {
+    "description": "Master switch of proactive messages"
+  },
   "proactiveLimits": "限制",
-  "@proactiveLimits": { "description": "Section header" },
+  "@proactiveLimits": {
+    "description": "Section header"
+  },
   "proactiveMaxConsecutive": "最多連續幾則未回覆",
-  "@proactiveMaxConsecutive": { "description": "Slider row label" },
+  "@proactiveMaxConsecutive": {
+    "description": "Slider row label"
+  },
   "proactiveDnd": "勿擾",
-  "@proactiveDnd": { "description": "Checkbox row that blocks everything" },
+  "@proactiveDnd": {
+    "description": "Checkbox row that blocks everything"
+  },
   "proactiveQuiet": "勿擾時段",
-  "@proactiveQuiet": { "description": "Checkbox row" },
+  "@proactiveQuiet": {
+    "description": "Checkbox row"
+  },
   "proactiveQuietFrom": "勿擾開始",
-  "@proactiveQuietFrom": { "description": "Time row" },
+  "@proactiveQuietFrom": {
+    "description": "Time row"
+  },
   "proactiveQuietUntil": "勿擾結束",
-  "@proactiveQuietUntil": { "description": "Time row" },
+  "@proactiveQuietUntil": {
+    "description": "Time row"
+  },
   "proactiveUrgent": "緊急內容可略過勿擾時段",
-  "@proactiveUrgent": { "description": "Checkbox row" },
+  "@proactiveUrgent": {
+    "description": "Checkbox row"
+  },
   "proactiveTriggers": "自動觸發",
-  "@proactiveTriggers": { "description": "Section header" },
+  "@proactiveTriggers": {
+    "description": "Section header"
+  },
   "proactiveTriggersFooter": "這些只是喚醒助手，用字由它自己決定。陌生人階段不傳送問候。",
-  "@proactiveTriggersFooter": { "description": "Section footer" },
+  "@proactiveTriggersFooter": {
+    "description": "Section footer"
+  },
   "proactiveGreetMorning": "早安問候",
-  "@proactiveGreetMorning": { "description": "Checkbox row" },
+  "@proactiveGreetMorning": {
+    "description": "Checkbox row"
+  },
   "proactiveMorningAt": "早安時間",
-  "@proactiveMorningAt": { "description": "Time row" },
+  "@proactiveMorningAt": {
+    "description": "Time row"
+  },
   "proactiveGreetEvening": "晚安問候",
-  "@proactiveGreetEvening": { "description": "Checkbox row" },
+  "@proactiveGreetEvening": {
+    "description": "Checkbox row"
+  },
   "proactiveEveningAt": "晚安時間",
-  "@proactiveEveningAt": { "description": "Time row" },
+  "@proactiveEveningAt": {
+    "description": "Time row"
+  },
   "proactiveIcebreak": "冷場多久後破冰",
-  "@proactiveIcebreak": { "description": "Slider row label" },
+  "@proactiveIcebreak": {
+    "description": "Slider row label"
+  },
   "proactiveIcebreakUnit": "{days} 天",
-  "@proactiveIcebreakUnit": { "description": "Value of the icebreaker slider" },
+  "@proactiveIcebreakUnit": {
+    "description": "Value of the icebreaker slider"
+  },
   "proactiveServer": "伺服器兜底",
-  "@proactiveServer": { "description": "Section header" },
+  "@proactiveServer": {
+    "description": "Section header"
+  },
   "proactiveServerFooter": "選填。工作佇列會同步到這個後端（POST /api/schedule/sync, GET /api/schedule/due），這樣即使應用被關閉，工作也不會遺失。本機鬧鐘與每 15 分鐘的背景工作一律會執行。",
-  "@proactiveServerFooter": { "description": "Section footer" },
+  "@proactiveServerFooter": {
+    "description": "Section footer"
+  },
   "proactiveServerUrl": "伺服器網址",
-  "@proactiveServerUrl": { "description": "Row and prompt title of the backend address" },
+  "@proactiveServerUrl": {
+    "description": "Row and prompt title of the backend address"
+  },
   "humanNotSet": "未設定",
-  "@humanNotSet": { "description": "Value of an empty optional field" },
+  "@humanNotSet": {
+    "description": "Value of an empty optional field"
+  },
   "proactiveDebugPanel": "偵錯面板",
-  "@proactiveDebugPanel": { "description": "Row that opens the scheduler debug page" },
+  "@proactiveDebugPanel": {
+    "description": "Row that opens the scheduler debug page"
+  },
   "schedTitle": "排程器偵錯",
-  "@schedTitle": { "description": "Title of the scheduler debug page" },
+  "@schedTitle": {
+    "description": "Title of the scheduler debug page"
+  },
   "schedPending": "待執行（{count}）",
-  "@schedPending": { "description": "Section header of the open task list" },
+  "@schedPending": {
+    "description": "Section header of the open task list"
+  },
   "schedPendingFooter": "點傳送圖示會立刻執行工作，忽略時間與觸發條件；點垃圾桶圖示則取消工作。",
-  "@schedPendingFooter": { "description": "Section footer of the open task list" },
+  "@schedPendingFooter": {
+    "description": "Section footer of the open task list"
+  },
   "schedEmpty": "佇列中沒有工作",
-  "@schedEmpty": { "description": "Empty open task list" },
+  "@schedEmpty": {
+    "description": "Empty open task list"
+  },
   "schedFinished": "最近已完成",
-  "@schedFinished": { "description": "Section header of the finished task list" },
+  "@schedFinished": {
+    "description": "Section header of the finished task list"
+  },
   "schedTestTask": "1 分鐘後排入一個測試工作",
-  "@schedTestTask": { "description": "Row that queues a test task" },
+  "@schedTestTask": {
+    "description": "Row that queues a test task"
+  },
   "schedGate": "觸發判定",
-  "@schedGate": { "description": "Section header of the gate log" },
+  "@schedGate": {
+    "description": "Section header of the gate log"
+  },
   "schedToolCalls": "工具呼叫",
-  "@schedToolCalls": { "description": "Section header of the tool log" },
+  "@schedToolCalls": {
+    "description": "Section header of the tool log"
+  },
   "schedEmptyLog": "（空）",
-  "@schedEmptyLog": { "description": "Shown when a log has nothing in it" },
+  "@schedEmptyLog": {
+    "description": "Shown when a log has nothing in it"
+  },
   "schedDue": "到期",
-  "@schedDue": { "description": "State of a task whose time has come" },
+  "@schedDue": {
+    "description": "State of a task whose time has come"
+  },
   "schedCondition": "條件",
-  "@schedCondition": { "description": "Label of the gate condition of a task" },
+  "@schedCondition": {
+    "description": "Label of the gate condition of a task"
+  },
   "schedFailures": "失敗",
-  "@schedFailures": { "description": "Label of the failure count of a task" },
+  "@schedFailures": {
+    "description": "Label of the failure count of a task"
+  },
   "schedUrgent": "緊急",
-  "@schedUrgent": { "description": "Marker of a task that may pass the quiet hours" },
+  "@schedUrgent": {
+    "description": "Marker of a task that may pass the quiet hours"
+  },
   "schedRemaining": "{minutes} 分 {seconds} 秒",
-  "@schedRemaining": { "description": "Time left until a task fires" },
+  "@schedRemaining": {
+    "description": "Time left until a task fires"
+  },
   "humanRatingsTitle": "評分",
-  "@humanRatingsTitle": { "description": "Title of the ratings page" },
+  "@humanRatingsTitle": {
+    "description": "Title of the ratings page"
+  },
   "humanRatingsFooter": "你的評分會用來調整助理：煩躁會降低它主動發信的頻率，擬真程度與滿意度則會微調風格。開啟自動評分後，助理也會從你的行為中推測這些分數。",
-  "@humanRatingsFooter": { "description": "Note at the top of the ratings page" },
+  "@humanRatingsFooter": {
+    "description": "Note at the top of the ratings page"
+  },
   "humanRatingHuman": "有多像真人",
-  "@humanRatingHuman": { "description": "Slider row label" },
+  "@humanRatingHuman": {
+    "description": "Slider row label"
+  },
   "humanRatingAnnoy": "它有多打擾你",
-  "@humanRatingAnnoy": { "description": "Slider row label" },
+  "@humanRatingAnnoy": {
+    "description": "Slider row label"
+  },
   "humanRatingSatisfaction": "整體滿意度",
-  "@humanRatingSatisfaction": { "description": "Slider row label" },
+  "@humanRatingSatisfaction": {
+    "description": "Slider row label"
+  },
   "humanRatingAuto": "自動推測評分",
-  "@humanRatingAuto": { "description": "Checkbox row" },
+  "@humanRatingAuto": {
+    "description": "Checkbox row"
+  },
   "humanRatingTuning": "主動發信頻率倍率",
-  "@humanRatingTuning": { "description": "Info cell label of the tuning multiplier" },
+  "@humanRatingTuning": {
+    "description": "Info cell label of the tuning multiplier"
+  },
   "humanBackupTitle": "備份與匯入",
-  "@humanBackupTitle": { "description": "Title of the backup page" },
+  "@humanBackupTitle": {
+    "description": "Title of the backup page"
+  },
   "humanSavedCopied": "已儲存並複製",
-  "@humanSavedCopied": { "description": "Bulletin after a successful export" },
+  "@humanSavedCopied": {
+    "description": "Bulletin after a successful export"
+  },
   "humanCopiedClipboard": "已複製到剪貼簿",
-  "@humanCopiedClipboard": { "description": "Bulletin after the file write failed" },
+  "@humanCopiedClipboard": {
+    "description": "Bulletin after the file write failed"
+  },
   "humanImportTitle": "匯入",
-  "@humanImportTitle": { "description": "Dialog title of the import mode picker" },
+  "@humanImportTitle": {
+    "description": "Dialog title of the import mode picker"
+  },
   "humanImportFooter": "合併會保留現有內容並補上新的項目，覆蓋則整份取代。",
-  "@humanImportFooter": { "description": "Body of the import mode picker" },
+  "@humanImportFooter": {
+    "description": "Body of the import mode picker"
+  },
   "humanOverwrite": "覆蓋",
-  "@humanOverwrite": { "description": "Import mode that replaces everything" },
+  "@humanOverwrite": {
+    "description": "Import mode that replaces everything"
+  },
   "humanMerge": "合併",
-  "@humanMerge": { "description": "Import mode that adds the new entries" },
+  "@humanMerge": {
+    "description": "Import mode that adds the new entries"
+  },
   "humanImported": "已匯入 {count} 筆",
-  "@humanImported": { "description": "Bulletin after a successful import" },
+  "@humanImported": {
+    "description": "Bulletin after a successful import"
+  },
   "humanInvalidFile": "檔案無效",
-  "@humanInvalidFile": { "description": "Bulletin when the import payload is broken" },
+  "@humanInvalidFile": {
+    "description": "Bulletin when the import payload is broken"
+  },
   "humanExport": "匯出",
-  "@humanExport": { "description": "Row that writes the export to a file" },
+  "@humanExport": {
+    "description": "Row that writes the export to a file"
+  },
   "humanImportFile": "從檔案匯入",
-  "@humanImportFile": { "description": "Row that reads the import from a file" },
+  "@humanImportFile": {
+    "description": "Row that reads the import from a file"
+  },
   "humanImportClipboard": "從剪貼簿匯入",
-  "@humanImportClipboard": { "description": "Row that reads the import from the clipboard" },
+  "@humanImportClipboard": {
+    "description": "Row that reads the import from the clipboard"
+  },
   "humanStickersGroup": "表情與標籤",
-  "@humanStickersGroup": { "description": "Section header of the sticker export group" },
+  "@humanStickersGroup": {
+    "description": "Section header of the sticker export group"
+  },
   "humanMemoryGroup": "記憶",
-  "@humanMemoryGroup": { "description": "Section header of the memory export group" },
+  "@humanMemoryGroup": {
+    "description": "Section header of the memory export group"
+  },
   "humanCardsGroup": "角色卡（SillyTavern chara_card_v2）",
-  "@humanCardsGroup": { "description": "Section header of the character card group" },
+  "@humanCardsGroup": {
+    "description": "Section header of the character card group"
+  },
   "humanCardsFooter": "選擇一段對話來匯出或匯入它的角色卡。",
-  "@humanCardsFooter": { "description": "Section footer of the character card group" },
+  "@humanCardsFooter": {
+    "description": "Section footer of the character card group"
+  },
   "humanChatsTitle": "對話",
-  "@humanChatsTitle": { "description": "Title of the conversation list" },
+  "@humanChatsTitle": {
+    "description": "Title of the conversation list"
+  },
   "humanChatState": "狀態",
-  "@humanChatState": { "description": "Section header of the per conversation state" },
+  "@humanChatState": {
+    "description": "Section header of the per conversation state"
+  },
   "humanChatStage": "關係階段",
-  "@humanChatStage": { "description": "Label of the relationship stage" },
+  "@humanChatStage": {
+    "description": "Label of the relationship stage"
+  },
   "humanChatMessages": "則訊息",
-  "@humanChatMessages": { "description": "Label of the message count" },
+  "@humanChatMessages": {
+    "description": "Label of the message count"
+  },
   "humanChatMinutes": "分鐘相伴",
-  "@humanChatMinutes": { "description": "Label of how long the two have been talking" },
+  "@humanChatMinutes": {
+    "description": "Label of how long the two have been talking"
+  },
   "humanChatStatus": "狀態",
-  "@humanChatStatus": { "description": "Row that cycles the presence" },
+  "@humanChatStatus": {
+    "description": "Row that cycles the presence"
+  },
   "humanChatClearTasks": "清除待執行的主動發信任務",
-  "@humanChatClearTasks": { "description": "Row that drops the open tasks of this conversation" },
+  "@humanChatClearTasks": {
+    "description": "Row that drops the open tasks of this conversation"
+  },
   "humanChatCardHeader": "角色卡",
-  "@humanChatCardHeader": { "description": "Section header of the character card" },
+  "@humanChatCardHeader": {
+    "description": "Section header of the character card"
+  },
   "humanChatCardFooter": "每次回覆前都會注入，讓語氣保持一致，助理可能會慢慢微調。",
-  "@humanChatCardFooter": { "description": "Section footer of the character card" },
+  "@humanChatCardFooter": {
+    "description": "Section footer of the character card"
+  },
   "humanChatSpeechStyle": "說話風格",
-  "@humanChatSpeechStyle": { "description": "Field of the character card" },
+  "@humanChatSpeechStyle": {
+    "description": "Field of the character card"
+  },
   "humanChatCatchphrases": "口頭禪",
-  "@humanChatCatchphrases": { "description": "Field of the character card" },
+  "@humanChatCatchphrases": {
+    "description": "Field of the character card"
+  },
   "humanChatCatchphrasesHint": "口頭禪（以逗號分隔）",
-  "@humanChatCatchphrasesHint": { "description": "Prompt title for the catchphrase list" },
+  "@humanChatCatchphrasesHint": {
+    "description": "Prompt title for the catchphrase list"
+  },
   "humanChatValues": "價值觀",
-  "@humanChatValues": { "description": "Field of the character card" },
+  "@humanChatValues": {
+    "description": "Field of the character card"
+  },
   "humanChatTaboos": "禁忌",
-  "@humanChatTaboos": { "description": "Field of the character card" },
+  "@humanChatTaboos": {
+    "description": "Field of the character card"
+  },
   "humanChatAddressStranger": "稱呼：陌生人",
-  "@humanChatAddressStranger": { "description": "Field of the character card" },
+  "@humanChatAddressStranger": {
+    "description": "Field of the character card"
+  },
   "humanChatAddressAcquaintance": "稱呼：熟人",
-  "@humanChatAddressAcquaintance": { "description": "Field of the character card" },
+  "@humanChatAddressAcquaintance": {
+    "description": "Field of the character card"
+  },
   "humanChatAddressClose": "稱呼：親近的人",
-  "@humanChatAddressClose": { "description": "Field of the character card" },
+  "@humanChatAddressClose": {
+    "description": "Field of the character card"
+  },
   "humanChatExportCard": "匯出角色卡（chara_card_v2）",
-  "@humanChatExportCard": { "description": "Row that copies the card as json" },
+  "@humanChatExportCard": {
+    "description": "Row that copies the card as json"
+  },
   "humanChatCardCopied": "角色卡已複製到剪貼簿",
-  "@humanChatCardCopied": { "description": "Bulletin after copying the card" },
+  "@humanChatCardCopied": {
+    "description": "Bulletin after copying the card"
+  },
   "humanChatImportCard": "從剪貼簿匯入角色卡",
-  "@humanChatImportCard": { "description": "Row that imports the card from the clipboard" },
+  "@humanChatImportCard": {
+    "description": "Row that imports the card from the clipboard"
+  },
   "humanChatImportCardTitle": "匯入角色卡",
-  "@humanChatImportCardTitle": { "description": "Dialog title of the card import" },
+  "@humanChatImportCardTitle": {
+    "description": "Dialog title of the card import"
+  },
   "humanChatImportCardFooter": "覆蓋會取代整張角色卡，合併只填補空白欄位。",
-  "@humanChatImportCardFooter": { "description": "Body of the card import mode picker" },
+  "@humanChatImportCardFooter": {
+    "description": "Body of the card import mode picker"
+  },
   "humanChatInvalidCard": "角色卡無效",
-  "@humanChatInvalidCard": { "description": "Bulletin when the card payload is broken" },
+  "@humanChatInvalidCard": {
+    "description": "Bulletin when the card payload is broken"
+  },
   "humanChatSchedule": "每日行程",
-  "@humanChatSchedule": { "description": "Section header of the daily schedule" },
+  "@humanChatSchedule": {
+    "description": "Section header of the daily schedule"
+  },
   "humanChatScheduleFooter": "行程進行中時，狀態會改變，精力停止恢復，主動發信也會暫停；結束後助理可能會說自己回來了。",
-  "@humanChatScheduleFooter": { "description": "Section footer of the daily schedule" },
+  "@humanChatScheduleFooter": {
+    "description": "Section footer of the daily schedule"
+  },
   "humanChatScheduleNow": "現在",
-  "@humanChatScheduleNow": { "description": "Marker of the schedule entry that is running" },
+  "@humanChatScheduleNow": {
+    "description": "Marker of the schedule entry that is running"
+  },
   "humanChatScheduleAdd": "新增項目（60 分鐘）",
-  "@humanChatScheduleAdd": { "description": "Row that opens the add schedule prompt" },
+  "@humanChatScheduleAdd": {
+    "description": "Row that opens the add schedule prompt"
+  },
   "humanChatScheduleWhat": "在做什麼？",
-  "@humanChatScheduleWhat": { "description": "Prompt title for a new schedule entry" },
+  "@humanChatScheduleWhat": {
+    "description": "Prompt title for a new schedule entry"
+  },
   "humanChatScheduleExample": "例如：在開會",
-  "@humanChatScheduleExample": { "description": "Placeholder of the new schedule prompt" },
+  "@humanChatScheduleExample": {
+    "description": "Placeholder of the new schedule prompt"
+  },
   "humanChatFeelings": "數值變動的原因",
-  "@humanChatFeelings": { "description": "Section header of the feeling log" },
+  "@humanChatFeelings": {
+    "description": "Section header of the feeling log"
+  },
   "humanChatFeelingsMood": "心情",
-  "@humanChatFeelingsMood": { "description": "Slider label of the mood value" },
+  "@humanChatFeelingsMood": {
+    "description": "Slider label of the mood value"
+  },
   "humanChatFeelingsAffection": "好感",
-  "@humanChatFeelingsAffection": { "description": "Slider label of the affection value" },
+  "@humanChatFeelingsAffection": {
+    "description": "Slider label of the affection value"
+  },
   "humanChatFeelingsEnergy": "精力",
-  "@humanChatFeelingsEnergy": { "description": "Slider label of the energy value" },
+  "@humanChatFeelingsEnergy": {
+    "description": "Slider label of the energy value"
+  },
   "memoryTitle": "記憶",
-  "@memoryTitle": { "description": "Title of the memory page" },
+  "@memoryTitle": {
+    "description": "Title of the memory page"
+  },
   "memoryNew": "新增記憶",
-  "@memoryNew": { "description": "Prompt title for a new memory" },
+  "@memoryNew": {
+    "description": "Prompt title for a new memory"
+  },
   "memoryNewWhat": "想讓 AI 記住什麼？",
-  "@memoryNewWhat": { "description": "Placeholder of the new memory prompt" },
+  "@memoryNewWhat": {
+    "description": "Placeholder of the new memory prompt"
+  },
   "memoryNewType": "類型",
-  "@memoryNewType": { "description": "Dialog title of the memory type picker" },
+  "@memoryNewType": {
+    "description": "Dialog title of the memory type picker"
+  },
   "memoryFooter": "權重會隨上次使用後經過的時間逐漸衰減。低於門檻的項目會被遺忘，不再注入。承諾與待辦在完成前不會衰減。",
-  "@memoryFooter": { "description": "Note at the top of the memory page" },
+  "@memoryFooter": {
+    "description": "Note at the top of the memory page"
+  },
   "memoryEmpty": "尚無記憶",
-  "@memoryEmpty": { "description": "Empty memory list" },
+  "@memoryEmpty": {
+    "description": "Empty memory list"
+  },
   "memoryForgotten": "已遺忘",
-  "@memoryForgotten": { "description": "Marker of a memory that decayed away" },
+  "@memoryForgotten": {
+    "description": "Marker of a memory that decayed away"
+  },
   "memoryDue": "即將到期",
-  "@memoryDue": { "description": "Marker of a memory that has a deadline" },
+  "@memoryDue": {
+    "description": "Marker of a memory that has a deadline"
+  },
   "memoryNotNeeded": "不再需要",
-  "@memoryNotNeeded": { "description": "Menu entry that completes a memory" },
+  "@memoryNotNeeded": {
+    "description": "Menu entry that completes a memory"
+  },
   "memoryRestore": "恢復",
-  "@memoryRestore": { "description": "Menu entry that brings a forgotten memory back" },
+  "@memoryRestore": {
+    "description": "Menu entry that brings a forgotten memory back"
+  },
   "memoryClose": "關閉",
-  "@memoryClose": { "description": "Menu entry that just dismisses the dialog" },
+  "@memoryClose": {
+    "description": "Menu entry that just dismisses the dialog"
+  },
   "toolPermTitle": "允許使用這個工具嗎？",
-  "@toolPermTitle": { "description": "Dialog title of the tool permission prompt" },
+  "@toolPermTitle": {
+    "description": "Dialog title of the tool permission prompt"
+  },
   "toolPermDeny": "拒絕",
-  "@toolPermDeny": { "description": "Dialog button that refuses the call" },
+  "@toolPermDeny": {
+    "description": "Dialog button that refuses the call"
+  },
   "toolPermAllow": "允許",
-  "@toolPermAllow": { "description": "Dialog button that lets the call through" },
+  "@toolPermAllow": {
+    "description": "Dialog button that lets the call through"
+  },
   "toolPermAsk": "詢問",
-  "@toolPermAsk": { "description": "Permission state that confirms before every call" },
+  "@toolPermAsk": {
+    "description": "Permission state that confirms before every call"
+  },
   "toolsTitle": "工具與 MCP",
-  "@toolsTitle": { "description": "Title of the tools page" },
+  "@toolsTitle": {
+    "description": "Title of the tools page"
+  },
   "toolAddServer": "新增 MCP 伺服器",
-  "@toolAddServer": { "description": "Dialog title when adding a server" },
+  "@toolAddServer": {
+    "description": "Dialog title when adding a server"
+  },
   "toolHeadersJson": "標頭（JSON，選填）",
-  "@toolHeadersJson": { "description": "Field placeholder of the request headers" },
+  "@toolHeadersJson": {
+    "description": "Field placeholder of the request headers"
+  },
   "toolUrlHint": "https://host/mcp",
-  "@toolUrlHint": { "description": "Field placeholder of the server url" },
+  "@toolUrlHint": {
+    "description": "Field placeholder of the server url"
+  },
   "toolServersHeader": "MCP 伺服器（Streamable HTTP）",
-  "@toolServersHeader": { "description": "Section header of the server list" },
+  "@toolServersHeader": {
+    "description": "Section header of the server list"
+  },
   "toolServersFooter": "點按權限可在「允許 → 詢問 → 拒絕」之間循環。選擇「詢問」時每次呼叫前都會跳出確認，選擇「拒絕」則直接拒絕並告訴助理原因。MCP 工具預設為「詢問」。",
-  "@toolServersFooter": { "description": "Section footer of the server list" },
+  "@toolServersFooter": {
+    "description": "Section footer of the server list"
+  },
   "toolConnecting": "連線中…",
-  "@toolConnecting": { "description": "Row label while the tool list refreshes" },
+  "@toolConnecting": {
+    "description": "Row label while the tool list refreshes"
+  },
   "toolRefresh": "重新整理工具清單",
-  "@toolRefresh": { "description": "Row that reloads the MCP tool list" },
+  "@toolRefresh": {
+    "description": "Row that reloads the MCP tool list"
+  },
   "toolMcpHeader": "MCP 工具",
-  "@toolMcpHeader": { "description": "Section header of the MCP tool list" },
+  "@toolMcpHeader": {
+    "description": "Section header of the MCP tool list"
+  },
   "toolBuiltinHeader": "內建工具",
-  "@toolBuiltinHeader": { "description": "Section header of the built in tool list" },
+  "@toolBuiltinHeader": {
+    "description": "Section header of the built in tool list"
+  },
   "toolCountSuffix": "{count} 個工具",
-  "@toolCountSuffix": { "description": "Server row subtitle, how many tools it offers" },
+  "@toolCountSuffix": {
+    "description": "Server row subtitle, how many tools it offers"
+  },
   "aiEditorTitle": "AI 編輯器",
-  "@aiEditorTitle": { "description": "Sheet title of the rewrite sheet" },
+  "@aiEditorTitle": {
+    "description": "Sheet title of the rewrite sheet"
+  },
   "aiEditorNoKey": "請先在「設定」裡新增 API 金鑰。",
-  "@aiEditorNoKey": { "description": "Error shown when no key is configured" },
+  "@aiEditorNoKey": {
+    "description": "Error shown when no key is configured"
+  },
   "aiEditorApply": "套用",
-  "@aiEditorApply": { "description": "Button that takes the rewritten text" },
+  "@aiEditorApply": {
+    "description": "Button that takes the rewritten text"
+  },
   "provTitle": "服務商",
-  "@provTitle": { "description": "Bar title of the provider detail page" },
+  "@provTitle": {
+    "description": "Bar title of the provider detail page"
+  },
   "provMissing": "該服務商已不存在。",
-  "@provMissing": { "description": "Empty state when the provider id is stale" },
+  "@provMissing": {
+    "description": "Empty state when the provider id is stale"
+  },
   "provSearchHint": "搜尋模型",
-  "@provSearchHint": { "description": "Placeholder of the model filter" },
+  "@provSearchHint": {
+    "description": "Placeholder of the model filter"
+  },
   "provConnection": "連線",
-  "@provConnection": { "description": "Group header" },
+  "@provConnection": {
+    "description": "Group header"
+  },
   "provName": "名稱",
-  "@provName": { "description": "Row that renames the provider" },
+  "@provName": {
+    "description": "Row that renames the provider"
+  },
   "provProtocol": "協定",
-  "@provProtocol": { "description": "Row that picks the wire protocol" },
+  "@provProtocol": {
+    "description": "Row that picks the wire protocol"
+  },
   "provApiKey": "API 金鑰",
-  "@provApiKey": { "description": "Row and prompt title of the key" },
+  "@provApiKey": {
+    "description": "Row and prompt title of the key"
+  },
   "provBaseUrl": "基礎 URL",
-  "@provBaseUrl": { "description": "Row and prompt title of the base url" },
+  "@provBaseUrl": {
+    "description": "Row and prompt title of the base url"
+  },
   "provBaseUrlEmpty": "空白，此服務商無法使用",
-  "@provBaseUrlEmpty": { "description": "Subtitle when no base url is set" },
+  "@provBaseUrlEmpty": {
+    "description": "Subtitle when no base url is set"
+  },
   "provChatPath": "對話路徑",
-  "@provChatPath": { "description": "Row that edits the request path" },
+  "@provChatPath": {
+    "description": "Row that edits the request path"
+  },
   "provChatPathFixed": "由協定決定",
-  "@provChatPathFixed": { "description": "Subtitle when the protocol owns the path" },
+  "@provChatPathFixed": {
+    "description": "Subtitle when the protocol owns the path"
+  },
+  "provAuthStyle": "認證方式",
+  "@provAuthStyle": {
+    "description": "Row that picks how the API key is sent"
+  },
+  "provAuthBearerSub": "放在 Authorization 標頭裡傳送",
+  "@provAuthBearerSub": {
+    "description": "Subtitle of the bearer option"
+  },
+  "provAuthQuerySub": "作為查詢參數拼到 URL 上",
+  "@provAuthQuerySub": {
+    "description": "Subtitle of the query key option"
+  },
+  "provSessionHeader": "會話路由標頭",
+  "@provSessionHeader": {
+    "description": "Row that names a per conversation routing header"
+  },
+  "provSessionHeaderEmpty": "關閉，閘道按它路由會話時再填",
+  "@provSessionHeaderEmpty": {
+    "description": "Subtitle when no session header is set"
+  },
+  "provSessionHeaderHint": "標頭名稱，值由應用自動填寫",
+  "@provSessionHeaderHint": {
+    "description": "Placeholder of the session header prompt"
+  },
+  "provUserAgent": "User-Agent",
+  "@provUserAgent": {
+    "description": "Row that overrides the user agent for one provider"
+  },
+  "provUserAgentDefault": "跟隨全域設定",
+  "@provUserAgentDefault": {
+    "description": "Subtitle when the provider has no user agent of its own"
+  },
+  "provUserAgentHint": "僅對這個服務商生效的 User-Agent",
+  "@provUserAgentHint": {
+    "description": "Placeholder of the provider user agent prompt"
+  },
+  "provExtraHeaders": "自訂請求標頭",
+  "@provExtraHeaders": {
+    "description": "Row and prompt title of the per provider headers"
+  },
+  "provHeadersNone": "無",
+  "@provHeadersNone": {
+    "description": "Subtitle when no extra headers are set"
+  },
+  "provHeadersHint": "每行一個，格式：名稱: 值",
+  "@provHeadersHint": {
+    "description": "Placeholder of the headers prompt"
+  },
   "provModels": "模型",
-  "@provModels": { "description": "Group header of the model rows" },
+  "@provModels": {
+    "description": "Group header of the model rows"
+  },
   "provFetchModels": "取得模型",
-  "@provFetchModels": { "description": "Row that pulls the list from the provider" },
+  "@provFetchModels": {
+    "description": "Row that pulls the list from the provider"
+  },
   "provFetchBusy": "處理中...",
-  "@provFetchBusy": { "description": "Subtitle while the list is loading" },
+  "@provFetchBusy": {
+    "description": "Subtitle while the list is loading"
+  },
   "provFetchDone": "來自{source}的 {count} 個模型",
-  "@provFetchDone": { "description": "Subtitle once the list is in" },
+  "@provFetchDone": {
+    "description": "Subtitle once the list is in"
+  },
   "provFetchNever": "需要時再向服務商拉取實際清單",
-  "@provFetchNever": { "description": "Subtitle before the list was ever fetched" },
+  "@provFetchNever": {
+    "description": "Subtitle before the list was ever fetched"
+  },
   "provSourceApi": "API",
-  "@provSourceApi": { "description": "Source half of the fetch subtitle" },
+  "@provSourceApi": {
+    "description": "Source half of the fetch subtitle"
+  },
   "provSourceCatalog": "內建表",
-  "@provSourceCatalog": { "description": "Source half of the fetch subtitle" },
+  "@provSourceCatalog": {
+    "description": "Source half of the fetch subtitle"
+  },
   "provTest": "測試連線",
-  "@provTest": { "description": "Row that sends one probe request" },
+  "@provTest": {
+    "description": "Row that sends one probe request"
+  },
   "provTestFailed": "失敗：{reason}",
-  "@provTestFailed": { "description": "Subtitle after a failed probe" },
+  "@provTestFailed": {
+    "description": "Subtitle after a failed probe"
+  },
   "provTestOk": "正常：{reply}",
-  "@provTestOk": { "description": "Subtitle after a successful probe" },
+  "@provTestOk": {
+    "description": "Subtitle after a successful probe"
+  },
   "provTestNever": "發送一次最小請求",
-  "@provTestNever": { "description": "Subtitle before the probe ran" },
+  "@provTestNever": {
+    "description": "Subtitle before the probe ran"
+  },
   "provAddManual": "手動新增模型",
-  "@provAddManual": { "description": "Row and prompt title of the manual model" },
+  "@provAddManual": {
+    "description": "Row and prompt title of the manual model"
+  },
   "provAddManualSub": "用於清單介面無法使用時",
-  "@provAddManualSub": { "description": "Row subtitle" },
+  "@provAddManualSub": {
+    "description": "Row subtitle"
+  },
   "provCountModels": "{count} 個模型",
-  "@provCountModels": { "description": "Header above the model list" },
+  "@provCountModels": {
+    "description": "Header above the model list"
+  },
   "provOnChain": "在兜底鏈中",
-  "@provOnChain": { "description": "Header above the chain nodes of this provider" },
+  "@provOnChain": {
+    "description": "Header above the chain nodes of this provider"
+  },
   "provDelete": "刪除此服務商",
-  "@provDelete": { "description": "Danger row that removes the provider" },
+  "@provDelete": {
+    "description": "Danger row that removes the provider"
+  },
   "provFootnote": "能力資訊取自服務商 API 與內建表。標記為未知視窗的模型在長對話中會略過壓縮檢查。",
-  "@provFootnote": { "description": "Note at the bottom of the page" },
+  "@provFootnote": {
+    "description": "Note at the bottom of the page"
+  },
   "provPasteKey": "貼上你的 API 金鑰",
-  "@provPasteKey": { "description": "Placeholder of the key prompt" },
+  "@provPasteKey": {
+    "description": "Placeholder of the key prompt"
+  },
   "provModelIdHint": "模型 ID",
-  "@provModelIdHint": { "description": "Placeholder of the manual model prompt" },
+  "@provModelIdHint": {
+    "description": "Placeholder of the manual model prompt"
+  },
   "provProtocolSub": "適用於多數轉接與自建伺服器",
-  "@provProtocolSub": { "description": "Subtitle of the openai compatible protocol" },
+  "@provProtocolSub": {
+    "description": "Subtitle of the openai compatible protocol"
+  },
   "provFetchedBulletin": "已取得 {count} 個模型",
-  "@provFetchedBulletin": { "description": "Bulletin after a successful list fetch" },
+  "@provFetchedBulletin": {
+    "description": "Bulletin after a successful list fetch"
+  },
   "provUsingCatalog": "正在使用內建模型表",
-  "@provUsingCatalog": { "description": "Bulletin when the fetch fell back to the catalog" },
+  "@provUsingCatalog": {
+    "description": "Bulletin when the fetch fell back to the catalog"
+  },
   "provFetchFailed": "無法取得模型",
-  "@provFetchFailed": { "description": "Bulletin when the list could not be fetched at all" },
+  "@provFetchFailed": {
+    "description": "Bulletin when the list could not be fetched at all"
+  },
   "provAdded": "已新增",
-  "@provAdded": { "description": "Bulletin after adding a model by hand" },
+  "@provAdded": {
+    "description": "Bulletin after adding a model by hand"
+  },
   "provNoKeyFirst": "請先新增 API 金鑰",
-  "@provNoKeyFirst": { "description": "Probe failure when no key is set" },
+  "@provNoKeyFirst": {
+    "description": "Probe failure when no key is set"
+  },
   "provConnectionWorks": "連線正常",
-  "@provConnectionWorks": { "description": "Probe success when the model answered nothing" },
+  "@provConnectionWorks": {
+    "description": "Probe success when the model answered nothing"
+  },
   "provDeleteTitle": "刪除{name}？",
-  "@provDeleteTitle": { "description": "Confirmation title" },
+  "@provDeleteTitle": {
+    "description": "Confirmation title"
+  },
   "provDeleteMessage": "它的 API 金鑰與鏈上的節點也會一併刪除，對話記錄不受影響。",
-  "@provDeleteMessage": { "description": "Confirmation body" },
+  "@provDeleteMessage": {
+    "description": "Confirmation body"
+  },
   "provDeleted": "已刪除",
-  "@provDeleted": { "description": "Bulletin after removing the provider" },
+  "@provDeleted": {
+    "description": "Bulletin after removing the provider"
+  },
   "provSaved": "已儲存",
-  "@provSaved": { "description": "Bulletin after storing the key" },
+  "@provSaved": {
+    "description": "Bulletin after storing the key"
+  },
   "provWindow": "視窗 {tokens}",
-  "@provWindow": { "description": "Model row tag, the context window" },
+  "@provWindow": {
+    "description": "Model row tag, the context window"
+  },
   "provOut": "輸出 {tokens}",
-  "@provOut": { "description": "Model row tag, the output cap" },
+  "@provOut": {
+    "description": "Model row tag, the output cap"
+  },
   "provTagImage": "影像輸出",
-  "@provTagImage": { "description": "Model row tag for image output" },
+  "@provTagImage": {
+    "description": "Model row tag for image output"
+  },
   "provTagUnknownWindow": "未知視窗",
-  "@provTagUnknownWindow": { "description": "Model row tag for a context window the catalog does not know" },
+  "@provTagUnknownWindow": {
+    "description": "Model row tag for a context window the catalog does not know"
+  },
   "provChainNodeMeta": "{retries} 次重試 · 關閉",
-  "@provChainNodeMeta": { "description": "Chain row trailing, the node is disabled" },
+  "@provChainNodeMeta": {
+    "description": "Chain row trailing, the node is disabled"
+  },
   "provChainNodeMetaOn": "{retries} 次重試",
-  "@provChainNodeMetaOn": { "description": "Chain row trailing" },
+  "@provChainNodeMetaOn": {
+    "description": "Chain row trailing"
+  },
   "attachCaptionHint": "新增說明…",
-  "@attachCaptionHint": { "description": "Placeholder of the caption field" },
+  "@attachCaptionHint": {
+    "description": "Placeholder of the caption field"
+  },
   "attachCameraUnavailable": "相機無法使用",
-  "@attachCameraUnavailable": { "description": "Bulletin when the camera cannot be opened" },
+  "@attachCameraUnavailable": {
+    "description": "Bulletin when the camera cannot be opened"
+  },
   "attachPickerFailed": "無法開啟檔案選擇器",
-  "@attachPickerFailed": { "description": "Bulletin when the file picker refuses to open" },
+  "@attachPickerFailed": {
+    "description": "Bulletin when the file picker refuses to open"
+  },
   "attachUploadFiles": "上傳檔案",
-  "@attachUploadFiles": { "description": "Row title of the file attachment" },
+  "@attachUploadFiles": {
+    "description": "Row title of the file attachment"
+  },
   "attachUploadFilesSub": "文件、壓縮檔以及其他內容",
-  "@attachUploadFilesSub": { "description": "Row subtitle" },
+  "@attachUploadFilesSub": {
+    "description": "Row subtitle"
+  },
   "attachPhotoPermission": "允許存取你的照片",
-  "@attachPhotoPermission": { "description": "Title of the permission sheet" },
+  "@attachPhotoPermission": {
+    "description": "Title of the permission sheet"
+  },
   "attachOpenSettings": "開啟設定",
-  "@attachOpenSettings": { "description": "Button that jumps to the system settings" },
+  "@attachOpenSettings": {
+    "description": "Button that jumps to the system settings"
+  },
   "attachBrowseAudio": "瀏覽音訊",
-  "@attachBrowseAudio": { "description": "Row title of the music picker" },
+  "@attachBrowseAudio": {
+    "description": "Row title of the music picker"
+  },
   "attachBrowseFiles": "瀏覽檔案",
-  "@attachBrowseFiles": { "description": "Row title of the file picker" },
+  "@attachBrowseFiles": {
+    "description": "Row title of the file picker"
+  },
   "attachPickSongs": "選擇歌曲和語音錄音",
-  "@attachPickSongs": { "description": "Row subtitle of the music picker" },
+  "@attachPickSongs": {
+    "description": "Row subtitle of the music picker"
+  },
   "attachPickDocs": "從裝置中選擇文件",
-  "@attachPickDocs": { "description": "Row subtitle of the file picker" },
+  "@attachPickDocs": {
+    "description": "Row subtitle of the file picker"
+  },
   "attachLocationOff": "定位服務已關閉",
-  "@attachLocationOff": { "description": "Bulletin when location services are off" },
+  "@attachLocationOff": {
+    "description": "Bulletin when location services are off"
+  },
   "attachLocationDenied": "定位權限遭拒",
-  "@attachLocationDenied": { "description": "Bulletin when the permission was refused" },
+  "@attachLocationDenied": {
+    "description": "Bulletin when the permission was refused"
+  },
   "attachSendLocation": "傳送我目前的位置",
-  "@attachSendLocation": { "description": "Sheet title of the location attachment" },
+  "@attachSendLocation": {
+    "description": "Sheet title of the location attachment"
+  },
   "attachLocationUnavailable": "無法取得位置",
-  "@attachLocationUnavailable": { "description": "Shown when no fix could be read" },
+  "@attachLocationUnavailable": {
+    "description": "Shown when no fix could be read"
+  },
   "attachLocationAccuracy": "精確度 {meters} 公尺",
-  "@attachLocationAccuracy": { "description": "Subtitle of the location sheet, with the accuracy" },
+  "@attachLocationAccuracy": {
+    "description": "Subtitle of the location sheet, with the accuracy"
+  },
   "attachLocationWaiting": "正在等待 GPS",
-  "@attachLocationWaiting": { "description": "Subtitle while the fix is still coming" },
+  "@attachLocationWaiting": {
+    "description": "Subtitle while the fix is still coming"
+  },
   "attachContactsPermission": "請在系統設定中\n允許存取通訊錄",
-  "@attachContactsPermission": { "description": "Title of the contacts permission sheet" },
+  "@attachContactsPermission": {
+    "description": "Title of the contacts permission sheet"
+  },
   "attachSearchContacts": "搜尋通訊錄",
-  "@attachSearchContacts": { "description": "Placeholder of the contact search" },
+  "@attachSearchContacts": {
+    "description": "Placeholder of the contact search"
+  },
   "attachNoContacts": "通訊錄為空",
-  "@attachNoContacts": { "description": "Empty state of the contact list" },
+  "@attachNoContacts": {
+    "description": "Empty state of the contact list"
+  },
   "attachPollQuestion": "提出一個問題",
-  "@attachPollQuestion": { "description": "Placeholder of the poll question" },
+  "@attachPollQuestion": {
+    "description": "Placeholder of the poll question"
+  },
   "attachPollOption": "選項 {index}",
-  "@attachPollOption": { "description": "Placeholder of a poll option" },
+  "@attachPollOption": {
+    "description": "Placeholder of a poll option"
+  },
   "attachPollAddOption": "新增選項",
-  "@attachPollAddOption": { "description": "Row that appends a poll option" },
+  "@attachPollAddOption": {
+    "description": "Row that appends a poll option"
+  },
   "attachPollAnonymous": "匿名投票",
-  "@attachPollAnonymous": { "description": "Poll option toggle" },
+  "@attachPollAnonymous": {
+    "description": "Poll option toggle"
+  },
   "attachPollMultiple": "多選",
-  "@attachPollMultiple": { "description": "Poll option toggle" },
+  "@attachPollMultiple": {
+    "description": "Poll option toggle"
+  },
   "attachPollQuiz": "問答模式",
-  "@attachPollQuiz": { "description": "Poll option toggle" },
+  "@attachPollQuiz": {
+    "description": "Poll option toggle"
+  },
   "attachPollQuizHint": "點選正確答案旁邊的圓圈。",
-  "@attachPollQuizHint": { "description": "Note under the quiz toggle" },
+  "@attachPollQuizHint": {
+    "description": "Note under the quiz toggle"
+  },
   "attachPollFooter": "投票會顯示在聊天中，並以文字形式傳送給 AI。",
-  "@attachPollFooter": { "description": "Note at the bottom of the poll sheet" },
+  "@attachPollFooter": {
+    "description": "Note at the bottom of the poll sheet"
+  },
   "attachPollCreate": "建立投票",
-  "@attachPollCreate": { "description": "Button that sends the poll" },
+  "@attachPollCreate": {
+    "description": "Button that sends the poll"
+  },
   "attachSelected": "已選 {count} 項",
-  "@attachSelected": { "description": "Sheet title while attachments are picked" },
+  "@attachSelected": {
+    "description": "Sheet title while attachments are picked"
+  },
   "cardDepthMessages": "往上 {depth} 則訊息",
-  "@cardDepthMessages": { "description": "Subtitle of the depth slider on the card editor" },
+  "@cardDepthMessages": {
+    "description": "Subtitle of the depth slider on the card editor"
+  },
   "cardFallbackSub": "其他選項都不適用時使用",
-  "@cardFallbackSub": { "description": "Subtitle of the fallback card option" },
+  "@cardFallbackSub": {
+    "description": "Subtitle of the fallback card option"
+  },
   "cardSetFallback": "設為兜底卡片",
-  "@cardSetFallback": { "description": "Row that makes this card the fallback" },
+  "@cardSetFallback": {
+    "description": "Row that makes this card the fallback"
+  },
   "cardLockToChat": "把這張卡片鎖定到目前聊天",
-  "@cardLockToChat": { "description": "Row that pins this card to the current chat" },
+  "@cardLockToChat": {
+    "description": "Row that pins this card to the current chat"
+  },
   "cardNoChat": "請先建立聊天",
-  "@cardNoChat": { "description": "Shown when there is no chat to lock the card to" },
+  "@cardNoChat": {
+    "description": "Shown when there is no chat to lock the card to"
+  },
   "cardNoChatSub": "開啟一個聊天，透過頂部選單鎖定卡片",
-  "@cardNoChatSub": { "description": "Explains why no chat means no lock" },
+  "@cardNoChatSub": {
+    "description": "Explains why no chat means no lock"
+  },
   "cardLinkPersona": "連結到指定的 AI 人設",
-  "@cardLinkPersona": { "description": "Row that links the card to a persona" },
+  "@cardLinkPersona": {
+    "description": "Row that links the card to a persona"
+  },
   "cardLinkCharacter": "連結到某個角色",
-  "@cardLinkCharacter": { "description": "Subtitle of the persona link row" },
+  "@cardLinkCharacter": {
+    "description": "Subtitle of the persona link row"
+  },
   "cardSave": "儲存卡片",
-  "@cardSave": { "description": "Button that stores the card" },
+  "@cardSave": {
+    "description": "Button that stores the card"
+  },
   "attachLoading": "正在載入…",
-  "@attachLoading": { "description": "" },
+  "@attachLoading": {
+    "description": ""
+  },
   "attachLocating": "定位中…",
-  "@attachLocating": { "description": "" },
+  "@attachLocating": {
+    "description": ""
+  },
   "attachTabGallery": "相簿",
-  "@attachTabGallery": { "description": "" },
+  "@attachTabGallery": {
+    "description": ""
+  },
   "attachCamera": "相機",
-  "@attachCamera": { "description": "相簿網格頂部相機入口的文案" },
+  "@attachCamera": {
+    "description": "相簿網格頂部相機入口的文案"
+  },
   "attachPollQuestionLabel": "問題",
-  "@attachPollQuestionLabel": { "description": "" },
+  "@attachPollQuestionLabel": {
+    "description": ""
+  },
   "attachPollOptionsLabel": "選項",
-  "@attachPollOptionsLabel": { "description": "" },
+  "@attachPollOptionsLabel": {
+    "description": ""
+  },
   "attachPollSettingsLabel": "設定",
-  "@attachPollSettingsLabel": { "description": "" },
+  "@attachPollSettingsLabel": {
+    "description": ""
+  },
   "cardDepthLabel": "深度",
-  "@cardDepthLabel": { "description": "" },
+  "@cardDepthLabel": {
+    "description": ""
+  },
   "cardRoleLabel": "角色",
-  "@cardRoleLabel": { "description": "" },
+  "@cardRoleLabel": {
+    "description": ""
+  },
   "cardConnectionsHeader": "關聯",
-  "@cardConnectionsHeader": { "description": "" },
+  "@cardConnectionsHeader": {
+    "description": ""
+  },
   "cardDefaultLabel": "預設",
-  "@cardDefaultLabel": { "description": "" },
+  "@cardDefaultLabel": {
+    "description": ""
+  },
   "cardChatLabel": "對話",
-  "@cardChatLabel": { "description": "" },
+  "@cardChatLabel": {
+    "description": ""
+  },
   "cardCharacterLabel": "角色",
-  "@cardCharacterLabel": { "description": "" },
+  "@cardCharacterLabel": {
+    "description": ""
+  },
   "cardPositionLabel": "位置",
-  "@cardPositionLabel": { "description": "" },
+  "@cardPositionLabel": {
+    "description": ""
+  },
   "cardCurrentLabel": "目前卡片",
-  "@cardCurrentLabel": { "description": "Row that shows which persona card is in hand" },
+  "@cardCurrentLabel": {
+    "description": "Row that shows which persona card is in hand"
+  },
   "cardPickTitle": "選擇人設卡片",
-  "@cardPickTitle": { "description": "Title of the sheet that picks the card in hand" },
+  "@cardPickTitle": {
+    "description": "Title of the sheet that picks the card in hand"
+  },
   "cardSetPhoto": "設定頭像",
-  "@cardSetPhoto": { "description": "Link under the card avatar that picks a photo" },
+  "@cardSetPhoto": {
+    "description": "Link under the card avatar that picks a photo"
+  },
   "cardRemovePhoto": "頭像已移除",
-  "@cardRemovePhoto": { "description": "Shown after the card avatar photo is cleared" },
+  "@cardRemovePhoto": {
+    "description": "Shown after the card avatar photo is cleared"
+  },
   "msgRecalledAnonymous": "有一則訊息被收回",
-  "@msgRecalledAnonymous": { "description": "Same stamp when the sender name is not known" },
+  "@msgRecalledAnonymous": {
+    "description": "Same stamp when the sender name is not known"
+  },
   "wsTitle": "工作區",
   "wsSub": "給 AI 一個自己的目錄",
   "wsSubOff": "開啟檔案工具後 AI 才能讀寫這裡",
@@ -1642,7 +3325,12 @@
   "toolDescTypo": "發一則故意打錯的字，然後修正",
   "toolDescSendImage": "從連結傳送一張圖片",
   "toolDescSendFile": "寫一個文字檔並傳給你",
+  "toolDescSendSvg": "畫一張向量圖並傳給你",
+  "toolDescSendHtml": "在聊天裡直接渲染一個網頁",
+  "toolDescSendLatex": "在聊天裡直接渲染 LaTeX 數學公式",
+  "toolDescSendCetz": "在聊天裡直接用 CeTZ 畫圖",
   "toolDescSendTransfer": "發一個假的紅包，點一下就收",
+  "toolDescAsk": "向你提問並給出可點的選項，等你作答",
   "wsToolDescRead": "按行號讀取工作區裡的檔案",
   "wsToolDescWrite": "新增或覆寫檔案，寫入前你會看到差異",
   "wsToolDescEdit": "替換檔案中的某一段文字",
@@ -1665,21 +3353,37 @@
   "termFontBigger": "放大文字",
   "termFontSmaller": "縮小文字",
   "termCopied": "已複製",
-  "@termCopied": { "description": "Toast after copying terminal text" },
+  "@termCopied": {
+    "description": "Toast after copying terminal text"
+  },
   "termSessionDead": "該 shell 已關閉",
-  "@termSessionDead": { "description": "Toast when a closed shell was reopened" },
+  "@termSessionDead": {
+    "description": "Toast when a closed shell was reopened"
+  },
   "termLinkUnsupported": "無法從這裡開啟此連結",
-  "@termLinkUnsupported": { "description": "Toast for a link the terminal emitted that the app cannot handle" },
+  "@termLinkUnsupported": {
+    "description": "Toast for a link the terminal emitted that the app cannot handle"
+  },
   "termHint": "在下方輸入命令。長按標籤可重新命名。",
-  "@termHint": { "description": "Empty state hint under the terminal" },
+  "@termHint": {
+    "description": "Empty state hint under the terminal"
+  },
   "termSettings": "環境",
-  "@termSettings": { "description": "Row that opens the environment settings" },
+  "@termSettings": {
+    "description": "Row that opens the environment settings"
+  },
   "termInstallEnvironment": "安裝 Linux 環境後即可使用終端機",
-  "@termInstallEnvironment": { "description": "Empty state action when no rootfs is installed" },
+  "@termInstallEnvironment": {
+    "description": "Empty state action when no rootfs is installed"
+  },
   "termShellPath": "Shell 路徑",
-  "@termShellPath": { "description": "Row showing which shell the guest starts" },
+  "@termShellPath": {
+    "description": "Row showing which shell the guest starts"
+  },
   "termProotArgs": "PRoot 選項",
-  "@termProotArgs": { "description": "Row opening the proot argument editor" },
+  "@termProotArgs": {
+    "description": "Row opening the proot argument editor"
+  },
   "actionPaste": "貼上",
   "termCloseConfirm": "關閉這個 shell？正在執行的程式會停止。",
   "termOpenFailedShort": "無法開啟 shell",
@@ -1712,5 +3416,285 @@
   "envErrorExtract": "無法解壓檔案",
   "envErrorPatch": "無法設定環境",
   "envErrorCancelled": "操作已取消",
-  "envErrorInvalid": "已安裝的環境不完整"
+  "envErrorInvalid": "已安裝的環境不完整",
+  "onboardSkip": "跳過",
+  "onboardNext": "下一步",
+  "onboardBack": "上一步",
+  "onboardStart": "開始使用",
+  "onboardSplashTagline": "正在抵達彼岸",
+  "onboardBrandTitle": "彼岸雙生",
+  "onboardBrandTagline": "一款 Telegram 風格的沉浸式 AI 聊天應用。",
+  "onboardBrandBody": "本地優先，自帶 API Key。給每個助手一個工作區、一段記憶，和自己的脾氣。",
+  "onboardBrandLicense": "以 AGPL v3 授權散布。© 殘月",
+  "onboardPermTitle": "權限",
+  "onboardPermBody": "以下權限全部可選。拒絕任何一項都不影響聊天，之後也可以隨時在系統設定裡更改。",
+  "onboardPermAllow": "允許",
+  "onboardPermGranted": "已允許",
+  "onboardPermDenied": "已被拒絕。可以到系統設定裡開啟。",
+  "onboardPermNotifName": "通知",
+  "onboardPermNotifWhy": "主動傳訊和排定回覆要靠通知才能即時提醒你。",
+  "onboardPermPhotosName": "照片",
+  "onboardPermPhotosWhy": "傳送圖片、儲存貼圖。",
+  "onboardPrivacyTitle": "隱私協議",
+  "onboardPrivacyIntro": "開始前請讀一遍。我們故意寫得很短。",
+  "onboardPrivacy1Title": "本地優先",
+  "onboardPrivacy1Body": "聊天紀錄、人設、記憶和工作區檔案都保存在這台裝置上。",
+  "onboardPrivacy2Title": "我們不收集",
+  "onboardPrivacy2Body": "沒有帳號、沒有伺服器、沒有遙測。開發者看不到你的任何資料。",
+  "onboardPrivacy3Title": "你自帶 API Key",
+  "onboardPrivacy3Body": "訊息會直接送往你設定的 AI 服務商，適用該服務商自己的隱私政策。使用內建免費中繼站時，訊息也會經過該中繼站。",
+  "onboardPrivacy4Title": "權限都是可選的",
+  "onboardPrivacy4Body": "通訊錄、照片、位置和通知都可以拒絕，不影響基本聊天。",
+  "onboardPrivacy5Title": "開源",
+  "onboardPrivacy5Body": "本應用以 AGPL v3 授權散布，原始碼見儲存庫。",
+  "onboardPrivacyAgree": "同意並開始",
+  "onboardPrivacyDecline": "暫不同意",
+  "onboardPrivacyDeclineTitle": "需要你的同意",
+  "onboardPrivacyDeclineBody": "你可以暫時不同意，之後再來看，但不同意就無法開始使用。",
+  "onboardModelTitle": "模型",
+  "onboardModelBody": "一鍵用免費中繼站開始，或者接入自己的服務商。之後隨時可以在設定裡改。",
+  "onboardModelRelayTitle": "使用免費中繼站",
+  "onboardModelRelayBody": "盲測通道：模型清單每天更換，auto 會隨機挑一個。不需要你自己的金鑰。",
+  "onboardModelRelayNotice": "此提供商由 殘月 提供，模型來自不同上游與不同渠道，不保證穩定性，僅建議用於臨時使用。",
+  "onboardModelRelayOn": "中繼站已開啟",
+  "onboardModelRelayEnable": "開啟",
+  "onboardModelRelayEnableFailed": "連不上中繼站。請檢查網路後重試。",
+  "onboardModelOwnTitle": "使用自己的服務商",
+  "onboardModelOwnBody": "OpenAI、Anthropic、Gemini、DeepSeek、OpenRouter、SiliconFlow，或任何帶金鑰的 OpenAI 相容介面。",
+  "relayAutoModel": "自動模型",
+  "onboardWsTitle": "工作區",
+  "onboardWsBody": "給助手一個自己的目錄：讀寫檔案、瀏覽網頁、跑終端機。每次改動都可以先問你。",
+  "onboardWsTools": "啟用工具",
+  "onboardWsConfirm": "寫入前確認",
+  "onboardWsEnvTitle": "Linux 環境",
+  "onboardWsEnvBody": "可選。下載一個小型 Ubuntu rootfs，終端機和套件工具才能真正執行。",
+  "onboardWsEnvInstall": "下載並安裝",
+  "onboardWsEnvReady": "環境已就緒",
+  "onboardHumanTitle": "沉浸聊天",
+  "onboardHumanBody": "助手可以像真人一樣打字：拆成多條訊息、猶豫、打錯字再收回、主動找你。先選個脾氣，之後隨時細調。",
+  "onboardHumanEnabled": "沉浸式回覆",
+  "onboardHumanPresetHeader": "脾氣",
+  "onboardHumanPresetClingy": "黏人",
+  "onboardHumanPresetClingySub": "會主動找你，打字很快，不放過任何話題",
+  "onboardHumanPresetCold": "高冷",
+  "onboardHumanPresetColdSub": "回得慢、話少，幾乎不主動",
+  "onboardHumanPresetChatty": "話多",
+  "onboardHumanPresetChattySub": "什麼都要拆成很多條小訊息",
+  "onboardHumanPresetQuiet": "安靜省電",
+  "onboardHumanPresetQuietSub": "從不主動，標點乾淨，沒有錯別字",
+  "onboardHumanPresetBalanced": "平衡",
+  "onboardHumanPresetBalancedSub": "預設的手感",
+  "onboardHumanPresetBalancedSub2": "恢復預設值，如果你之前調過",
+  "onboardHumanStickerHeader": "細節",
+  "onboardHumanTypo": "錯別字與收回",
+  "onboardHumanProactive": "主動傳訊",
+  "onboardSelfTitle": "你自己",
+  "onboardSelfBody": "助手們在和誰聊天。你的名片會進入每一段提示詞，名字和頭像也會出現在應用的各個角落。",
+  "onboardSelfName": "你的名字",
+  "onboardSelfTitleLabel": "標題",
+  "onboardSelfDesc": "關於你",
+  "onboardSelfDescHint": "任何想讓角色知道的事：怎麼稱呼你、你是做什麼的、喜歡什麼。",
+  "onboardSelfPhoto": "設定頭像",
+  "onboardSelfInjected": "注入方式",
+  "onboardSelfRole": "注入角色",
+  "onboardPersonaTitle": "人設",
+  "onboardPersonaBody": "選好誰在彼岸等你。點一下加入，再點一下移除。之後都可以隨意修改。",
+  "onboardPersonaCreate": "建立 {n} 個聊天",
+  "personaBoyfriendName": "沈嶼",
+  "personaBoyfriendBio": "溫柔又愛逗你的建築師男友，記得你說過的每件小事。",
+  "personaBoyfriendGreeting": "剛開完會，腦子還是糊的。你今天怎麼樣，吃飯了沒",
+  "personaGirlfriendName": "林晚",
+  "personaGirlfriendBio": "黏人又愛撒嬌的女朋友，情緒來得快，也哄得好。",
+  "personaGirlfriendGreeting": "在幹嘛呀。我今天畫了一下午，手都酸了。你有沒有想我",
+  "personaCatgirlName": "小咪",
+  "personaCatgirlBio": "會說話的貓娘，脾氣陰晴不定，但只黏你一個人。",
+  "personaCatgirlGreeting": "喵。你回來啦。小咪等你好久了，先摸摸頭再說別的",
+  "personaMaidName": "薇拉",
+  "personaMaidBio": "舉止得體、辦事周到的女僕，偶爾會露出一點真心。",
+  "personaMaidGreeting": "歡迎回來，主人。茶已經備好。今天想先休息，還是先說說遇到的事",
+  "personaCeoName": "顧衍",
+  "personaCeoBio": "話少、掌控慾強的總裁，只在面對你時鬆開領帶。",
+  "personaCeoGreeting": "到了就坐。把今天最麻煩的事，從頭講給我聽",
+  "personaEngineerName": "阿嵐",
+  "personaEngineerBio": "務實、話不多、程式碼優先的資深工程師。",
+  "personaEngineerGreeting": "在。有報錯就把完整堆疊貼上來，沒有就說清楚你想做什麼、現在卡在哪",
+  "onboardModelOwnOpen": "開啟設定",
+  "onboardThemeTitle": "外觀",
+  "onboardThemeBody": "夜間模式、桌布，以及每條氣泡的大小。之後都能在設定裡隨時改。",
+  "updateTitle": "發現新版本",
+  "@updateTitle": {
+    "description": "Title of the update bottom sheet"
+  },
+  "updateSubtitle": "目前 {current} · 最新 {latest}",
+  "@updateSubtitle": {
+    "description": "Version line under the update title"
+  },
+  "updateDownload": "下載",
+  "@updateDownload": {
+    "description": "Primary button that opens the release page"
+  },
+  "updateClose": "關閉",
+  "@updateClose": {
+    "description": "Button that dismisses the update sheet"
+  },
+  "updateSkipVersion": "略過此版本",
+  "@updateSkipVersion": {
+    "description": "Checkbox that mutes the automatic prompt for this release"
+  },
+  "updateUpToDate": "已是最新版本",
+  "@updateUpToDate": {
+    "description": "Bulletin after a manual check with nothing newer"
+  },
+  "updateCheckFailed": "檢查更新失敗，請稍後再試",
+  "@updateCheckFailed": {
+    "description": "Bulletin when the release fetch fails"
+  },
+  "updateCheckTitle": "檢查更新",
+  "@updateCheckTitle": {
+    "description": "Settings row that checks GitHub releases by hand"
+  },
+  "updateCheckSub": "目前版本 {version}",
+  "@updateCheckSub": {
+    "description": "Subtitle of the manual update row"
+  },
+  "updateNoNotes": "暫無更新說明。",
+  "@updateNoNotes": {
+    "description": "Shown when the release body is empty"
+  },
+  "skillTitle": "技能",
+  "@skillTitle": {
+    "description": "Settings row and page title for skills"
+  },
+  "skillSubEmpty": "教助理可重用的能力",
+  "@skillSubEmpty": {
+    "description": "Subtitle of the skills row when none is installed"
+  },
+  "skillSubCount": "共 {count} 個技能",
+  "@skillSubCount": {
+    "description": "Subtitle of the skills row with installed count",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "skillEmptyTitle": "還沒有技能",
+  "@skillEmptyTitle": {
+    "description": "Empty skills page headline"
+  },
+  "skillEmptyBody": "匯入 SKILL.md 檔案、zip 包，或直接貼上文字。助理只看列表，任務相符時才會打開其中一個。",
+  "@skillEmptyBody": {
+    "description": "Empty skills page body"
+  },
+  "skillImport": "匯入技能",
+  "@skillImport": {
+    "description": "Button that opens the skill import choices"
+  },
+  "skillImportPaste": "貼上文字",
+  "@skillImportPaste": {
+    "description": "Import choice"
+  },
+  "skillImportFile": "從檔案匯入",
+  "@skillImportFile": {
+    "description": "Import choice"
+  },
+  "skillImportUrl": "從連結匯入",
+  "@skillImportUrl": {
+    "description": "Import choice"
+  },
+  "skillPasteTitle": "貼上 SKILL.md",
+  "@skillPasteTitle": {
+    "description": "Title of the paste sheet"
+  },
+  "skillPasteHint": "貼上 SKILL.md 文字…",
+  "@skillPasteHint": {
+    "description": "Placeholder of the paste field"
+  },
+  "skillUrlTitle": "從連結匯入",
+  "@skillUrlTitle": {
+    "description": "Title of the URL sheet"
+  },
+  "skillUrlHint": "https://github.com/owner/repo/…",
+  "@skillUrlHint": {
+    "description": "Placeholder of the URL field"
+  },
+  "skillUrlError": "該連結無法讀取為技能。",
+  "@skillUrlError": {
+    "description": "Bulletin when a URL import fails"
+  },
+  "skillInvalid": "該檔案不是有效的技能。",
+  "@skillInvalid": {
+    "description": "Bulletin when a file import fails"
+  },
+  "skillDeleteTitle": "刪除技能",
+  "@skillDeleteTitle": {
+    "description": "Confirmation title"
+  },
+  "skillDeleteMessage": "刪除「{name}」？檔案會一併刪除。",
+  "@skillDeleteMessage": {
+    "description": "Confirmation body",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "skillEnabled": "已啟用",
+  "@skillEnabled": {
+    "description": "Skill row subtitle when on"
+  },
+  "skillDisabled": "已停用",
+  "@skillDisabled": {
+    "description": "Skill row subtitle when off"
+  },
+  "skillDetailUses": "已使用 {count} 次",
+  "@skillDetailUses": {
+    "description": "How many times a skill was read",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "skillOpenFile": "使用說明在 SKILL.md 中。",
+  "@skillOpenFile": {
+    "description": "Note on the skill detail page"
+  },
+  "personaSkillsHeader": "技能",
+  "@personaSkillsHeader": {
+    "description": "Section header of the role skill picker"
+  },
+  "personaSkillsFooter": "跟隨全局即使用全部已啟用的技能。自訂則只選用該角色可用的幾個。",
+  "@personaSkillsFooter": {
+    "description": "Section footer of the role skill picker"
+  },
+  "personaSkillsFollowGlobal": "跟隨全局",
+  "@personaSkillsFollowGlobal": {
+    "description": "Role skill mode that inherits all enabled skills"
+  },
+  "personaSkillsCustom": "自訂",
+  "@personaSkillsCustom": {
+    "description": "Role skill mode with an explicit list"
+  },
+  "personaSkillsCount": "已選 {count} 個",
+  "@personaSkillsCount": {
+    "description": "How many skills a role picked",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "personaSkillsPickTitle": "該角色的技能",
+  "@personaSkillsPickTitle": {
+    "description": "Title of the role skill picker"
+  },
+  "toolDescReadSkill": "按 id 讀取已安裝的技能",
+  "@toolDescReadSkill": {
+    "description": "Tools page description"
+  },
+  "skillImporting": "匯入中…",
+  "@skillImporting": {
+    "description": "技能下載時的提示"
+  }
 }

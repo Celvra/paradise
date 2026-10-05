@@ -1,7 +1,7 @@
 name: paradise
 description: Telegram styled AI chat client
 publish_to: none
-version: 1.0.1+2
+version: 1.0.2+3
 
 environment:
   sdk: ">=3.6.0 <4.0.0"
@@ -36,7 +36,7 @@ dependencies:
   path: ^1.9.0
   glob: ^2.1.3
   crypto: ^3.0.5
-  archive: ^3.6.1
+  archive: ^4.0.0
   flutter_highlight: ^0.7.0
   highlight: ^0.7.0
   webview_flutter: ^4.10.0
@@ -47,6 +47,12 @@ dependencies:
   # see third_party/terminal_view/NOTICE for the xterm.dart lineage
   terminal_view:
     path: ./third_party/terminal_view
+  flutter_math_fork: ^0.7.4
+  ratex_flutter: ^0.1.14
+  typst_flutter: ^3.0.0
+  # one place to ask for photos / contacts / location / notifications and to
+  # send the user to the system settings when a permission was denied for good
+  permission_handler: ^13.0.2
 
 dev_dependencies:
   file_picker_platform_interface: ^4.0.0
@@ -62,10 +68,85 @@ flutter:
   assets:
     # provider logos, see core/provider_icons.dart
     - assets/providers/
+    # typst packages for the CeTZ drawing card, imported by relative path
+    # (cetz, cetz-plot, oxifmt — deps rewritten to be path-local), MIT
+    - assets/typst/packages.tgz
+    # CJK font for text inside CeTZ drawings (the typst compiler's embedded
+    # fonts have no CJK glyphs), GPL-3.0-with-font-exception, see
+    # assets/fonts/FONTEXCEPTION
+    - assets/fonts/wqy-microhei.ttc
+  fonts:
+    - family: KaTeX_AMS
+      fonts:
+        - asset: packages/ratex_flutter/fonts/KaTeX_AMS-Regular.ttf
+  
+    - family: KaTeX_Caligraphic
+      fonts:
+        - asset: packages/ratex_flutter/fonts/KaTeX_Caligraphic-Regular.ttf
+        - asset: packages/ratex_flutter/fonts/KaTeX_Caligraphic-Bold.ttf
+          weight: 700
+  
+    - family: KaTeX_Fraktur
+      fonts:
+        - asset: packages/ratex_flutter/fonts/KaTeX_Fraktur-Regular.ttf
+        - asset: packages/ratex_flutter/fonts/KaTeX_Fraktur-Bold.ttf
+          weight: 700
+  
+    - family: KaTeX_Main
+      fonts:
+        - asset: packages/ratex_flutter/fonts/KaTeX_Main-Regular.ttf
+        - asset: packages/ratex_flutter/fonts/KaTeX_Main-Bold.ttf
+          weight: 700
+        - asset: packages/ratex_flutter/fonts/KaTeX_Main-Italic.ttf
+          style: italic
+        - asset: packages/ratex_flutter/fonts/KaTeX_Main-BoldItalic.ttf
+          weight: 700
+          style: italic
+  
+    - family: KaTeX_Math
+      fonts:
+        - asset: packages/ratex_flutter/fonts/KaTeX_Math-Italic.ttf
+          style: italic
+        - asset: packages/ratex_flutter/fonts/KaTeX_Math-BoldItalic.ttf
+          weight: 700
+          style: italic
+  
+    - family: KaTeX_SansSerif
+      fonts:
+        - asset: packages/ratex_flutter/fonts/KaTeX_SansSerif-Regular.ttf
+        - asset: packages/ratex_flutter/fonts/KaTeX_SansSerif-Bold.ttf
+          weight: 700
+        - asset: packages/ratex_flutter/fonts/KaTeX_SansSerif-Italic.ttf
+          style: italic
+  
+    - family: KaTeX_Script
+      fonts:
+        - asset: packages/ratex_flutter/fonts/KaTeX_Script-Regular.ttf
+  
+    - family: KaTeX_Typewriter
+      fonts:
+        - asset: packages/ratex_flutter/fonts/KaTeX_Typewriter-Regular.ttf
+  
+    - family: KaTeX_Size1
+      fonts:
+        - asset: packages/ratex_flutter/fonts/KaTeX_Size1-Regular.ttf
+  
+    - family: KaTeX_Size2
+      fonts:
+        - asset: packages/ratex_flutter/fonts/KaTeX_Size2-Regular.ttf
+  
+    - family: KaTeX_Size3
+      fonts:
+        - asset: packages/ratex_flutter/fonts/KaTeX_Size3-Regular.ttf
+  
+    - family: KaTeX_Size4
+      fonts:
+        - asset: packages/ratex_flutter/fonts/KaTeX_Size4-Regular.ttf
 
 # The sqlite3 build hook downloads a prebuilt library, which this machine cannot
 # reach. System SQLite is only used by the ffi path that flutter test runs on;
 # on Android the plugin uses the platform library and this hook does nothing.
+
 hooks:
   user_defines:
     sqlite3:
