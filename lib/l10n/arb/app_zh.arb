@@ -1,1586 +1,3203 @@
 {
   "@@locale": "zh",
-
   "appTitle": "彼岸双生",
-  "@appTitle": { "description": "Application name, launcher and task switcher" },
+  "@appTitle": {
+    "description": "Application name, launcher and task switcher"
+  },
   "actionOk": "确定",
-  "@actionOk": { "description": "Generic confirm button" },
+  "@actionOk": {
+    "description": "Generic confirm button"
+  },
   "actionCancel": "取消",
-  "@actionCancel": { "description": "Generic dismiss button" },
+  "@actionCancel": {
+    "description": "Generic dismiss button"
+  },
   "actionClear": "清空",
-  "@actionClear": { "description": "Generic clear button" },
+  "@actionClear": {
+    "description": "Generic clear button"
+  },
   "actionDelete": "删除",
-  "@actionDelete": { "description": "Generic delete button" },
+  "@actionDelete": {
+    "description": "Generic delete button"
+  },
   "actionDone": "完成",
-  "@actionDone": { "description": "Closes a bottom sheet" },
+  "@actionDone": {
+    "description": "Closes a bottom sheet"
+  },
   "actionSave": "保存",
-  "@actionSave": { "description": "Generic save button" },
+  "@actionSave": {
+    "description": "Generic save button"
+  },
   "actionRetry": "重试",
-  "@actionRetry": { "description": "Generic retry button" },
+  "@actionRetry": {
+    "description": "Generic retry button"
+  },
   "actionCopy": "复制",
-  "@actionCopy": { "description": "Copy to clipboard" },
+  "@actionCopy": {
+    "description": "Copy to clipboard"
+  },
   "actionAdd": "添加",
-  "@actionAdd": { "description": "Generic add button" },
+  "@actionAdd": {
+    "description": "Generic add button"
+  },
   "actionRemove": "移除",
-  "@actionRemove": { "description": "Generic remove button" },
+  "@actionRemove": {
+    "description": "Generic remove button"
+  },
   "actionDiscard": "放弃",
-  "@actionDiscard": { "description": "Throws unsaved edits away" },
+  "@actionDiscard": {
+    "description": "Throws unsaved edits away"
+  },
   "accountTitle": "编辑资料",
-  "@accountTitle": { "description": "Action bar title of My Account" },
+  "@accountTitle": {
+    "description": "Action bar title of My Account"
+  },
   "accountNameHeader": "你的名字",
-  "@accountNameHeader": { "description": "Section header" },
+  "@accountNameHeader": {
+    "description": "Section header"
+  },
   "accountNameFooter": "填写你的名字，可选添加头像。下方的人设会保留各自的名称。",
-  "@accountNameFooter": { "description": "Section footer" },
+  "@accountNameFooter": {
+    "description": "Section footer"
+  },
   "accountNameHint": "名字",
-  "@accountNameHint": { "description": "Field placeholder for the profile name" },
+  "@accountNameHint": {
+    "description": "Field placeholder for the profile name"
+  },
   "accountBioHeader": "个人简介",
-  "@accountBioHeader": { "description": "Section header" },
+  "@accountBioHeader": {
+    "description": "Section header"
+  },
   "accountBioFooter": "可以写几句关于自己的话。角色可能会读它，以便更好地了解你。",
-  "@accountBioFooter": { "description": "Section footer" },
+  "@accountBioFooter": {
+    "description": "Section footer"
+  },
   "accountBioHint": "简介",
-  "@accountBioHint": { "description": "Field placeholder for the profile bio" },
+  "@accountBioHint": {
+    "description": "Field placeholder for the profile bio"
+  },
   "accountPhotoFooter": "长按上方头像即可快速移除照片。",
-  "@accountPhotoFooter": { "description": "Section footer when a photo is set" },
+  "@accountPhotoFooter": {
+    "description": "Section footer when a photo is set"
+  },
   "accountSetNewPhoto": "设置新照片",
-  "@accountSetNewPhoto": { "description": "Photo row when one is already set" },
+  "@accountSetNewPhoto": {
+    "description": "Photo row when one is already set"
+  },
   "accountSetPhoto": "设置头像",
-  "@accountSetPhoto": { "description": "Photo row when none is set" },
+  "@accountSetPhoto": {
+    "description": "Photo row when none is set"
+  },
   "accountRemovePhoto": "移除照片",
-  "@accountRemovePhoto": { "description": "Photo row that drops the current photo" },
+  "@accountRemovePhoto": {
+    "description": "Photo row that drops the current photo"
+  },
   "accountRemovePhotoTitle": "移除照片",
-  "@accountRemovePhotoTitle": { "description": "Confirmation title" },
+  "@accountRemovePhotoTitle": {
+    "description": "Confirmation title"
+  },
   "accountRemovePhotoMessage": "确定要移除你的头像吗？",
-  "@accountRemovePhotoMessage": { "description": "Confirmation body" },
+  "@accountRemovePhotoMessage": {
+    "description": "Confirmation body"
+  },
   "accountPhotoRemoved": "照片已移除",
-  "@accountPhotoRemoved": { "description": "Bulletin after the photo is dropped" },
+  "@accountPhotoRemoved": {
+    "description": "Bulletin after the photo is dropped"
+  },
   "accountPhotoActionSet": "设置照片",
-  "@accountPhotoActionSet": { "description": "Button under the avatar when no photo is set" },
+  "@accountPhotoActionSet": {
+    "description": "Button under the avatar when no photo is set"
+  },
   "accountPhotoActionChange": "更换照片",
-  "@accountPhotoActionChange": { "description": "Button under the avatar when a photo is set" },
+  "@accountPhotoActionChange": {
+    "description": "Button under the avatar when a photo is set"
+  },
   "accountOnlineFallback": "在线",
-  "@accountOnlineFallback": { "description": "Shown under the name when the bio is empty" },
+  "@accountOnlineFallback": {
+    "description": "Shown under the name when the bio is empty"
+  },
   "accountNameEmptyPreview": "你的名字",
-  "@accountNameEmptyPreview": { "description": "Avatar preview while the name field is still empty" },
+  "@accountNameEmptyPreview": {
+    "description": "Avatar preview while the name field is still empty"
+  },
   "accountNameRequired": "名字不能为空",
-  "@accountNameRequired": { "description": "Bulletin when saving with an empty name" },
+  "@accountNameRequired": {
+    "description": "Bulletin when saving with an empty name"
+  },
   "accountDiscardTitle": "放弃更改？",
-  "@accountDiscardTitle": { "description": "Confirmation title when leaving with unsaved edits" },
+  "@accountDiscardTitle": {
+    "description": "Confirmation title when leaving with unsaved edits"
+  },
   "accountDiscardMessage": "你的资料还有未保存的更改。",
-  "@accountDiscardMessage": { "description": "Confirmation body when leaving with unsaved edits" },
+  "@accountDiscardMessage": {
+    "description": "Confirmation body when leaving with unsaved edits"
+  },
   "galleryUnavailable": "相册不可用",
-  "@galleryUnavailable": { "description": "Bulletin when the system gallery cannot be opened" },
+  "@galleryUnavailable": {
+    "description": "Bulletin when the system gallery cannot be opened"
+  },
   "actionEdit": "编辑",
-  "@actionEdit": { "description": "Generic edit button" },
+  "@actionEdit": {
+    "description": "Generic edit button"
+  },
   "actionSend": "发送",
-  "@actionSend": { "description": "Generic send button" },
+  "@actionSend": {
+    "description": "Generic send button"
+  },
   "actionRemoveShort": "移除",
-  "@actionRemoveShort": { "description": "Menu entry that drops one row" },
+  "@actionRemoveShort": {
+    "description": "Menu entry that drops one row"
+  },
   "actionEnable": "启用",
-  "@actionEnable": { "description": "Turn a chain node on" },
+  "@actionEnable": {
+    "description": "Turn a chain node on"
+  },
   "actionDisable": "停用",
-  "@actionDisable": { "description": "Turn a chain node off" },
+  "@actionDisable": {
+    "description": "Turn a chain node off"
+  },
   "actionMoveUp": "上移",
-  "@actionMoveUp": { "description": "Reorder a chain node" },
+  "@actionMoveUp": {
+    "description": "Reorder a chain node"
+  },
   "actionMoveDown": "下移",
-  "@actionMoveDown": { "description": "Reorder a chain node" },
+  "@actionMoveDown": {
+    "description": "Reorder a chain node"
+  },
   "actionCurrent": "当前",
-  "@actionCurrent": { "description": "Marks the value already in use" },
+  "@actionCurrent": {
+    "description": "Marks the value already in use"
+  },
   "aiTabProviders": "服务商",
-  "@aiTabProviders": { "description": "Tab label on the AI screen" },
+  "@aiTabProviders": {
+    "description": "Tab label on the AI screen"
+  },
   "aiTabChain": "兜底链",
-  "@aiTabChain": { "description": "Tab label on the AI screen" },
+  "@aiTabChain": {
+    "description": "Tab label on the AI screen"
+  },
   "aiTabAdvanced": "高级",
-  "@aiTabAdvanced": { "description": "Tab label on the AI screen" },
+  "@aiTabAdvanced": {
+    "description": "Tab label on the AI screen"
+  },
   "aiTitle": "AI 配置",
-  "@aiTitle": { "description": "Action bar title of the AI screen" },
+  "@aiTitle": {
+    "description": "Action bar title of the AI screen"
+  },
   "aiReadyTitle": "AI 已就绪",
-  "@aiReadyTitle": { "description": "Header headline when the chain can run" },
+  "@aiReadyTitle": {
+    "description": "Header headline when the chain can run"
+  },
   "aiNotReadyTitle": "AI 尚未设置",
-  "@aiNotReadyTitle": { "description": "Header headline when nothing can run yet" },
+  "@aiNotReadyTitle": {
+    "description": "Header headline when nothing can run yet"
+  },
   "aiNotReadyMessage": "先给某个服务商添加 API 密钥，再把它的某个模型放到兜底链上。",
-  "@aiNotReadyMessage": { "description": "Header body when nothing can run yet" },
+  "@aiNotReadyMessage": {
+    "description": "Header body when nothing can run yet"
+  },
   "aiOnChainCount": "{count, plural, =1{兜底链上有 1 个模型} other{兜底链上有 {count} 个模型}}",
-  "@aiOnChainCount": { "description": "Chip under the AI header showing how many models are live" },
+  "@aiOnChainCount": {
+    "description": "Chip under the AI header showing how many models are live"
+  },
   "aiProvidersHeader": "服务商",
-  "@aiProvidersHeader": { "description": "Section header of the provider list" },
+  "@aiProvidersHeader": {
+    "description": "Section header of the provider list"
+  },
   "aiProvidersFooter": "模型能力来自服务商 API 和内置目录，上下文窗口决定了记录在什么时候被压缩。",
-  "@aiProvidersFooter": { "description": "Section footer of the provider list" },
+  "@aiProvidersFooter": {
+    "description": "Section footer of the provider list"
+  },
   "aiAddProvider": "添加服务商",
-  "@aiAddProvider": { "description": "Row that creates a custom provider" },
+  "@aiAddProvider": {
+    "description": "Row that creates a custom provider"
+  },
   "aiAddProviderTitle": "添加服务商",
-  "@aiAddProviderTitle": { "description": "Dialog title for naming a new custom provider" },
+  "@aiAddProviderTitle": {
+    "description": "Dialog title for naming a new custom provider"
+  },
   "aiAddProviderHint": "名称，例如 My Relay",
-  "@aiAddProviderHint": { "description": "Field placeholder for naming a new custom provider" },
+  "@aiAddProviderHint": {
+    "description": "Field placeholder for naming a new custom provider"
+  },
   "aiKeySet": "已设置 API 密钥",
-  "@aiKeySet": { "description": "Provider row subtitle when a key is present" },
+  "@aiKeySet": {
+    "description": "Provider row subtitle when a key is present"
+  },
   "aiNoKey": "未设置 API 密钥",
-  "@aiNoKey": { "description": "Provider row subtitle when no key is present" },
+  "@aiNoKey": {
+    "description": "Provider row subtitle when no key is present"
+  },
   "aiProviderOnChain": "{count, plural, =1{1 个模型} other{{count} 个模型}} 在兜底链中",
-  "@aiProviderOnChain": { "description": "Provider row subtitle, how many of its models are on the chain" },
+  "@aiProviderOnChain": {
+    "description": "Provider row subtitle, how many of its models are on the chain"
+  },
   "aiProviderModels": "{count, plural, =1{1 个模型} other{{count} 个模型}}",
-  "@aiProviderModels": { "description": "Provider row subtitle, how many models it knows" },
+  "@aiProviderModels": {
+    "description": "Provider row subtitle, how many models it knows"
+  },
   "aiChainHeader": "兜底链",
-  "@aiChainHeader": { "description": "Section header of the fallback chain" },
+  "@aiChainHeader": {
+    "description": "Section header of the fallback chain"
+  },
   "aiChainActiveCount": "{total} 个中启用 {active} 个",
-  "@aiChainActiveCount": { "description": "Header trailing, how many chain nodes are enabled" },
+  "@aiChainActiveCount": {
+    "description": "Header trailing, how many chain nodes are enabled"
+  },
   "aiChainEmpty": "尚未配置兜底链",
-  "@aiChainEmpty": { "description": "Placeholder when nothing is on the chain" },
+  "@aiChainEmpty": {
+    "description": "Placeholder when nothing is on the chain"
+  },
   "aiChainEmptyHint": "兜底链是空的。加一个模型后，请求会优先发给它。",
-  "@aiChainEmptyHint": { "description": "Hint under an empty chain" },
+  "@aiChainEmptyHint": {
+    "description": "Hint under an empty chain"
+  },
   "aiChainFooter": "请求会按顺序逐个尝试。点模型可调整顺序、修改重试次数或移除。鉴权与计费失败不会重试，直接转到下一个模型。",
-  "@aiChainFooter": { "description": "Note explaining how the chain is walked" },
+  "@aiChainFooter": {
+    "description": "Note explaining how the chain is walked"
+  },
   "aiAddModel": "添加模型",
-  "@aiAddModel": { "description": "Row that appends a model to the chain" },
+  "@aiAddModel": {
+    "description": "Row that appends a model to the chain"
+  },
   "aiCompactionHeader": "上下文压缩",
-  "@aiCompactionHeader": { "description": "Section header of the compaction settings" },
+  "@aiCompactionHeader": {
+    "description": "Section header of the compaction settings"
+  },
   "aiCompactionFooter": "上下文溢出时会重试一次压缩，仍失败就直接截断历史记录。",
-  "@aiCompactionFooter": { "description": "Section footer of the compaction settings" },
+  "@aiCompactionFooter": {
+    "description": "Section footer of the compaction settings"
+  },
   "aiCompactionToggle": "压缩过长的对话",
-  "@aiCompactionToggle": { "description": "Checkbox row" },
+  "@aiCompactionToggle": {
+    "description": "Checkbox row"
+  },
   "aiCompactionToggleSub": "较早的对话会被浓缩成摘要",
-  "@aiCompactionToggleSub": { "description": "Checkbox row subtitle" },
+  "@aiCompactionToggleSub": {
+    "description": "Checkbox row subtitle"
+  },
   "aiSummaryModel": "摘要模型",
-  "@aiSummaryModel": { "description": "Row that picks the model used for summaries" },
+  "@aiSummaryModel": {
+    "description": "Row that picks the model used for summaries"
+  },
   "aiSummaryModelFollows": "跟随兜底链上的第一个模型",
-  "@aiSummaryModelFollows": { "description": "Subtitle when the summary model follows the chain" },
+  "@aiSummaryModelFollows": {
+    "description": "Subtitle when the summary model follows the chain"
+  },
   "aiSummaryLength": "摘要长度",
-  "@aiSummaryLength": { "description": "Row that picks the summary budget" },
+  "@aiSummaryLength": {
+    "description": "Row that picks the summary budget"
+  },
   "aiAddToChainTitle": "添加到兜底链",
-  "@aiAddToChainTitle": { "description": "Model picker title when appending to the chain" },
+  "@aiAddToChainTitle": {
+    "description": "Model picker title when appending to the chain"
+  },
   "aiSummaryModelPickerTitle": "用于生成摘要的模型",
-  "@aiSummaryModelPickerTitle": { "description": "Model picker title for the summary model" },
+  "@aiSummaryModelPickerTitle": {
+    "description": "Model picker title for the summary model"
+  },
   "aiSummaryLengthTitle": "摘要长度",
-  "@aiSummaryLengthTitle": { "description": "Selector sheet title for the summary budget" },
+  "@aiSummaryLengthTitle": {
+    "description": "Selector sheet title for the summary budget"
+  },
   "aiLengthTight": "精简",
-  "@aiLengthTight": { "description": "Descriptor for a short summary budget" },
+  "@aiLengthTight": {
+    "description": "Descriptor for a short summary budget"
+  },
   "aiLengthBalanced": "适中",
-  "@aiLengthBalanced": { "description": "Descriptor for a medium summary budget" },
+  "@aiLengthBalanced": {
+    "description": "Descriptor for a medium summary budget"
+  },
   "aiLengthDetailed": "详尽",
-  "@aiLengthDetailed": { "description": "Descriptor for a long summary budget" },
+  "@aiLengthDetailed": {
+    "description": "Descriptor for a long summary budget"
+  },
   "aiChainMenuRetries": "重试次数",
-  "@aiChainMenuRetries": { "description": "Menu entry that opens the retry count" },
+  "@aiChainMenuRetries": {
+    "description": "Menu entry that opens the retry count"
+  },
   "aiRetriesTitle": "换下一个模型前的重试次数",
-  "@aiRetriesTitle": { "description": "Selector sheet title for the retry count" },
+  "@aiRetriesTitle": {
+    "description": "Selector sheet title for the retry count"
+  },
   "aiRetriesNone": "不重试",
-  "@aiRetriesNone": { "description": "Option for zero retries" },
+  "@aiRetriesNone": {
+    "description": "Option for zero retries"
+  },
   "aiRepliesHeader": "回复",
-  "@aiRepliesHeader": { "description": "Section header of the reply settings" },
+  "@aiRepliesHeader": {
+    "description": "Section header of the reply settings"
+  },
   "aiRepliesFooter": "人格化模式会把一条回复拆成几条短消息，就像真人发消息那样。",
-  "@aiRepliesFooter": { "description": "Section footer of the reply settings" },
+  "@aiRepliesFooter": {
+    "description": "Section footer of the reply settings"
+  },
   "aiReplyStyle": "回复风格",
-  "@aiReplyStyle": { "description": "Row and selector title for the reply style" },
+  "@aiReplyStyle": {
+    "description": "Row and selector title for the reply style"
+  },
   "aiReplyStyleFull": "完整",
-  "@aiReplyStyleFull": { "description": "One of the two reply styles" },
+  "@aiReplyStyleFull": {
+    "description": "One of the two reply styles"
+  },
   "aiReplyStyleCharacter": "人格化",
-  "@aiReplyStyleCharacter": { "description": "One of the two reply styles" },
+  "@aiReplyStyleCharacter": {
+    "description": "One of the two reply styles"
+  },
   "aiReplyStyleFullSub": "逐字流式输出，并显示思考过程",
-  "@aiReplyStyleFullSub": { "description": "Subtitle of the full reply style" },
+  "@aiReplyStyleFullSub": {
+    "description": "Subtitle of the full reply style"
+  },
   "aiReplyStyleCharacterSub": "像真人一样分成几条短消息发送",
-  "@aiReplyStyleCharacterSub": { "description": "Subtitle of the character reply style" },
+  "@aiReplyStyleCharacterSub": {
+    "description": "Subtitle of the character reply style"
+  },
   "aiFirstBubbleDelay": "回复前的读消息时间",
-  "@aiFirstBubbleDelay": { "description": "Row and selector title for the delay before the first bubble" },
+  "@aiFirstBubbleDelay": {
+    "description": "Row and selector title for the delay before the first bubble"
+  },
   "aiBubbleGapScale": "消息间停顿倍率",
-  "@aiBubbleGapScale": { "description": "Row and selector title for the inter bubble pause multiplier" },
+  "@aiBubbleGapScale": {
+    "description": "Row and selector title for the inter bubble pause multiplier"
+  },
   "aiPacingOff": "关闭",
-  "@aiPacingOff": { "description": "Value shown when a pacing delay is zero" },
+  "@aiPacingOff": {
+    "description": "Value shown when a pacing delay is zero"
+  },
   "aiPacingDelayHint": "第一条消息立即送达",
-  "@aiPacingDelayHint": { "description": "Subtitle of the zero delay option" },
+  "@aiPacingDelayHint": {
+    "description": "Subtitle of the zero delay option"
+  },
   "aiPacingJitter": "节奏随机幅度",
-  "@aiPacingJitter": { "description": "Row and selector title for the pacing jitter" },
+  "@aiPacingJitter": {
+    "description": "Row and selector title for the pacing jitter"
+  },
   "aiPacingJitterLow": "轻微",
-  "@aiPacingJitterLow": { "description": "One of the timing randomness levels" },
+  "@aiPacingJitterLow": {
+    "description": "One of the timing randomness levels"
+  },
   "aiPacingJitterNormal": "标准",
-  "@aiPacingJitterNormal": { "description": "One of the timing randomness levels" },
+  "@aiPacingJitterNormal": {
+    "description": "One of the timing randomness levels"
+  },
   "aiPacingJitterWild": "狂放",
-  "@aiPacingJitterWild": { "description": "One of the timing randomness levels" },
+  "@aiPacingJitterWild": {
+    "description": "One of the timing randomness levels"
+  },
   "aiPacingJitterHintOff": "每个停顿都和设定值一样长",
-  "@aiPacingJitterHintOff": { "description": "Subtitle of the off level" },
+  "@aiPacingJitterHintOff": {
+    "description": "Subtitle of the off level"
+  },
   "aiPacingJitterHintLow": "停顿在设定值附近轻微浮动",
-  "@aiPacingJitterHintLow": { "description": "Subtitle of the subtle level" },
+  "@aiPacingJitterHintLow": {
+    "description": "Subtitle of the subtle level"
+  },
   "aiPacingJitterHintNormal": "每个停顿都有人类式的不均匀",
-  "@aiPacingJitterHintNormal": { "description": "Subtitle of the normal level" },
+  "@aiPacingJitterHintNormal": {
+    "description": "Subtitle of the normal level"
+  },
   "aiPacingJitterHintWild": "难以预测，有时秒回有时磨蹭",
-  "@aiPacingJitterHintWild": { "description": "Subtitle of the wild level" },
+  "@aiPacingJitterHintWild": {
+    "description": "Subtitle of the wild level"
+  },
   "aiSamplingHeader": "采样",
-  "@aiSamplingHeader": { "description": "Section header of the sampling settings" },
+  "@aiSamplingHeader": {
+    "description": "Section header of the sampling settings"
+  },
   "aiSamplingFooter": "聊天里不会显示任何模型细节。",
-  "@aiSamplingFooter": { "description": "Section footer of the sampling settings" },
+  "@aiSamplingFooter": {
+    "description": "Section footer of the sampling settings"
+  },
   "aiTemperature": "温度",
-  "@aiTemperature": { "description": "Row and selector title for the sampling temperature" },
+  "@aiTemperature": {
+    "description": "Row and selector title for the sampling temperature"
+  },
   "aiTempDeterministic": "稳定",
-  "@aiTempDeterministic": { "description": "Descriptor for temperature zero" },
+  "@aiTempDeterministic": {
+    "description": "Descriptor for temperature zero"
+  },
   "aiTempFocused": "专注",
-  "@aiTempFocused": { "description": "Descriptor for a low temperature" },
+  "@aiTempFocused": {
+    "description": "Descriptor for a low temperature"
+  },
   "aiTempBalanced": "均衡",
-  "@aiTempBalanced": { "description": "Descriptor for a medium temperature" },
+  "@aiTempBalanced": {
+    "description": "Descriptor for a medium temperature"
+  },
   "aiTempLoose": "奔放",
-  "@aiTempLoose": { "description": "Descriptor for a high temperature" },
+  "@aiTempLoose": {
+    "description": "Descriptor for a high temperature"
+  },
   "aiMaxOutput": "最大输出",
-  "@aiMaxOutput": { "description": "Row and selector title for the output token cap" },
+  "@aiMaxOutput": {
+    "description": "Row and selector title for the output token cap"
+  },
   "aiModelDefault": "默认模型",
-  "@aiModelDefault": { "description": "Shown when a cap is left to the model" },
+  "@aiModelDefault": {
+    "description": "Shown when a cap is left to the model"
+  },
   "aiUseCatalogDefault": "使用目录默认值",
-  "@aiUseCatalogDefault": { "description": "Subtitle of the model default option" },
+  "@aiUseCatalogDefault": {
+    "description": "Subtitle of the model default option"
+  },
   "aiNetworkHeader": "网络",
-  "@aiNetworkHeader": { "description": "Section header of the request wire settings" },
+  "@aiNetworkHeader": {
+    "description": "Section header of the request wire settings"
+  },
   "aiNetworkFooter": "作用于所有 AI 请求：聊天、工具、模型列表和一次性调用。留空保持默认。",
-  "@aiNetworkFooter": { "description": "Section footer of the request wire settings" },
+  "@aiNetworkFooter": {
+    "description": "Section footer of the request wire settings"
+  },
   "aiUserAgent": "User-Agent",
-  "@aiUserAgent": { "description": "Row and prompt title of the user agent override" },
+  "@aiUserAgent": {
+    "description": "Row and prompt title of the user agent override"
+  },
   "aiUserAgentHint": "User-Agent 头的值",
-  "@aiUserAgentHint": { "description": "Placeholder of the user agent prompt" },
+  "@aiUserAgentHint": {
+    "description": "Placeholder of the user agent prompt"
+  },
   "aiGlobalHeaders": "自定义请求头",
-  "@aiGlobalHeaders": { "description": "Row and prompt title of the global header override" },
+  "@aiGlobalHeaders": {
+    "description": "Row and prompt title of the global header override"
+  },
   "aiHeadersNone": "无",
-  "@aiHeadersNone": { "description": "Subtitle when no extra headers are set" },
+  "@aiHeadersNone": {
+    "description": "Subtitle when no extra headers are set"
+  },
   "aiHeadersHint": "每行一个，格式：名称: 值",
-  "@aiHeadersHint": { "description": "Placeholder of the headers prompt" },
+  "@aiHeadersHint": {
+    "description": "Placeholder of the headers prompt"
+  },
   "aiSummaryNoNodes": "兜底链还没有节点",
-  "@aiSummaryNoNodes": { "description": "Chain summary when a key exists but nothing is on the chain" },
+  "@aiSummaryNoNodes": {
+    "description": "Chain summary when a key exists but nothing is on the chain"
+  },
   "aiSummaryNoKey": "未配置 API 密钥",
-  "@aiSummaryNoKey": { "description": "Chain summary when no key is configured at all" },
+  "@aiSummaryNoKey": {
+    "description": "Chain summary when no key is configured at all"
+  },
   "aiCapsReasoning": "思考",
-  "@aiCapsReasoning": { "description": "Capability tag on a chain node" },
+  "@aiCapsReasoning": {
+    "description": "Capability tag on a chain node"
+  },
   "aiCapsVision": "视觉",
-  "@aiCapsVision": { "description": "Capability tag on a chain node" },
+  "@aiCapsVision": {
+    "description": "Capability tag on a chain node"
+  },
   "aiTokensUnknown": "未知",
-  "@aiTokensUnknown": { "description": "Shown for a context window the catalog does not know" },
+  "@aiTokensUnknown": {
+    "description": "Shown for a context window the catalog does not know"
+  },
   "tabChats": "聊天",
-  "@tabChats": { "description": "Bottom tab label, chat list" },
+  "@tabChats": {
+    "description": "Bottom tab label, chat list"
+  },
   "tabSettings": "设置",
-  "@tabSettings": { "description": "Bottom tab label, settings" },
+  "@tabSettings": {
+    "description": "Bottom tab label, settings"
+  },
   "tabProfile": "我的",
-  "@tabProfile": { "description": "Bottom tab label, own profile" },
+  "@tabProfile": {
+    "description": "Bottom tab label, own profile"
+  },
   "chatsTitle": "聊天",
-  "@chatsTitle": { "description": "Chat list header" },
+  "@chatsTitle": {
+    "description": "Chat list header"
+  },
   "chatsSearchHint": "搜索",
-  "@chatsSearchHint": { "description": "Search pill placeholder on the chat list" },
+  "@chatsSearchHint": {
+    "description": "Search pill placeholder on the chat list"
+  },
   "chatsEmptyTitle": "还没有聊天",
-  "@chatsEmptyTitle": { "description": "Empty chat list headline" },
+  "@chatsEmptyTitle": {
+    "description": "Empty chat list headline"
+  },
   "chatsEmptySub": "创建一个人设，开始聊天。",
-  "@chatsEmptySub": { "description": "Empty chat list explanation" },
+  "@chatsEmptySub": {
+    "description": "Empty chat list explanation"
+  },
   "chatsNewPersona": "新建人设",
-  "@chatsNewPersona": { "description": "Creates a persona card and opens a chat with it" },
+  "@chatsNewPersona": {
+    "description": "Creates a persona card and opens a chat with it"
+  },
   "chatsMenuReadAll": "全部已读",
-  "@chatsMenuReadAll": { "description": "Marks every chat as read" },
+  "@chatsMenuReadAll": {
+    "description": "Marks every chat as read"
+  },
   "chatsRowTyping": "正在输入",
-  "@chatsRowTyping": { "description": "Chat list subtitle while the assistant is generating" },
+  "@chatsRowTyping": {
+    "description": "Chat list subtitle while the assistant is generating"
+  },
   "chatsRowDraft": "草稿：",
-  "@chatsRowDraft": { "description": "Chat list subtitle prefix for an unsent message" },
+  "@chatsRowDraft": {
+    "description": "Chat list subtitle prefix for an unsent message"
+  },
   "chatsRowEmpty": "还没有消息",
-  "@chatsRowEmpty": { "description": "Chat list subtitle for a chat without messages" },
+  "@chatsRowEmpty": {
+    "description": "Chat list subtitle for a chat without messages"
+  },
   "chatsRowYou": "你：",
-  "@chatsRowYou": { "description": "Chat list subtitle prefix for my own last message" },
+  "@chatsRowYou": {
+    "description": "Chat list subtitle prefix for my own last message"
+  },
   "menuPin": "置顶",
-  "@menuPin": { "description": "Pin chat to the top" },
+  "@menuPin": {
+    "description": "Pin chat to the top"
+  },
   "menuUnpin": "取消置顶",
-  "@menuUnpin": { "description": "Remove the pin" },
+  "@menuUnpin": {
+    "description": "Remove the pin"
+  },
   "menuMute": "免打扰",
-  "@menuMute": { "description": "Silence notifications for one chat" },
+  "@menuMute": {
+    "description": "Silence notifications for one chat"
+  },
   "menuUnmute": "取消免打扰",
-  "@menuUnmute": { "description": "Turn notifications back on" },
+  "@menuUnmute": {
+    "description": "Turn notifications back on"
+  },
   "menuMarkAsRead": "标为已读",
-  "@menuMarkAsRead": { "description": "Clear the unread badge" },
+  "@menuMarkAsRead": {
+    "description": "Clear the unread badge"
+  },
   "menuClearHistory": "清空记录",
-  "@menuClearHistory": { "description": "Menu entry that empties a chat" },
+  "@menuClearHistory": {
+    "description": "Menu entry that empties a chat"
+  },
   "menuDeleteChat": "删除聊天",
-  "@menuDeleteChat": { "description": "Menu entry that removes a chat" },
+  "@menuDeleteChat": {
+    "description": "Menu entry that removes a chat"
+  },
   "dialogClearHistoryTitle": "清空聊天记录",
-  "@dialogClearHistoryTitle": { "description": "Confirmation title for emptying a chat" },
+  "@dialogClearHistoryTitle": {
+    "description": "Confirmation title for emptying a chat"
+  },
   "dialogClearHistoryMessage": "删除 {personaName} 中的所有消息？",
-  "@dialogClearHistoryMessage": { "description": "Confirmation body for emptying a chat" },
+  "@dialogClearHistoryMessage": {
+    "description": "Confirmation body for emptying a chat"
+  },
   "dialogDeleteChatTitle": "删除聊天",
-  "@dialogDeleteChatTitle": { "description": "Confirmation title for removing a chat" },
+  "@dialogDeleteChatTitle": {
+    "description": "Confirmation title for removing a chat"
+  },
   "dialogDeleteChatMessage": "这会移除 {personaName} 及其聊天记录。",
-  "@dialogDeleteChatMessage": { "description": "Confirmation body for removing a chat" },
+  "@dialogDeleteChatMessage": {
+    "description": "Confirmation body for removing a chat"
+  },
   "chatEmptyPill": "这里还没有消息...",
-  "@chatEmptyPill": { "description": "Pill shown in an empty chat" },
+  "@chatEmptyPill": {
+    "description": "Pill shown in an empty chat"
+  },
   "chatSearchHint": "搜索消息",
-  "@chatSearchHint": { "description": "Placeholder inside the chat search field" },
+  "@chatSearchHint": {
+    "description": "Placeholder inside the chat search field"
+  },
   "chatSearchNoResults": "无结果",
-  "@chatSearchNoResults": { "description": "Chat search counter when nothing matched" },
+  "@chatSearchNoResults": {
+    "description": "Chat search counter when nothing matched"
+  },
   "chatSearchCount": "第 {index} 条，共 {total} 条",
-  "@chatSearchCount": { "description": "Chat search hit counter, one based" },
+  "@chatSearchCount": {
+    "description": "Chat search hit counter, one based"
+  },
   "chatSearchModeChat": "对话",
-  "@chatSearchModeChat": { "description": "Toggle back to the chat while search results are listed" },
+  "@chatSearchModeChat": {
+    "description": "Toggle back to the chat while search results are listed"
+  },
   "chatSearchModeList": "列表",
-  "@chatSearchModeList": { "description": "Toggle to the flat list of search results" },
+  "@chatSearchModeList": {
+    "description": "Toggle to the flat list of search results"
+  },
   "chatStatusTyping": "正在输入",
-  "@chatStatusTyping": { "description": "Chat header subtitle while generating" },
+  "@chatStatusTyping": {
+    "description": "Chat header subtitle while generating"
+  },
   "chatStatusBot": "机器人",
-  "@chatStatusBot": { "description": "Chat header subtitle for the model" },
+  "@chatStatusBot": {
+    "description": "Chat header subtitle for the model"
+  },
   "chatMenuReply": "回复",
-  "@chatMenuReply": { "description": "Message menu entry" },
+  "@chatMenuReply": {
+    "description": "Message menu entry"
+  },
   "chatMenuCopy": "复制",
-  "@chatMenuCopy": { "description": "Message menu entry" },
+  "@chatMenuCopy": {
+    "description": "Message menu entry"
+  },
   "chatMenuRegenerate": "重新生成",
-  "@chatMenuRegenerate": { "description": "Message menu entry that asks the model again" },
+  "@chatMenuRegenerate": {
+    "description": "Message menu entry that asks the model again"
+  },
   "chatMenuDelete": "删除",
-  "@chatMenuDelete": { "description": "Message menu entry" },
+  "@chatMenuDelete": {
+    "description": "Message menu entry"
+  },
   "toastMessageCopied": "消息已复制",
-  "@toastMessageCopied": { "description": "Bulletin after copying a message" },
+  "@toastMessageCopied": {
+    "description": "Bulletin after copying a message"
+  },
   "headerMenuSearch": "搜索",
-  "@headerMenuSearch": { "description": "Chat header menu entry" },
+  "@headerMenuSearch": {
+    "description": "Chat header menu entry"
+  },
   "headerMenuViewProfile": "查看资料",
-  "@headerMenuViewProfile": { "description": "Chat header menu entry" },
+  "@headerMenuViewProfile": {
+    "description": "Chat header menu entry"
+  },
   "headerMenuEditPersona": "编辑人设",
-  "@headerMenuEditPersona": { "description": "Chat header menu entry" },
+  "@headerMenuEditPersona": {
+    "description": "Chat header menu entry"
+  },
   "headerMenuMutedSub": "通知已关闭",
-  "@headerMenuMutedSub": { "description": "Chat header menu subtitle for a muted chat" },
+  "@headerMenuMutedSub": {
+    "description": "Chat header menu subtitle for a muted chat"
+  },
   "headerMenuLockPersona": "锁定我的人设",
-  "@headerMenuLockPersona": { "description": "Chat header menu entry, pins one persona card to the chat" },
+  "@headerMenuLockPersona": {
+    "description": "Chat header menu entry, pins one persona card to the chat"
+  },
   "headerMenuClearHistory": "清除记录",
-  "@headerMenuClearHistory": { "description": "Chat header menu entry" },
+  "@headerMenuClearHistory": {
+    "description": "Chat header menu entry"
+  },
   "headerMenuDeleteChat": "删除对话",
-  "@headerMenuDeleteChat": { "description": "Chat header menu entry" },
+  "@headerMenuDeleteChat": {
+    "description": "Chat header menu entry"
+  },
   "dialogClearHistoryHereTitle": "清空聊天记录",
-  "@dialogClearHistoryHereTitle": { "description": "Confirmation title inside a chat" },
+  "@dialogClearHistoryHereTitle": {
+    "description": "Confirmation title inside a chat"
+  },
   "dialogClearHistoryHereMessage": "删除此聊天中的所有消息？",
-  "@dialogClearHistoryHereMessage": { "description": "Confirmation body inside a chat" },
+  "@dialogClearHistoryHereMessage": {
+    "description": "Confirmation body inside a chat"
+  },
   "dialogDeleteChatHereTitle": "删除聊天",
-  "@dialogDeleteChatHereTitle": { "description": "Confirmation title inside a chat" },
+  "@dialogDeleteChatHereTitle": {
+    "description": "Confirmation title inside a chat"
+  },
   "lockSheetTitle": "锁定我的人设",
-  "@lockSheetTitle": { "description": "Title of the persona lock bottom sheet" },
+  "@lockSheetTitle": {
+    "description": "Title of the persona lock bottom sheet"
+  },
   "lockSheetSub": "此聊天始终以你选择的卡片身份回复。",
-  "@lockSheetSub": { "description": "Subtitle of the persona lock bottom sheet" },
+  "@lockSheetSub": {
+    "description": "Subtitle of the persona lock bottom sheet"
+  },
   "lockSheetUnnamed": "未命名",
-  "@lockSheetUnnamed": { "description": "Placeholder for a persona card without a name" },
+  "@lockSheetUnnamed": {
+    "description": "Placeholder for a persona card without a name"
+  },
   "lockSheetNone": "不锁定",
-  "@lockSheetNone": { "description": "Row that clears the persona lock" },
+  "@lockSheetNone": {
+    "description": "Row that clears the persona lock"
+  },
   "lockSheetNoneSub": "使用「我的账号」里选中的卡片",
-  "@lockSheetNoneSub": { "description": "Subtitle of the row that clears the persona lock" },
+  "@lockSheetNoneSub": {
+    "description": "Subtitle of the row that clears the persona lock"
+  },
   "lockSheetEmpty": "还没有人设卡片。到「我的账号」里创建一张。",
-  "@lockSheetEmpty": { "description": "Shown when there is no persona card to lock" },
+  "@lockSheetEmpty": {
+    "description": "Shown when there is no persona card to lock"
+  },
   "settingsTitle": "设置",
-  "@settingsTitle": { "description": "Settings tab header" },
+  "@settingsTitle": {
+    "description": "Settings tab header"
+  },
   "settingsAccount": "我的账号",
-  "@settingsAccount": { "description": "Settings row" },
+  "@settingsAccount": {
+    "description": "Settings row"
+  },
   "settingsAccountSub": "名称和简介",
-  "@settingsAccountSub": { "description": "Settings row subtitle" },
+  "@settingsAccountSub": {
+    "description": "Settings row subtitle"
+  },
   "settingsAi": "AI",
-  "@settingsAi": { "description": "Settings row for the model chain" },
+  "@settingsAi": {
+    "description": "Settings row for the model chain"
+  },
   "settingsAiSubNone": "兜底链里没有模型",
-  "@settingsAiSubNone": { "description": "Settings row subtitle when no model is configured" },
+  "@settingsAiSubNone": {
+    "description": "Settings row subtitle when no model is configured"
+  },
   "settingsAppearance": "聊天外观",
-  "@settingsAppearance": { "description": "Settings row" },
+  "@settingsAppearance": {
+    "description": "Settings row"
+  },
   "settingsAppearanceSub": "夜间模式、字号、圆角",
-  "@settingsAppearanceSub": { "description": "Settings row subtitle" },
+  "@settingsAppearanceSub": {
+    "description": "Settings row subtitle"
+  },
   "settingsNotifications": "通知",
-  "@settingsNotifications": { "description": "Settings row" },
+  "@settingsNotifications": {
+    "description": "Settings row"
+  },
   "settingsVibrationOn": "振动已开启",
-  "@settingsVibrationOn": { "description": "Settings row subtitle" },
+  "@settingsVibrationOn": {
+    "description": "Settings row subtitle"
+  },
   "settingsVibrationOff": "振动已关闭",
-  "@settingsVibrationOff": { "description": "Settings row subtitle" },
+  "@settingsVibrationOff": {
+    "description": "Settings row subtitle"
+  },
   "settingsData": "数据与存储",
-  "@settingsData": { "description": "Settings row" },
+  "@settingsData": {
+    "description": "Settings row"
+  },
   "settingsDataSub": "{chats, plural, =1{1 个聊天} other{{chats} 个聊天}} · 媒体 {size}",
-  "@settingsDataSub": { "description": "Settings row subtitle with chat count and media size" },
+  "@settingsDataSub": {
+    "description": "Settings row subtitle with chat count and media size"
+  },
   "settingsAbout": "关于",
-  "@settingsAbout": { "description": "Settings row" },
+  "@settingsAbout": {
+    "description": "Settings row"
+  },
   "aboutLinkFailed": "无法打开链接",
-  "@aboutLinkFailed": { "description": "Bulletin when the community link cannot be opened" },
-  "settingsAboutSub": "版本 1.0.1",
-  "@settingsAboutSub": { "description": "Settings row subtitle of the about entry" },
+  "@aboutLinkFailed": {
+    "description": "Bulletin when the community link cannot be opened"
+  },
+  "settingsAboutSub": "版本 1.0.2",
+  "@settingsAboutSub": {
+    "description": "Settings row subtitle of the about entry"
+  },
   "settingsAboutLicense": "开发者: 殘月。请遵守 AGPL 3.0 开源许可证，这意味着您不得在不开源代码的前提下二次分发和商业化本项目，若违反，我们将依法处理。",
-  "@settingsAboutLicense": { "description": "Licence and ownership notice in the about dialog" },
+  "@settingsAboutLicense": {
+    "description": "Licence and ownership notice in the about dialog"
+  },
   "settingsAboutCommunity": "加入交流群:",
-  "@settingsAboutCommunity": { "description": "Label in front of the community link in the about dialog" },
+  "@settingsAboutCommunity": {
+    "description": "Label in front of the community link in the about dialog"
+  },
   "settingsAboutRepo": "本项目地址:\nhttps://github.com/Celvra/paradise",
-  "@settingsAboutRepo": { "description": "Repository link in the about dialog" },
+  "@settingsAboutRepo": {
+    "description": "Repository link in the about dialog"
+  },
   "settingsAboutThanks": "鸣谢:\n\nKelivo - ToolCall 参考\nhttps://github.com/Chevey339/kelivo\n\nSillyTavern - 人设卡参考\nhttps://github.com/SillyTavern/SillyTavern",
-  "@settingsAboutThanks": { "description": "Acknowledgements to the projects this one was modelled on" },
+  "@settingsAboutThanks": {
+    "description": "Acknowledgements to the projects this one was modelled on"
+  },
   "settingsAboutDeps": "依赖库:\n\ncharacters 1.4.1 - 字形簇，用于正确计算文本宽度  (BSD-3-Clause)\nhttps://github.com/dart-lang/core/tree/main/pkgs/characters\nfile_picker 13.1.0 - 文件与音频选择  (MIT)\nhttps://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker\nflutter_contacts 2.5.0 - 分享联系人名片  (MIT)\nhttps://github.com/QuisApp/flutter_contacts\nflutter_highlight 0.7.0 - 代码预览配色  (MIT)\nhttps://github.com/git-touch/highlight\nflutter_local_notifications 18.0.1 - 本地通知  (BSD-3-Clause)\nflutter_math_fork 0.7.4 - 气泡内渲染 LaTeX  (Apache-2.0)\nhttps://github.com/simplezhli/flutter_math_fork\nflutter_svg 2.3.0 - 服务商图标与矢量图标  (MIT)\nhttps://github.com/flutter/packages/tree/main/third_party/packages/flutter_svg\ngeolocator 13.0.4 - 位置附件  (MIT)\nhttps://github.com/baseflow/flutter-geolocator/tree/main/geolocator\nhttp 1.6.0 - OpenAI 兼容接口请求  (BSD-3-Clause)\nhttps://github.com/dart-lang/http/tree/master/pkgs/http\nimage_picker 1.2.3 - 相机与相册图片  (Apache-2.0)\nhttps://github.com/flutter/packages/tree/main/packages/image_picker/image_picker\nintl 0.20.3 - 日期与数字格式化  (BSD-3-Clause)\nhttps://github.com/dart-lang/i18n/tree/main/pkgs/intl\npath_provider 2.1.6 - 应用目录，用于表情与导出文件  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/path_provider/path_provider\nphoto_manager 3.12.0 - 相册访问，用于附件  (Apache-2.0)\nhttps://github.com/fluttercandies/flutter_photo_manager\nshared_preferences 2.5.5 - 设置与聊天记录存储  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/shared_preferences/shared_preferences\nsqflite 2.4.4 - 消息历史与会话分页  (BSD-2-Clause)\nhttps://github.com/tekartik/sqflite/tree/master/sqflite\ntimezone 0.10.1 - 日程消息的时区数据  (BSD-2-Clause)\nhttps://github.com/srawlins/timezone\nurl_launcher 6.3.2 - 本弹窗中的交流群链接  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/url_launcher/url_launcher\nworkmanager 0.10.10 - 应用被杀后的后台送达  (MIT)\nhttps://github.com/fluttercommunity/flutter_workmanager",
-  "@settingsAboutDeps": { "description": "Direct dependencies with their licence, the transitive tree is in the lockfile" },
+  "@settingsAboutDeps": {
+    "description": "Direct dependencies with their licence, the transitive tree is in the lockfile"
+  },
   "settingsAboutCommunityUrl": "https://discord.gg/aQaNUHPsw",
-  "@settingsAboutCommunityUrl": { "description": "Community link in the about dialog, identical in every language" },
+  "@settingsAboutCommunityUrl": {
+    "description": "Community link in the about dialog, identical in every language"
+  },
   "settingsFooter": "Developed by Celvra",
-  "@settingsFooter": { "description": "Small print at the bottom of settings" },
+  "@settingsFooter": {
+    "description": "Small print at the bottom of settings"
+  },
   "previewSampleIncoming": "早上好！今天有什么可以帮你的？",
-  "@previewSampleIncoming": { "description": "Incoming bubble text in the message preview on the appearance page" },
+  "@previewSampleIncoming": {
+    "description": "Incoming bubble text in the message preview on the appearance page"
+  },
   "previewSampleOutgoing": "讲讲 transformers 是怎么工作的",
-  "@previewSampleOutgoing": { "description": "Outgoing bubble text in the message preview on the appearance page" },
+  "@previewSampleOutgoing": {
+    "description": "Outgoing bubble text in the message preview on the appearance page"
+  },
   "settingsLanguage": "语言",
-  "@settingsLanguage": { "description": "Settings row that opens the language picker" },
+  "@settingsLanguage": {
+    "description": "Settings row that opens the language picker"
+  },
   "settingsLanguageSystem": "跟随系统",
-  "@settingsLanguageSystem": { "description": "Language picker entry that follows the device language" },
+  "@settingsLanguageSystem": {
+    "description": "Language picker entry that follows the device language"
+  },
   "languageEnglish": "English",
-  "@languageEnglish": { "description": "Language name in its own language" },
+  "@languageEnglish": {
+    "description": "Language name in its own language"
+  },
   "languageChineseSimplified": "简体中文",
-  "@languageChineseSimplified": { "description": "Language name in its own language" },
+  "@languageChineseSimplified": {
+    "description": "Language name in its own language"
+  },
   "languageChineseTraditional": "繁體中文",
-  "@languageChineseTraditional": { "description": "Language name in its own language" },
+  "@languageChineseTraditional": {
+    "description": "Language name in its own language"
+  },
   "appearanceTheme": "主题",
-  "@appearanceTheme": { "description": "Settings section header" },
+  "@appearanceTheme": {
+    "description": "Settings section header"
+  },
   "wallpaperHeader": "聊天壁纸",
-  "@wallpaperHeader": { "description": "Settings section header for the wallpaper" },
+  "@wallpaperHeader": {
+    "description": "Settings section header for the wallpaper"
+  },
   "wallpaperRow": "壁纸",
-  "@wallpaperRow": { "description": "Settings row that opens the wallpaper picker" },
+  "@wallpaperRow": {
+    "description": "Settings row that opens the wallpaper picker"
+  },
   "wallpaperDefault": "默认",
-  "@wallpaperDefault": { "description": "Wallpaper picker entry that keeps the stock gradient" },
+  "@wallpaperDefault": {
+    "description": "Wallpaper picker entry that keeps the stock gradient"
+  },
   "wallpaperChoose": "选择图片",
-  "@wallpaperChoose": { "description": "Wallpaper picker entry that opens the gallery" },
+  "@wallpaperChoose": {
+    "description": "Wallpaper picker entry that opens the gallery"
+  },
   "wallpaperNone": "纯色渐变",
-  "@wallpaperNone": { "description": "Subtitle when no picture is chosen" },
+  "@wallpaperNone": {
+    "description": "Subtitle when no picture is chosen"
+  },
   "wallpaperFollowGlobal": "跟随全局",
-  "@wallpaperFollowGlobal": { "description": "Per chat entry that uses the global wallpaper" },
+  "@wallpaperFollowGlobal": {
+    "description": "Per chat entry that uses the global wallpaper"
+  },
   "wallpaperBlur": "模糊壁纸",
-  "@wallpaperBlur": { "description": "Toggle that blurs the wallpaper" },
+  "@wallpaperBlur": {
+    "description": "Toggle that blurs the wallpaper"
+  },
   "wallpaperBlurSub": "让气泡在照片上依然清晰",
-  "@wallpaperBlurSub": { "description": "Toggle subtitle" },
+  "@wallpaperBlurSub": {
+    "description": "Toggle subtitle"
+  },
   "wallpaperColorHeader": "壁纸取色",
-  "@wallpaperColorHeader": { "description": "Section header above the extracted colour swatches" },
+  "@wallpaperColorHeader": {
+    "description": "Section header above the extracted colour swatches"
+  },
   "wallpaperColorFooter": "选一个颜色，用于强调色和你发出的气泡。",
-  "@wallpaperColorFooter": { "description": "Note under the colour swatches" },
+  "@wallpaperColorFooter": {
+    "description": "Note under the colour swatches"
+  },
   "wallpaperColorNone": "默认",
-  "@wallpaperColorNone": { "description": "Swatch that clears the extracted accent" },
+  "@wallpaperColorNone": {
+    "description": "Swatch that clears the extracted accent"
+  },
   "wallpaperNoColors": "这张图没有可取的颜色",
-  "@wallpaperNoColors": { "description": "Shown when extraction found nothing" },
+  "@wallpaperNoColors": {
+    "description": "Shown when extraction found nothing"
+  },
   "wallpaperBubbleGrad": "气泡渐变",
-  "@wallpaperBubbleGrad": { "description": "Title of the outgoing bubble gradient picker" },
+  "@wallpaperBubbleGrad": {
+    "description": "Title of the outgoing bubble gradient picker"
+  },
   "wallpaperBubbleGradSubtle": "轻微",
-  "@wallpaperBubbleGradSubtle": { "description": "Weakest outgoing bubble gradient" },
+  "@wallpaperBubbleGradSubtle": {
+    "description": "Weakest outgoing bubble gradient"
+  },
   "wallpaperBubbleGradMedium": "适中",
-  "@wallpaperBubbleGradMedium": { "description": "Middle outgoing bubble gradient" },
+  "@wallpaperBubbleGradMedium": {
+    "description": "Middle outgoing bubble gradient"
+  },
   "wallpaperBubbleGradStrong": "明显",
-  "@wallpaperBubbleGradStrong": { "description": "Widest outgoing bubble gradient" },
+  "@wallpaperBubbleGradStrong": {
+    "description": "Widest outgoing bubble gradient"
+  },
   "wallpaperBubbleGradSub": "控制你发出的气泡从上到下的深浅跨度。",
-  "@wallpaperBubbleGradSub": { "description": "Note under the gradient picker" },
+  "@wallpaperBubbleGradSub": {
+    "description": "Note under the gradient picker"
+  },
   "wallpaperRemoved": "已移除壁纸",
-  "@wallpaperRemoved": { "description": "Bulletin after clearing a wallpaper" },
+  "@wallpaperRemoved": {
+    "description": "Bulletin after clearing a wallpaper"
+  },
   "wallpaperChatTitle": "本会话壁纸",
-  "@wallpaperChatTitle": { "description": "Title of the per chat wallpaper sheet" },
+  "@wallpaperChatTitle": {
+    "description": "Title of the per chat wallpaper sheet"
+  },
   "appearanceNightMode": "夜间模式",
-  "@appearanceNightMode": { "description": "Toggle row" },
+  "@appearanceNightMode": {
+    "description": "Toggle row"
+  },
   "appearancePreview": "消息预览",
-  "@appearancePreview": { "description": "Settings section header" },
+  "@appearancePreview": {
+    "description": "Settings section header"
+  },
   "appearanceTextSize": "消息字号",
-  "@appearanceTextSize": { "description": "Settings section header" },
+  "@appearanceTextSize": {
+    "description": "Settings section header"
+  },
   "appearanceSize": "字号",
-  "@appearanceSize": { "description": "Slider row label" },
+  "@appearanceSize": {
+    "description": "Slider row label"
+  },
   "appearanceCorners": "消息圆角",
-  "@appearanceCorners": { "description": "Settings section header" },
+  "@appearanceCorners": {
+    "description": "Settings section header"
+  },
   "appearanceRadius": "圆角",
-  "@appearanceRadius": { "description": "Slider row label" },
+  "@appearanceRadius": {
+    "description": "Slider row label"
+  },
   "appearanceReset": "恢复默认",
-  "@appearanceReset": { "description": "Row that restores the default text size and corner radius" },
+  "@appearanceReset": {
+    "description": "Row that restores the default text size and corner radius"
+  },
   "notifAlerts": "提醒",
-  "@notifAlerts": { "description": "Settings section header" },
+  "@notifAlerts": {
+    "description": "Settings section header"
+  },
   "notifVibrate": "回复时振动",
-  "@notifVibrate": { "description": "Toggle row" },
+  "@notifVibrate": {
+    "description": "Toggle row"
+  },
   "notifVibrateSub": "收到回答时轻震一下",
-  "@notifVibrateSub": { "description": "Toggle row subtitle" },
+  "@notifVibrateSub": {
+    "description": "Toggle row subtitle"
+  },
   "notifCountMuted": "统计勿扰对话",
-  "@notifCountMuted": { "description": "Toggle row" },
+  "@notifCountMuted": {
+    "description": "Toggle row"
+  },
   "notifCountMutedSub": "把它们计入标签页角标",
-  "@notifCountMutedSub": { "description": "Toggle row subtitle" },
+  "@notifCountMutedSub": {
+    "description": "Toggle row subtitle"
+  },
   "notifFooter": "每个对话也可以从它的菜单或资料页里设为勿扰。",
-  "@notifFooter": { "description": "Note at the bottom of the notifications page" },
+  "@notifFooter": {
+    "description": "Note at the bottom of the notifications page"
+  },
   "dataUsage": "用量",
-  "@dataUsage": { "description": "Settings section header" },
+  "@dataUsage": {
+    "description": "Settings section header"
+  },
   "dataChats": "对话",
-  "@dataChats": { "description": "Usage row label" },
+  "@dataChats": {
+    "description": "Usage row label"
+  },
   "dataMessages": "消息",
-  "@dataMessages": { "description": "Usage row label" },
+  "@dataMessages": {
+    "description": "Usage row label"
+  },
   "dataMedia": "媒体与文件",
-  "@dataMedia": { "description": "Usage row label" },
+  "@dataMedia": {
+    "description": "Usage row label"
+  },
   "dataClear": "清除",
-  "@dataClear": { "description": "Settings section header" },
+  "@dataClear": {
+    "description": "Settings section header"
+  },
   "dataClearSearch": "清除搜索记录",
-  "@dataClearSearch": { "description": "Row that forgets recent searches" },
+  "@dataClearSearch": {
+    "description": "Row that forgets recent searches"
+  },
   "dataClearMedia": "清除媒体与文件",
-  "@dataClearMedia": { "description": "Row that drops every attachment" },
+  "@dataClearMedia": {
+    "description": "Row that drops every attachment"
+  },
   "dataClearMediaTitle": "清除媒体",
-  "@dataClearMediaTitle": { "description": "Confirmation title" },
+  "@dataClearMediaTitle": {
+    "description": "Confirmation title"
+  },
   "dataClearMediaMessage": "所有对话中的照片、文件和音乐都会被删除。",
-  "@dataClearMediaMessage": { "description": "Confirmation body" },
+  "@dataClearMediaMessage": {
+    "description": "Confirmation body"
+  },
   "dataClearAll": "清除所有对话",
-  "@dataClearAll": { "description": "Row that removes every chat" },
+  "@dataClearAll": {
+    "description": "Row that removes every chat"
+  },
   "dataClearAllTitle": "清除所有对话",
-  "@dataClearAllTitle": { "description": "Confirmation title" },
+  "@dataClearAllTitle": {
+    "description": "Confirmation title"
+  },
   "dataClearAllMessage": "这会删除所有聊天里的每一条消息，人设会保留。",
-  "@dataClearAllMessage": { "description": "Confirmation body" },
+  "@dataClearAllMessage": {
+    "description": "Confirmation body"
+  },
   "dataBackup": "备份",
-  "@dataBackup": { "description": "Section header above the backup rows" },
+  "@dataBackup": {
+    "description": "Section header above the backup rows"
+  },
   "dataBackupExportSub": "会话、人格卡、表情与设置",
-  "@dataBackupExportSub": { "description": "Subtitle of the export row" },
+  "@dataBackupExportSub": {
+    "description": "Subtitle of the export row"
+  },
   "dataBackupImportSub": "从之前导出的文件恢复",
-  "@dataBackupImportSub": { "description": "Subtitle of the import row" },
+  "@dataBackupImportSub": {
+    "description": "Subtitle of the import row"
+  },
   "dataBackupRestored": "{chats} 个会话，{messages} 条消息",
-  "@dataBackupRestored": { "description": "Bulletin after a restore that changed something" },
+  "@dataBackupRestored": {
+    "description": "Bulletin after a restore that changed something"
+  },
   "dataBackupNothing": "这个文件里没有可恢复的内容",
-  "@dataBackupNothing": { "description": "Bulletin after a restore that found nothing to do" },
+  "@dataBackupNothing": {
+    "description": "Bulletin after a restore that found nothing to do"
+  },
   "dataBackupSaved": "备份已保存",
-  "@dataBackupSaved": { "description": "Bulletin after the backup is written where the user chose" },
+  "@dataBackupSaved": {
+    "description": "Bulletin after the backup is written where the user chose"
+  },
   "dataBackupSaveFailed": "无法保存文件",
-  "@dataBackupSaveFailed": { "description": "Bulletin when the save dialog could not be used" },
+  "@dataBackupSaveFailed": {
+    "description": "Bulletin when the save dialog could not be used"
+  },
   "dayToday": "今天",
-  "@dayToday": { "description": "Date separator for messages from today" },
+  "@dayToday": {
+    "description": "Date separator for messages from today"
+  },
   "dayYesterday": "昨天",
-  "@dayYesterday": { "description": "Date separator for messages from yesterday" },
+  "@dayYesterday": {
+    "description": "Date separator for messages from yesterday"
+  },
   "emojiSearchHint": "输入以搜索",
-  "@emojiSearchHint": { "description": "Empty search results in the emoji panel" },
+  "@emojiSearchHint": {
+    "description": "Empty search results in the emoji panel"
+  },
   "emojiNothingFound": "没有找到",
-  "@emojiNothingFound": { "description": "Empty search results in the emoji panel" },
+  "@emojiNothingFound": {
+    "description": "Empty search results in the emoji panel"
+  },
   "personaDiscardExisting": "你对这个人设的修改将会丢失。",
-  "@personaDiscardExisting": { "description": "Confirmation body when leaving an existing persona with unsaved edits" },
+  "@personaDiscardExisting": {
+    "description": "Confirmation body when leaving an existing persona with unsaved edits"
+  },
   "personaDiscardNew": "这个人设还没有创建。",
-  "@personaDiscardNew": { "description": "Confirmation body when leaving a brand new persona" },
+  "@personaDiscardNew": {
+    "description": "Confirmation body when leaving a brand new persona"
+  },
   "personaNameHeader": "名称",
-  "@personaNameHeader": { "description": "Section header of the persona name field" },
+  "@personaNameHeader": {
+    "description": "Section header of the persona name field"
+  },
   "personaNameHint": "人设名称",
-  "@personaNameHint": { "description": "Field placeholder for the persona name" },
+  "@personaNameHint": {
+    "description": "Field placeholder for the persona name"
+  },
   "personaAboutHeader": "关于",
-  "@personaAboutHeader": { "description": "Section header of the persona bio field" },
+  "@personaAboutHeader": {
+    "description": "Section header of the persona bio field"
+  },
   "personaAboutFooter": "显示在资料页上的一句话，不会发送给模型。",
-  "@personaAboutFooter": { "description": "Section footer of the persona bio field" },
+  "@personaAboutFooter": {
+    "description": "Section footer of the persona bio field"
+  },
   "personaInstructionsHeader": "指令",
-  "@personaInstructionsHeader": { "description": "Section header of the system prompt field" },
+  "@personaInstructionsHeader": {
+    "description": "Section header of the system prompt field"
+  },
   "personaInstructionsFooter": "这段内容会成为本聊天中每一次请求的系统提示词。",
-  "@personaInstructionsFooter": { "description": "Section footer of the system prompt field" },
+  "@personaInstructionsFooter": {
+    "description": "Section footer of the system prompt field"
+  },
   "personaInstructionsHint": "你希望 AI 如何表现？",
-  "@personaInstructionsHint": { "description": "Field placeholder for the system prompt" },
+  "@personaInstructionsHint": {
+    "description": "Field placeholder for the system prompt"
+  },
   "personaGreetingHeader": "问候",
-  "@personaGreetingHeader": { "description": "Section header of the greeting field" },
+  "@personaGreetingHeader": {
+    "description": "Section header of the greeting field"
+  },
   "personaGreetingFooter": "可选。打开聊天时会作为第一条消息发送。",
-  "@personaGreetingFooter": { "description": "Section footer of the greeting field" },
+  "@personaGreetingFooter": {
+    "description": "Section footer of the greeting field"
+  },
   "personaGreetingHint": "人设的第一条消息",
-  "@personaGreetingHint": { "description": "Field placeholder for the greeting" },
+  "@personaGreetingHint": {
+    "description": "Field placeholder for the greeting"
+  },
   "personaSave": "保存修改",
-  "@personaSave": { "description": "Bottom button when editing an existing persona" },
+  "@personaSave": {
+    "description": "Bottom button when editing an existing persona"
+  },
   "personaCreate": "创建人设",
-  "@personaCreate": { "description": "Bottom button when creating a persona" },
+  "@personaCreate": {
+    "description": "Bottom button when creating a persona"
+  },
   "personaTemplatesHeader": "从模板开始",
-  "@personaTemplatesHeader": { "description": "Section header of the preset chips" },
+  "@personaTemplatesHeader": {
+    "description": "Section header of the preset chips"
+  },
   "personaAppearanceHeader": "外观",
-  "@personaAppearanceHeader": { "description": "Section header of the avatar and colour picker" },
+  "@personaAppearanceHeader": {
+    "description": "Section header of the avatar and colour picker"
+  },
   "personaAppearanceFooterPhoto": "设置照片后，所有显示头像的地方都会用照片代替表情符号。",
-  "@personaAppearanceFooterPhoto": { "description": "Section footer when a photo is set" },
+  "@personaAppearanceFooterPhoto": {
+    "description": "Section footer when a photo is set"
+  },
   "personaAppearanceFooterColor": "这个颜色用于头像和资料页封面。",
-  "@personaAppearanceFooterColor": { "description": "Section footer when only a colour is set" },
+  "@personaAppearanceFooterColor": {
+    "description": "Section footer when only a colour is set"
+  },
   "personaPhotoTitle": "照片",
-  "@personaPhotoTitle": { "description": "Avatar row title when a photo is set" },
+  "@personaPhotoTitle": {
+    "description": "Avatar row title when a photo is set"
+  },
   "personaPhotoTitleEmpty": "资料照片",
-  "@personaPhotoTitleEmpty": { "description": "Avatar row title when no photo is set" },
+  "@personaPhotoTitleEmpty": {
+    "description": "Avatar row title when no photo is set"
+  },
   "personaPhotoSubFull": "点击更换，长按移除",
-  "@personaPhotoSubFull": { "description": "Avatar row subtitle when a photo is set" },
+  "@personaPhotoSubFull": {
+    "description": "Avatar row subtitle when a photo is set"
+  },
   "personaPhotoSubEmpty": "添加一张照片，或者沿用下面的颜色",
-  "@personaPhotoSubEmpty": { "description": "Avatar row subtitle when no photo is set" },
+  "@personaPhotoSubEmpty": {
+    "description": "Avatar row subtitle when no photo is set"
+  },
   "personaChoose": "选择",
-  "@personaChoose": { "description": "Text button that opens the gallery" },
+  "@personaChoose": {
+    "description": "Text button that opens the gallery"
+  },
   "personaModelForThis": "该人设使用的模型",
-  "@personaModelForThis": { "description": "Model picker title from the persona editor" },
+  "@personaModelForThis": {
+    "description": "Model picker title from the persona editor"
+  },
   "personaModelGlobal": "全局",
-  "@personaModelGlobal": { "description": "Follow chain row title from the persona editor" },
+  "@personaModelGlobal": {
+    "description": "Follow chain row title from the persona editor"
+  },
   "personaModelGlobalSub": "跟随兜底链的当前设置",
-  "@personaModelGlobalSub": { "description": "Follow chain row subtitle from the persona editor" },
+  "@personaModelGlobalSub": {
+    "description": "Follow chain row subtitle from the persona editor"
+  },
   "personaModelFooterOverride": "关闭后，这个模型失败会直接结束回复，不再尝试全局兜底链。",
-  "@personaModelFooterOverride": { "description": "Model section footer when an override is set" },
+  "@personaModelFooterOverride": {
+    "description": "Model section footer when an override is set"
+  },
   "personaModelFooterGlobal": "全局模式下使用「设置 > AI」里的兜底链。选一个模型就能让人设单独使用它。",
-  "@personaModelFooterGlobal": { "description": "Model section footer when no override is set" },
+  "@personaModelFooterGlobal": {
+    "description": "Model section footer when no override is set"
+  },
   "personaModelGlobalChain": "全局兜底链",
-  "@personaModelGlobalChain": { "description": "Model row title when no override is set" },
+  "@personaModelGlobalChain": {
+    "description": "Model row title when no override is set"
+  },
   "personaModelOnlyThis": "仅此人设",
-  "@personaModelOnlyThis": { "description": "Model row subtitle tail when an override is set" },
+  "@personaModelOnlyThis": {
+    "description": "Model row subtitle tail when an override is set"
+  },
   "personaModelFollowsSettings": "跟随「设置 > AI」",
-  "@personaModelFollowsSettings": { "description": "Model row subtitle when no override is set" },
+  "@personaModelFollowsSettings": {
+    "description": "Model row subtitle when no override is set"
+  },
   "personaModelChange": "更改",
-  "@personaModelChange": { "description": "Trailing value inviting the user to pick a model" },
+  "@personaModelChange": {
+    "description": "Trailing value inviting the user to pick a model"
+  },
   "personaModelFallback": "回退到全局兜底链",
-  "@personaModelFallback": { "description": "Checkbox row under a model override" },
+  "@personaModelFallback": {
+    "description": "Checkbox row under a model override"
+  },
   "personaModelUseGlobal": "使用全局兜底链",
-  "@personaModelUseGlobal": { "description": "Row that drops the model override" },
+  "@personaModelUseGlobal": {
+    "description": "Row that drops the model override"
+  },
   "presetAssistantBio": "沉稳冷静的万能帮手",
-  "@presetAssistantBio": { "description": "One liner of the Assistant template" },
+  "@presetAssistantBio": {
+    "description": "One liner of the Assistant template"
+  },
   "presetCoderBio": "以读堆栈信息为乐",
-  "@presetCoderBio": { "description": "One liner of the Coder template" },
+  "@presetCoderBio": {
+    "description": "One liner of the Coder template"
+  },
   "presetTranslatorBio": "中英双向翻译",
-  "@presetTranslatorBio": { "description": "One liner of the Translator template" },
+  "@presetTranslatorBio": {
+    "description": "One liner of the Translator template"
+  },
   "presetWriterBio": "把每句话都精炼一遍",
-  "@presetWriterBio": { "description": "One liner of the Writer template" },
+  "@presetWriterBio": {
+    "description": "One liner of the Writer template"
+  },
   "presetTutorBio": "像朋友一样讲给你听",
-  "@presetTutorBio": { "description": "One liner of the Tutor template" },
+  "@presetTutorBio": {
+    "description": "One liner of the Tutor template"
+  },
   "aiFollowChain": "跟随链上的第一个节点",
-  "@aiFollowChain": { "description": "Default title of the follow chain row in the model picker" },
+  "@aiFollowChain": {
+    "description": "Default title of the follow chain row in the model picker"
+  },
   "aiFollowChainSub": "总结时使用当前的主模型",
-  "@aiFollowChainSub": { "description": "Default subtitle of the follow chain row in the model picker" },
+  "@aiFollowChainSub": {
+    "description": "Default subtitle of the follow chain row in the model picker"
+  },
   "aiSearchModels": "搜索模型",
-  "@aiSearchModels": { "description": "Search field placeholder in the model picker" },
+  "@aiSearchModels": {
+    "description": "Search field placeholder in the model picker"
+  },
   "aiNoModelsLoaded": "还没有加载模型。\n请先从服务商获取一份列表。",
-  "@aiNoModelsLoaded": { "description": "Model picker empty state before any provider was queried" },
+  "@aiNoModelsLoaded": {
+    "description": "Model picker empty state before any provider was queried"
+  },
   "aiNoModelMatches": "没有匹配「{query}」的结果",
-  "@aiNoModelMatches": { "description": "Model picker empty state for a query that hit nothing" },
+  "@aiNoModelMatches": {
+    "description": "Model picker empty state for a query that hit nothing"
+  },
   "codeGeneric": "代码",
-  "@codeGeneric": { "description": "Language label of a fenced code block with no language given" },
+  "@codeGeneric": {
+    "description": "Language label of a fenced code block with no language given"
+  },
   "toastCodeCopied": "代码已复制",
-  "@toastCodeCopied": { "description": "Bulletin after copying a code block" },
+  "@toastCodeCopied": {
+    "description": "Bulletin after copying a code block"
+  },
   "codePreview": "预览",
-  "@codePreview": { "description": "Title of the page that renders an html or svg code block; also the tooltip of the button that opens it" },
+  "@codePreview": {
+    "description": "Title of the page that renders an html or svg code block; also the tooltip of the button that opens it"
+  },
   "wsPreviewRendered": "切换渲染视图",
-  "@wsPreviewRendered": { "description": "Tooltip of the button that flips an html or svg file preview between the rendered document and the raw source" },
+  "@wsPreviewRendered": {
+    "description": "Tooltip of the button that flips an html or svg file preview between the rendered document and the raw source"
+  },
   "searchFilterAll": "全部",
-  "@searchFilterAll": { "description": "Search strip chip that clears the filter" },
+  "@searchFilterAll": {
+    "description": "Search strip chip that clears the filter"
+  },
   "searchRecent": "最近",
-  "@searchRecent": { "description": "Header of the recent queries block" },
+  "@searchRecent": {
+    "description": "Header of the recent queries block"
+  },
   "searchPeople": "人",
-  "@searchPeople": { "description": "Header of the persona shortcut row" },
+  "@searchPeople": {
+    "description": "Header of the persona shortcut row"
+  },
   "searchNoResultsTitle": "没有结果",
-  "@searchNoResultsTitle": { "description": "Empty results headline" },
+  "@searchNoResultsTitle": {
+    "description": "Empty results headline"
+  },
   "searchEmptyBody": "还没有分享过这类内容。",
-  "@searchEmptyBody": { "description": "Empty results body before a query was typed" },
+  "@searchEmptyBody": {
+    "description": "Empty results body before a query was typed"
+  },
   "searchNoResultsBody": "没有找到与“{query}”相关的结果，换个词再试试。",
-  "@searchNoResultsBody": { "description": "Empty results body after a query returned nothing" },
+  "@searchNoResultsBody": {
+    "description": "Empty results body after a query returned nothing"
+  },
   "profileButtonEdit": "编辑",
-  "@profileButtonEdit": { "description": "Button tile on my own profile" },
+  "@profileButtonEdit": {
+    "description": "Button tile on my own profile"
+  },
   "profileButtonShare": "分享",
-  "@profileButtonShare": { "description": "Button tile on my own profile" },
+  "@profileButtonShare": {
+    "description": "Button tile on my own profile"
+  },
   "profileButtonMessage": "发消息",
-  "@profileButtonMessage": { "description": "Button tile on a persona profile" },
+  "@profileButtonMessage": {
+    "description": "Button tile on a persona profile"
+  },
   "profileButtonSearch": "搜索",
-  "@profileButtonSearch": { "description": "Button tile on a persona profile" },
+  "@profileButtonSearch": {
+    "description": "Button tile on a persona profile"
+  },
   "profileCopied": "资料已复制",
-  "@profileCopied": { "description": "Bulletin after copying the profile" },
+  "@profileCopied": {
+    "description": "Bulletin after copying the profile"
+  },
   "profileLabelName": "名称",
-  "@profileLabelName": { "description": "Info cell label" },
+  "@profileLabelName": {
+    "description": "Info cell label"
+  },
   "profileLabelBio": "简介",
-  "@profileLabelBio": { "description": "Info cell label" },
+  "@profileLabelBio": {
+    "description": "Info cell label"
+  },
   "profileLabelPersonaCard": "人设卡片",
-  "@profileLabelPersonaCard": { "description": "Info cell label" },
+  "@profileLabelPersonaCard": {
+    "description": "Info cell label"
+  },
   "profileLabelActivity": "动态",
-  "@profileLabelActivity": { "description": "Info cell label" },
+  "@profileLabelActivity": {
+    "description": "Info cell label"
+  },
   "profileLabelAbout": "关于",
-  "@profileLabelAbout": { "description": "Info cell label" },
+  "@profileLabelAbout": {
+    "description": "Info cell label"
+  },
   "profileLabelInstructions": "指令",
-  "@profileLabelInstructions": { "description": "Info cell label" },
+  "@profileLabelInstructions": {
+    "description": "Info cell label"
+  },
   "profileLabelModel": "模型",
-  "@profileLabelModel": { "description": "Info cell label" },
+  "@profileLabelModel": {
+    "description": "Info cell label"
+  },
   "profileLabelNotifications": "通知",
-  "@profileLabelNotifications": { "description": "Row label of the per chat notification switch" },
+  "@profileLabelNotifications": {
+    "description": "Row label of the per chat notification switch"
+  },
   "profileBioEmpty": "写几句关于自己的话",
-  "@profileBioEmpty": { "description": "Placeholder value of the bio cell when it is still empty" },
+  "@profileBioEmpty": {
+    "description": "Placeholder value of the bio cell when it is still empty"
+  },
   "profileCardEmpty": "告诉 AI 你是谁",
-  "@profileCardEmpty": { "description": "Placeholder value of the persona card cell when it is still empty" },
+  "@profileCardEmpty": {
+    "description": "Placeholder value of the persona card cell when it is still empty"
+  },
   "profileActivity": "{chats, plural, =1{1 个对话} other{{chats} 个对话}} · {sent, plural, =1{已发送 1 条} other{已发送 {sent} 条}}",
-  "@profileActivity": { "description": "Activity cell value, chats and messages I sent" },
+  "@profileActivity": {
+    "description": "Activity cell value, chats and messages I sent"
+  },
   "profileOn": "开",
-  "@profileOn": { "description": "Switch value when notifications are on" },
+  "@profileOn": {
+    "description": "Switch value when notifications are on"
+  },
   "profileOff": "关",
-  "@profileOff": { "description": "Switch value when notifications are off" },
+  "@profileOff": {
+    "description": "Switch value when notifications are off"
+  },
   "profileHeaderTyping": "正在输入...",
-  "@profileHeaderTyping": { "description": "Profile header subtitle while the persona is generating" },
+  "@profileHeaderTyping": {
+    "description": "Profile header subtitle while the persona is generating"
+  },
   "toastCopiedLabel": "已复制{label}",
-  "@toastCopiedLabel": { "description": "Bulletin after copying a labelled value" },
+  "@toastCopiedLabel": {
+    "description": "Bulletin after copying a labelled value"
+  },
   "profileTabMedia": "媒体",
-  "@profileTabMedia": { "description": "Shared content tab" },
+  "@profileTabMedia": {
+    "description": "Shared content tab"
+  },
   "profileTabFiles": "文件",
-  "@profileTabFiles": { "description": "Shared content tab" },
+  "@profileTabFiles": {
+    "description": "Shared content tab"
+  },
   "profileTabMusic": "音乐",
-  "@profileTabMusic": { "description": "Shared content tab" },
+  "@profileTabMusic": {
+    "description": "Shared content tab"
+  },
   "profileTabLinks": "链接",
-  "@profileTabLinks": { "description": "Shared content tab" },
+  "@profileTabLinks": {
+    "description": "Shared content tab"
+  },
   "profileSharedEmptyMedia": "还没有媒体",
-  "@profileSharedEmptyMedia": { "description": "Empty state of the media tab" },
+  "@profileSharedEmptyMedia": {
+    "description": "Empty state of the media tab"
+  },
   "profileSharedEmptyFiles": "还没有文件",
-  "@profileSharedEmptyFiles": { "description": "Empty state of the files tab" },
+  "@profileSharedEmptyFiles": {
+    "description": "Empty state of the files tab"
+  },
   "profileSharedEmptyMusic": "还没有音乐",
-  "@profileSharedEmptyMusic": { "description": "Empty state of the music tab" },
+  "@profileSharedEmptyMusic": {
+    "description": "Empty state of the music tab"
+  },
   "profileSharedEmptyLinks": "还没有链接",
-  "@profileSharedEmptyLinks": { "description": "Empty state of the links tab" },
+  "@profileSharedEmptyLinks": {
+    "description": "Empty state of the links tab"
+  },
   "msgLeadPhoto": "照片",
-  "@msgLeadPhoto": { "description": "Preview lead for a photo message" },
+  "@msgLeadPhoto": {
+    "description": "Preview lead for a photo message"
+  },
   "msgLeadMusic": "音乐",
-  "@msgLeadMusic": { "description": "Preview lead for a music message" },
+  "@msgLeadMusic": {
+    "description": "Preview lead for a music message"
+  },
   "msgLeadContact": "联系人",
-  "@msgLeadContact": { "description": "Preview lead for a contact message" },
+  "@msgLeadContact": {
+    "description": "Preview lead for a contact message"
+  },
   "msgLeadPoll": "投票",
-  "@msgLeadPoll": { "description": "Preview lead for a poll message" },
+  "@msgLeadPoll": {
+    "description": "Preview lead for a poll message"
+  },
   "msgLeadSticker": "表情",
-  "@msgLeadSticker": { "description": "Preview lead for a sticker message" },
+  "@msgLeadSticker": {
+    "description": "Preview lead for a sticker message"
+  },
   "msgLeadHtml": "网页卡片",
-  "@msgLeadHtml": { "description": "Preview lead for a message that renders an html card" },
+  "@msgLeadHtml": {
+    "description": "Preview lead for a message that renders an html card"
+  },
   "msgLeadLatex": "LaTeX",
-  "@msgLeadLatex": { "description": "Preview lead for a message that renders a LaTeX card" },
+  "@msgLeadLatex": {
+    "description": "Preview lead for a message that renders a LaTeX card"
+  },
   "canvasRenderFailed": "这个没渲染出来",
-  "@canvasRenderFailed": { "description": "The small quiet notice shown in place of an html or latex card the engine could not render" },
+  "@canvasRenderFailed": {
+    "description": "The small quiet notice shown in place of an html or latex card the engine could not render"
+  },
   "attachAudioFallback": "音频",
-  "@attachAudioFallback": { "description": "Row title of a music attachment with no name" },
+  "@attachAudioFallback": {
+    "description": "Row title of a music attachment with no name"
+  },
   "attachFileFallback": "文件",
-  "@attachFileFallback": { "description": "Row title of a file attachment with no name" },
+  "@attachFileFallback": {
+    "description": "Row title of a file attachment with no name"
+  },
   "attachLocationTitle": "位置",
-  "@attachLocationTitle": { "description": "Title of a location attachment" },
+  "@attachLocationTitle": {
+    "description": "Title of a location attachment"
+  },
   "attachLocationCopied": "坐标已复制",
-  "@attachLocationCopied": { "description": "Bulletin after copying coordinates" },
+  "@attachLocationCopied": {
+    "description": "Bulletin after copying coordinates"
+  },
   "attachNoPhone": "没有电话号码",
-  "@attachNoPhone": { "description": "Shown for a contact card with no phone number" },
+  "@attachNoPhone": {
+    "description": "Shown for a contact card with no phone number"
+  },
   "pollKindQuiz": "问答",
-  "@pollKindQuiz": { "description": "Poll subtitle when it is a quiz" },
+  "@pollKindQuiz": {
+    "description": "Poll subtitle when it is a quiz"
+  },
   "pollKindPublic": "公开投票",
-  "@pollKindPublic": { "description": "Poll subtitle when results are visible" },
+  "@pollKindPublic": {
+    "description": "Poll subtitle when results are visible"
+  },
   "pollKindAnonymous": "匿名投票",
-  "@pollKindAnonymous": { "description": "Poll subtitle when results are hidden" },
+  "@pollKindAnonymous": {
+    "description": "Poll subtitle when results are hidden"
+  },
   "pollKindMultiple": "{kind} · 多选",
-  "@pollKindMultiple": { "description": "Poll subtitle when more than one answer is allowed" },
+  "@pollKindMultiple": {
+    "description": "Poll subtitle when more than one answer is allowed"
+  },
+  "askKind": "提问 · 点击作答",
+  "@askKind": {
+    "description": "Ask card subtitle, an answer unblocks the waiting tool call"
+  },
+  "askKindMulti": "提问 · 可多选，选完提交",
+  "@askKindMulti": {
+    "description": "Ask card subtitle in multi choice mode"
+  },
+  "askDone": "已回答",
+  "@askDone": {
+    "description": "Ask card subtitle after the answer was submitted"
+  },
+  "askSkipped": "已跳过",
+  "@askSkipped": {
+    "description": "Ask card subtitle after the user skipped it"
+  },
+  "askOtherHint": "或者自己写…",
+  "@askOtherHint": {
+    "description": "Hint of the custom answer field on an ask card"
+  },
+  "askSubmit": "提交",
+  "@askSubmit": {
+    "description": "Button that submits the answer on an ask card"
+  },
+  "askSkip": "跳过",
+  "@askSkip": {
+    "description": "Button that skips an ask card without answering"
+  },
   "photoCounter": "第 {index} 张，共 {total} 张",
-  "@photoCounter": { "description": "Photo viewer header counter" },
+  "@photoCounter": {
+    "description": "Photo viewer header counter"
+  },
   "profileFileFallback": "文件",
-  "@profileFileFallback": { "description": "Row title when an attachment carries no name" },
+  "@profileFileFallback": {
+    "description": "Row title when an attachment carries no name"
+  },
   "errorAuth": "API 密钥无效或没有访问权限",
-  "@errorAuth": { "description": "Shown when the provider rejects the key" },
+  "@errorAuth": {
+    "description": "Shown when the provider rejects the key"
+  },
   "errorQuota": "服务商额度已用尽",
-  "@errorQuota": { "description": "Shown when the account has no balance left" },
+  "@errorQuota": {
+    "description": "Shown when the account has no balance left"
+  },
   "errorRate": "被服务商限流",
-  "@errorRate": { "description": "Shown on HTTP 429" },
+  "@errorRate": {
+    "description": "Shown on HTTP 429"
+  },
   "errorContextOverflow": "上下文比模型的窗口更长",
-  "@errorContextOverflow": { "description": "Shown when the prompt does not fit the model" },
+  "@errorContextOverflow": {
+    "description": "Shown when the prompt does not fit the model"
+  },
   "errorServer": "服务商返回了一个错误",
-  "@errorServer": { "description": "Shown on HTTP 5xx" },
+  "@errorServer": {
+    "description": "Shown on HTTP 5xx"
+  },
   "errorNetwork": "网络连接失败",
-  "@errorNetwork": { "description": "Shown when the request never reached the provider" },
+  "@errorNetwork": {
+    "description": "Shown when the request never reached the provider"
+  },
   "errorAborted": "生成已停止",
-  "@errorAborted": { "description": "Shown when the user stopped the reply" },
+  "@errorAborted": {
+    "description": "Shown when the user stopped the reply"
+  },
   "errorEmpty": "模型没有返回内容",
-  "@errorEmpty": { "description": "Shown when the reply body was empty" },
+  "@errorEmpty": {
+    "description": "Shown when the reply body was empty"
+  },
   "errorUnknown": "请求失败",
-  "@errorUnknown": { "description": "Fallback for an unclassified failure" },
+  "@errorUnknown": {
+    "description": "Fallback for an unclassified failure"
+  },
   "errorStoppedEarly": "提前停止：{reason}",
-  "@errorStoppedEarly": { "description": "Service message when the chain fell back to another node" },
+  "@errorStoppedEarly": {
+    "description": "Service message when the chain fell back to another node"
+  },
   "pluralChats": "{count, plural, =1{1 个聊天} other{{count} 个聊天}}",
-  "@pluralChats": { "description": "Count of chats" },
+  "@pluralChats": {
+    "description": "Count of chats"
+  },
   "pluralVotes": "{count, plural, =0{还没有投票} =1{1 票} other{{count} 票}}",
-  "@pluralVotes": { "description": "Count of votes on a poll, also covers zero" },
+  "@pluralVotes": {
+    "description": "Count of votes on a poll, also covers zero"
+  },
   "pluralSelected": "{count, plural, other{已选 {count} 个}}",
-  "@pluralSelected": { "description": "Count of picked attachments" },
+  "@pluralSelected": {
+    "description": "Count of picked attachments"
+  },
   "pluralModels": "{count, plural, =1{1 个模型} other{{count} 个模型}}",
-  "@pluralModels": { "description": "Count of models known to a provider" },
+  "@pluralModels": {
+    "description": "Count of models known to a provider"
+  },
   "pluralRetries": "{count, plural, =1{重试 1 次} other{重试 {count} 次}}",
-  "@pluralRetries": { "description": "Count of retries before the chain moves on" },
+  "@pluralRetries": {
+    "description": "Count of retries before the chain moves on"
+  },
   "pluralOptions": "{count, plural, other{{count} 个选项}}",
-  "@pluralOptions": { "description": "Count of poll options" },
+  "@pluralOptions": {
+    "description": "Count of poll options"
+  },
   "pluralChars": "{count, plural, other{{count} 个字符}}",
-  "@pluralChars": { "description": "Count of characters for the summary length" },
+  "@pluralChars": {
+    "description": "Count of characters for the summary length"
+  },
   "pluralTokens": "{count, plural, other{{count} 个 token}}",
-  "@pluralTokens": { "description": "Count of tokens" },
+  "@pluralTokens": {
+    "description": "Count of tokens"
+  },
   "cardCreate": "创建卡片",
-  "@cardCreate": { "description": "" },
+  "@cardCreate": {
+    "description": ""
+  },
   "cardDeleteThisCard": "此卡片",
-  "@cardDeleteThisCard": { "description": "" },
+  "@cardDeleteThisCard": {
+    "description": ""
+  },
   "cardDeleteTitle": "删除卡片",
-  "@cardDeleteTitle": { "description": "" },
+  "@cardDeleteTitle": {
+    "description": ""
+  },
   "cardDeleted": "卡片已删除",
-  "@cardDeleted": { "description": "" },
+  "@cardDeleted": {
+    "description": ""
+  },
   "cardDescHint": "你是谁、你怎么说话、你喜欢什么",
-  "@cardDescHint": { "description": "" },
+  "@cardDescHint": {
+    "description": ""
+  },
   "cardDuplicate": "复制",
-  "@cardDuplicate": { "description": "" },
+  "@cardDuplicate": {
+    "description": ""
+  },
   "cardDuplicated": "卡片已复制",
-  "@cardDuplicated": { "description": "" },
+  "@cardDuplicated": {
+    "description": ""
+  },
   "cardEditing": "编辑卡片",
-  "@cardEditing": { "description": "" },
+  "@cardEditing": {
+    "description": ""
+  },
   "cardEmptyBody": "创建一张人设卡片，让 AI 知道你是谁。",
-  "@cardEmptyBody": { "description": "" },
+  "@cardEmptyBody": {
+    "description": ""
+  },
   "cardEmptyTitle": "还没有人设卡片",
-  "@cardEmptyTitle": { "description": "" },
+  "@cardEmptyTitle": {
+    "description": ""
+  },
   "cardFieldDescription": "描述",
-  "@cardFieldDescription": { "description": "" },
+  "@cardFieldDescription": {
+    "description": ""
+  },
   "cardFieldName": "名称",
-  "@cardFieldName": { "description": "" },
+  "@cardFieldName": {
+    "description": ""
+  },
   "cardFieldNameHint": "AI 对你的称呼",
-  "@cardFieldNameHint": { "description": "" },
+  "@cardFieldNameHint": {
+    "description": ""
+  },
   "cardFieldTitle": "标题",
-  "@cardFieldTitle": { "description": "" },
+  "@cardFieldTitle": {
+    "description": ""
+  },
   "cardFieldTitleHint": "仅在列表中显示",
-  "@cardFieldTitleHint": { "description": "" },
+  "@cardFieldTitleHint": {
+    "description": ""
+  },
   "cardInfoFooter": "每次请求都会把这段描述一并发送给模型。",
-  "@cardInfoFooter": { "description": "" },
+  "@cardInfoFooter": {
+    "description": ""
+  },
   "cardNew": "新建卡片",
-  "@cardNew": { "description": "" },
+  "@cardNew": {
+    "description": ""
+  },
   "cardPlaceholdersHint": "使用 user 和 char 占位符。",
-  "@cardPlaceholdersHint": { "description": "" },
+  "@cardPlaceholdersHint": {
+    "description": ""
+  },
   "cardPositionTitle": "在提示词中的位置",
-  "@cardPositionTitle": { "description": "" },
+  "@cardPositionTitle": {
+    "description": ""
+  },
   "cardRoleTitle": "注入消息的角色",
-  "@cardRoleTitle": { "description": "" },
+  "@cardRoleTitle": {
+    "description": ""
+  },
   "posAtDepth": "按深度插入",
-  "@posAtDepth": { "description": "" },
+  "@posAtDepth": {
+    "description": ""
+  },
   "posAtDepthSub": "从最新一条往回数，插入到几条消息之前",
-  "@posAtDepthSub": { "description": "" },
+  "@posAtDepthSub": {
+    "description": ""
+  },
   "posBottomNote": "底部备注",
-  "@posBottomNote": { "description": "" },
+  "@posBottomNote": {
+    "description": ""
+  },
   "posBottomNoteSub": "对话开始前读到的最后一段内容",
-  "@posBottomNoteSub": { "description": "" },
+  "@posBottomNoteSub": {
+    "description": ""
+  },
   "posInPrompt": "并入提示词",
-  "@posInPrompt": { "description": "" },
+  "@posInPrompt": {
+    "description": ""
+  },
   "posInPromptSub": "合并进系统提示词",
-  "@posInPromptSub": { "description": "" },
+  "@posInPromptSub": {
+    "description": ""
+  },
   "posNone": "关闭",
-  "@posNone": { "description": "" },
+  "@posNone": {
+    "description": ""
+  },
   "posNoneSub": "不会发送这张卡片",
-  "@posNoneSub": { "description": "" },
+  "@posNoneSub": {
+    "description": ""
+  },
   "posTopNote": "顶部备注",
-  "@posTopNote": { "description": "" },
+  "@posTopNote": {
+    "description": ""
+  },
   "posTopNoteSub": "在其他所有内容之前",
-  "@posTopNoteSub": { "description": "" },
+  "@posTopNoteSub": {
+    "description": ""
+  },
   "roleAssistant": "助手",
-  "@roleAssistant": { "description": "" },
+  "@roleAssistant": {
+    "description": ""
+  },
   "roleSystem": "系统",
-  "@roleSystem": { "description": "" },
+  "@roleSystem": {
+    "description": ""
+  },
   "roleUser": "用户",
-  "@roleUser": { "description": "" },
+  "@roleUser": {
+    "description": ""
+  },
   "cardDeleteMessage": "删除 {name}？此操作无法撤销。",
-  "@cardDeleteMessage": { "description": "" },
+  "@cardDeleteMessage": {
+    "description": ""
+  },
   "msgRecalled": "{name} 撤回了一条消息",
-  "@msgRecalled": { "description": "Stamp on a recalled bubble, names whoever recalled it", "placeholders": {"name": {"type": "String"}} },
+  "@msgRecalled": {
+    "description": "Stamp on a recalled bubble, names whoever recalled it",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "msgEdited": "已编辑",
-  "@msgEdited": { "description": "Suffix on the timestamp of an edited message" },
+  "@msgEdited": {
+    "description": "Suffix on the timestamp of an edited message"
+  },
   "msgPinned": "已置顶的消息",
-  "@msgPinned": { "description": "Bar at the top of a chat holding a pinned message" },
+  "@msgPinned": {
+    "description": "Bar at the top of a chat holding a pinned message"
+  },
   "traceThinking": "思考",
-  "@traceThinking": { "description": "Tag over the reasoning block" },
+  "@traceThinking": {
+    "description": "Tag over the reasoning block"
+  },
   "traceThinkingNow": "思考中…",
-  "@traceThinkingNow": { "description": "Reasoning block title while it is still generating" },
+  "@traceThinkingNow": {
+    "description": "Reasoning block title while it is still generating"
+  },
   "traceThoughtFor": "思考了 {seconds}",
-  "@traceThoughtFor": { "description": "Reasoning block title once it is done, with the duration" },
+  "@traceThoughtFor": {
+    "description": "Reasoning block title once it is done, with the duration"
+  },
   "traceRunning": "运行中",
-  "@traceRunning": { "description": "Tag over a tool call that is still running" },
+  "@traceRunning": {
+    "description": "Tag over a tool call that is still running"
+  },
   "traceFailed": "失败",
-  "@traceFailed": { "description": "State of a tool call that failed" },
+  "@traceFailed": {
+    "description": "State of a tool call that failed"
+  },
   "traceArguments": "参数",
-  "@traceArguments": { "description": "Tag over the argument dump of a tool call" },
+  "@traceArguments": {
+    "description": "Tag over the argument dump of a tool call"
+  },
   "traceResult": "结果",
-  "@traceResult": { "description": "Tag over the result of a tool call" },
+  "@traceResult": {
+    "description": "Tag over the result of a tool call"
+  },
   "traceSeconds": "{value}s",
-  "@traceSeconds": { "description": "Duration in the trace rows" },
+  "@traceSeconds": {
+    "description": "Duration in the trace rows"
+  },
   "statusOnline": "在线",
-  "@statusOnline": { "description": "Presence label when the character is reachable" },
+  "@statusOnline": {
+    "description": "Presence label when the character is reachable"
+  },
   "statusAway": "离开",
-  "@statusAway": { "description": "Presence label when the character stepped away" },
+  "@statusAway": {
+    "description": "Presence label when the character stepped away"
+  },
   "statusDnd": "勿扰",
-  "@statusDnd": { "description": "Presence label of the do not disturb state" },
+  "@statusDnd": {
+    "description": "Presence label of the do not disturb state"
+  },
   "statusRead": "已读",
-  "@statusRead": { "description": "Presence label of the read but no answer state" },
+  "@statusRead": {
+    "description": "Presence label of the read but no answer state"
+  },
   "searchGeneric": "搜索",
-  "@searchGeneric": { "description": "Placeholder of a bare search field" },
+  "@searchGeneric": {
+    "description": "Placeholder of a bare search field"
+  },
   "inputMessageHint": "消息",
-  "@inputMessageHint": { "description": "Placeholder of the composer" },
+  "@inputMessageHint": {
+    "description": "Placeholder of the composer"
+  },
   "aiReplyTitle": "AI 回复",
-  "@aiReplyTitle": { "description": "Title of the AI replies page" },
+  "@aiReplyTitle": {
+    "description": "Title of the AI replies page"
+  },
   "aiReplyStyleHeader": "节奏",
-  "@aiReplyStyleHeader": { "description": "Section header of the reply style and pacing rows" },
+  "@aiReplyStyleHeader": {
+    "description": "Section header of the reply style and pacing rows"
+  },
   "aiReplyVisibleHeader": "你能看到的内容",
-  "@aiReplyVisibleHeader": { "description": "Section header of the two reply switches" },
+  "@aiReplyVisibleHeader": {
+    "description": "Section header of the two reply switches"
+  },
   "aiReplyVisibleFooter": "开启显示思考后，思考模型的推理过程会作为可展开的步骤写在答案上方。Agent 模式让模型调用工具，并为每次调用加上一行，显示它的参数和结果。",
-  "@aiReplyVisibleFooter": { "description": "Section footer of the two reply switches" },
+  "@aiReplyVisibleFooter": {
+    "description": "Section footer of the two reply switches"
+  },
   "aiReplyMarkdown": "Markdown",
-  "@aiReplyMarkdown": { "description": "Switch that renders Markdown in bubbles" },
+  "@aiReplyMarkdown": {
+    "description": "Switch that renders Markdown in bubbles"
+  },
   "aiReplyMarkdownSub": "气泡里渲染加粗、代码块和标题；关闭后人格化模式会去掉这些标记",
-  "@aiReplyMarkdownSub": { "description": "Switch subtitle" },
+  "@aiReplyMarkdownSub": {
+    "description": "Switch subtitle"
+  },
   "aiReplyShowThinking": "显示思考",
-  "@aiReplyShowThinking": { "description": "Switch that writes the reasoning into the chat" },
+  "@aiReplyShowThinking": {
+    "description": "Switch that writes the reasoning into the chat"
+  },
   "aiReplyShowThinkingSub": "把推理过程写进对话里，而不是藏起来",
-  "@aiReplyShowThinkingSub": { "description": "Switch subtitle" },
+  "@aiReplyShowThinkingSub": {
+    "description": "Switch subtitle"
+  },
   "aiReplyAgentMode": "Agent 模式",
-  "@aiReplyAgentMode": { "description": "Switch that lets the model call tools" },
+  "@aiReplyAgentMode": {
+    "description": "Switch that lets the model call tools"
+  },
   "aiReplyAgentModeSub": "工具与 MCP 调用，每一步实时显示",
-  "@aiReplyAgentModeSub": { "description": "Switch subtitle" },
+  "@aiReplyAgentModeSub": {
+    "description": "Switch subtitle"
+  },
   "aiReplyAgentPass": "工具轮次上限",
-  "@aiReplyAgentPass": { "description": "Row that opens the tool pass limit picker" },
+  "@aiReplyAgentPass": {
+    "description": "Row that opens the tool pass limit picker"
+  },
   "aiReplyAgentPassSub": "一次回复最多执行多少轮工具调用",
-  "@aiReplyAgentPassSub": { "description": "Subtitle of the tool pass limit row" },
+  "@aiReplyAgentPassSub": {
+    "description": "Subtitle of the tool pass limit row"
+  },
   "aiReplyAgentPassUnlimited": "无限制",
-  "@aiReplyAgentPassUnlimited": { "description": "Label of the no cap option" },
+  "@aiReplyAgentPassUnlimited": {
+    "description": "Label of the no cap option"
+  },
   "aiReplyAgentPassUnlimitedSub": "一直执行工具轮次，直到模型自己停下",
-  "@aiReplyAgentPassUnlimitedSub": { "description": "Subtitle of the no cap option" },
+  "@aiReplyAgentPassUnlimitedSub": {
+    "description": "Subtitle of the no cap option"
+  },
   "aiReplyAgentPassRounds": "{count} 轮",
-  "@aiReplyAgentPassRounds": { "description": "Value of a numeric cap option", "placeholders": {"count": {"type": "int"}} },
+  "@aiReplyAgentPassRounds": {
+    "description": "Value of a numeric cap option",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "aiReplyToolsHeader": "工具",
-  "@aiReplyToolsHeader": { "description": "Section header of the tools entry" },
+  "@aiReplyToolsHeader": {
+    "description": "Section header of the tools entry"
+  },
   "aiReplyToolsFooter": "Agent 模式会给模型三个内置工具（时间、获取网页、列出 MCP 服务器），再加上你的 MCP 服务器提供的全部工具。每个工具都能在工具页设为询问、允许或拒绝。",
-  "@aiReplyToolsFooter": { "description": "Section footer of the tools entry" },
+  "@aiReplyToolsFooter": {
+    "description": "Section footer of the tools entry"
+  },
   "aiReplyToolsRow": "工具、MCP 服务器与权限",
-  "@aiReplyToolsRow": { "description": "Row that opens the tools page" },
+  "@aiReplyToolsRow": {
+    "description": "Row that opens the tools page"
+  },
   "aiReplyToolsCount": "可用 MCP 工具 {count} 个",
-  "@aiReplyToolsCount": { "description": "Subtitle of the tools row, how many MCP tools are live" },
+  "@aiReplyToolsCount": {
+    "description": "Subtitle of the tools row, how many MCP tools are live"
+  },
   "aiReplyPersonaFooter": "人设卡片可以为自己的聊天单独覆盖这两个开关中的任意一个。选择跟随全局时，则沿用上面的设置。",
-  "@aiReplyPersonaFooter": { "description": "Note explaining the per persona override" },
+  "@aiReplyPersonaFooter": {
+    "description": "Note explaining the per persona override"
+  },
   "aiReplySummaryThinking": "思考",
-  "@aiReplySummaryThinking": { "description": "Chip in the settings row summary" },
+  "@aiReplySummaryThinking": {
+    "description": "Chip in the settings row summary"
+  },
   "aiReplySummaryAgent": "agent",
-  "@aiReplySummaryAgent": { "description": "Chip in the settings row summary" },
+  "@aiReplySummaryAgent": {
+    "description": "Chip in the settings row summary"
+  },
   "aiReplySummaryNone": "普通回复",
-  "@aiReplySummaryNone": { "description": "Settings row summary when both switches are off" },
+  "@aiReplySummaryNone": {
+    "description": "Settings row summary when both switches are off"
+  },
   "personaReplyUseGlobal": "使用「设置」里的全局开关",
-  "@personaReplyUseGlobal": { "description": "Option subtitle of the follow global state" },
+  "@personaReplyUseGlobal": {
+    "description": "Option subtitle of the follow global state"
+  },
   "personaReplyAlwaysOn": "该人设始终开启",
-  "@personaReplyAlwaysOn": { "description": "Option subtitle of the on state" },
+  "@personaReplyAlwaysOn": {
+    "description": "Option subtitle of the on state"
+  },
   "personaReplyAlwaysOff": "该人设始终关闭",
-  "@personaReplyAlwaysOff": { "description": "Option subtitle of the off state" },
+  "@personaReplyAlwaysOff": {
+    "description": "Option subtitle of the off state"
+  },
   "personaReplyFollowingGlobal": "跟随全局开关",
-  "@personaReplyFollowingGlobal": { "description": "Row subtitle when the override is unset" },
+  "@personaReplyFollowingGlobal": {
+    "description": "Row subtitle when the override is unset"
+  },
   "personaReplyFollowGlobal": "跟随全局",
-  "@personaReplyFollowGlobal": { "description": "Tri state row value, the persona has no opinion and the global switch decides" },
+  "@personaReplyFollowGlobal": {
+    "description": "Tri state row value, the persona has no opinion and the global switch decides"
+  },
   "personaReplyFooter": "仅为该人设覆盖「设置 > AI」里的回复开关。它只改变用户在这个聊天中看到的内容，不影响人设说话的方式。",
-  "@personaReplyFooter": { "description": "Section footer of the per persona reply section" },
+  "@personaReplyFooter": {
+    "description": "Section footer of the per persona reply section"
+  },
   "chatEditMessageTitle": "编辑消息",
-  "@chatEditMessageTitle": { "description": "Dialog title when editing a message" },
+  "@chatEditMessageTitle": {
+    "description": "Dialog title when editing a message"
+  },
   "chatEditHistoryTitle": "编辑记录",
-  "@chatEditHistoryTitle": { "description": "Dialog title of the edit history, also a menu entry" },
+  "@chatEditHistoryTitle": {
+    "description": "Dialog title of the edit history, also a menu entry"
+  },
   "chatEditCurrentMark": "当前",
-  "@chatEditCurrentMark": { "description": "Marks the entry the message is at now" },
+  "@chatEditCurrentMark": {
+    "description": "Marks the entry the message is at now"
+  },
   "chatWalletOpened": "已拆开 ¥{amount}",
-  "@chatWalletOpened": { "description": "Bulletin after taking a red packet" },
+  "@chatWalletOpened": {
+    "description": "Bulletin after taking a red packet"
+  },
   "chatWalletReceived": "已收到 ¥{amount}",
-  "@chatWalletReceived": { "description": "Bulletin after taking a transfer" },
+  "@chatWalletReceived": {
+    "description": "Bulletin after taking a transfer"
+  },
   "walletRedPacket": "红包",
-  "@walletRedPacket": { "description": "Title of a red packet card" },
+  "@walletRedPacket": {
+    "description": "Title of a red packet card"
+  },
   "walletTransfer": "转账",
-  "@walletTransfer": { "description": "Title of a transfer card" },
+  "@walletTransfer": {
+    "description": "Title of a transfer card"
+  },
   "walletReceived": "已收",
-  "@walletReceived": { "description": "State of a claimed red packet" },
+  "@walletReceived": {
+    "description": "State of a claimed red packet"
+  },
   "walletReturned": "已退回",
-  "@walletReturned": { "description": "State of a declined red packet" },
+  "@walletReturned": {
+    "description": "State of a declined red packet"
+  },
   "walletWaitingOpen": "等待拆开",
-  "@walletWaitingOpen": { "description": "State of a red packet I sent that nobody opened" },
+  "@walletWaitingOpen": {
+    "description": "State of a red packet I sent that nobody opened"
+  },
   "walletTapOpen": "点击拆开",
-  "@walletTapOpen": { "description": "Hint that taking the card needs a tap" },
+  "@walletTapOpen": {
+    "description": "Hint that taking the card needs a tap"
+  },
   "walletBestWishes": "恭喜发财",
-  "@walletBestWishes": { "description": "Default note of a red packet" },
+  "@walletBestWishes": {
+    "description": "Default note of a red packet"
+  },
   "walletNoNote": "暂无留言",
-  "@walletNoNote": { "description": "Shown when a transfer carries no note" },
+  "@walletNoNote": {
+    "description": "Shown when a transfer carries no note"
+  },
   "walletBalance": "余额",
-  "@walletBalance": { "description": "Wallet card label" },
+  "@walletBalance": {
+    "description": "Wallet card label"
+  },
   "walletPretendNote": "假装的钱，只是为了助兴",
-  "@walletPretendNote": { "description": "Small print under the balance" },
+  "@walletPretendNote": {
+    "description": "Small print under the balance"
+  },
   "walletRecords": "记录",
-  "@walletRecords": { "description": "Section header of the transaction list" },
+  "@walletRecords": {
+    "description": "Section header of the transaction list"
+  },
   "walletEmpty": "还没有转账记录。对 AI 好一点吧。",
-  "@walletEmpty": { "description": "Empty transaction list" },
+  "@walletEmpty": {
+    "description": "Empty transaction list"
+  },
   "walletReset": "重置钱包",
-  "@walletReset": { "description": "Row that empties the transaction list" },
+  "@walletReset": {
+    "description": "Row that empties the transaction list"
+  },
   "walletResetTitle": "重置钱包？",
-  "@walletResetTitle": { "description": "Confirmation title" },
+  "@walletResetTitle": {
+    "description": "Confirmation title"
+  },
   "walletResetAction": "重置",
-  "@walletResetAction": { "description": "Confirmation button" },
+  "@walletResetAction": {
+    "description": "Confirmation button"
+  },
   "stickerSettingsTitle": "表情",
-  "@stickerSettingsTitle": { "description": "Title of the sticker library page" },
+  "@stickerSettingsTitle": {
+    "description": "Title of the sticker library page"
+  },
   "stickerMyStickers": "我的表情",
-  "@stickerMyStickers": { "description": "Section header of the sticker tab in the panel" },
+  "@stickerMyStickers": {
+    "description": "Section header of the sticker tab in the panel"
+  },
   "stickerTabAll": "表情",
-  "@stickerTabAll": { "description": "Section header of the sticker tab in the panel" },
+  "@stickerTabAll": {
+    "description": "Section header of the sticker tab in the panel"
+  },
   "stickerFavorites": "收藏",
-  "@stickerFavorites": { "description": "Chip that filters to the favourite stickers" },
+  "@stickerFavorites": {
+    "description": "Chip that filters to the favourite stickers"
+  },
   "stickerEmptyPanel": "暂时还是空的，你发的 GIF 和梗图都会存在这里",
-  "@stickerEmptyPanel": { "description": "Empty state of the sticker tab" },
+  "@stickerEmptyPanel": {
+    "description": "Empty state of the sticker tab"
+  },
   "stickerSearchHint": "搜索名称、情绪、标签",
-  "@stickerSearchHint": { "description": "Placeholder of the sticker library search" },
+  "@stickerSearchHint": {
+    "description": "Placeholder of the sticker library search"
+  },
   "stickerRecent": "最近",
-  "@stickerRecent": { "description": "Chip that filters to the recently used stickers" },
+  "@stickerRecent": {
+    "description": "Chip that filters to the recently used stickers"
+  },
   "stickerSelectAll": "全选",
-  "@stickerSelectAll": { "description": "Chip that picks everything the filter shows" },
+  "@stickerSelectAll": {
+    "description": "Chip that picks everything the filter shows"
+  },
   "stickerEmptyLibrary": "这里还没有内容。点 + 添加一个，或者让助手自动保存你发的梗图。",
-  "@stickerEmptyLibrary": { "description": "Empty state of the sticker library" },
+  "@stickerEmptyLibrary": {
+    "description": "Empty state of the sticker library"
+  },
   "stickerLibraryFooter": "点一下表情可编辑、加标签或删除，长按可选中多个并一次处理。助手会按情绪和语境从中挑选。",
-  "@stickerLibraryFooter": { "description": "Note at the bottom of the sticker library" },
+  "@stickerLibraryFooter": {
+    "description": "Note at the bottom of the sticker library"
+  },
   "stickerCountSelected": "已选 {count} 个",
-  "@stickerCountSelected": { "description": "Title of the batch sheet and the batch bar" },
+  "@stickerCountSelected": {
+    "description": "Title of the batch sheet and the batch bar"
+  },
   "stickerBatchActions": "批量操作",
-  "@stickerBatchActions": { "description": "Batch bar button that opens the batch sheet" },
+  "@stickerBatchActions": {
+    "description": "Batch bar button that opens the batch sheet"
+  },
   "stickerBatchMove": "移动到分类",
-  "@stickerBatchMove": { "description": "Batch sheet entry" },
+  "@stickerBatchMove": {
+    "description": "Batch sheet entry"
+  },
   "stickerBatchDeleteTitle": "删除 {count} 个表情？",
-  "@stickerBatchDeleteTitle": { "description": "Confirmation title of the batch delete" },
+  "@stickerBatchDeleteTitle": {
+    "description": "Confirmation title of the batch delete"
+  },
   "stickerBatchUndo": "此操作无法撤销。",
-  "@stickerBatchUndo": { "description": "Confirmation body of the batch delete" },
+  "@stickerBatchUndo": {
+    "description": "Confirmation body of the batch delete"
+  },
   "stickerBatchNow": "当前：{category}",
-  "@stickerBatchNow": { "description": "Hint of the move to category prompt" },
+  "@stickerBatchNow": {
+    "description": "Hint of the move to category prompt"
+  },
   "stickerAddTitle": "添加表情",
-  "@stickerAddTitle": { "description": "Dialog title of the add sticker flow" },
+  "@stickerAddTitle": {
+    "description": "Dialog title of the add sticker flow"
+  },
   "stickerAddGallery": "相册",
-  "@stickerAddGallery": { "description": "Source entry of the add sticker flow" },
+  "@stickerAddGallery": {
+    "description": "Source entry of the add sticker flow"
+  },
   "stickerAddUrl": "链接",
-  "@stickerAddUrl": { "description": "Source entry of the add sticker flow" },
+  "@stickerAddUrl": {
+    "description": "Source entry of the add sticker flow"
+  },
   "stickerEmotionOptional": "情绪词（可选）",
-  "@stickerEmotionOptional": { "description": "Prompt asking for the emotion of a sticker" },
+  "@stickerEmotionOptional": {
+    "description": "Prompt asking for the emotion of a sticker"
+  },
   "stickerEmotionExample": "例如 lol、无语",
-  "@stickerEmotionExample": { "description": "Placeholder of the emotion prompt" },
+  "@stickerEmotionExample": {
+    "description": "Placeholder of the emotion prompt"
+  },
   "stickerFieldName": "名称",
-  "@stickerFieldName": { "description": "Field placeholder of the sticker editor" },
+  "@stickerFieldName": {
+    "description": "Field placeholder of the sticker editor"
+  },
   "stickerFieldEmotion": "情绪",
-  "@stickerFieldEmotion": { "description": "Field placeholder of the sticker editor" },
+  "@stickerFieldEmotion": {
+    "description": "Field placeholder of the sticker editor"
+  },
   "stickerFieldTags": "标签，用逗号分隔",
-  "@stickerFieldTags": { "description": "Field placeholder of the sticker editor" },
+  "@stickerFieldTags": {
+    "description": "Field placeholder of the sticker editor"
+  },
   "stickerFieldCategory": "分类",
-  "@stickerFieldCategory": { "description": "Field placeholder of the sticker editor and of the move prompt" },
+  "@stickerFieldCategory": {
+    "description": "Field placeholder of the sticker editor and of the move prompt"
+  },
   "stickerLink": "链接",
-  "@stickerLink": { "description": "Prompt asking for the image url" },
+  "@stickerLink": {
+    "description": "Prompt asking for the image url"
+  },
   "stickerUnfavorite": "取消收藏",
-  "@stickerUnfavorite": { "description": "Menu entry that drops the star" },
+  "@stickerUnfavorite": {
+    "description": "Menu entry that drops the star"
+  },
   "stickerFavorite": "收藏",
-  "@stickerFavorite": { "description": "Menu entry that sets the star" },
+  "@stickerFavorite": {
+    "description": "Menu entry that sets the star"
+  },
   "stickerAiBadge": "AI",
-  "@stickerAiBadge": { "description": "Badge on a sticker the assistant saved itself" },
+  "@stickerAiBadge": {
+    "description": "Badge on a sticker the assistant saved itself"
+  },
   "humanTitle": "拟人化",
-  "@humanTitle": { "description": "Title of the humanize settings page" },
+  "@humanTitle": {
+    "description": "Title of the humanize settings page"
+  },
   "humanSubtitle": "正在输入、主动发信、表情、记忆",
-  "@humanSubtitle": { "description": "Settings row subtitle of the humanize entry" },
+  "@humanSubtitle": {
+    "description": "Settings row subtitle of the humanize entry"
+  },
   "humanFooter": "截断标签、主动发信、表情、撤回、心情与记忆。关闭后即可回到朴素的助手模式。",
-  "@humanFooter": { "description": "Note at the top of the humanize page" },
+  "@humanFooter": {
+    "description": "Note at the top of the humanize page"
+  },
   "humanEnabled": "拟人化模式",
-  "@humanEnabled": { "description": "Master switch of the humanize layer" },
+  "@humanEnabled": {
+    "description": "Master switch of the humanize layer"
+  },
   "humanBehaviour": "行为",
-  "@humanBehaviour": { "description": "Section header" },
+  "@humanBehaviour": {
+    "description": "Section header"
+  },
   "humanBehaviourRow": "正在输入、随机与撤回",
-  "@humanBehaviourRow": { "description": "Row that opens the behaviour page" },
+  "@humanBehaviourRow": {
+    "description": "Row that opens the behaviour page"
+  },
   "humanProactive": "主动发信",
-  "@humanProactive": { "description": "Row and page title of the proactive settings" },
+  "@humanProactive": {
+    "description": "Row and page title of the proactive settings"
+  },
   "humanStickersRow": "表情",
-  "@humanStickersRow": { "description": "Row that opens the sticker library" },
+  "@humanStickersRow": {
+    "description": "Row that opens the sticker library"
+  },
   "humanMemoryRow": "长期记忆",
-  "@humanMemoryRow": { "description": "Row that opens the memory page" },
+  "@humanMemoryRow": {
+    "description": "Row that opens the memory page"
+  },
   "humanChatsRow": "对话：心情、角色卡、日程",
-  "@humanChatsRow": { "description": "Row that opens the per conversation pages" },
+  "@humanChatsRow": {
+    "description": "Row that opens the per conversation pages"
+  },
   "humanToolsHeader": "工具",
-  "@humanToolsHeader": { "description": "Section header" },
+  "@humanToolsHeader": {
+    "description": "Section header"
+  },
   "humanToolsRow": "工具、MCP 服务器与权限",
-  "@humanToolsRow": { "description": "Row that opens the tools page" },
+  "@humanToolsRow": {
+    "description": "Row that opens the tools page"
+  },
   "humanWalletRow": "钱包",
-  "@humanWalletRow": { "description": "Row that opens the wallet page" },
+  "@humanWalletRow": {
+    "description": "Row that opens the wallet page"
+  },
   "humanDataHeader": "反馈与数据",
-  "@humanDataHeader": { "description": "Section header" },
+  "@humanDataHeader": {
+    "description": "Section header"
+  },
   "humanRatingsRow": "评分与调校",
-  "@humanRatingsRow": { "description": "Row that opens the ratings page" },
+  "@humanRatingsRow": {
+    "description": "Row that opens the ratings page"
+  },
   "humanBackupRow": "备份与导入",
-  "@humanBackupRow": { "description": "Row that opens the backup page" },
+  "@humanBackupRow": {
+    "description": "Row that opens the backup page"
+  },
   "humanSchedDebugRow": "调度器调试面板",
-  "@humanSchedDebugRow": { "description": "Row that opens the scheduler debug page" },
+  "@humanSchedDebugRow": {
+    "description": "Row that opens the scheduler debug page"
+  },
   "humanBehaviourTitle": "正在输入与随机性",
-  "@humanBehaviourTitle": { "description": "Title of the behaviour page" },
+  "@humanBehaviourTitle": {
+    "description": "Title of the behaviour page"
+  },
   "humanBrHeader": "截断标签 <i-br>",
-  "@humanBrHeader": { "description": "Section header of the break tag settings" },
+  "@humanBrHeader": {
+    "description": "Section header of the break tag settings"
+  },
   "humanBrFooter": "模型会在气泡之间写入 <i-br_500>，停顿从上一条气泡显示的那一刻开始计时。",
-  "@humanBrFooter": { "description": "Section footer of the break tag settings" },
+  "@humanBrFooter": {
+    "description": "Section footer of the break tag settings"
+  },
   "humanBrToggle": "用 <i-br> 拆分消息",
-  "@humanBrToggle": { "description": "Checkbox row" },
+  "@humanBrToggle": {
+    "description": "Checkbox row"
+  },
   "humanBrPause": "默认停顿",
-  "@humanBrPause": { "description": "Slider row label" },
+  "@humanBrPause": {
+    "description": "Slider row label"
+  },
   "humanReplyDelay": "首条消息前的读消息时间",
-  "@humanReplyDelay": { "description": "Slider row label" },
+  "@humanReplyDelay": {
+    "description": "Slider row label"
+  },
   "humanPaceScale": "消息间停顿倍率",
-  "@humanPaceScale": { "description": "Slider row label" },
+  "@humanPaceScale": {
+    "description": "Slider row label"
+  },
   "humanRandomHeader": "随机性",
-  "@humanRandomHeader": { "description": "Section header of the randomness settings" },
+  "@humanRandomHeader": {
+    "description": "Section header of the randomness settings"
+  },
   "humanRandomFooter": "固定种子会让同一段对话的同一轮重演相同结果，调试时很方便；留空则每次都重新掷点。",
-  "@humanRandomFooter": { "description": "Section footer of the randomness settings" },
+  "@humanRandomFooter": {
+    "description": "Section footer of the randomness settings"
+  },
   "humanTypingSpread": "正在输入速度的浮动范围",
-  "@humanTypingSpread": { "description": "Slider row label" },
+  "@humanTypingSpread": {
+    "description": "Slider row label"
+  },
   "humanTypoChance": "错字概率",
-  "@humanTypoChance": { "description": "Slider row label" },
+  "@humanTypoChance": {
+    "description": "Slider row label"
+  },
   "humanParticleChance": "语气词出现概率",
-  "@humanParticleChance": { "description": "Slider row label" },
+  "@humanParticleChance": {
+    "description": "Slider row label"
+  },
   "humanSplitChance": "拆成多个气泡",
-  "@humanSplitChance": { "description": "Slider row label" },
+  "@humanSplitChance": {
+    "description": "Slider row label"
+  },
   "humanPunctStyle": "标点风格",
-  "@humanPunctStyle": { "description": "Row that cycles the punctuation style" },
+  "@humanPunctStyle": {
+    "description": "Row that cycles the punctuation style"
+  },
   "humanPunctNormal": "标准",
-  "@humanPunctNormal": { "description": "One of the three punctuation styles" },
+  "@humanPunctNormal": {
+    "description": "One of the three punctuation styles"
+  },
   "humanPunctLoose": "随意",
-  "@humanPunctLoose": { "description": "One of the three punctuation styles" },
+  "@humanPunctLoose": {
+    "description": "One of the three punctuation styles"
+  },
   "humanPunctMinimal": "极简",
-  "@humanPunctMinimal": { "description": "One of the three punctuation styles" },
+  "@humanPunctMinimal": {
+    "description": "One of the three punctuation styles"
+  },
   "humanSeedHint": "随机种子（数字，留空即随机）",
-  "@humanSeedHint": { "description": "Field placeholder of the random seed" },
+  "@humanSeedHint": {
+    "description": "Field placeholder of the random seed"
+  },
   "humanRecallHeader": "撤回",
-  "@humanRecallHeader": { "description": "Section header of the recall settings" },
+  "@humanRecallHeader": {
+    "description": "Section header of the recall settings"
+  },
   "humanRecallFooter": "只有已经显示过的气泡才能撤回。",
-  "@humanRecallFooter": { "description": "Section footer of the recall settings" },
+  "@humanRecallFooter": {
+    "description": "Section footer of the recall settings"
+  },
   "humanRecallToggle": "允许撤回消息",
-  "@humanRecallToggle": { "description": "Checkbox row" },
+  "@humanRecallToggle": {
+    "description": "Checkbox row"
+  },
   "humanRecallPerHour": "每小时撤回次数",
-  "@humanRecallPerHour": { "description": "Slider row label" },
+  "@humanRecallPerHour": {
+    "description": "Slider row label"
+  },
   "humanRecallWindow": "撤回时限",
-  "@humanRecallWindow": { "description": "Slider row label" },
+  "@humanRecallWindow": {
+    "description": "Slider row label"
+  },
   "humanStickerFreq": "发送表情的频率",
-  "@humanStickerFreq": { "description": "Slider row label" },
+  "@humanStickerFreq": {
+    "description": "Slider row label"
+  },
   "humanAiSaveSticker": "允许 AI 保存表情",
-  "@humanAiSaveSticker": { "description": "Checkbox row" },
+  "@humanAiSaveSticker": {
+    "description": "Checkbox row"
+  },
   "humanStickerOnly": "允许只发表情的回复",
-  "@humanStickerOnly": { "description": "Checkbox row" },
+  "@humanStickerOnly": {
+    "description": "Checkbox row"
+  },
   "humanStickerHeader": "表情",
-  "@humanStickerHeader": { "description": "Section header of the sticker behaviour settings" },
+  "@humanStickerHeader": {
+    "description": "Section header of the sticker behaviour settings"
+  },
   "proactiveFooter": "助手用 schedule_message 决定何时主动开口，下面是围绕它的限制。",
-  "@proactiveFooter": { "description": "Note at the top of the proactive page" },
+  "@proactiveFooter": {
+    "description": "Note at the top of the proactive page"
+  },
   "proactiveToggle": "允许主动发信",
-  "@proactiveToggle": { "description": "Master switch of proactive messages" },
+  "@proactiveToggle": {
+    "description": "Master switch of proactive messages"
+  },
   "proactiveLimits": "限制",
-  "@proactiveLimits": { "description": "Section header" },
+  "@proactiveLimits": {
+    "description": "Section header"
+  },
   "proactiveMaxConsecutive": "最多连续几条未回复",
-  "@proactiveMaxConsecutive": { "description": "Slider row label" },
+  "@proactiveMaxConsecutive": {
+    "description": "Slider row label"
+  },
   "proactiveDnd": "勿扰",
-  "@proactiveDnd": { "description": "Checkbox row that blocks everything" },
+  "@proactiveDnd": {
+    "description": "Checkbox row that blocks everything"
+  },
   "proactiveQuiet": "免打扰时段",
-  "@proactiveQuiet": { "description": "Checkbox row" },
+  "@proactiveQuiet": {
+    "description": "Checkbox row"
+  },
   "proactiveQuietFrom": "免打扰开始",
-  "@proactiveQuietFrom": { "description": "Time row" },
+  "@proactiveQuietFrom": {
+    "description": "Time row"
+  },
   "proactiveQuietUntil": "免打扰结束",
-  "@proactiveQuietUntil": { "description": "Time row" },
+  "@proactiveQuietUntil": {
+    "description": "Time row"
+  },
   "proactiveUrgent": "紧急内容可越过免打扰时段",
-  "@proactiveUrgent": { "description": "Checkbox row" },
+  "@proactiveUrgent": {
+    "description": "Checkbox row"
+  },
   "proactiveTriggers": "自动触发",
-  "@proactiveTriggers": { "description": "Section header" },
+  "@proactiveTriggers": {
+    "description": "Section header"
+  },
   "proactiveTriggersFooter": "这些只是叫醒助手，措辞由它自己决定。陌生人阶段不发送问候。",
-  "@proactiveTriggersFooter": { "description": "Section footer" },
+  "@proactiveTriggersFooter": {
+    "description": "Section footer"
+  },
   "proactiveGreetMorning": "早安问候",
-  "@proactiveGreetMorning": { "description": "Checkbox row" },
+  "@proactiveGreetMorning": {
+    "description": "Checkbox row"
+  },
   "proactiveMorningAt": "早安时间",
-  "@proactiveMorningAt": { "description": "Time row" },
+  "@proactiveMorningAt": {
+    "description": "Time row"
+  },
   "proactiveGreetEvening": "晚安问候",
-  "@proactiveGreetEvening": { "description": "Checkbox row" },
+  "@proactiveGreetEvening": {
+    "description": "Checkbox row"
+  },
   "proactiveEveningAt": "晚安时间",
-  "@proactiveEveningAt": { "description": "Time row" },
+  "@proactiveEveningAt": {
+    "description": "Time row"
+  },
   "proactiveIcebreak": "冷场多久后破冰",
-  "@proactiveIcebreak": { "description": "Slider row label" },
+  "@proactiveIcebreak": {
+    "description": "Slider row label"
+  },
   "proactiveIcebreakUnit": "{days} 天",
-  "@proactiveIcebreakUnit": { "description": "Value of the icebreaker slider" },
+  "@proactiveIcebreakUnit": {
+    "description": "Value of the icebreaker slider"
+  },
   "proactiveServer": "服务器兜底",
-  "@proactiveServer": { "description": "Section header" },
+  "@proactiveServer": {
+    "description": "Section header"
+  },
   "proactiveServerFooter": "可选。任务队列会同步到这个后端（POST /api/schedule/sync, GET /api/schedule/due），这样即使应用被杀，任务也不会丢失。本地闹钟和每 15 分钟的后台任务始终会运行。",
-  "@proactiveServerFooter": { "description": "Section footer" },
+  "@proactiveServerFooter": {
+    "description": "Section footer"
+  },
   "proactiveServerUrl": "服务器地址",
-  "@proactiveServerUrl": { "description": "Row and prompt title of the backend address" },
+  "@proactiveServerUrl": {
+    "description": "Row and prompt title of the backend address"
+  },
   "humanNotSet": "未设置",
-  "@humanNotSet": { "description": "Value of an empty optional field" },
+  "@humanNotSet": {
+    "description": "Value of an empty optional field"
+  },
   "proactiveDebugPanel": "调试面板",
-  "@proactiveDebugPanel": { "description": "Row that opens the scheduler debug page" },
+  "@proactiveDebugPanel": {
+    "description": "Row that opens the scheduler debug page"
+  },
   "schedTitle": "调度器调试",
-  "@schedTitle": { "description": "Title of the scheduler debug page" },
+  "@schedTitle": {
+    "description": "Title of the scheduler debug page"
+  },
   "schedPending": "待执行（{count}）",
-  "@schedPending": { "description": "Section header of the open task list" },
+  "@schedPending": {
+    "description": "Section header of the open task list"
+  },
   "schedPendingFooter": "点发送图标会立刻执行任务，忽略时间和触发条件；点垃圾桶图标则取消任务。",
-  "@schedPendingFooter": { "description": "Section footer of the open task list" },
+  "@schedPendingFooter": {
+    "description": "Section footer of the open task list"
+  },
   "schedEmpty": "队列里没有任务",
-  "@schedEmpty": { "description": "Empty open task list" },
+  "@schedEmpty": {
+    "description": "Empty open task list"
+  },
   "schedFinished": "最近已完成",
-  "@schedFinished": { "description": "Section header of the finished task list" },
+  "@schedFinished": {
+    "description": "Section header of the finished task list"
+  },
   "schedTestTask": "1 分钟后加入一个测试任务",
-  "@schedTestTask": { "description": "Row that queues a test task" },
+  "@schedTestTask": {
+    "description": "Row that queues a test task"
+  },
   "schedGate": "触发判定",
-  "@schedGate": { "description": "Section header of the gate log" },
+  "@schedGate": {
+    "description": "Section header of the gate log"
+  },
   "schedToolCalls": "工具调用",
-  "@schedToolCalls": { "description": "Section header of the tool log" },
+  "@schedToolCalls": {
+    "description": "Section header of the tool log"
+  },
   "schedEmptyLog": "（空）",
-  "@schedEmptyLog": { "description": "Shown when a log has nothing in it" },
+  "@schedEmptyLog": {
+    "description": "Shown when a log has nothing in it"
+  },
   "schedDue": "到期",
-  "@schedDue": { "description": "State of a task whose time has come" },
+  "@schedDue": {
+    "description": "State of a task whose time has come"
+  },
   "schedCondition": "条件",
-  "@schedCondition": { "description": "Label of the gate condition of a task" },
+  "@schedCondition": {
+    "description": "Label of the gate condition of a task"
+  },
   "schedFailures": "失败",
-  "@schedFailures": { "description": "Label of the failure count of a task" },
+  "@schedFailures": {
+    "description": "Label of the failure count of a task"
+  },
   "schedUrgent": "紧急",
-  "@schedUrgent": { "description": "Marker of a task that may pass the quiet hours" },
+  "@schedUrgent": {
+    "description": "Marker of a task that may pass the quiet hours"
+  },
   "schedRemaining": "{minutes} 分 {seconds} 秒",
-  "@schedRemaining": { "description": "Time left until a task fires" },
+  "@schedRemaining": {
+    "description": "Time left until a task fires"
+  },
   "humanRatingsTitle": "评分",
-  "@humanRatingsTitle": { "description": "Title of the ratings page" },
+  "@humanRatingsTitle": {
+    "description": "Title of the ratings page"
+  },
   "humanRatingsFooter": "你的评分会用来调整助手：烦躁会降低它主动发信的频率，像真人的程度与满意度则会微调风格。开启自动评分后，助手也会从你的行为中推断这些分数。",
-  "@humanRatingsFooter": { "description": "Note at the top of the ratings page" },
+  "@humanRatingsFooter": {
+    "description": "Note at the top of the ratings page"
+  },
   "humanRatingHuman": "有多像真人",
-  "@humanRatingHuman": { "description": "Slider row label" },
+  "@humanRatingHuman": {
+    "description": "Slider row label"
+  },
   "humanRatingAnnoy": "它有多打扰你",
-  "@humanRatingAnnoy": { "description": "Slider row label" },
+  "@humanRatingAnnoy": {
+    "description": "Slider row label"
+  },
   "humanRatingSatisfaction": "整体满意度",
-  "@humanRatingSatisfaction": { "description": "Slider row label" },
+  "@humanRatingSatisfaction": {
+    "description": "Slider row label"
+  },
   "humanRatingAuto": "自动推断评分",
-  "@humanRatingAuto": { "description": "Checkbox row" },
+  "@humanRatingAuto": {
+    "description": "Checkbox row"
+  },
   "humanRatingTuning": "主动发信频率倍率",
-  "@humanRatingTuning": { "description": "Info cell label of the tuning multiplier" },
+  "@humanRatingTuning": {
+    "description": "Info cell label of the tuning multiplier"
+  },
   "humanBackupTitle": "备份与导入",
-  "@humanBackupTitle": { "description": "Title of the backup page" },
+  "@humanBackupTitle": {
+    "description": "Title of the backup page"
+  },
   "humanSavedCopied": "已保存并复制",
-  "@humanSavedCopied": { "description": "Bulletin after a successful export" },
+  "@humanSavedCopied": {
+    "description": "Bulletin after a successful export"
+  },
   "humanCopiedClipboard": "已复制到剪贴板",
-  "@humanCopiedClipboard": { "description": "Bulletin after the file write failed" },
+  "@humanCopiedClipboard": {
+    "description": "Bulletin after the file write failed"
+  },
   "humanImportTitle": "导入",
-  "@humanImportTitle": { "description": "Dialog title of the import mode picker" },
+  "@humanImportTitle": {
+    "description": "Dialog title of the import mode picker"
+  },
   "humanImportFooter": "合并会保留现有内容并补上新的条目，覆盖则全部替换。",
-  "@humanImportFooter": { "description": "Body of the import mode picker" },
+  "@humanImportFooter": {
+    "description": "Body of the import mode picker"
+  },
   "humanOverwrite": "覆盖",
-  "@humanOverwrite": { "description": "Import mode that replaces everything" },
+  "@humanOverwrite": {
+    "description": "Import mode that replaces everything"
+  },
   "humanMerge": "合并",
-  "@humanMerge": { "description": "Import mode that adds the new entries" },
+  "@humanMerge": {
+    "description": "Import mode that adds the new entries"
+  },
   "humanImported": "已导入 {count} 条",
-  "@humanImported": { "description": "Bulletin after a successful import" },
+  "@humanImported": {
+    "description": "Bulletin after a successful import"
+  },
   "humanInvalidFile": "文件无效",
-  "@humanInvalidFile": { "description": "Bulletin when the import payload is broken" },
+  "@humanInvalidFile": {
+    "description": "Bulletin when the import payload is broken"
+  },
   "humanExport": "导出",
-  "@humanExport": { "description": "Row that writes the export to a file" },
+  "@humanExport": {
+    "description": "Row that writes the export to a file"
+  },
   "humanImportFile": "从文件导入",
-  "@humanImportFile": { "description": "Row that reads the import from a file" },
+  "@humanImportFile": {
+    "description": "Row that reads the import from a file"
+  },
   "humanImportClipboard": "从剪贴板导入",
-  "@humanImportClipboard": { "description": "Row that reads the import from the clipboard" },
+  "@humanImportClipboard": {
+    "description": "Row that reads the import from the clipboard"
+  },
   "humanStickersGroup": "表情与标签",
-  "@humanStickersGroup": { "description": "Section header of the sticker export group" },
+  "@humanStickersGroup": {
+    "description": "Section header of the sticker export group"
+  },
   "humanMemoryGroup": "记忆",
-  "@humanMemoryGroup": { "description": "Section header of the memory export group" },
+  "@humanMemoryGroup": {
+    "description": "Section header of the memory export group"
+  },
   "humanCardsGroup": "角色卡（SillyTavern chara_card_v2）",
-  "@humanCardsGroup": { "description": "Section header of the character card group" },
+  "@humanCardsGroup": {
+    "description": "Section header of the character card group"
+  },
   "humanCardsFooter": "选择一段对话来导出或导入它的角色卡。",
-  "@humanCardsFooter": { "description": "Section footer of the character card group" },
+  "@humanCardsFooter": {
+    "description": "Section footer of the character card group"
+  },
   "humanChatsTitle": "对话",
-  "@humanChatsTitle": { "description": "Title of the conversation list" },
+  "@humanChatsTitle": {
+    "description": "Title of the conversation list"
+  },
   "humanChatState": "状态",
-  "@humanChatState": { "description": "Section header of the per conversation state" },
+  "@humanChatState": {
+    "description": "Section header of the per conversation state"
+  },
   "humanChatStage": "关系阶段",
-  "@humanChatStage": { "description": "Label of the relationship stage" },
+  "@humanChatStage": {
+    "description": "Label of the relationship stage"
+  },
   "humanChatMessages": "条消息",
-  "@humanChatMessages": { "description": "Label of the message count" },
+  "@humanChatMessages": {
+    "description": "Label of the message count"
+  },
   "humanChatMinutes": "分钟相伴",
-  "@humanChatMinutes": { "description": "Label of how long the two have been talking" },
+  "@humanChatMinutes": {
+    "description": "Label of how long the two have been talking"
+  },
   "humanChatStatus": "状态",
-  "@humanChatStatus": { "description": "Row that cycles the presence" },
+  "@humanChatStatus": {
+    "description": "Row that cycles the presence"
+  },
   "humanChatClearTasks": "清除待执行的主动发信任务",
-  "@humanChatClearTasks": { "description": "Row that drops the open tasks of this conversation" },
+  "@humanChatClearTasks": {
+    "description": "Row that drops the open tasks of this conversation"
+  },
   "humanChatCardHeader": "角色卡",
-  "@humanChatCardHeader": { "description": "Section header of the character card" },
+  "@humanChatCardHeader": {
+    "description": "Section header of the character card"
+  },
   "humanChatCardFooter": "每次回复前都会注入，好让语气保持一致，助手可能会慢慢微调。",
-  "@humanChatCardFooter": { "description": "Section footer of the character card" },
+  "@humanChatCardFooter": {
+    "description": "Section footer of the character card"
+  },
   "humanChatSpeechStyle": "说话风格",
-  "@humanChatSpeechStyle": { "description": "Field of the character card" },
+  "@humanChatSpeechStyle": {
+    "description": "Field of the character card"
+  },
   "humanChatCatchphrases": "口头禅",
-  "@humanChatCatchphrases": { "description": "Field of the character card" },
+  "@humanChatCatchphrases": {
+    "description": "Field of the character card"
+  },
   "humanChatCatchphrasesHint": "口头禅（用逗号分隔）",
-  "@humanChatCatchphrasesHint": { "description": "Prompt title for the catchphrase list" },
+  "@humanChatCatchphrasesHint": {
+    "description": "Prompt title for the catchphrase list"
+  },
   "humanChatValues": "价值观",
-  "@humanChatValues": { "description": "Field of the character card" },
+  "@humanChatValues": {
+    "description": "Field of the character card"
+  },
   "humanChatTaboos": "禁忌",
-  "@humanChatTaboos": { "description": "Field of the character card" },
+  "@humanChatTaboos": {
+    "description": "Field of the character card"
+  },
   "humanChatAddressStranger": "称呼：陌生人",
-  "@humanChatAddressStranger": { "description": "Field of the character card" },
+  "@humanChatAddressStranger": {
+    "description": "Field of the character card"
+  },
   "humanChatAddressAcquaintance": "称呼：熟人",
-  "@humanChatAddressAcquaintance": { "description": "Field of the character card" },
+  "@humanChatAddressAcquaintance": {
+    "description": "Field of the character card"
+  },
   "humanChatAddressClose": "称呼：亲近的人",
-  "@humanChatAddressClose": { "description": "Field of the character card" },
+  "@humanChatAddressClose": {
+    "description": "Field of the character card"
+  },
   "humanChatExportCard": "导出角色卡（chara_card_v2）",
-  "@humanChatExportCard": { "description": "Row that copies the card as json" },
+  "@humanChatExportCard": {
+    "description": "Row that copies the card as json"
+  },
   "humanChatCardCopied": "角色卡已复制到剪贴板",
-  "@humanChatCardCopied": { "description": "Bulletin after copying the card" },
+  "@humanChatCardCopied": {
+    "description": "Bulletin after copying the card"
+  },
   "humanChatImportCard": "从剪贴板导入角色卡",
-  "@humanChatImportCard": { "description": "Row that imports the card from the clipboard" },
+  "@humanChatImportCard": {
+    "description": "Row that imports the card from the clipboard"
+  },
   "humanChatImportCardTitle": "导入角色卡",
-  "@humanChatImportCardTitle": { "description": "Dialog title of the card import" },
+  "@humanChatImportCardTitle": {
+    "description": "Dialog title of the card import"
+  },
   "humanChatImportCardFooter": "覆盖会替换整张角色卡，合并只填补空白字段。",
-  "@humanChatImportCardFooter": { "description": "Body of the card import mode picker" },
+  "@humanChatImportCardFooter": {
+    "description": "Body of the card import mode picker"
+  },
   "humanChatInvalidCard": "角色卡无效",
-  "@humanChatInvalidCard": { "description": "Bulletin when the card payload is broken" },
+  "@humanChatInvalidCard": {
+    "description": "Bulletin when the card payload is broken"
+  },
   "humanChatSchedule": "每日日程",
-  "@humanChatSchedule": { "description": "Section header of the daily schedule" },
+  "@humanChatSchedule": {
+    "description": "Section header of the daily schedule"
+  },
   "humanChatScheduleFooter": "日程进行中时，状态会改变，精力停止恢复，主动发信也会暂停；结束后助手可能会说自己回来了。",
-  "@humanChatScheduleFooter": { "description": "Section footer of the daily schedule" },
+  "@humanChatScheduleFooter": {
+    "description": "Section footer of the daily schedule"
+  },
   "humanChatScheduleNow": "现在",
-  "@humanChatScheduleNow": { "description": "Marker of the schedule entry that is running" },
+  "@humanChatScheduleNow": {
+    "description": "Marker of the schedule entry that is running"
+  },
   "humanChatScheduleAdd": "添加条目（60 分钟）",
-  "@humanChatScheduleAdd": { "description": "Row that opens the add schedule prompt" },
+  "@humanChatScheduleAdd": {
+    "description": "Row that opens the add schedule prompt"
+  },
   "humanChatScheduleWhat": "在做什么？",
-  "@humanChatScheduleWhat": { "description": "Prompt title for a new schedule entry" },
+  "@humanChatScheduleWhat": {
+    "description": "Prompt title for a new schedule entry"
+  },
   "humanChatScheduleExample": "例如：在开会",
-  "@humanChatScheduleExample": { "description": "Placeholder of the new schedule prompt" },
+  "@humanChatScheduleExample": {
+    "description": "Placeholder of the new schedule prompt"
+  },
   "humanChatFeelings": "数值变化的原因",
-  "@humanChatFeelings": { "description": "Section header of the feeling log" },
+  "@humanChatFeelings": {
+    "description": "Section header of the feeling log"
+  },
   "humanChatFeelingsMood": "心情",
-  "@humanChatFeelingsMood": { "description": "Slider label of the mood value" },
+  "@humanChatFeelingsMood": {
+    "description": "Slider label of the mood value"
+  },
   "humanChatFeelingsAffection": "好感",
-  "@humanChatFeelingsAffection": { "description": "Slider label of the affection value" },
+  "@humanChatFeelingsAffection": {
+    "description": "Slider label of the affection value"
+  },
   "humanChatFeelingsEnergy": "精力",
-  "@humanChatFeelingsEnergy": { "description": "Slider label of the energy value" },
+  "@humanChatFeelingsEnergy": {
+    "description": "Slider label of the energy value"
+  },
   "memoryTitle": "记忆",
-  "@memoryTitle": { "description": "Title of the memory page" },
+  "@memoryTitle": {
+    "description": "Title of the memory page"
+  },
   "memoryNew": "新建记忆",
-  "@memoryNew": { "description": "Prompt title for a new memory" },
+  "@memoryNew": {
+    "description": "Prompt title for a new memory"
+  },
   "memoryNewWhat": "想让 AI 记住什么？",
-  "@memoryNewWhat": { "description": "Placeholder of the new memory prompt" },
+  "@memoryNewWhat": {
+    "description": "Placeholder of the new memory prompt"
+  },
   "memoryNewType": "类型",
-  "@memoryNewType": { "description": "Dialog title of the memory type picker" },
+  "@memoryNewType": {
+    "description": "Dialog title of the memory type picker"
+  },
   "memoryFooter": "权重会随上次使用后经过的时间逐渐衰减。低于阈值的条目会被遗忘，不再注入。承诺和待办在完成前不会衰减。",
-  "@memoryFooter": { "description": "Note at the top of the memory page" },
+  "@memoryFooter": {
+    "description": "Note at the top of the memory page"
+  },
   "memoryEmpty": "暂无记忆",
-  "@memoryEmpty": { "description": "Empty memory list" },
+  "@memoryEmpty": {
+    "description": "Empty memory list"
+  },
   "memoryForgotten": "已遗忘",
-  "@memoryForgotten": { "description": "Marker of a memory that decayed away" },
+  "@memoryForgotten": {
+    "description": "Marker of a memory that decayed away"
+  },
   "memoryDue": "即将到期",
-  "@memoryDue": { "description": "Marker of a memory that has a deadline" },
+  "@memoryDue": {
+    "description": "Marker of a memory that has a deadline"
+  },
   "memoryNotNeeded": "不再需要",
-  "@memoryNotNeeded": { "description": "Menu entry that completes a memory" },
+  "@memoryNotNeeded": {
+    "description": "Menu entry that completes a memory"
+  },
   "memoryRestore": "恢复",
-  "@memoryRestore": { "description": "Menu entry that brings a forgotten memory back" },
+  "@memoryRestore": {
+    "description": "Menu entry that brings a forgotten memory back"
+  },
   "memoryClose": "关闭",
-  "@memoryClose": { "description": "Menu entry that just dismisses the dialog" },
+  "@memoryClose": {
+    "description": "Menu entry that just dismisses the dialog"
+  },
   "toolPermTitle": "允许使用这个工具吗？",
-  "@toolPermTitle": { "description": "Dialog title of the tool permission prompt" },
+  "@toolPermTitle": {
+    "description": "Dialog title of the tool permission prompt"
+  },
   "toolPermDeny": "拒绝",
-  "@toolPermDeny": { "description": "Dialog button that refuses the call" },
+  "@toolPermDeny": {
+    "description": "Dialog button that refuses the call"
+  },
   "toolPermAllow": "允许",
-  "@toolPermAllow": { "description": "Dialog button that lets the call through" },
+  "@toolPermAllow": {
+    "description": "Dialog button that lets the call through"
+  },
   "toolPermAsk": "询问",
-  "@toolPermAsk": { "description": "Permission state that confirms before every call" },
+  "@toolPermAsk": {
+    "description": "Permission state that confirms before every call"
+  },
   "toolsTitle": "工具与 MCP",
-  "@toolsTitle": { "description": "Title of the tools page" },
+  "@toolsTitle": {
+    "description": "Title of the tools page"
+  },
   "toolAddServer": "添加 MCP 服务器",
-  "@toolAddServer": { "description": "Dialog title when adding a server" },
+  "@toolAddServer": {
+    "description": "Dialog title when adding a server"
+  },
   "toolHeadersJson": "请求头（JSON，可选）",
-  "@toolHeadersJson": { "description": "Field placeholder of the request headers" },
+  "@toolHeadersJson": {
+    "description": "Field placeholder of the request headers"
+  },
   "toolUrlHint": "https://host/mcp",
-  "@toolUrlHint": { "description": "Field placeholder of the server url" },
+  "@toolUrlHint": {
+    "description": "Field placeholder of the server url"
+  },
   "toolServersHeader": "MCP 服务器（Streamable HTTP）",
-  "@toolServersHeader": { "description": "Section header of the server list" },
+  "@toolServersHeader": {
+    "description": "Section header of the server list"
+  },
   "toolServersFooter": "点按权限可在「允许 → 询问 → 拒绝」之间循环。选择「询问」时每次调用前都会弹出确认，选择「拒绝」则直接拒绝并告诉助手原因。MCP 工具默认为「询问」。",
-  "@toolServersFooter": { "description": "Section footer of the server list" },
+  "@toolServersFooter": {
+    "description": "Section footer of the server list"
+  },
   "toolConnecting": "连接中…",
-  "@toolConnecting": { "description": "Row label while the tool list refreshes" },
+  "@toolConnecting": {
+    "description": "Row label while the tool list refreshes"
+  },
   "toolRefresh": "刷新工具列表",
-  "@toolRefresh": { "description": "Row that reloads the MCP tool list" },
+  "@toolRefresh": {
+    "description": "Row that reloads the MCP tool list"
+  },
   "toolMcpHeader": "MCP 工具",
-  "@toolMcpHeader": { "description": "Section header of the MCP tool list" },
+  "@toolMcpHeader": {
+    "description": "Section header of the MCP tool list"
+  },
   "toolBuiltinHeader": "内置工具",
-  "@toolBuiltinHeader": { "description": "Section header of the built in tool list" },
+  "@toolBuiltinHeader": {
+    "description": "Section header of the built in tool list"
+  },
   "toolCountSuffix": "{count} 个工具",
-  "@toolCountSuffix": { "description": "Server row subtitle, how many tools it offers" },
+  "@toolCountSuffix": {
+    "description": "Server row subtitle, how many tools it offers"
+  },
   "aiEditorTitle": "AI 编辑器",
-  "@aiEditorTitle": { "description": "Sheet title of the rewrite sheet" },
+  "@aiEditorTitle": {
+    "description": "Sheet title of the rewrite sheet"
+  },
   "aiEditorNoKey": "请先在「设置」里添加 API 密钥。",
-  "@aiEditorNoKey": { "description": "Error shown when no key is configured" },
+  "@aiEditorNoKey": {
+    "description": "Error shown when no key is configured"
+  },
   "aiEditorApply": "应用",
-  "@aiEditorApply": { "description": "Button that takes the rewritten text" },
+  "@aiEditorApply": {
+    "description": "Button that takes the rewritten text"
+  },
   "provTitle": "服务商",
-  "@provTitle": { "description": "Bar title of the provider detail page" },
+  "@provTitle": {
+    "description": "Bar title of the provider detail page"
+  },
   "provMissing": "该服务商已不存在。",
-  "@provMissing": { "description": "Empty state when the provider id is stale" },
+  "@provMissing": {
+    "description": "Empty state when the provider id is stale"
+  },
   "provSearchHint": "搜索模型",
-  "@provSearchHint": { "description": "Placeholder of the model filter" },
+  "@provSearchHint": {
+    "description": "Placeholder of the model filter"
+  },
   "provConnection": "连接",
-  "@provConnection": { "description": "Group header" },
+  "@provConnection": {
+    "description": "Group header"
+  },
   "provName": "名称",
-  "@provName": { "description": "Row that renames the provider" },
+  "@provName": {
+    "description": "Row that renames the provider"
+  },
   "provProtocol": "协议",
-  "@provProtocol": { "description": "Row that picks the wire protocol" },
+  "@provProtocol": {
+    "description": "Row that picks the wire protocol"
+  },
   "provApiKey": "API 密钥",
-  "@provApiKey": { "description": "Row and prompt title of the key" },
+  "@provApiKey": {
+    "description": "Row and prompt title of the key"
+  },
   "provBaseUrl": "基础 URL",
-  "@provBaseUrl": { "description": "Row and prompt title of the base url" },
+  "@provBaseUrl": {
+    "description": "Row and prompt title of the base url"
+  },
   "provBaseUrlEmpty": "为空，该服务商无法使用",
-  "@provBaseUrlEmpty": { "description": "Subtitle when no base url is set" },
+  "@provBaseUrlEmpty": {
+    "description": "Subtitle when no base url is set"
+  },
   "provChatPath": "对话路径",
-  "@provChatPath": { "description": "Row that edits the request path" },
+  "@provChatPath": {
+    "description": "Row that edits the request path"
+  },
   "provChatPathFixed": "由协议决定",
-  "@provChatPathFixed": { "description": "Subtitle when the protocol owns the path" },
+  "@provChatPathFixed": {
+    "description": "Subtitle when the protocol owns the path"
+  },
   "provAuthStyle": "认证方式",
-  "@provAuthStyle": { "description": "Row that picks how the API key is sent" },
+  "@provAuthStyle": {
+    "description": "Row that picks how the API key is sent"
+  },
   "provAuthBearerSub": "放在 Authorization 头里发送",
-  "@provAuthBearerSub": { "description": "Subtitle of the bearer option" },
+  "@provAuthBearerSub": {
+    "description": "Subtitle of the bearer option"
+  },
   "provAuthQuerySub": "作为查询参数拼到 URL 上",
-  "@provAuthQuerySub": { "description": "Subtitle of the query key option" },
+  "@provAuthQuerySub": {
+    "description": "Subtitle of the query key option"
+  },
   "provSessionHeader": "会话路由头",
-  "@provSessionHeader": { "description": "Row that names a per conversation routing header" },
+  "@provSessionHeader": {
+    "description": "Row that names a per conversation routing header"
+  },
   "provSessionHeaderEmpty": "关闭，网关按它路由会话时再填",
-  "@provSessionHeaderEmpty": { "description": "Subtitle when no session header is set" },
+  "@provSessionHeaderEmpty": {
+    "description": "Subtitle when no session header is set"
+  },
   "provSessionHeaderHint": "头名称，值由应用自动填写",
-  "@provSessionHeaderHint": { "description": "Placeholder of the session header prompt" },
+  "@provSessionHeaderHint": {
+    "description": "Placeholder of the session header prompt"
+  },
   "provUserAgent": "User-Agent",
-  "@provUserAgent": { "description": "Row that overrides the user agent for one provider" },
+  "@provUserAgent": {
+    "description": "Row that overrides the user agent for one provider"
+  },
   "provUserAgentDefault": "跟随全局设置",
-  "@provUserAgentDefault": { "description": "Subtitle when the provider has no user agent of its own" },
+  "@provUserAgentDefault": {
+    "description": "Subtitle when the provider has no user agent of its own"
+  },
   "provUserAgentHint": "仅对这个服务商生效的 User-Agent",
-  "@provUserAgentHint": { "description": "Placeholder of the provider user agent prompt" },
+  "@provUserAgentHint": {
+    "description": "Placeholder of the provider user agent prompt"
+  },
   "provExtraHeaders": "自定义请求头",
-  "@provExtraHeaders": { "description": "Row and prompt title of the per provider headers" },
+  "@provExtraHeaders": {
+    "description": "Row and prompt title of the per provider headers"
+  },
   "provHeadersNone": "无",
-  "@provHeadersNone": { "description": "Subtitle when no extra headers are set" },
+  "@provHeadersNone": {
+    "description": "Subtitle when no extra headers are set"
+  },
   "provHeadersHint": "每行一个，格式：名称: 值",
-  "@provHeadersHint": { "description": "Placeholder of the headers prompt" },
+  "@provHeadersHint": {
+    "description": "Placeholder of the headers prompt"
+  },
   "provModels": "模型",
-  "@provModels": { "description": "Group header of the model rows" },
+  "@provModels": {
+    "description": "Group header of the model rows"
+  },
   "provFetchModels": "获取模型",
-  "@provFetchModels": { "description": "Row that pulls the list from the provider" },
+  "@provFetchModels": {
+    "description": "Row that pulls the list from the provider"
+  },
   "provFetchBusy": "处理中...",
-  "@provFetchBusy": { "description": "Subtitle while the list is loading" },
+  "@provFetchBusy": {
+    "description": "Subtitle while the list is loading"
+  },
   "provFetchDone": "来自{source}的 {count} 个模型",
-  "@provFetchDone": { "description": "Subtitle once the list is in" },
+  "@provFetchDone": {
+    "description": "Subtitle once the list is in"
+  },
   "provFetchNever": "按需从服务商拉取真实列表",
-  "@provFetchNever": { "description": "Subtitle before the list was ever fetched" },
+  "@provFetchNever": {
+    "description": "Subtitle before the list was ever fetched"
+  },
   "provSourceApi": "API",
-  "@provSourceApi": { "description": "Source half of the fetch subtitle" },
+  "@provSourceApi": {
+    "description": "Source half of the fetch subtitle"
+  },
   "provSourceCatalog": "内置表",
-  "@provSourceCatalog": { "description": "Source half of the fetch subtitle" },
+  "@provSourceCatalog": {
+    "description": "Source half of the fetch subtitle"
+  },
   "provTest": "测试连接",
-  "@provTest": { "description": "Row that sends one probe request" },
+  "@provTest": {
+    "description": "Row that sends one probe request"
+  },
   "provTestFailed": "失败：{reason}",
-  "@provTestFailed": { "description": "Subtitle after a failed probe" },
+  "@provTestFailed": {
+    "description": "Subtitle after a failed probe"
+  },
   "provTestOk": "正常：{reply}",
-  "@provTestOk": { "description": "Subtitle after a successful probe" },
+  "@provTestOk": {
+    "description": "Subtitle after a successful probe"
+  },
   "provTestNever": "发送一次最小请求",
-  "@provTestNever": { "description": "Subtitle before the probe ran" },
+  "@provTestNever": {
+    "description": "Subtitle before the probe ran"
+  },
   "provAddManual": "手动添加模型",
-  "@provAddManual": { "description": "Row and prompt title of the manual model" },
+  "@provAddManual": {
+    "description": "Row and prompt title of the manual model"
+  },
   "provAddManualSub": "用于列表接口不可用的时候",
-  "@provAddManualSub": { "description": "Row subtitle" },
+  "@provAddManualSub": {
+    "description": "Row subtitle"
+  },
   "provCountModels": "{count} 个模型",
-  "@provCountModels": { "description": "Header above the model list" },
+  "@provCountModels": {
+    "description": "Header above the model list"
+  },
   "provOnChain": "在兜底链中",
-  "@provOnChain": { "description": "Header above the chain nodes of this provider" },
+  "@provOnChain": {
+    "description": "Header above the chain nodes of this provider"
+  },
   "provDelete": "删除该服务商",
-  "@provDelete": { "description": "Danger row that removes the provider" },
+  "@provDelete": {
+    "description": "Danger row that removes the provider"
+  },
   "provFootnote": "能力信息来自服务商 API 和内置表。标记为未知窗口的模型在长对话中会跳过压缩检查。",
-  "@provFootnote": { "description": "Note at the bottom of the page" },
+  "@provFootnote": {
+    "description": "Note at the bottom of the page"
+  },
   "provPasteKey": "粘贴你的 API 密钥",
-  "@provPasteKey": { "description": "Placeholder of the key prompt" },
+  "@provPasteKey": {
+    "description": "Placeholder of the key prompt"
+  },
   "provModelIdHint": "模型 ID",
-  "@provModelIdHint": { "description": "Placeholder of the manual model prompt" },
+  "@provModelIdHint": {
+    "description": "Placeholder of the manual model prompt"
+  },
   "provProtocolSub": "适用于大多数中转和自建服务器",
-  "@provProtocolSub": { "description": "Subtitle of the openai compatible protocol" },
+  "@provProtocolSub": {
+    "description": "Subtitle of the openai compatible protocol"
+  },
   "provFetchedBulletin": "已获取 {count} 个模型",
-  "@provFetchedBulletin": { "description": "Bulletin after a successful list fetch" },
+  "@provFetchedBulletin": {
+    "description": "Bulletin after a successful list fetch"
+  },
   "provUsingCatalog": "正在使用内置模型表",
-  "@provUsingCatalog": { "description": "Bulletin when the fetch fell back to the catalog" },
+  "@provUsingCatalog": {
+    "description": "Bulletin when the fetch fell back to the catalog"
+  },
   "provFetchFailed": "无法获取模型",
-  "@provFetchFailed": { "description": "Bulletin when the list could not be fetched at all" },
+  "@provFetchFailed": {
+    "description": "Bulletin when the list could not be fetched at all"
+  },
   "provAdded": "已添加",
-  "@provAdded": { "description": "Bulletin after adding a model by hand" },
+  "@provAdded": {
+    "description": "Bulletin after adding a model by hand"
+  },
   "provNoKeyFirst": "请先添加 API 密钥",
-  "@provNoKeyFirst": { "description": "Probe failure when no key is set" },
+  "@provNoKeyFirst": {
+    "description": "Probe failure when no key is set"
+  },
   "provConnectionWorks": "连接正常",
-  "@provConnectionWorks": { "description": "Probe success when the model answered nothing" },
+  "@provConnectionWorks": {
+    "description": "Probe success when the model answered nothing"
+  },
   "provDeleteTitle": "删除{name}？",
-  "@provDeleteTitle": { "description": "Confirmation title" },
+  "@provDeleteTitle": {
+    "description": "Confirmation title"
+  },
   "provDeleteMessage": "它的 API 密钥和链上的节点也会一并删除，聊天记录不受影响。",
-  "@provDeleteMessage": { "description": "Confirmation body" },
+  "@provDeleteMessage": {
+    "description": "Confirmation body"
+  },
   "provDeleted": "已删除",
-  "@provDeleted": { "description": "Bulletin after removing the provider" },
+  "@provDeleted": {
+    "description": "Bulletin after removing the provider"
+  },
   "provSaved": "已保存",
-  "@provSaved": { "description": "Bulletin after storing the key" },
+  "@provSaved": {
+    "description": "Bulletin after storing the key"
+  },
   "provWindow": "窗口 {tokens}",
-  "@provWindow": { "description": "Model row tag, the context window" },
+  "@provWindow": {
+    "description": "Model row tag, the context window"
+  },
   "provOut": "输出 {tokens}",
-  "@provOut": { "description": "Model row tag, the output cap" },
+  "@provOut": {
+    "description": "Model row tag, the output cap"
+  },
   "provTagImage": "图像输出",
-  "@provTagImage": { "description": "Model row tag for image output" },
+  "@provTagImage": {
+    "description": "Model row tag for image output"
+  },
   "provTagUnknownWindow": "未知窗口",
-  "@provTagUnknownWindow": { "description": "Model row tag for a context window the catalog does not know" },
+  "@provTagUnknownWindow": {
+    "description": "Model row tag for a context window the catalog does not know"
+  },
   "provChainNodeMeta": "{retries} 次重试 · 关闭",
-  "@provChainNodeMeta": { "description": "Chain row trailing, the node is disabled" },
+  "@provChainNodeMeta": {
+    "description": "Chain row trailing, the node is disabled"
+  },
   "provChainNodeMetaOn": "{retries} 次重试",
-  "@provChainNodeMetaOn": { "description": "Chain row trailing" },
+  "@provChainNodeMetaOn": {
+    "description": "Chain row trailing"
+  },
   "attachCaptionHint": "添加说明…",
-  "@attachCaptionHint": { "description": "Placeholder of the caption field" },
+  "@attachCaptionHint": {
+    "description": "Placeholder of the caption field"
+  },
   "attachCameraUnavailable": "相机不可用",
-  "@attachCameraUnavailable": { "description": "Bulletin when the camera cannot be opened" },
+  "@attachCameraUnavailable": {
+    "description": "Bulletin when the camera cannot be opened"
+  },
   "attachPickerFailed": "无法打开文件选择器",
-  "@attachPickerFailed": { "description": "Bulletin when the file picker refuses to open" },
+  "@attachPickerFailed": {
+    "description": "Bulletin when the file picker refuses to open"
+  },
   "attachUploadFiles": "上传文件",
-  "@attachUploadFiles": { "description": "Row title of the file attachment" },
+  "@attachUploadFiles": {
+    "description": "Row title of the file attachment"
+  },
   "attachUploadFilesSub": "文档、压缩包以及其他文件",
-  "@attachUploadFilesSub": { "description": "Row subtitle" },
+  "@attachUploadFilesSub": {
+    "description": "Row subtitle"
+  },
   "attachPhotoPermission": "允许访问你的照片",
-  "@attachPhotoPermission": { "description": "Title of the permission sheet" },
+  "@attachPhotoPermission": {
+    "description": "Title of the permission sheet"
+  },
   "attachOpenSettings": "打开设置",
-  "@attachOpenSettings": { "description": "Button that jumps to the system settings" },
+  "@attachOpenSettings": {
+    "description": "Button that jumps to the system settings"
+  },
   "attachBrowseAudio": "浏览音频",
-  "@attachBrowseAudio": { "description": "Row title of the music picker" },
+  "@attachBrowseAudio": {
+    "description": "Row title of the music picker"
+  },
   "attachBrowseFiles": "浏览文件",
-  "@attachBrowseFiles": { "description": "Row title of the file picker" },
+  "@attachBrowseFiles": {
+    "description": "Row title of the file picker"
+  },
   "attachPickSongs": "选择歌曲和语音记录",
-  "@attachPickSongs": { "description": "Row subtitle of the music picker" },
+  "@attachPickSongs": {
+    "description": "Row subtitle of the music picker"
+  },
   "attachPickDocs": "从设备中选择文档",
-  "@attachPickDocs": { "description": "Row subtitle of the file picker" },
+  "@attachPickDocs": {
+    "description": "Row subtitle of the file picker"
+  },
   "attachLocationOff": "位置服务已关闭",
-  "@attachLocationOff": { "description": "Bulletin when location services are off" },
+  "@attachLocationOff": {
+    "description": "Bulletin when location services are off"
+  },
   "attachLocationDenied": "位置权限被拒绝",
-  "@attachLocationDenied": { "description": "Bulletin when the permission was refused" },
+  "@attachLocationDenied": {
+    "description": "Bulletin when the permission was refused"
+  },
   "attachSendLocation": "发送我的当前位置",
-  "@attachSendLocation": { "description": "Sheet title of the location attachment" },
+  "@attachSendLocation": {
+    "description": "Sheet title of the location attachment"
+  },
   "attachLocationUnavailable": "无法获取位置",
-  "@attachLocationUnavailable": { "description": "Shown when no fix could be read" },
+  "@attachLocationUnavailable": {
+    "description": "Shown when no fix could be read"
+  },
   "attachLocationAccuracy": "精确到 {meters} 米",
-  "@attachLocationAccuracy": { "description": "Subtitle of the location sheet, with the accuracy" },
+  "@attachLocationAccuracy": {
+    "description": "Subtitle of the location sheet, with the accuracy"
+  },
   "attachLocationWaiting": "正在等待 GPS",
-  "@attachLocationWaiting": { "description": "Subtitle while the fix is still coming" },
+  "@attachLocationWaiting": {
+    "description": "Subtitle while the fix is still coming"
+  },
   "attachContactsPermission": "请在系统设置中\n允许访问通讯录",
-  "@attachContactsPermission": { "description": "Title of the contacts permission sheet" },
+  "@attachContactsPermission": {
+    "description": "Title of the contacts permission sheet"
+  },
   "attachSearchContacts": "搜索通讯录",
-  "@attachSearchContacts": { "description": "Placeholder of the contact search" },
+  "@attachSearchContacts": {
+    "description": "Placeholder of the contact search"
+  },
   "attachNoContacts": "通讯录为空",
-  "@attachNoContacts": { "description": "Empty state of the contact list" },
+  "@attachNoContacts": {
+    "description": "Empty state of the contact list"
+  },
   "attachPollQuestion": "提出一个问题",
-  "@attachPollQuestion": { "description": "Placeholder of the poll question" },
+  "@attachPollQuestion": {
+    "description": "Placeholder of the poll question"
+  },
   "attachPollOption": "选项 {index}",
-  "@attachPollOption": { "description": "Placeholder of a poll option" },
+  "@attachPollOption": {
+    "description": "Placeholder of a poll option"
+  },
   "attachPollAddOption": "添加选项",
-  "@attachPollAddOption": { "description": "Row that appends a poll option" },
+  "@attachPollAddOption": {
+    "description": "Row that appends a poll option"
+  },
   "attachPollAnonymous": "匿名投票",
-  "@attachPollAnonymous": { "description": "Poll option toggle" },
+  "@attachPollAnonymous": {
+    "description": "Poll option toggle"
+  },
   "attachPollMultiple": "多选",
-  "@attachPollMultiple": { "description": "Poll option toggle" },
+  "@attachPollMultiple": {
+    "description": "Poll option toggle"
+  },
   "attachPollQuiz": "问答模式",
-  "@attachPollQuiz": { "description": "Poll option toggle" },
+  "@attachPollQuiz": {
+    "description": "Poll option toggle"
+  },
   "attachPollQuizHint": "点击正确答案旁边的圆圈。",
-  "@attachPollQuizHint": { "description": "Note under the quiz toggle" },
+  "@attachPollQuizHint": {
+    "description": "Note under the quiz toggle"
+  },
   "attachPollFooter": "投票会显示在聊天中，并以文本形式发送给 AI。",
-  "@attachPollFooter": { "description": "Note at the bottom of the poll sheet" },
+  "@attachPollFooter": {
+    "description": "Note at the bottom of the poll sheet"
+  },
   "attachPollCreate": "创建投票",
-  "@attachPollCreate": { "description": "Button that sends the poll" },
+  "@attachPollCreate": {
+    "description": "Button that sends the poll"
+  },
   "attachSelected": "已选 {count} 项",
-  "@attachSelected": { "description": "Sheet title while attachments are picked" },
+  "@attachSelected": {
+    "description": "Sheet title while attachments are picked"
+  },
   "cardDepthMessages": "往上 {depth} 条消息",
-  "@cardDepthMessages": { "description": "Subtitle of the depth slider on the card editor" },
+  "@cardDepthMessages": {
+    "description": "Subtitle of the depth slider on the card editor"
+  },
   "cardFallbackSub": "其他选项都不适用时使用",
-  "@cardFallbackSub": { "description": "Subtitle of the fallback card option" },
+  "@cardFallbackSub": {
+    "description": "Subtitle of the fallback card option"
+  },
   "cardSetFallback": "设为兜底卡片",
-  "@cardSetFallback": { "description": "Row that makes this card the fallback" },
+  "@cardSetFallback": {
+    "description": "Row that makes this card the fallback"
+  },
   "cardLockToChat": "把此卡片锁定到当前聊天",
-  "@cardLockToChat": { "description": "Row that pins this card to the current chat" },
+  "@cardLockToChat": {
+    "description": "Row that pins this card to the current chat"
+  },
   "cardNoChat": "请先创建聊天",
-  "@cardNoChat": { "description": "Shown when there is no chat to lock the card to" },
+  "@cardNoChat": {
+    "description": "Shown when there is no chat to lock the card to"
+  },
   "cardNoChatSub": "打开一个聊天，通过顶部菜单锁定卡片",
-  "@cardNoChatSub": { "description": "Explains why no chat means no lock" },
+  "@cardNoChatSub": {
+    "description": "Explains why no chat means no lock"
+  },
   "cardLinkPersona": "关联到指定的 AI 人设",
-  "@cardLinkPersona": { "description": "Row that links the card to a persona" },
+  "@cardLinkPersona": {
+    "description": "Row that links the card to a persona"
+  },
   "cardLinkCharacter": "关联到某个角色",
-  "@cardLinkCharacter": { "description": "Subtitle of the persona link row" },
+  "@cardLinkCharacter": {
+    "description": "Subtitle of the persona link row"
+  },
   "cardSave": "保存卡片",
-  "@cardSave": { "description": "Button that stores the card" },
+  "@cardSave": {
+    "description": "Button that stores the card"
+  },
   "cardCurrentLabel": "当前卡片",
-  "@cardCurrentLabel": { "description": "Row that shows which persona card is in hand" },
+  "@cardCurrentLabel": {
+    "description": "Row that shows which persona card is in hand"
+  },
   "cardPickTitle": "选择人设卡片",
-  "@cardPickTitle": { "description": "Title of the sheet that picks the card in hand" },
+  "@cardPickTitle": {
+    "description": "Title of the sheet that picks the card in hand"
+  },
   "cardSetPhoto": "设置头像",
-  "@cardSetPhoto": { "description": "Link under the card avatar that picks a photo" },
+  "@cardSetPhoto": {
+    "description": "Link under the card avatar that picks a photo"
+  },
   "cardRemovePhoto": "头像已移除",
-  "@cardRemovePhoto": { "description": "Shown after the card avatar photo is cleared" },
+  "@cardRemovePhoto": {
+    "description": "Shown after the card avatar photo is cleared"
+  },
   "attachLoading": "正在加载…",
-  "@attachLoading": { "description": "" },
+  "@attachLoading": {
+    "description": ""
+  },
   "attachLocating": "定位中…",
-  "@attachLocating": { "description": "" },
+  "@attachLocating": {
+    "description": ""
+  },
   "attachTabGallery": "相册",
-  "@attachTabGallery": { "description": "" },
+  "@attachTabGallery": {
+    "description": ""
+  },
   "attachCamera": "相机",
-  "@attachCamera": { "description": "相册网格顶部相机入口的文案" },
+  "@attachCamera": {
+    "description": "相册网格顶部相机入口的文案"
+  },
   "attachPollQuestionLabel": "问题",
-  "@attachPollQuestionLabel": { "description": "" },
+  "@attachPollQuestionLabel": {
+    "description": ""
+  },
   "attachPollOptionsLabel": "选项",
-  "@attachPollOptionsLabel": { "description": "" },
+  "@attachPollOptionsLabel": {
+    "description": ""
+  },
   "attachPollSettingsLabel": "设置",
-  "@attachPollSettingsLabel": { "description": "" },
+  "@attachPollSettingsLabel": {
+    "description": ""
+  },
   "cardDepthLabel": "深度",
-  "@cardDepthLabel": { "description": "" },
+  "@cardDepthLabel": {
+    "description": ""
+  },
   "cardRoleLabel": "角色",
-  "@cardRoleLabel": { "description": "" },
+  "@cardRoleLabel": {
+    "description": ""
+  },
   "cardConnectionsHeader": "关联",
-  "@cardConnectionsHeader": { "description": "" },
+  "@cardConnectionsHeader": {
+    "description": ""
+  },
   "cardDefaultLabel": "默认",
-  "@cardDefaultLabel": { "description": "" },
+  "@cardDefaultLabel": {
+    "description": ""
+  },
   "cardChatLabel": "会话",
-  "@cardChatLabel": { "description": "" },
+  "@cardChatLabel": {
+    "description": ""
+  },
   "cardCharacterLabel": "角色",
-  "@cardCharacterLabel": { "description": "" },
+  "@cardCharacterLabel": {
+    "description": ""
+  },
   "cardPositionLabel": "位置",
-  "@cardPositionLabel": { "description": "" },
+  "@cardPositionLabel": {
+    "description": ""
+  },
   "msgRecalledAnonymous": "有一条消息被撤回",
-  "@msgRecalledAnonymous": { "description": "Same stamp when the sender name is not known" },
+  "@msgRecalledAnonymous": {
+    "description": "Same stamp when the sender name is not known"
+  },
   "wsTitle": "工作区",
   "wsSub": "给 AI 一个自己的目录",
   "wsSubOff": "开启文件工具后 AI 才能读写这里",
@@ -1705,6 +3322,7 @@
   "toolDescSendLatex": "在聊天里直接渲染 LaTeX 数学公式",
   "toolDescSendCetz": "在聊天里直接用 CeTZ 画图",
   "toolDescSendTransfer": "发一个假的红包，点一下就收",
+  "toolDescAsk": "向你提问并给出可点的选项，等你作答",
   "wsToolDescRead": "按行号读取工作区里的文件",
   "wsToolDescWrite": "新建或覆盖文件，写入前你会看到差异",
   "wsToolDescEdit": "替换文件中的某一段文字",
@@ -1727,21 +3345,37 @@
   "termFontBigger": "放大文字",
   "termFontSmaller": "缩小文字",
   "termCopied": "已复制",
-  "@termCopied": { "description": "Toast after copying terminal text" },
+  "@termCopied": {
+    "description": "Toast after copying terminal text"
+  },
   "termSessionDead": "该 shell 已关闭",
-  "@termSessionDead": { "description": "Toast when a closed shell was reopened" },
+  "@termSessionDead": {
+    "description": "Toast when a closed shell was reopened"
+  },
   "termLinkUnsupported": "无法从这里打开此链接",
-  "@termLinkUnsupported": { "description": "Toast for a link the terminal emitted that the app cannot handle" },
+  "@termLinkUnsupported": {
+    "description": "Toast for a link the terminal emitted that the app cannot handle"
+  },
   "termHint": "在下方输入命令。长按标签可重命名。",
-  "@termHint": { "description": "Empty state hint under the terminal" },
+  "@termHint": {
+    "description": "Empty state hint under the terminal"
+  },
   "termSettings": "环境",
-  "@termSettings": { "description": "Row that opens the environment settings" },
+  "@termSettings": {
+    "description": "Row that opens the environment settings"
+  },
   "termInstallEnvironment": "安装 Linux 环境后即可使用终端",
-  "@termInstallEnvironment": { "description": "Empty state action when no rootfs is installed" },
+  "@termInstallEnvironment": {
+    "description": "Empty state action when no rootfs is installed"
+  },
   "termShellPath": "Shell 路径",
-  "@termShellPath": { "description": "Row showing which shell the guest starts" },
+  "@termShellPath": {
+    "description": "Row showing which shell the guest starts"
+  },
   "termProotArgs": "PRoot 选项",
-  "@termProotArgs": { "description": "Row opening the proot argument editor" },
+  "@termProotArgs": {
+    "description": "Row opening the proot argument editor"
+  },
   "actionPaste": "粘贴",
   "termCloseConfirm": "关闭这个 shell？正在运行的程序会停止。",
   "termOpenFailedShort": "无法打开 shell",
@@ -1781,7 +3415,7 @@
   "onboardStart": "开始使用",
   "onboardSplashTagline": "正在抵达彼岸",
   "onboardBrandTitle": "彼岸双生",
-  "onboardBrandTagline": "沉浸式的 AI 聊天应用。像和真人一样聊天。",
+  "onboardBrandTagline": "一款 Telegram 风格的沉浸式 AI 聊天应用。",
   "onboardBrandBody": "本地优先，自带 API Key。给每个助手一个工作区、一段记忆，和自己的脾气。",
   "onboardBrandLicense": "以 AGPL v3 分发。© 殘月",
   "onboardPermTitle": "权限",
@@ -1876,8 +3510,183 @@
   "personaEngineerName": "阿岚",
   "personaEngineerBio": "务实、话不多、代码优先的资深工程师。",
   "personaEngineerGreeting": "在。有报错就把完整堆栈贴上来，没有就说清楚你想做什么、现在卡在哪",
-  "settingsOnboarding": "重看引导",
   "onboardModelOwnOpen": "打开设置",
   "onboardThemeTitle": "外观",
-  "onboardThemeBody": "夜间模式、壁纸，以及每条气泡的大小。之后都能在设置里随时改。"
+  "onboardThemeBody": "夜间模式、壁纸，以及每条气泡的大小。之后都能在设置里随时改。",
+  "updateTitle": "发现新版本",
+  "@updateTitle": {
+    "description": "Title of the update bottom sheet"
+  },
+  "updateSubtitle": "当前 {current} · 最新 {latest}",
+  "@updateSubtitle": {
+    "description": "Version line under the update title"
+  },
+  "updateDownload": "下载",
+  "@updateDownload": {
+    "description": "Primary button that opens the release page"
+  },
+  "updateClose": "关闭",
+  "@updateClose": {
+    "description": "Button that dismisses the update sheet"
+  },
+  "updateSkipVersion": "跳过此版本",
+  "@updateSkipVersion": {
+    "description": "Checkbox that mutes the automatic prompt for this release"
+  },
+  "updateUpToDate": "已是最新版本",
+  "@updateUpToDate": {
+    "description": "Bulletin after a manual check with nothing newer"
+  },
+  "updateCheckFailed": "检查更新失败，请稍后再试",
+  "@updateCheckFailed": {
+    "description": "Bulletin when the release fetch fails"
+  },
+  "updateCheckTitle": "检查更新",
+  "@updateCheckTitle": {
+    "description": "Settings row that checks GitHub releases by hand"
+  },
+  "updateCheckSub": "当前版本 {version}",
+  "@updateCheckSub": {
+    "description": "Subtitle of the manual update row"
+  },
+  "updateNoNotes": "暂无更新说明。",
+  "@updateNoNotes": {
+    "description": "Shown when the release body is empty"
+  },
+  "skillTitle": "技能",
+  "@skillTitle": {
+    "description": "Settings row and page title for skills"
+  },
+  "skillSubEmpty": "教助理可复用的能力",
+  "@skillSubEmpty": {
+    "description": "Subtitle of the skills row when none is installed"
+  },
+  "skillSubCount": "共 {count} 个技能",
+  "@skillSubCount": {
+    "description": "Subtitle of the skills row with installed count",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "skillEmptyTitle": "还没有技能",
+  "@skillEmptyTitle": {
+    "description": "Empty skills page headline"
+  },
+  "skillEmptyBody": "导入 SKILL.md 文件、zip 包，或直接粘贴文本。助理只看列表，任务匹配时才会打开其中一个。",
+  "@skillEmptyBody": {
+    "description": "Empty skills page body"
+  },
+  "skillImport": "导入技能",
+  "@skillImport": {
+    "description": "Button that opens the skill import choices"
+  },
+  "skillImportPaste": "粘贴文本",
+  "@skillImportPaste": {
+    "description": "Import choice"
+  },
+  "skillImportFile": "从文件导入",
+  "@skillImportFile": {
+    "description": "Import choice"
+  },
+  "skillImportUrl": "从链接导入",
+  "@skillImportUrl": {
+    "description": "Import choice"
+  },
+  "skillPasteTitle": "粘贴 SKILL.md",
+  "@skillPasteTitle": {
+    "description": "Title of the paste sheet"
+  },
+  "skillPasteHint": "粘贴 SKILL.md 文本…",
+  "@skillPasteHint": {
+    "description": "Placeholder of the paste field"
+  },
+  "skillUrlTitle": "从链接导入",
+  "@skillUrlTitle": {
+    "description": "Title of the URL sheet"
+  },
+  "skillUrlHint": "https://github.com/owner/repo/…",
+  "@skillUrlHint": {
+    "description": "Placeholder of the URL field"
+  },
+  "skillUrlError": "该链接无法读取为技能。",
+  "@skillUrlError": {
+    "description": "Bulletin when a URL import fails"
+  },
+  "skillInvalid": "该文件不是有效的技能。",
+  "@skillInvalid": {
+    "description": "Bulletin when a file import fails"
+  },
+  "skillDeleteTitle": "删除技能",
+  "@skillDeleteTitle": {
+    "description": "Confirmation title"
+  },
+  "skillDeleteMessage": "删除“{name}”？文件会一并删除。",
+  "@skillDeleteMessage": {
+    "description": "Confirmation body",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "skillEnabled": "已启用",
+  "@skillEnabled": {
+    "description": "Skill row subtitle when on"
+  },
+  "skillDisabled": "已停用",
+  "@skillDisabled": {
+    "description": "Skill row subtitle when off"
+  },
+  "skillDetailUses": "已使用 {count} 次",
+  "@skillDetailUses": {
+    "description": "How many times a skill was read",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "skillOpenFile": "使用说明在 SKILL.md 中。",
+  "@skillOpenFile": {
+    "description": "Note on the skill detail page"
+  },
+  "personaSkillsHeader": "技能",
+  "@personaSkillsHeader": {
+    "description": "Section header of the role skill picker"
+  },
+  "personaSkillsFooter": "跟随全局即使用全部已启用的技能。自定义则只选用该角色可用的几个。",
+  "@personaSkillsFooter": {
+    "description": "Section footer of the role skill picker"
+  },
+  "personaSkillsFollowGlobal": "跟随全局",
+  "@personaSkillsFollowGlobal": {
+    "description": "Role skill mode that inherits all enabled skills"
+  },
+  "personaSkillsCustom": "自定义",
+  "@personaSkillsCustom": {
+    "description": "Role skill mode with an explicit list"
+  },
+  "personaSkillsCount": "已选 {count} 个",
+  "@personaSkillsCount": {
+    "description": "How many skills a role picked",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "personaSkillsPickTitle": "该角色的技能",
+  "@personaSkillsPickTitle": {
+    "description": "Title of the role skill picker"
+  },
+  "toolDescReadSkill": "按 id 读取已安装的技能",
+  "@toolDescReadSkill": {
+    "description": "Tools page description"
+  },
+  "skillImporting": "导入中…",
+  "@skillImporting": {
+    "description": "技能下载时的提示"
+  }
 }

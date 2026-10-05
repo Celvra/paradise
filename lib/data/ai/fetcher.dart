@@ -150,23 +150,53 @@ List<Map<String, dynamic>> _pickModelArray(Object? data) {
 
 ModelMeta _toModelMeta(Map<String, dynamic> entry, String providerId, {bool crossProvider = true}) {
   final id = entry['id'] as String? ?? entry['name'] as String? ?? '';
-  final top = entry['top_provider'];
-  // open router reports the usable window in top_provider
-  final context = (top is Map ? (top['context_length'] as num?)?.toInt() : null) ?? (entry['context_length'] as num?)?.toInt() ?? 0;
-  // a blind-test relay declares `auto` with no window at all; a fixed modest
-  // default beats both a zero the picker cannot render and the 2M an
-  // OpenRouter id collision would hand over
-  final safeContext = context == 0 && id == 'auto' ? 128000 : context;
-  final caps = entry['capabilities'];
+  final top = entry['top_provider'] is Map ? (entry['top_provider'] as Map).cast<String, dynamic>() : null;
+  final meta = entry['metadata'] is Map ? (entry['metadata'] as Map).cast<String, dynamic>() : null;
+  final metaLimit = meta?['limit'] is Map ? (meta!['limit'] as Map).cast<String, dynamic>() : null;
+  final metaModalities = meta?['modalities'] is Map ? (meta!['modalities'] as Map).cast<String, dynamic>() : null;
+  final arch = entry['architecture'] is Map ? (entry['architecture'] as Map).cast<String, dynamic>() : null;
+  int? asNum(Object? v) => (v as num?)?.toInt();
+  // The relay's /models already ships the usable window for `auto` (and for
+  // every free model), so every value here comes straight from the pull. No
+  // hard-coded fallback: a zero stays zero and renders as unknown.
+  final context = asNum(top?['context_length']) ??
+      asNum(top?['context_window']) ??
+      asNum(entry['context_length']) ??
+      asNum(entry['context_window']) ??
+      asNum(metaLimit?['context']) ??
+      asNum(metaLimit?['input']) ??
+      0;
+  final maxOutput = asNum(entry['max_output_tokens']) ??
+      asNum(entry['max_tokens']) ??
+      asNum(top?['max_completion_tokens']) ??
+      asNum(top?['max_output_tokens']) ??
+      asNum(metaLimit?['output']) ??
+      asNum(metaLimit?['max_output']) ??
+      0;
+  final caps = entry['capabilities'] is Map ? (entry['capabilities'] as Map).cast<String, dynamic>() : null;
+  bool listHasImage(Object? v) {
+    if (v is! List) return false;
+    for (final e in v) {
+      final s = e.toString().toLowerCase();
+      if (s == 'image' || s == 'video') return true;
+    }
+    return false;
+  }
+  final vision = (caps?['attachment'] == true) ||
+      (caps?['vision'] == true) ||
+      listHasImage(arch?['input_modalities']) ||
+      listHasImage(metaModalities?['input']);
+  final reasoning = (caps?['reasoning'] == true) || (meta?['reasoning'] == true);
+  final t2i = listHasImage(arch?['output_modalities']) || listHasImage(metaModalities?['output']);
   return enrich(
     ModelMeta(
       id: id,
       name: entry['display_name'] as String? ?? entry['name'] as String? ?? id,
-      contextWindow: safeContext,
-      maxOutput: (entry['max_output_tokens'] as num?)?.toInt() ?? 0,
-      vision: caps is Map && caps['attachment'] == true,
-      textToImage: false,
-      reasoning: caps is Map && caps['reasoning'] == true,
+      contextWindow: context,
+      maxOutput: maxOutput,
+      vision: vision,
+      textToImage: t2i,
+      reasoning: reasoning,
       source: ModelSource.api,
     ),
     providerId,

@@ -1,5 +1,4 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:permission_handler/permission_handler.dart' as ph;
 
 import '../../core/anim.dart';
@@ -125,8 +124,10 @@ class StepHeader extends StatelessWidget {
   }
 }
 
-/// The app mark, drawn from the committed svg so the wizard never depends on
-/// the launcher icon being readable against either theme.
+/// The app mark, painted by hand from the committed svg's paths (P monoline
+/// plus the dot on a 100 box) in the theme title color. Hand-painted because
+/// the svg is not a declared bundle asset and uses currentColor, which
+/// flutter_svg cannot resolve, so loading it here renders nothing.
 class OnboardingLogo extends StatelessWidget {
   const OnboardingLogo({super.key, this.size = 96});
 
@@ -134,8 +135,36 @@ class OnboardingLogo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SvgPicture.asset('assets/icon/icon.svg', width: size, height: size);
+    return CustomPaint(size: Size.square(size), painter: _LogoPainter(context.p.title));
   }
+}
+
+class _LogoPainter extends CustomPainter {
+  _LogoPainter(this.color);
+
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    canvas.scale(size.width / 100);
+    final sp = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 8
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round;
+    final p = Path()
+      ..moveTo(38, 72)
+      ..lineTo(38, 28)
+      ..lineTo(56, 28)
+      ..arcToPoint(const Offset(56, 56), radius: const Radius.circular(14))
+      ..lineTo(38, 56);
+    canvas.drawPath(p, sp);
+    canvas.drawCircle(const Offset(72, 72), 5, Paint()..color = color);
+  }
+
+  @override
+  bool shouldRepaint(_LogoPainter o) => o.color != color;
 }
 
 /// A radio row for a small, fixed set of choices: title, subtitle and a dot
@@ -193,29 +222,110 @@ class RadioRow extends StatelessWidget {
   }
 }
 
-/// The row of 5dp pills under the header, selected one stretched and tinted.
+/// Port of Telegram Android's BottomPagesView: 5dp dots on an 11dp pitch, the
+/// selected one stretching across the gap while the pager scrolls. Grey is
+/// #BBBBBB on day and #555555 on night, selected is the accent.
 class StepDots extends StatelessWidget {
-  const StepDots({super.key, required this.count, required this.index});
+  const StepDots({super.key, required this.count, required this.controller, required this.index});
 
   final int count;
+  final PageController controller;
+
+  /// Fallback page before the controller attaches to the PageView.
   final int index;
 
   @override
   Widget build(BuildContext context) {
     final p = context.p;
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        for (var i = 0; i < count; i++)
-          AnimatedContainer(
-            duration: const Duration(milliseconds: 220),
-            curve: TgCurves.easeOut,
-            margin: const EdgeInsets.symmetric(horizontal: 3),
-            height: 5,
-            width: i == index ? 18 : 5,
-            decoration: BoxDecoration(color: i == index ? p.accent : p.subtitle.withAlpha(70), borderRadius: BorderRadius.circular(2.5)),
-          ),
-      ],
+    final selected = p.accent;
+    final track = p.dark ? const Color(0xFF555555) : const Color(0xFFBBBBBB);
+    return AnimatedBuilder(
+      animation: controller,
+      builder: (_, __) {
+        double page;
+        try {
+          page = controller.page ?? index.toDouble();
+        } catch (_) {
+          page = index.toDouble();
+        }
+        return CustomPaint(
+          size: Size(count * 11.0 - 6, 5),
+          painter: _TgDotsPainter(count, page, selected, track),
+        );
+      },
+    );
+  }
+}
+
+class _TgDotsPainter extends CustomPainter {
+  _TgDotsPainter(this.count, this.page, this.selected, this.track);
+
+  final int count;
+  final double page;
+  final Color selected;
+  final Color track;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    const dot = 5.0, pitch = 11.0, r = 2.5;
+    final cur = page.round().clamp(0, count - 1);
+    final pos = page.floor().clamp(0, count - 1);
+    final prog = (page - pos).clamp(0.0, 1.0);
+    final tp = Paint()..color = track;
+    for (var i = 0; i < count; i++) {
+      if (i == cur) continue;
+      final x = i * pitch;
+      canvas.drawRRect(RRect.fromLTRBR(x, 0, x + dot, dot, const Radius.circular(r)), tp);
+    }
+    final sp = Paint()..color = selected;
+    final x = cur * pitch;
+    final RRect rect;
+    if (prog == 0) {
+      rect = RRect.fromLTRBR(x, 0, x + dot, dot, const Radius.circular(r));
+    } else if (pos >= cur) {
+      rect = RRect.fromLTRBR(x, 0, x + dot + pitch * prog, dot, const Radius.circular(r));
+    } else {
+      rect = RRect.fromLTRBR(x - pitch * (1 - prog), 0, x + dot, dot, const Radius.circular(r));
+    }
+    canvas.drawRRect(rect, sp);
+  }
+
+  @override
+  bool shouldRepaint(_TgDotsPainter o) =>
+      o.count != count || o.page != page || o.selected != selected || o.track != track;
+}
+
+/// Port of Telegram Android's Start Messaging button: a 48dp pill, full width
+/// with 16dp margins and capped at 320dp, left-right accent gradient, 15sp
+/// bold white label. The gradient's second stop is the accent pushed 10%
+/// towards black, the same family as TG's featuredStickers_addButton pair.
+class TgIntroButton extends StatelessWidget {
+  const TgIntroButton({super.key, required this.label, required this.onTap});
+
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = context.p;
+    final dark = Color.lerp(p.accent, const Color(0xFF000000), 0.10)!;
+    return Tap(
+      scale: .98,
+      onTap: onTap,
+      child: Container(
+        width: double.infinity,
+        height: 48,
+        alignment: Alignment.center,
+        padding: const EdgeInsets.symmetric(horizontal: 34),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(24),
+          gradient: LinearGradient(colors: [p.accent, dark]),
+        ),
+        child: Text(label,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(color: Color(0xFFFFFFFF), fontSize: 15, fontWeight: FontWeight.w700, decoration: TextDecoration.none)),
+      ),
     );
   }
 }

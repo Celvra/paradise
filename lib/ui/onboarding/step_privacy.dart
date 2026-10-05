@@ -1,58 +1,30 @@
 import 'package:flutter/widgets.dart';
 
-import '../../core/anim.dart';
 import '../../core/overlays.dart';
 import '../../core/theme.dart';
 import '../../core/ui_kit.dart';
 import '../../l10n/x.dart';
 import 'common.dart';
 
-/// Step 3: the privacy agreement, the one step with no skip. Agree lives in
-/// the bottom bar so it is always on screen, decline keeps the wizard open
-/// and says why.
+/// Step 3: the privacy agreement, the one step with no skip. The wizard shell
+/// owns the bottom (TG intro style): Agree is the pill, decline is the small
+/// link above it, both wired by [OnboardingPage].
 OnboardingStep buildPrivacyStep() => OnboardingStep(
       skippable: false,
       // The lock animation keeps the legal wall from reading as a bare text
       build: (c, flow) => const _PrivacyBody(),
-      bottomBuilder: (c, flow, onLast) => const _PrivacyButtons(),
     );
 
-/// The always-visible action pair. Agree is the only road into the app, so it
-/// takes the full width; decline is the small link under it.
-class _PrivacyButtons extends StatelessWidget {
-  const _PrivacyButtons();
-
-  @override
-  Widget build(BuildContext context) {
-    final l = context.l;
-    final p = context.p;
-    return Column(mainAxisSize: MainAxisSize.min, children: [
-      TgButton(label: l.onboardPrivacyAgree, onTap: () => OnboardingScope.of(context).next()),
-      const SizedBox(height: 8),
-      Center(
-        child: Tap(
-          scale: .94,
-          onTap: () => _decline(context),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-            child: Text(l.onboardPrivacyDecline, style: TextStyle(color: p.subtitle, fontSize: 14, decoration: TextDecoration.none)),
-          ),
-        ),
-      ),
-    ]);
-  }
-
-  Future<void> _decline(BuildContext context) async {
-    final l = context.l;
-    await showTgDialog<void>(
-      context,
-      title: l.onboardPrivacyDeclineTitle,
-      content: Text(l.onboardPrivacyDeclineBody, style: TextStyle(color: context.p.msg, fontSize: 15, decoration: TextDecoration.none, height: 1.45)),
-      actions: [DialogAction(l.actionOk, null)],
-    );
-    // Stay on the step: agreement is the gate, and re-reading is cheaper
-    // than a dead end.
-  }
+/// The decline dialog the shell's link slot opens. Staying on the step after
+/// it: agreement is the gate, and re-reading is cheaper than a dead end.
+Future<void> showPrivacyDeclineDialog(BuildContext context) async {
+  final l = context.l;
+  await showTgDialog<void>(
+    context,
+    title: l.onboardPrivacyDeclineTitle,
+    content: Text(l.onboardPrivacyDeclineBody, style: TextStyle(color: context.p.msg, fontSize: 15, decoration: TextDecoration.none, height: 1.45)),
+    actions: [DialogAction(l.actionOk, null)],
+  );
 }
 
 class _PrivacyBody extends StatelessWidget {

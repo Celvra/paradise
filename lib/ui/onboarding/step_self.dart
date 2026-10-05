@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart' as ip;
 
 import '../../core/anim.dart';
+import '../../core/overlays.dart';
 import '../../core/theme.dart';
 import '../../core/ui_kit.dart';
 import '../../data/models.dart';
@@ -31,14 +32,42 @@ class _SelfBody extends StatefulWidget {
 
 class _SelfBodyState extends State<_SelfBody> {
   late final Store _st = context.store;
-  late UserPersona _card = _st.personas.isNotEmpty ? _st.activePersona : _st.createPersonaCard();
+  late UserPersona _card;
   late final TextEditingController _name = TextEditingController(text: _card.name == 'You' ? '' : _card.name);
   late final TextEditingController _title = TextEditingController(text: _card.title);
   late final TextEditingController _desc = TextEditingController(text: _card.description);
 
   @override
+  void initState() {
+    super.initState();
+    // Store.read does not subscribe, so it is legal here; the late
+    // initializers below run on first build, after this assignment.
+    _card = Store.read(context).activePersona;
+    WidgetsBinding.instance.addPostFrameCallback((_) => _ensureCard());
+  }
+
+  /// Creates the card in hand when there is none yet (fresh install, the
+  /// list is empty and activePersona is a throwaway placeholder whose id
+  /// matches nothing, so every write silently no-ops). Post-frame because
+  /// creating notifies the store, which must not happen mid-build.
+  void _ensureCard() {
+    if (!mounted) return;
+    if (_st.personas.any((c) => c.id == _card.id)) return;
+    setState(() => _card = _st.createPersonaCard());
+  }
+
+  @override
   void dispose() {
-    _save();
+    // Persist post-frame: every store write notifies, and dispose runs with
+    // the widget tree locked (unmount), where a notify throws. Values are
+    // captured now because the controllers die with this state.
+    final st = _st;
+    final name = _name.text.trim();
+    final title = _title.text.trim();
+    final desc = _desc.text.trim();
+    final cardId = _card.id;
+    final avatarEmpty = _card.avatarPath.isEmpty;
+    WidgetsBinding.instance.addPostFrameCallback((_) => _saveDeferred(st, name, title, desc, cardId, avatarEmpty));
     _name.dispose();
     _title.dispose();
     _desc.dispose();
@@ -48,28 +77,36 @@ class _SelfBodyState extends State<_SelfBody> {
   /// Persists the three text fields onto the card and mirrors the name into
   /// the legacy flat profile the rest of the app reads. A completely empty
   /// step removes the stub card this page created instead of saving "You".
-  void _save() {
-    final name = _name.text.trim();
-    final title = _title.text.trim();
-    final desc = _desc.text.trim();
-    if (name.isEmpty && title.isEmpty && desc.isEmpty && _card.avatarPath.isEmpty) {
-      if (_st.personas.length == 1) _st.deletePersonaCard(_card.id);
+  static void _saveDeferred(Store st, String name, String title, String desc, String cardId, bool avatarEmpty) {
+    var id = cardId;
+    // Unmounted before the first frame ran the post-frame callback (or the
+    // card vanished): without a real card the writes below no-op, so make one
+    // unless there is nothing worth keeping at all.
+    if (!st.personas.any((c) => c.id == id)) {
+      if (name.isEmpty && title.isEmpty && desc.isEmpty && avatarEmpty) return;
+      id = st.createPersonaCard().id;
+    }
+    if (name.isEmpty && title.isEmpty && desc.isEmpty && avatarEmpty) {
+      if (st.personas.length == 1) st.deletePersonaCard(id);
       return;
     }
-    _st.updatePersonaCard(_card.id, (p) {
+    st.updatePersonaCard(id, (p) {
       p.name = name.isEmpty ? 'You' : name;
       p.title = title;
       p.description = desc;
     });
-    _st.setProfile(name: name.isEmpty ? null : name);
+    st.setProfile(name: name.isEmpty ? null : name);
   }
 
   @override
   Widget build(BuildContext context) {
     final l = context.l;
     final p = context.p;
-    // the card object is replaced by updatePersonaCard, so re-read it
-    _card = _st.activePersona;
+    // Follow an outside switch, but never fall back onto the throwaway
+    // placeholder while this step owns a real card (fresh install before the
+    // post-frame callback ran): its id matches nothing and every write no-ops.
+    final active = _st.activePersona;
+    if (active.id.isNotEmpty) _card = active;
     return ListView(
       padding: const EdgeInsets.fromLTRB(18, 4, 18, 8),
       children: [
@@ -141,6 +178,8 @@ class _SelfBodyState extends State<_SelfBody> {
       if (x == null) return;
       _st.updatePersonaCard(_card.id, (p) => p.avatarPath = x.path);
       if (mounted) setState(() {});
-    } catch (_) {}
+    } catch (_) {
+      if (mounted) showBulletin(context, context.l.galleryUnavailable);
+    }
   }
 }

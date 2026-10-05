@@ -100,14 +100,9 @@ class _PermListState extends State<_PermList> {
   @override
   Widget build(BuildContext context) {
     final l = context.l;
-    final p = context.p;
     return ListView(
       padding: const EdgeInsets.fromLTRB(18, 4, 18, 8),
       children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(6, 0, 6, 12),
-          child: Text(l.onboardPermBody, textAlign: TextAlign.center, style: TextStyle(color: p.msg, fontSize: 14, decoration: TextDecoration.none, height: 1.4)),
-        ),
         TgSection(
           children: [
             for (final (perm, name, why, icon) in _rows)

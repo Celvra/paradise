@@ -66,7 +66,7 @@ String typstError(Object error) {
 /// press belongs to the rendered thing itself, which is what opens the
 /// message menu.
 class CanvasCard extends StatefulWidget {
-  const CanvasCard({super.key, required this.source, required this.latex, this.cetz = false, this.align = CardAlign.center, this.onLongPress, this.onFailed});
+  const CanvasCard({super.key, required this.source, required this.latex, this.cetz = false, this.align = CardAlign.center, this.onLongPress, this.onFailed, this.initialHeight, this.onHeight});
 
   /// LaTeX math for [latex] cards, html markup otherwise.
   final String source;
@@ -85,6 +85,15 @@ class CanvasCard extends StatefulWidget {
   /// the message so the transcript tells the model; the card itself collapses
   /// to a quiet notice.
   final void Function(String error)? onFailed;
+
+  /// Height the card had last time, from the message row (`data['h']`) or the
+  /// in-memory cache. Used as the placeholder so a re-entered chat does not
+  /// flash from 40/80/90 up to the real height.
+  final double? initialHeight;
+
+  /// Reports the card's real height once known, so the chat can remember it
+  /// for the next entry and for a restart.
+  final void Function(double h)? onHeight;
 
   @override
   State<CanvasCard> createState() => _CanvasCardState();
@@ -106,9 +115,9 @@ class _CanvasCardState extends State<CanvasCard> {
   Widget build(BuildContext context) {
     final Widget body = widget.latex
         ? (_isDrawing
-            ? CetzDoc(source: widget.source, align: widget.align, onFailed: _failed)
-            : MathDoc(source: widget.source, align: widget.align, onFailed: _failed))
-        : HtmlDoc(source: widget.source, align: widget.align, onFailed: _failed);
+            ? CetzDoc(source: widget.source, align: widget.align, onFailed: _failed, initialHeight: widget.initialHeight, onHeight: _height)
+            : MathDoc(source: widget.source, align: widget.align, onFailed: _failed, initialHeight: widget.initialHeight, onHeight: _height))
+        : HtmlDoc(source: widget.source, align: widget.align, onFailed: _failed, initialHeight: widget.initialHeight, onHeight: _height);
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onLongPress: widget.onLongPress == null
@@ -132,6 +141,10 @@ class _CanvasCardState extends State<CanvasCard> {
 
   void _failed(String error) {
     widget.onFailed?.call(error);
+  }
+
+  void _height(double h) {
+    widget.onHeight?.call(h);
   }
 }
 
@@ -161,13 +174,20 @@ class CanvasNotice extends StatelessWidget {
 /// [onFailed]; the card then shows the notice and the transcript tells the
 /// model what broke.
 class MathDoc extends StatefulWidget {
-  const MathDoc({super.key, required this.source, required this.align, required this.onFailed});
+  const MathDoc({super.key, required this.source, required this.align, required this.onFailed, this.initialHeight, this.onHeight});
   final String source;
 
   /// Horizontal placement inside the full width card.
   final CardAlign align;
 
   final void Function(String) onFailed;
+
+  /// Height remembered from the last entry, so a re-entered chat does not
+  /// flash from the fixed placeholder up to the real size.
+  final double? initialHeight;
+
+  /// Reports the real card height (content + padding) once laid out.
+  final void Function(double h)? onHeight;
 
   /// The model often wraps formulas in the delimiters it was taught for chat
   /// math; the engine wants the expression itself.
@@ -188,6 +208,14 @@ class MathDoc extends StatefulWidget {
 }
 
 class _MathDocState extends State<MathDoc> {
+  /// Parsed layouts by stripped source + ink, so a re-entered chat reuses the
+  /// last compile instead of flashing through the placeholder again. The ink
+  /// rides in the key because the same formula paints a different colour by
+  /// theme.
+  static final Map<String, DisplayList> _cache = {};
+
+  static String _key(String tex, int colorArgb) => '$colorArgb|$tex';
+
   DisplayList? _dl;
   String? _error;
   bool _busy = false;
@@ -202,6 +230,14 @@ class _MathDocState extends State<MathDoc> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (_busy || _dl != null || _error != null) return;
+    final p = context.p;
+    final color = p.dark ? const Color(0xFFE8EAED) : const Color(0xFF1B1B1B);
+    final hit = _cache[_key(widget.strip(widget.source), color.toARGB32())];
+    if (hit != null) {
+      _dl = hit;
+      WidgetsBinding.instance.addPostFrameCallback((_) => _report());
+      return;
+    }
     _run();
   }
 
@@ -222,16 +258,28 @@ class _MathDocState extends State<MathDoc> {
     final color = p.dark ? const Color(0xFFE8EAED) : const Color(0xFF1B1B1B);
     final tex = widget.strip(widget.source);
     try {
+      final cached = _cache[_key(tex, color.toARGB32())];
+      if (cached != null) {
+        if (!mounted) return;
+        setState(() {
+          _dl = cached;
+          _error = null;
+        });
+        _report();
+        return;
+      }
       final dl = await compute(
         ratexParseAndLayoutInIsolate,
         RaTeXParseAndLayoutIsolateArgs(latex: tex, displayMode: true, colorArgb: color.toARGB32()),
       ).timeout(const Duration(seconds: 20));
+      _cache[_key(tex, color.toARGB32())] = dl;
       cardLog('math ok', '${dl.width.toStringAsFixed(2)}x${(dl.height + dl.depth).toStringAsFixed(2)}em');
       if (!mounted) return;
       setState(() {
         _dl = dl;
         _error = null;
       });
+      _report();
     } catch (e) {
       final msg = e is RaTeXException ? e.message : '$e';
       cardLog('math FAILED', msg);
@@ -243,13 +291,23 @@ class _MathDocState extends State<MathDoc> {
     }
   }
 
+  /// The card height the list remembers: painter height plus the two paddings
+  /// around it (4 above/below the painter, 2 above/below the card).
+  void _report() {
+    final dl = _dl;
+    if (dl == null || !mounted) return;
+    final fontSize = context.store.textSize * 1.15;
+    final painter = RaTeXPainter(displayList: dl, fontSize: fontSize);
+    widget.onHeight?.call(painter.totalHeightPx + 12);
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_error != null) return const CanvasNotice();
     final p = context.p;
     final dl = _dl;
     if (dl == null) {
-      return SizedBox(height: 40, width: double.infinity, child: Center(child: TypingDots(color: p.subtitle)));
+      return SizedBox(height: widget.initialHeight ?? 40, width: double.infinity, child: Center(child: TypingDots(color: p.subtitle)));
     }
     final fontSize = context.store.textSize * 1.15;
     final painter = RaTeXPainter(displayList: dl, fontSize: fontSize);
@@ -276,7 +334,7 @@ class _MathDocState extends State<MathDoc> {
 /// loads instantly. The page reports its own height through a JS channel so
 /// the card grows to fit and scrolls with the list.
 class HtmlDoc extends StatefulWidget {
-  const HtmlDoc({super.key, required this.source, required this.align, required this.onFailed});
+  const HtmlDoc({super.key, required this.source, required this.align, required this.onFailed, this.initialHeight, this.onHeight});
   final String source;
 
   /// Horizontal placement inside the full width card.
@@ -284,16 +342,36 @@ class HtmlDoc extends StatefulWidget {
 
   final void Function(String) onFailed;
 
+  /// Height remembered from the last entry, so a re-entered chat starts at
+  /// the right size instead of flashing from 90 up.
+  final double? initialHeight;
+
+  /// Reports the measured content height (plus card padding) once known.
+  final void Function(double h)? onHeight;
+
   @override
   State<HtmlDoc> createState() => _HtmlDocState();
 }
 
 class _HtmlDocState extends State<HtmlDoc> {
   static const _channel = 'ParaCardH';
+
+  /// Last measured content height by source, so a re-entered chat starts at
+  /// the right size while its own webview is still loading.
+  static final Map<String, double> _cache = {};
+
+  static String _key(String source, CardAlign align) => '${align.name}|${source.length}|${source.hashCode}';
+
   WebViewController? _controller;
   String? _error;
   double? _height;
   bool _loaded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _height = _cache[_key(widget.source, widget.align)] ?? widget.initialHeight;
+  }
 
   @override
   void didChangeDependencies() {
@@ -304,9 +382,9 @@ class _HtmlDocState extends State<HtmlDoc> {
   @override
   void didUpdateWidget(covariant HtmlDoc old) {
     super.didUpdateWidget(old);
-    if (old.source != widget.source) {
+    if (old.source != widget.source || old.align != widget.align) {
       _controller = null;
-      _height = null;
+      _height = _cache[_key(widget.source, widget.align)] ?? widget.initialHeight;
       _loaded = false;
       _error = null;
       _load();
@@ -344,8 +422,17 @@ class _HtmlDocState extends State<HtmlDoc> {
     }
     final h = double.tryParse(body);
     if (h == null || h <= 0) return;
+    // Clamp absurd values from a first layout with no width yet: content
+    // measured at ~0 width wraps enormously tall, and scrollHeight would then
+    // stick (it is max(content, viewport)), so the card would keep the tall
+    // size forever. Content taller than this is a page, not a card.
+    if (h > 2000) return;
     if (!_loaded) cardLog('html ok', '${h.toStringAsFixed(0)}px');
     _loaded = true;
+    final last = _height;
+    if (last != null && (h - last).abs() < 0.5) return;
+    _cache[_key(widget.source, widget.align)] = h;
+    widget.onHeight?.call(h + 4);
     if (mounted) setState(() => _height = h);
   }
 
@@ -355,7 +442,7 @@ class _HtmlDocState extends State<HtmlDoc> {
     final c = _controller;
     if (c == null) return const SizedBox.shrink();
     return SizedBox(
-      height: _height ?? 90,
+      height: _height ?? widget.initialHeight ?? 90,
       width: double.infinity,
       child: IgnorePointer(child: WebViewWidget(controller: c)),
     );
@@ -379,13 +466,19 @@ class _HtmlDocState extends State<HtmlDoc> {
 (function(){
   function post(){
     try {
-      var h = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
-      $_channel.postMessage(String(Math.ceil(h)));
+      // Content height, not viewport height: scrollHeight is max(content,
+      // viewport), so once the card grows it can never shrink back and a
+      // first layout at ~0 width (enormously tall wrapping) sticks forever.
+      // getBoundingClientRect is the content box and lets the card shrink as
+      // well as grow.
+      var h = Math.ceil(document.body.getBoundingClientRect().height);
+      if (!(h > 0)) h = Math.ceil(document.body.offsetHeight);
+      if (h > 0) $_channel.postMessage(String(h));
     } catch(e) { try { $_channel.postMessage('E:' + e); } catch(_) {} }
   }
   window.addEventListener('load', post);
   document.addEventListener('DOMContentLoaded', post);
-  try { new ResizeObserver(post).observe(document.documentElement); } catch(_) {}
+  try { new ResizeObserver(post).observe(document.body); } catch(_) {}
   setTimeout(post, 60);
   setTimeout(post, 400);
 })();
@@ -444,13 +537,19 @@ class TypstPackageStore {
 
 /// A CeTZ drawing, compiled natively by the embedded Typst compiler.
 class CetzDoc extends StatefulWidget {
-  const CetzDoc({super.key, required this.source, required this.align, required this.onFailed});
+  const CetzDoc({super.key, required this.source, required this.align, required this.onFailed, this.initialHeight, this.onHeight});
   final String source;
 
   /// Horizontal placement inside the full width card.
   final CardAlign align;
 
   final void Function(String) onFailed;
+
+  /// Height remembered from the last entry, the placeholder while compiling.
+  final double? initialHeight;
+
+  /// Reports the card height once known (page height + padding).
+  final void Function(double h)? onHeight;
 
   @override
   State<CetzDoc> createState() => _CetzDocState();
@@ -463,6 +562,14 @@ class _CetzDocState extends State<CetzDoc> {
   /// drawings — the compiler's embedded fonts (Libertinus / NewCM / DejaVu)
   /// have no CJK glyphs, so Chinese labels would render as tofu without it.
   static Future<typst.TypstCompiler>? _shared;
+
+  /// Compiled drawings by source + theme, so a re-entered chat shows the
+  /// picture at once instead of flashing through the placeholder and growing.
+  /// The value carries the svg plus the page size the log already prints, the
+  /// size the card reports as its height.
+  static final Map<String, ({String svg, double wPt, double hPt})> _cache = {};
+
+  static String _key(String source, bool dark) => '$dark|${source.length}|${source.hashCode}';
 
   /// Loads the bundled CJK font once; empty on failure (drawings still
   /// compile, their Chinese labels just fall back to tofu).
@@ -502,6 +609,15 @@ class _CetzDocState extends State<CetzDoc> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (_busy || _svg != null || _error != null) return;
+    final hit = _cache[_key(widget.source, context.p.dark)];
+    if (hit != null) {
+      _svg = hit.svg;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        // pt to logical px is ~1.333, plus the paddings around the picture.
+        widget.onHeight?.call(hit.hPt * 1.333 + 12);
+      });
+      return;
+    }
     _run();
   }
 
@@ -512,6 +628,16 @@ class _CetzDocState extends State<CetzDoc> {
     typst.TypstDocument? doc;
     final wrapped = wrapCetz(widget.source, dark: p.dark);
     try {
+      final hit = _cache[_key(widget.source, p.dark)];
+      if (hit != null) {
+        if (!mounted) return;
+        setState(() {
+          _svg = hit.svg;
+          _error = null;
+        });
+        widget.onHeight?.call(hit.hPt * 1.333 + 12);
+        return;
+      }
       final packages = await TypstPackageStore.ensure();
       if (packages.isEmpty) throw const typst.TypstCompileException('the cetz package bundle did not load');
       final compiler = await (_shared ??= typst.TypstCompiler.create(
@@ -527,12 +653,14 @@ class _CetzDocState extends State<CetzDoc> {
       if (doc.pageCount == 0) throw const typst.TypstCompileException('document has no pages');
       final svg = await doc.renderSvg(0).timeout(const Duration(seconds: 20));
       final info = doc.pageInfo(0);
+      _cache[_key(widget.source, p.dark)] = (svg: svg, wPt: info.widthPt, hPt: info.heightPt);
       cardLog('cetz ok', 'page ${info.widthPt.toStringAsFixed(0)}x${info.heightPt.toStringAsFixed(0)}pt, svg ${svg.length} bytes');
       if (!mounted) return;
       setState(() {
         _svg = svg;
         _error = null;
       });
+      widget.onHeight?.call(info.heightPt * 1.333 + 12);
     } catch (e) {
       final err = withSourceLine(typstError(e), wrapped);
       cardLog('cetz FAILED', err);
@@ -549,7 +677,7 @@ class _CetzDocState extends State<CetzDoc> {
   Widget build(BuildContext context) {
     if (_error != null) return const CanvasNotice();
     if (_svg == null) {
-      return SizedBox(height: 80, width: double.infinity, child: Center(child: TypingDots(color: context.p.subtitle)));
+      return SizedBox(height: widget.initialHeight ?? 80, width: double.infinity, child: Center(child: TypingDots(color: context.p.subtitle)));
     }
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),

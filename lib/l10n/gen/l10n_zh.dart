@@ -596,7 +596,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get aboutLinkFailed => '无法打开链接';
 
   @override
-  String get settingsAboutSub => '版本 1.0.1';
+  String get settingsAboutSub => '版本 1.0.2';
 
   @override
   String get settingsAboutLicense =>
@@ -1117,6 +1117,27 @@ class AppLocalizationsZh extends AppLocalizations {
   String pollKindMultiple(String kind) {
     return '$kind · 多选';
   }
+
+  @override
+  String get askKind => '提问 · 点击作答';
+
+  @override
+  String get askKindMulti => '提问 · 可多选，选完提交';
+
+  @override
+  String get askDone => '已回答';
+
+  @override
+  String get askSkipped => '已跳过';
+
+  @override
+  String get askOtherHint => '或者自己写…';
+
+  @override
+  String get askSubmit => '提交';
+
+  @override
+  String get askSkip => '跳过';
 
   @override
   String photoCounter(int index, int total) {
@@ -2889,6 +2910,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get toolDescSendTransfer => '发一个假的红包，点一下就收';
 
   @override
+  String get toolDescAsk => '向你提问并给出可点的选项，等你作答';
+
+  @override
   String get wsToolDescRead => '按行号读取工作区里的文件';
 
   @override
@@ -3181,7 +3205,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get onboardBrandTitle => '彼岸双生';
 
   @override
-  String get onboardBrandTagline => '沉浸式的 AI 聊天应用。像和真人一样聊天。';
+  String get onboardBrandTagline => '一款 Telegram 风格的沉浸式 AI 聊天应用。';
 
   @override
   String get onboardBrandBody => '本地优先，自带 API Key。给每个助手一个工作区、一段记忆，和自己的脾气。';
@@ -3472,9 +3496,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get personaEngineerGreeting => '在。有报错就把完整堆栈贴上来，没有就说清楚你想做什么、现在卡在哪';
 
   @override
-  String get settingsOnboarding => '重看引导';
-
-  @override
   String get onboardModelOwnOpen => '打开设置';
 
   @override
@@ -3482,6 +3503,136 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get onboardThemeBody => '夜间模式、壁纸，以及每条气泡的大小。之后都能在设置里随时改。';
+
+  @override
+  String get updateTitle => '发现新版本';
+
+  @override
+  String updateSubtitle(String current, String latest) {
+    return '当前 $current · 最新 $latest';
+  }
+
+  @override
+  String get updateDownload => '下载';
+
+  @override
+  String get updateClose => '关闭';
+
+  @override
+  String get updateSkipVersion => '跳过此版本';
+
+  @override
+  String get updateUpToDate => '已是最新版本';
+
+  @override
+  String get updateCheckFailed => '检查更新失败，请稍后再试';
+
+  @override
+  String get updateCheckTitle => '检查更新';
+
+  @override
+  String updateCheckSub(String version) {
+    return '当前版本 $version';
+  }
+
+  @override
+  String get updateNoNotes => '暂无更新说明。';
+
+  @override
+  String get skillTitle => '技能';
+
+  @override
+  String get skillSubEmpty => '教助理可复用的能力';
+
+  @override
+  String skillSubCount(int count) {
+    return '共 $count 个技能';
+  }
+
+  @override
+  String get skillEmptyTitle => '还没有技能';
+
+  @override
+  String get skillEmptyBody =>
+      '导入 SKILL.md 文件、zip 包，或直接粘贴文本。助理只看列表，任务匹配时才会打开其中一个。';
+
+  @override
+  String get skillImport => '导入技能';
+
+  @override
+  String get skillImportPaste => '粘贴文本';
+
+  @override
+  String get skillImportFile => '从文件导入';
+
+  @override
+  String get skillImportUrl => '从链接导入';
+
+  @override
+  String get skillPasteTitle => '粘贴 SKILL.md';
+
+  @override
+  String get skillPasteHint => '粘贴 SKILL.md 文本…';
+
+  @override
+  String get skillUrlTitle => '从链接导入';
+
+  @override
+  String get skillUrlHint => 'https://github.com/owner/repo/…';
+
+  @override
+  String get skillUrlError => '该链接无法读取为技能。';
+
+  @override
+  String get skillInvalid => '该文件不是有效的技能。';
+
+  @override
+  String get skillDeleteTitle => '删除技能';
+
+  @override
+  String skillDeleteMessage(String name) {
+    return '删除“$name”？文件会一并删除。';
+  }
+
+  @override
+  String get skillEnabled => '已启用';
+
+  @override
+  String get skillDisabled => '已停用';
+
+  @override
+  String skillDetailUses(int count) {
+    return '已使用 $count 次';
+  }
+
+  @override
+  String get skillOpenFile => '使用说明在 SKILL.md 中。';
+
+  @override
+  String get personaSkillsHeader => '技能';
+
+  @override
+  String get personaSkillsFooter => '跟随全局即使用全部已启用的技能。自定义则只选用该角色可用的几个。';
+
+  @override
+  String get personaSkillsFollowGlobal => '跟随全局';
+
+  @override
+  String get personaSkillsCustom => '自定义';
+
+  @override
+  String personaSkillsCount(int count) {
+    return '已选 $count 个';
+  }
+
+  @override
+  String get personaSkillsPickTitle => '该角色的技能';
+
+  @override
+  String get toolDescReadSkill => '按 id 读取已安装的技能';
+
+  @override
+  String get skillImporting => '导入中…';
 }
 
 /// The translations for Chinese, using the Han script (`zh_Hant`).
@@ -4076,7 +4227,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get aboutLinkFailed => '無法開啟連結';
 
   @override
-  String get settingsAboutSub => '版本 1.0.1';
+  String get settingsAboutSub => '版本 1.0.2';
 
   @override
   String get settingsAboutLicense =>
@@ -4597,6 +4748,27 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String pollKindMultiple(String kind) {
     return '$kind · 多選';
   }
+
+  @override
+  String get askKind => '提問 · 點擊作答';
+
+  @override
+  String get askKindMulti => '提問 · 可多選，選完提交';
+
+  @override
+  String get askDone => '已回答';
+
+  @override
+  String get askSkipped => '已跳過';
+
+  @override
+  String get askOtherHint => '或者自己寫…';
+
+  @override
+  String get askSubmit => '提交';
+
+  @override
+  String get askSkip => '跳過';
 
   @override
   String photoCounter(int index, int total) {
@@ -6369,6 +6541,9 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get toolDescSendTransfer => '發一個假的紅包，點一下就收';
 
   @override
+  String get toolDescAsk => '向你提問並給出可點的選項，等你作答';
+
+  @override
   String get wsToolDescRead => '按行號讀取工作區裡的檔案';
 
   @override
@@ -6661,7 +6836,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get onboardBrandTitle => '彼岸雙生';
 
   @override
-  String get onboardBrandTagline => '沉浸式的 AI 聊天應用。像和真人一樣聊天。';
+  String get onboardBrandTagline => '一款 Telegram 風格的沉浸式 AI 聊天應用。';
 
   @override
   String get onboardBrandBody => '本地優先，自帶 API Key。給每個助手一個工作區、一段記憶，和自己的脾氣。';
@@ -6952,9 +7127,6 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get personaEngineerGreeting => '在。有報錯就把完整堆疊貼上來，沒有就說清楚你想做什麼、現在卡在哪';
 
   @override
-  String get settingsOnboarding => '重看引導';
-
-  @override
   String get onboardModelOwnOpen => '開啟設定';
 
   @override
@@ -6962,4 +7134,134 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get onboardThemeBody => '夜間模式、桌布，以及每條氣泡的大小。之後都能在設定裡隨時改。';
+
+  @override
+  String get updateTitle => '發現新版本';
+
+  @override
+  String updateSubtitle(String current, String latest) {
+    return '目前 $current · 最新 $latest';
+  }
+
+  @override
+  String get updateDownload => '下載';
+
+  @override
+  String get updateClose => '關閉';
+
+  @override
+  String get updateSkipVersion => '略過此版本';
+
+  @override
+  String get updateUpToDate => '已是最新版本';
+
+  @override
+  String get updateCheckFailed => '檢查更新失敗，請稍後再試';
+
+  @override
+  String get updateCheckTitle => '檢查更新';
+
+  @override
+  String updateCheckSub(String version) {
+    return '目前版本 $version';
+  }
+
+  @override
+  String get updateNoNotes => '暫無更新說明。';
+
+  @override
+  String get skillTitle => '技能';
+
+  @override
+  String get skillSubEmpty => '教助理可重用的能力';
+
+  @override
+  String skillSubCount(int count) {
+    return '共 $count 個技能';
+  }
+
+  @override
+  String get skillEmptyTitle => '還沒有技能';
+
+  @override
+  String get skillEmptyBody =>
+      '匯入 SKILL.md 檔案、zip 包，或直接貼上文字。助理只看列表，任務相符時才會打開其中一個。';
+
+  @override
+  String get skillImport => '匯入技能';
+
+  @override
+  String get skillImportPaste => '貼上文字';
+
+  @override
+  String get skillImportFile => '從檔案匯入';
+
+  @override
+  String get skillImportUrl => '從連結匯入';
+
+  @override
+  String get skillPasteTitle => '貼上 SKILL.md';
+
+  @override
+  String get skillPasteHint => '貼上 SKILL.md 文字…';
+
+  @override
+  String get skillUrlTitle => '從連結匯入';
+
+  @override
+  String get skillUrlHint => 'https://github.com/owner/repo/…';
+
+  @override
+  String get skillUrlError => '該連結無法讀取為技能。';
+
+  @override
+  String get skillInvalid => '該檔案不是有效的技能。';
+
+  @override
+  String get skillDeleteTitle => '刪除技能';
+
+  @override
+  String skillDeleteMessage(String name) {
+    return '刪除「$name」？檔案會一併刪除。';
+  }
+
+  @override
+  String get skillEnabled => '已啟用';
+
+  @override
+  String get skillDisabled => '已停用';
+
+  @override
+  String skillDetailUses(int count) {
+    return '已使用 $count 次';
+  }
+
+  @override
+  String get skillOpenFile => '使用說明在 SKILL.md 中。';
+
+  @override
+  String get personaSkillsHeader => '技能';
+
+  @override
+  String get personaSkillsFooter => '跟隨全局即使用全部已啟用的技能。自訂則只選用該角色可用的幾個。';
+
+  @override
+  String get personaSkillsFollowGlobal => '跟隨全局';
+
+  @override
+  String get personaSkillsCustom => '自訂';
+
+  @override
+  String personaSkillsCount(int count) {
+    return '已選 $count 個';
+  }
+
+  @override
+  String get personaSkillsPickTitle => '該角色的技能';
+
+  @override
+  String get toolDescReadSkill => '按 id 讀取已安裝的技能';
+
+  @override
+  String get skillImporting => '匯入中…';
 }

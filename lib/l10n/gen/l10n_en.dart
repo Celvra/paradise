@@ -611,7 +611,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aboutLinkFailed => 'Could not open the link';
 
   @override
-  String get settingsAboutSub => 'Version 1.0.1';
+  String get settingsAboutSub => 'Version 1.0.2';
 
   @override
   String get settingsAboutLicense =>
@@ -1154,6 +1154,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String pollKindMultiple(String kind) {
     return '$kind · Multiple answers';
   }
+
+  @override
+  String get askKind => 'Question · tap to answer';
+
+  @override
+  String get askKindMulti => 'Question · pick any, then submit';
+
+  @override
+  String get askDone => 'Answered';
+
+  @override
+  String get askSkipped => 'Skipped';
+
+  @override
+  String get askOtherHint => 'Or write your own answer…';
+
+  @override
+  String get askSubmit => 'Submit';
+
+  @override
+  String get askSkip => 'Skip';
 
   @override
   String photoCounter(int index, int total) {
@@ -2971,6 +2992,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Send a pretend red packet, taps to accept';
 
   @override
+  String get toolDescAsk =>
+      'Ask you a question with tappable options and wait for the answer';
+
+  @override
   String get wsToolDescRead =>
       'Read a file from the workspace as numbered lines';
 
@@ -3277,8 +3302,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboardBrandTitle => 'Paradise';
 
   @override
-  String get onboardBrandTagline =>
-      'An immersive AI chat app. Talk like with a real person.';
+  String get onboardBrandTagline => 'A Telegram-style immersive AI chat app.';
 
   @override
   String get onboardBrandBody =>
@@ -3603,9 +3627,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Here. Paste the full stack trace if there is an error. Otherwise tell me what you are trying to do and where you are stuck.';
 
   @override
-  String get settingsOnboarding => 'Replay the introduction';
-
-  @override
   String get onboardModelOwnOpen => 'Open settings';
 
   @override
@@ -3614,4 +3635,156 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get onboardThemeBody =>
       'Night mode, a wallpaper and the size of every bubble. Everything here is a tap away in Settings later.';
+
+  @override
+  String get updateTitle => 'New update available';
+
+  @override
+  String updateSubtitle(String current, String latest) {
+    return 'Current $current · Latest $latest';
+  }
+
+  @override
+  String get updateDownload => 'Download';
+
+  @override
+  String get updateClose => 'Close';
+
+  @override
+  String get updateSkipVersion => 'Skip this version';
+
+  @override
+  String get updateUpToDate => 'You\'re already up to date';
+
+  @override
+  String get updateCheckFailed =>
+      'Couldn\'t check for updates, try again later';
+
+  @override
+  String get updateCheckTitle => 'Check for updates';
+
+  @override
+  String updateCheckSub(String version) {
+    return 'Current version $version';
+  }
+
+  @override
+  String get updateNoNotes => 'No release notes.';
+
+  @override
+  String get skillTitle => 'Skills';
+
+  @override
+  String get skillSubEmpty => 'Teach the assistant reusable abilities';
+
+  @override
+  String skillSubCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count skills',
+      one: '1 skill',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get skillEmptyTitle => 'No skills yet';
+
+  @override
+  String get skillEmptyBody =>
+      'Import a SKILL.md file, a zip, or paste the text. The assistant reads the list and opens one only when the task matches.';
+
+  @override
+  String get skillImport => 'Import skill';
+
+  @override
+  String get skillImportPaste => 'Paste text';
+
+  @override
+  String get skillImportFile => 'From file';
+
+  @override
+  String get skillImportUrl => 'From URL';
+
+  @override
+  String get skillPasteTitle => 'Paste SKILL.md';
+
+  @override
+  String get skillPasteHint => 'Paste the SKILL.md text…';
+
+  @override
+  String get skillUrlTitle => 'Import from URL';
+
+  @override
+  String get skillUrlHint => 'https://github.com/owner/repo/…';
+
+  @override
+  String get skillUrlError => 'That URL could not be read as a skill.';
+
+  @override
+  String get skillInvalid => 'That file is not a valid skill.';
+
+  @override
+  String get skillDeleteTitle => 'Delete skill';
+
+  @override
+  String skillDeleteMessage(String name) {
+    return 'Delete \"$name\"? The files go with it.';
+  }
+
+  @override
+  String get skillEnabled => 'Enabled';
+
+  @override
+  String get skillDisabled => 'Disabled';
+
+  @override
+  String skillDetailUses(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Used $count times',
+      one: 'Used once',
+      zero: 'Never used',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get skillOpenFile => 'The instructions live in SKILL.md.';
+
+  @override
+  String get personaSkillsHeader => 'Skills';
+
+  @override
+  String get personaSkillsFooter =>
+      'Follow global uses every enabled skill. Custom picks exactly the ones this role may use.';
+
+  @override
+  String get personaSkillsFollowGlobal => 'Follow global';
+
+  @override
+  String get personaSkillsCustom => 'Custom';
+
+  @override
+  String personaSkillsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count selected',
+      one: '1 selected',
+      zero: 'No skill',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get personaSkillsPickTitle => 'Skills for this role';
+
+  @override
+  String get toolDescReadSkill => 'Reads an installed skill by id';
+
+  @override
+  String get skillImporting => 'Importing…';
 }

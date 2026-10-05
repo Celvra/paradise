@@ -162,6 +162,7 @@ extension StoreHuman on Store {
   /// A new message from the user arrived. Everything in flight stops now.
   void humanInterrupt(Chat c) {
     final run = _runs[c.id];
+    cancelAskForChat(c.id);
     if (run != null) {
       final hh = human!;
       final cut = run.parser?.abort();
@@ -804,8 +805,9 @@ _runs[c.id]?.row = row;
     try {
       // shell gets an hour because an apt install or a build legitimately runs
       // for minutes; everything else stays at a minute, which is already longer
-      // than any of the file tools can take
-      final cap = t.name == 'shell' ? const Duration(hours: 1) : const Duration(seconds: 60);
+      // than any of the file tools can take. ask blocks until the user votes,
+      // so it gets the same hour rather than timing out mid wait.
+      final cap = (t.name == 'shell' || t.name == 'ask') ? const Duration(hours: 1) : const Duration(seconds: 60);
       return res(await t.run(call.args).timeout(cap));
     } catch (e) {
       return res('Error: $e', err: true);
@@ -1285,6 +1287,41 @@ _runs[c.id]?.row = row;
       }, required: ['amount']));
     }
 
+    // ---- ask: one question with tappable options, sent as a poll card. The
+    // call blocks until the user votes; the vote closes the card and the
+    // answer returns as the tool result so the next pass can continue with
+    // it. Single completes on the first tap, multi on the first tap too for
+    // now (a submit step for multi comes with the custom/skip UI next).
+    tools.add(HTool('ask', 'Ask the user a question with tappable options when you need a decision or clarification before continuing. Sends a poll card and waits for the answer. Use single for one choice, multi when several may apply.', {
+      'question': _p('string', 'The question shown on the card.'),
+      'options': _arr('2-10 short options the user can tap.'),
+      'type': _p('string', 'single (default) or multi.', values: ['single', 'multi']),
+    }, (a) async {
+      final q = _str(a, 'question').trim();
+      final opts = [for (final o in (a['options'] as List? ?? const [])) '$o'.trim()].where((e) => e.isNotEmpty).take(10).toList();
+      if (q.isEmpty) return 'Error: question is required.';
+      if (opts.length < 2) return 'Error: give at least 2 options.';
+      final multi = _str(a, 'type').trim().toLowerCase() == 'multi';
+      final m = await sendNow('', kind: MsgKind.poll, data: {'q': q, 'opts': opts, 'votes': List<int>.filled(opts.length, 0), 'mine': <int>[], 'multi': multi, 'quiz': false, 'anon': true, 'ask': true, 'closed': false});
+      if (m == null) return 'Interrupted.';
+      final waiter = Completer<String>();
+      _askPending[m.id] = waiter;
+      void wake() {
+        final w = _askPending.remove(m.id);
+        if (w == null || w.isCompleted) return;
+        m.data['closed'] = true;
+        w.complete('The user did not answer (cancelled).');
+      }
+
+      env.run.token.addListener(wake);
+      try {
+        return await waiter.future;
+      } finally {
+        env.run.token.removeListener(wake);
+        _askPending.remove(m.id);
+      }
+    }, required: ['question', 'options']));
+
     // ---- workspace. Absent unless the chat is bound and the switch is on, so the
     // twenty four tools below stay the whole table for everyone else. Built from
     // env.ws rather than wsTools because that context was resolved before the
@@ -1297,6 +1334,12 @@ _runs[c.id]?.row = row;
             HTool(name, _wsDescription(name), WorkspaceTools.schemaFor(name), (a) => _wsRun(c, env.run, ws, name, a), required: _wsRequired(name)),
       ]);
     }
+
+    // ---- installed skills. Needs no binding: the reader serves the files
+    // straight from the app directory, which is also why the listing is
+    // injected even into chats that never picked a workspace.
+    final skillTool = skillToolFor(c);
+    if (skillTool != null) tools.add(skillTool);
 
     // ---- MCP servers
     for (final t in hh.mcp.tools) {

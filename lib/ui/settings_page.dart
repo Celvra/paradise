@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:url_launcher/url_launcher.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/gestures.dart' show TapGestureRecognizer;
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
@@ -11,19 +12,21 @@ import '../core/anim.dart';
 import '../core/overlays.dart';
 import '../core/theme.dart';
 import '../core/ui_kit.dart';
+import '../app_info.dart' show appVersion;
 import '../data/models.dart';
 import '../data/store.dart';
 import '../l10n/x.dart';
 import 'bubble.dart';
 import 'account_page.dart';
+import 'update_sheet.dart';
 import 'wallpaper.dart';
 import 'wallpaper_page.dart';
 import 'workspace/workspace_pages.dart';
+import 'skills_page.dart';
 import 'ai_model_picker.dart';
 import 'ai_reply_page.dart';
 import 'ai_settings_page.dart';
 import 'human_pages.dart';
-import 'onboarding/onboarding_page.dart';
 
 // IconBackgroundColors pairs top and bottom
 const _blue = [Color(0xFF1CA5ED), Color(0xFF1488E1)];
@@ -76,6 +79,10 @@ class SettingsTab extends StatelessWidget {
                 _Cell(icon: Ic.smile, colors: _cyan, title: l.humanTitle, sub: l.humanSubtitle, onTap: () => openHumanSettings(context)),
                 _Cell(icon: Ic.chats, colors: _teal, title: l.aiReplyTitle, sub: aiReplySummary(st), onTap: () => openAiReplySettings(context)),
                 _Cell(icon: Ic.folder, colors: _gray, title: l.wsTitle, sub: st.workspace.all.isEmpty ? l.wsSub : wsSettingsSummary(st), onTap: () => openWorkspaceSettings(context)),
+                ListenableBuilder(
+                  listenable: st.skills,
+                  builder: (_, __) => _Cell(icon: Ic.fileCode, colors: _purple, title: l.skillTitle, sub: skillSettingsSummary(st, l), onTap: () => openSkillsSettings(context)),
+                ),
                 _Cell(icon: Ic.palette, colors: _orange, title: l.settingsAppearance, sub: l.settingsAppearanceSub, onTap: () => _open(context, l.settingsAppearance, _appearance)),
                 _Cell(icon: Ic.bell, colors: _red, title: l.settingsNotifications, sub: st.haptics ? l.settingsVibrationOn : l.settingsVibrationOff, onTap: () => _open(context, l.settingsNotifications, _notifications)),
                 _Cell(icon: Ic.globe, colors: _green, title: l.settingsLanguage, sub: languageLabel(st.localeTag, l), onTap: () => _openLanguage(context)),
@@ -84,11 +91,11 @@ class SettingsTab extends StatelessWidget {
               const SizedBox(height: 12),
               _Group(children: [
                 _Cell(
-                  icon: Ic.info,
-                  colors: _cyan,
-                  title: l.settingsOnboarding,
-                  sub: l.settingsAboutSub,
-                  onTap: () => Navigator.of(context).push(TgRoute(builder: (_) => const OnboardingPage(replay: true))),
+                  icon: Ic.download,
+                  colors: _green,
+                  title: l.updateCheckTitle,
+                  sub: l.updateCheckSub(appVersion),
+                  onTap: () => checkAndShowUpdate(context, manual: true),
                 ),
                 _Cell(
                   icon: Ic.info,
@@ -563,15 +570,20 @@ String wsSettingsSummary(Store st) {
   return '${wsTitles(n)} · ${ws.toolsEnabled ? L10n.current.wsToolsOn : L10n.current.wsToolsOff}';
 }
 
+/// One line under the skills row: how many are installed, or the empty hint.
+String skillSettingsSummary(Store st, AppLocalizations l) {
+  final n = st.skills.skills.length;
+  return n == 0 ? l.skillSubEmpty : l.skillSubCount(n);
+}
+
 String wsTitles(int n) => L10n.number('#,##0').format(n);
 
 /// Body of the about dialog: the licence notice, then the repository link, the
 /// projects this one was modelled on and the direct dependencies with their
 /// licence.
 ///
-/// Every URL in those blocks is tinted so it reads as a link. Tapping a block
-/// opens the first url in it, which is what the eye expects from a list where
-/// every entry ends in an address, and it avoids a recognizer per span.
+/// Every URL in those blocks is tinted so it reads as a link, and each one
+/// taps its own address.
 class _AboutBody extends StatelessWidget {
   const _AboutBody({required this.sections});
 
@@ -600,8 +612,10 @@ class _AboutBody extends StatelessWidget {
   }
 }
 
-/// One paragraph with the urls inside it tinted.
-class _Block extends StatelessWidget {
+/// One paragraph with the urls inside it tinted. Each url gets its own tap
+/// target, so a block holding two addresses (like the thanks block with
+/// Kelivo and SillyTavern) opens the one actually tapped.
+class _Block extends StatefulWidget {
   const _Block({required this.text});
 
   final String text;
@@ -609,24 +623,42 @@ class _Block extends StatelessWidget {
   static final _url = RegExp(r'https?://[^\s,;)\]]+');
 
   @override
+  State<_Block> createState() => _BlockState();
+}
+
+class _BlockState extends State<_Block> {
+  final _recs = <TapGestureRecognizer>[];
+
+  @override
+  void dispose() {
+    for (final r in _recs) {
+      r.dispose();
+    }
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    for (final r in _recs) {
+      r.dispose();
+    }
+    _recs.clear();
     final p = context.p;
     final base = TextStyle(color: p.title, fontSize: 14.5, height: 1.55, decoration: TextDecoration.none, fontWeight: FontWeight.w400);
     final spans = <TextSpan>[];
     var at = 0;
-    for (final m in _url.allMatches(text)) {
-      if (m.start > at) spans.add(TextSpan(text: text.substring(at, m.start)));
-      spans.add(TextSpan(text: m.group(0), style: base.copyWith(color: p.accent, fontWeight: FontWeight.w500)));
+    for (final m in _Block._url.allMatches(widget.text)) {
+      if (m.start > at) spans.add(TextSpan(text: widget.text.substring(at, m.start)));
+      final url = m.group(0)!;
+      final rec = TapGestureRecognizer()..onTap = () => _open(context, url);
+      _recs.add(rec);
+      spans.add(TextSpan(text: url, style: base.copyWith(color: p.accent, fontWeight: FontWeight.w500), recognizer: rec));
       at = m.end;
     }
-    if (at < text.length) spans.add(TextSpan(text: text.substring(at)));
-    if (spans.isEmpty) spans.add(TextSpan(text: text));
+    if (at < widget.text.length) spans.add(TextSpan(text: widget.text.substring(at)));
+    if (spans.isEmpty) spans.add(TextSpan(text: widget.text));
 
-    final urls = _url.allMatches(text).map((e) => e.group(0)!).toList();
-    return GestureDetector(
-      onTap: urls.isEmpty ? null : () => _open(context, urls.first),
-      child: Text.rich(TextSpan(children: spans), style: base),
-    );
+    return Text.rich(TextSpan(children: spans), style: base);
   }
 
   Future<void> _open(BuildContext context, String href) async {

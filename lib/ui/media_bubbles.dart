@@ -204,7 +204,7 @@ class WalletCard extends StatelessWidget {
 }
 
 // body of every non text message kind
-Widget mediaBody(BuildContext context, {required Msg m, required Pal p, required double width, required bool out, Widget? timePill, VoidCallback? onPhoto, void Function(int)? onVote, VoidCallback? onAction}) {
+Widget mediaBody(BuildContext context, {required Msg m, required Pal p, required double width, required bool out, Widget? timePill, VoidCallback? onPhoto, void Function(int)? onVote, VoidCallback? onAction, void Function(int)? onAskVote, VoidCallback? onAskSubmit, VoidCallback? onAskSkip, ValueChanged<String>? onAskCustom}) {
   final title = TextStyle(color: out ? p.textOut : p.textIn, fontSize: 16, fontWeight: FontWeight.w500, height: 1.2, decoration: TextDecoration.none);
   final sub = TextStyle(color: out ? p.timeOut : p.timeIn, fontSize: 13, height: 1.2, decoration: TextDecoration.none, fontWeight: FontWeight.w400);
   final accent = out ? p.lineOut : p.lineIn;
@@ -318,7 +318,9 @@ Widget mediaBody(BuildContext context, {required Msg m, required Pal p, required
         ]),
       );
     case MsgKind.poll:
-      return _PollView(m: m, p: p, out: out, width: width, onVote: onVote);
+      return '${m.data['ask'] ?? ''}' == 'true' || m.data['ask'] == true
+          ? _AskView(m: m, p: p, out: out, width: width, onVote: onAskVote, onSubmit: onAskSubmit, onSkip: onAskSkip, onCustom: onAskCustom)
+          : _PollView(m: m, p: p, out: out, width: width, onVote: onVote);
     case MsgKind.text:
     case MsgKind.sticker:
     // a trace row is drawn by TraceView, it never reaches a bubble
@@ -415,6 +417,161 @@ class _PollView extends StatelessWidget {
       margin: const EdgeInsets.only(top: 1),
       decoration: BoxDecoration(shape: BoxShape.circle, color: fill, border: Border.all(color: fill.a == 0 ? line.withAlpha(150) : fill, width: 1.6)),
       child: on || showCorrect ? Center(child: TgIcon(showWrong ? Ic.close : Ic.check, color: const Color(0xFFFFFFFF), size: 13, stroke: 2.4)) : null,
+    );
+  }
+}
+
+// An ask card: the poll shape the `ask` tool call sends, distinguished from a
+// real poll by `data['ask']`. A single choice card closes on the first tap, a
+// multi one only stages taps until the submit button; both take an optional
+// written answer and a skip. The text lives in the field until it matters —
+// an option tap or the submit flushes it into `data['custom']` first, so
+// typing never rebuilds the whole transcript one keystroke at a time. The
+// callbacks ride in from the chat page because only it knows the chat a
+// bubble belongs to.
+class _AskView extends StatefulWidget {
+  const _AskView({required this.m, required this.p, required this.out, required this.width, this.onVote, this.onSubmit, this.onSkip, this.onCustom});
+  final Msg m;
+  final Pal p;
+  final bool out;
+  final double width;
+  final void Function(int)? onVote;
+  final VoidCallback? onSubmit;
+  final VoidCallback? onSkip;
+  final ValueChanged<String>? onCustom;
+
+  @override
+  State<_AskView> createState() => _AskViewState();
+}
+
+class _AskViewState extends State<_AskView> {
+  late final TextEditingController _custom = TextEditingController(text: '${widget.m.data['custom'] ?? ''}');
+
+  @override
+  void dispose() {
+    _custom.dispose();
+    super.dispose();
+  }
+
+  void _vote(int i) {
+    widget.onCustom?.call(_custom.text);
+    widget.onVote?.call(i);
+  }
+
+  void _submit() {
+    widget.onCustom?.call(_custom.text);
+    widget.onSubmit?.call();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final d = widget.m.data;
+    final l = context.l;
+    final p = widget.p;
+    final opts = List<String>.from((d['opts'] as List?) ?? const []);
+    final mine = List<int>.from((d['mine'] as List?) ?? const []);
+    final multi = d['multi'] == true;
+    final closed = d['closed'] == true;
+    final skipped = d['skipped'] == true;
+    final custom = '${d['custom'] ?? ''}';
+    final text = widget.out ? p.textOut : p.textIn;
+    final sub = TextStyle(color: widget.out ? p.timeOut : p.timeIn, fontSize: 13, height: 1.2, decoration: TextDecoration.none, fontWeight: FontWeight.w400);
+    final line = widget.out ? p.lineOut : p.lineIn;
+    final kind = closed ? (skipped ? l.askSkipped : l.askDone) : (multi ? l.askKindMulti : l.askKind);
+    // the store only accepts a submit with something on the card, and the
+    // field is the local truth until a flush, so read it straight from there
+    final canSubmit = !closed && (mine.isNotEmpty || _custom.text.trim().isNotEmpty);
+    return SizedBox(
+      width: widget.width,
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
+        Text('${d['q']}', style: TextStyle(color: text, fontSize: 16, fontWeight: FontWeight.w500, height: 1.25, decoration: TextDecoration.none)),
+        const SizedBox(height: 2),
+        Text(kind, style: sub),
+        const SizedBox(height: 8),
+        for (var i = 0; i < opts.length; i++)
+          Tap(
+            scale: .99,
+            onTap: closed || widget.onVote == null ? null : () => _vote(i),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 5),
+              child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                _mark(i, mine.contains(i), multi, line),
+                const SizedBox(width: 10),
+                Expanded(child: Text(opts[i], style: TextStyle(color: text, fontSize: 15, height: 1.2, decoration: TextDecoration.none, fontWeight: FontWeight.w400))),
+              ]),
+            ),
+          ),
+        // an open card edits its own answer; a settled one just shows what was
+        // sent, the same text the tool result carried back to the model
+        if (!closed)
+          Padding(
+            padding: const EdgeInsets.only(top: 6),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              decoration: BoxDecoration(border: Border.all(color: line.withAlpha(70)), borderRadius: BorderRadius.circular(10)),
+              child: TgEdit(
+                controller: _custom,
+                hint: l.askOtherHint,
+                style: TextStyle(color: text, fontSize: 15, height: 1.3, decoration: TextDecoration.none),
+                hintStyle: TextStyle(color: p.hint, fontSize: 15, height: 1.3, decoration: TextDecoration.none),
+                maxLines: 3,
+                onChanged: (_) => setState(() {}),
+              ),
+            ),
+          )
+        else if (custom.trim().isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(top: 6),
+            child: Text(custom, style: TextStyle(color: text, fontSize: 14, height: 1.3, decoration: TextDecoration.none)),
+          ),
+        if (!closed)
+          Padding(
+            padding: const EdgeInsets.only(top: 10),
+            child: Row(children: [
+              Expanded(
+                child: Tap(
+                  scale: .98,
+                  onTap: canSubmit ? _submit : null,
+                  child: Container(
+                    height: 38,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(color: canSubmit ? line : line.withAlpha(40), borderRadius: BorderRadius.circular(10)),
+                    child: Text(l.askSubmit, style: TextStyle(color: canSubmit ? const Color(0xFFFFFFFF) : p.hint, fontSize: 14, fontWeight: FontWeight.w500, decoration: TextDecoration.none)),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Tap(
+                scale: .98,
+                onTap: widget.onSkip == null ? null : () => widget.onSkip!(),
+                child: Container(
+                  height: 38,
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(color: line.withAlpha(40), borderRadius: BorderRadius.circular(10)),
+                  child: Text(l.askSkip, style: sub),
+                ),
+              ),
+            ]),
+          ),
+        const SizedBox(height: 16),
+      ]),
+    );
+  }
+
+  Widget _mark(int i, bool on, bool multi, Color line) {
+    final fill = on ? line : const Color(0x00000000);
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 200),
+      width: 22,
+      height: 22,
+      decoration: BoxDecoration(
+        shape: multi ? BoxShape.rectangle : BoxShape.circle,
+        borderRadius: multi ? BorderRadius.circular(6) : null,
+        color: fill,
+        border: Border.all(color: on ? fill : line.withAlpha(150), width: 1.6),
+      ),
+      child: on ? Center(child: TgIcon(Ic.check, color: const Color(0xFFFFFFFF), size: 13, stroke: 2.4)) : null,
     );
   }
 }

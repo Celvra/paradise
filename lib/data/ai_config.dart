@@ -318,8 +318,8 @@ class AiConfig extends ChangeNotifier {
   bool get relayEnabled => keyOf(relayProviderId).trim().isNotEmpty && providerOf(relayProviderId) != null;
 
   /// Turns the free relay on: stores the shared key and builds the default
-  /// chain of `auto` plus the free models the relay lists today. Returns the
-  /// warning text from the fetch, empty when the list came back clean.
+  /// chain of just `auto`. Returns the warning text from the fetch, empty
+  /// when the list came back clean.
   ///
   /// The chain replaces only previous relay-only nodes; a user chain with
   /// their own provider stays untouched because this is only called before
@@ -338,21 +338,12 @@ class AiConfig extends ChangeNotifier {
       });
     }
 
-    // auto first so a fresh user always has one working answer, then the free
-    // models of the day as the fallback lane. Paid listings are skipped: the
-    // relay fronts paid upstreams too and a beginner must not land on one.
-    final free = result.models.where((m) => m.id != 'auto').toList();
-    var nodes = <ChainNode>[
-      ChainNode(id: 'node_relay_auto', providerId: relayProviderId, modelId: 'auto', retries: 1, enabled: true),
-      for (var i = 0; i < free.length && i < 2; i++)
-        ChainNode(id: 'node_relay_free$i', providerId: relayProviderId, modelId: free[i].id, retries: 1, enabled: true),
-    ];
-    // the list fetch may have failed; auto alone still makes the app usable
-    if (nodes.length == 1) nodes = [nodes.first];
-
+    // Auto only. The model list is still fetched and cached so the picker can
+    // show everything, but the fallback chain stays on the one moving target
+    // instead of pinning the free models of the day.
     update((s) => s.copyWith(chain: [
           ...s.chain.where((n) => n.providerId != relayProviderId),
-          ...nodes,
+          ChainNode(id: 'node_relay_auto', providerId: relayProviderId, modelId: 'auto', retries: 1, enabled: true),
         ]));
     return result.warning ?? '';
   }

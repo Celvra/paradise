@@ -14,6 +14,7 @@ import '../data/store.dart';
 import '../l10n/x.dart';
 import 'ai_model_picker.dart';
 import 'ai_widgets.dart';
+import 'skills_page.dart' show pickRoleSkills, openSkillsSettings;
 import 'tg_cells.dart';
 
 /// Emoji, the one line pitch the user sees and the system prompt that goes to
@@ -96,6 +97,8 @@ class _PersonaCardPageState extends State<PersonaCardPage> {
   // per persona answer to the two global reply switches, null follows them
   late bool? _thinking = widget.chat?.persona.thinking;
   late bool? _agent = widget.chat?.persona.agent;
+  // skills this role may use, null follows the global set
+  late List<String>? _skillIds = widget.chat?.persona.skillIds == null ? null : [...widget.chat!.persona.skillIds!];
   int _preset = -1;
 
   bool get _editing => widget.chat != null;
@@ -173,7 +176,9 @@ class _PersonaCardPageState extends State<PersonaCardPage> {
           modelId: mi,
           modelFallback: _modelFallback,
           thinking: _thinking,
-          agent: _agent);
+          agent: _agent,
+          skillIds: _skillIds == null ? null : [..._skillIds!],
+          clearSkillIds: _skillIds == null);
       Navigator.of(context).pop(widget.chat);
     } else {
       Navigator.of(context).pop(st.createChat(name, prompt,
@@ -186,7 +191,8 @@ class _PersonaCardPageState extends State<PersonaCardPage> {
           modelId: mi,
           modelFallback: _modelFallback,
           thinking: _thinking,
-          agent: _agent));
+          agent: _agent,
+          skillIds: _skillIds == null ? null : [..._skillIds!]));
     }
   }
 
@@ -226,7 +232,8 @@ class _PersonaCardPageState extends State<PersonaCardPage> {
       return _name.text.trim().isNotEmpty ||
           _bio.text.trim().isNotEmpty ||
           _prompt.text.trim().isNotEmpty ||
-          _greet.text.trim().isNotEmpty;
+          _greet.text.trim().isNotEmpty ||
+          _skillIds != null;
     return _name.text != c.name ||
         _bio.text != c.bio ||
         _prompt.text != c.prompt ||
@@ -238,7 +245,15 @@ class _PersonaCardPageState extends State<PersonaCardPage> {
         _modelId != c.modelId ||
         _modelFallback != c.modelFallback ||
         _thinking != c.thinking ||
-        _agent != c.agent;
+        _agent != c.agent ||
+        !_sameSkills(_skillIds, c.skillIds);
+  }
+
+  static bool _sameSkills(List<String>? a, List<String>? b) {
+    if (a == null || b == null) return a == null && b == null;
+    if (a.length != b.length) return false;
+    final set = b.toSet();
+    return a.every(set.contains);
   }
 
   Future<void> _back() async {
@@ -328,6 +343,7 @@ class _PersonaCardPageState extends State<PersonaCardPage> {
                   ),
                   _modelSection(p),
                   _replySection(),
+                  _skillsSection(),
                 ],
               ),
             ),
@@ -628,8 +644,7 @@ class _PersonaCardPageState extends State<PersonaCardPage> {
   // The two global reply switches as a per persona decision. Three states
   // instead of two because a persona that says nothing has to be able to follow
   // the global switch it was born before it was ever edited.
-  Widget _replySection() {
-    final l = context.l;
+  Widget _replySection() {    final l = context.l;
     return TgSection(
       header: l.aiReplyTitle,
       footer: l.personaReplyFooter,
@@ -653,6 +668,40 @@ class _PersonaCardPageState extends State<PersonaCardPage> {
         ),
       ],
     );
+  }
+
+  // Skills this role may use. Null follows the global set (every enabled
+  // skill), an explicit list names exactly the ones in its prompt.
+  Widget _skillsSection() {
+    final l = context.l;
+    final st = Store.read(context);
+    final installed = st.skills.skills;
+    final label = _skillIds == null ? l.personaSkillsFollowGlobal : l.personaSkillsCount(_skillIds!.length);
+    return TgSection(
+      header: l.personaSkillsHeader,
+      footer: l.personaSkillsFooter,
+      children: [
+        TgTextCell(
+          icon: Ic.fileCode,
+          title: label,
+          subtitle: installed.isEmpty ? l.skillSubEmpty : null,
+          value: installed.isEmpty ? null : l.actionEdit,
+          divider: false,
+          onTap: () => _pickSkills(),
+        ),
+      ],
+    );
+  }
+
+  Future<void> _pickSkills() async {
+    final st = Store.read(context);
+    if (st.skills.skills.isEmpty) {
+      openSkillsSettings(context);
+      return;
+    }
+    final (changed, ids) = await pickRoleSkills(context, _skillIds);
+    if (!changed || !mounted) return;
+    setState(() => _skillIds = ids == null ? null : [...ids]);
   }
 
   Widget _modelSection(Pal p) {

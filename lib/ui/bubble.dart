@@ -89,7 +89,7 @@ class BubblePainter extends CustomPainter {
 
 // one message bubble text time ticks reply quote and markdown
 class BubbleView extends StatefulWidget {
-  const BubbleView({super.key, required this.msg, required this.tail, required this.topNear, required this.maxWidth, this.replyTo, this.replyName = '', this.senderName = '', this.scroll, this.onLongPress, this.query = '', this.onRetry, this.onVote, this.onPhoto, this.onAction, this.onFileLink});
+  const BubbleView({super.key, required this.msg, required this.tail, required this.topNear, required this.maxWidth, this.replyTo, this.replyName = '', this.senderName = '', this.scroll, this.onLongPress, this.query = '', this.onRetry, this.onVote, this.onPhoto, this.onAction, this.onFileLink, this.onAskVote, this.onAskSubmit, this.onAskSkip, this.onAskCustom});
   final Msg msg;
   final bool tail;
   final bool topNear;
@@ -105,6 +105,14 @@ class BubbleView extends StatefulWidget {
   final String query;
   final VoidCallback? onRetry;
   final void Function(int)? onVote;
+
+  /// ask card taps: vote (single closes at once, multi stages), submit,
+  /// skip, and custom text edits. Null in previews, where an ask card
+  /// renders inert.
+  final void Function(int)? onAskVote;
+  final VoidCallback? onAskSubmit;
+  final VoidCallback? onAskSkip;
+  final ValueChanged<String>? onAskCustom;
   final VoidCallback? onPhoto;
 
   /// tap on a transfer card
@@ -170,6 +178,7 @@ class _BubbleViewState extends State<BubbleView> {
       // a canvas message normally never reaches the bubble: the chat list draws
       // it flat through CanvasCard before the bubble branch runs. This is the
       // safety net for the few places that reuse the bubble outside the chat.
+      final ih = (m.data['h'] as num?)?.toDouble();
       return wrap(SizedBox(
           key: _gk,
           width: double.infinity,
@@ -178,6 +187,11 @@ class _BubbleViewState extends State<BubbleView> {
             latex: m.kind == MsgKind.latex,
             cetz: m.data['cetz'] == true,
             align: parseCardAlign(m.data['align']),
+            initialHeight: (ih != null && ih > 0 && ih <= 2000) ? ih : null,
+            onHeight: (h) {
+              final old = (m.data['h'] as num?)?.toDouble();
+              if (old == null || (h - old).abs() > 1) m.data['h'] = h;
+            },
           )));
     }
     final overlay = m.kind == MsgKind.photo && m.text.isEmpty;
@@ -219,7 +233,7 @@ class _BubbleViewState extends State<BubbleView> {
             ]), textWidthBasis: TextWidthBasis.longestLine),
           ]
         : mdBlocks(context, m.text, base, out ? p.codeOut : p.codeIn, p.accent, spacer, onFileLink: widget.onFileLink);
-    final media = m.kind == MsgKind.text ? null : mediaBody(context, m: m, p: p, width: math.min(widget.maxWidth - 28, 280), out: out, timePill: overlay ? pill : null, onPhoto: widget.onPhoto, onVote: widget.onVote, onAction: widget.onAction);
+    final media = m.kind == MsgKind.text ? null : mediaBody(context, m: m, p: p, width: math.min(widget.maxWidth - 28, 280), out: out, timePill: overlay ? pill : null, onPhoto: widget.onPhoto, onVote: widget.onVote, onAction: widget.onAction, onAskVote: widget.onAskVote, onAskSubmit: widget.onAskSubmit, onAskSkip: widget.onAskSkip, onAskCustom: widget.onAskCustom);
     final content = Stack(children: [
       Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
         if (widget.replyTo != null) _quote(p, out, base),
@@ -308,7 +322,7 @@ class _Blk {
 
 // tiny markdown fences bold italic inline code headings bullets and links, plus
 // latex spans and syntax highlighted code blocks
-List<Widget> mdBlocks(BuildContext context, String text, TextStyle base, Color codeBg, Color accent, double spacer, {void Function(String link)? onFileLink}) {
+List<Widget> mdBlocks(BuildContext context, String text, TextStyle base, Color codeBg, Color accent, double spacer, {void Function(String link)? onFileLink, void Function(String link)? onWebLink}) {
   final blocks = <_Blk>[];
   final buf = <String>[];
   var inCode = false;
@@ -344,7 +358,7 @@ List<Widget> mdBlocks(BuildContext context, String text, TextStyle base, Color c
       out.add(_CodeBlock(blk: b, base: base, mono: mono, codeBg: codeBg, accent: accent));
       if (last) out.add(const SizedBox(height: 14));
     } else {
-      final spans = _inline(b.text, base, accent, codeBg, onFileLink);
+      final spans = _inline(b.text, base, accent, codeBg, onFileLink, onWebLink);
       if (last) spans.add(WidgetSpan(alignment: PlaceholderAlignment.bottom, child: SizedBox(width: spacer, height: 14)));
       out.add(Text.rich(TextSpan(children: spans), textWidthBasis: TextWidthBasis.longestLine));
     }
@@ -541,12 +555,81 @@ TextSpan _linkSpan(String label, String link, TextStyle style, Color accent, voi
   );
 }
 
+// markdown and bare web links, `[label](https://…)` and a `https://…` on its
+// own. Opt-in per call site: bubbles leave them plain (see bubble_link_test),
+// the update sheet tints and taps them.
+final _mdWebLink = RegExp(r'\[([^\]\n]+)\]\((https?://[^)\s]+)\)');
+final _bareWeb = RegExp(r'https?://[^\s)\]]+');
+
+/// Second link pass over the spans [_withLinks] left alone. Only plain spans
+/// with no recognizer are split, so file links and inline code are never
+/// re-eaten. A null [onTap] keeps every byte as it was.
+List<InlineSpan> _linkifyWeb(List<InlineSpan> spans, Color accent, void Function(String link)? onTap) {
+  if (onTap == null) return spans;
+  final out = <InlineSpan>[];
+  for (final s in spans) {
+    if (s is! TextSpan || s.text == null || s.recognizer != null || s.style?.fontFamily == 'monospace') {
+      out.add(s);
+      continue;
+    }
+    out.addAll(_splitWeb(s.text!, s.style, accent, onTap));
+  }
+  return out;
+}
+
+List<TextSpan> _splitWeb(String text, TextStyle? style, Color accent, void Function(String) onTap) {
+  final out = <TextSpan>[];
+  var at = 0;
+  for (final m in _mdWebLink.allMatches(text)) {
+    if (m.start > at) out.addAll(_bareSpans(text.substring(at, m.start), style, accent, onTap));
+    out.add(_webSpan(m.group(1)!, m.group(2)!, style, accent, onTap));
+    at = m.end;
+  }
+  if (at < text.length) out.addAll(_bareSpans(text.substring(at), style, accent, onTap));
+  if (out.isEmpty) out.add(TextSpan(text: text, style: style));
+  return out;
+}
+
+/// Bare urls in a stretch with no markdown link left. Trailing punctuation is
+/// not part of the address: a `https://x/y.` at the end of a sentence links
+/// without its full stop, and the same goes for the CJK `。` release notes in
+/// Chinese end with.
+List<TextSpan> _bareSpans(String text, TextStyle? style, Color accent, void Function(String) onTap) {
+  final out = <TextSpan>[];
+  var at = 0;
+  for (final m in _bareWeb.allMatches(text)) {
+    var url = m.group(0)!;
+    var end = m.end;
+    while (url.length > 1 && '.,;:!?。，；：！？）'.contains(url[url.length - 1])) {
+      url = url.substring(0, url.length - 1);
+      end--;
+    }
+    if (m.start > at) out.add(TextSpan(text: text.substring(at, m.start), style: style));
+    out.add(_webSpan(url, url, style, accent, onTap));
+    if (end < m.end) out.add(TextSpan(text: text.substring(end, m.end), style: style));
+    at = m.end;
+  }
+  if (at < text.length) out.add(TextSpan(text: text.substring(at), style: style));
+  if (out.isEmpty) out.add(TextSpan(text: text, style: style));
+  return out;
+}
+
+TextSpan _webSpan(String label, String url, TextStyle? style, Color accent, void Function(String) onTap) {
+  final rec = TapGestureRecognizer()..onTap = () => onTap(url);
+  final base = style ?? const TextStyle();
+  return TextSpan(
+    text: label,
+    style: base.copyWith(color: accent, decoration: TextDecoration.underline, decorationColor: accent.withAlpha(120)),
+    recognizer: rec,
+  );
+}
+
 // one latex span. $$..$$ display first so $$ is never eaten as two $..$ pairs,
 // then \[..\] and \(..\), then the plain $..$ pair. The patterns never cross a
 // line break inside a $..$ span: a price like "$5\nand" must not become math.
 final _latex = RegExp(r'\$\$([^$]+?)\$\$|\\\[([\s\S]+?)\\\]|\\\((.+?)\\\)|\$(?!\s)([^$\n]+?)(?<!\s)\$');
 
-List<InlineSpan> _inline(String text, TextStyle base, Color accent, Color codeBg, [void Function(String link)? onFileLink]) {
+List<InlineSpan> _inline(String text, TextStyle base, Color accent, Color codeBg, [void Function(String link)? onFileLink, void Function(String link)? onWebLink]) {
   final spans = <InlineSpan>[];
   final lines = text.split('\n');
   final re = RegExp(r'(\*\*[^*\n]+\*\*|`[^`\n]+`|\*[^*\n\s][^*\n]*\*)');
@@ -576,7 +659,7 @@ List<InlineSpan> _inline(String text, TextStyle base, Color accent, Color codeBg
     if (at < line.length) spans.addAll(_withLinks(line.substring(at), style, accent, onFileLink));
     if (li < lines.length - 1) spans.add(TextSpan(text: '\n', style: style));
   }
-  return _latexify(spans, base);
+  return _latexify(_linkifyWeb(spans, accent, onWebLink), base);
 }
 
 /// Second pass over the flat span list: any plain-text span is split again on

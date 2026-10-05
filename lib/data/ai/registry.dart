@@ -304,31 +304,28 @@ Future<List<ModelMeta>> catalogModels(String providerId) async {
   return const [];
 }
 
+/// Every successful pull replaces the previous upstream list: an id the server
+/// no longer returns disappears instead of lingering as a zombie. Hand-added
+/// entries are user data rather than upstream state, so they survive the pull
+/// unless the new list already carries the same id (the fresh api row wins).
 List<ModelMeta> mergeModels(Provider provider, List<ModelMeta> fetched) {
-  final byId = <String, ModelMeta>{for (final m in provider.models) m.id: m};
+  final cross = !provider.relay;
+  final byId = <String, ModelMeta>{};
   for (final model in fetched) {
-    final existing = byId[model.id];
-    // an entry stored by an earlier fetch may carry zeros from when the
-    // catalog was unreachable, so enrich the merged result rather than only
-    // the incoming one, otherwise those zeros are permanent
-    // relay providers skip the cross-provider match: their ids are their own,
-    // and a plain `auto` must never grow OpenRouter's 2M window
-    final cross = !provider.relay;
-    byId[model.id] = existing == null ? enrich(model, provider.id, crossProvider: cross) : enrich(_mergeOne(existing, model), provider.id, crossProvider: cross);
+    if (model.id.trim().isEmpty) continue;
+    // Enrich the fresh row itself; the stored copy is deliberately ignored so
+    // stale windows and capabilities cannot survive a re-pull.
+    // Relay providers skip the cross-provider match: their ids are their own,
+    // and a plain `auto` must never grow OpenRouter's 2M window.
+    byId[model.id] = enrich(model, provider.id, crossProvider: cross);
+  }
+  for (final m in provider.models) {
+    if (m.source == ModelSource.manual && !byId.containsKey(m.id)) {
+      byId[m.id] = m;
+    }
   }
   return byId.values.toList();
 }
-
-ModelMeta _mergeOne(ModelMeta existing, ModelMeta incoming) => ModelMeta(
-      id: existing.id,
-      name: existing.name.isNotEmpty ? existing.name : incoming.name,
-      contextWindow: existing.contextWindow != 0 ? existing.contextWindow : incoming.contextWindow,
-      maxOutput: existing.maxOutput != 0 ? existing.maxOutput : incoming.maxOutput,
-      vision: existing.vision || incoming.vision,
-      textToImage: existing.textToImage || incoming.textToImage,
-      reasoning: existing.reasoning || incoming.reasoning,
-      source: existing.source == ModelSource.api ? ModelSource.api : incoming.source,
-    );
 
 // the store owns persistence, this is the seam the registry reads through
 abstract class AiRegistryCache {

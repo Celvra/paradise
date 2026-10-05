@@ -36,6 +36,9 @@ import 'human/notifications.dart';
 import 'human/scheduler.dart';
 import 'human/sticker_lib.dart';
 import 'models.dart';
+import 'skills/skill.dart';
+import 'skills/skill_prompt.dart';
+import 'skills/skill_store.dart';
 import 'workspace/host_file_tools.dart';
 import 'workspace/workspace.dart';
 import 'workspace/workspace_metadata.dart';
@@ -77,6 +80,12 @@ class Store extends ChangeNotifier {
   final List<Chat> chats = [];
   final Map<String, _Run> _runs = {};
 
+  /// Pending ask polls by message id. An `ask` tool call registers its
+  /// completer here and blocks; voting on the poll completes it, and a
+  /// stop / interrupt / regenerate cancels it. Keyed by message id so a
+  /// reloaded chat cannot complete the wrong wait.
+  final Map<String, Completer<String>> _askPending = {};
+
   /// Message history storage. Null when SQLite is unavailable, which is the
   /// test harness and any platform the plugin does not reach; the blob in
   /// SharedPreferences carries the chats instead, exactly as before.
@@ -106,6 +115,10 @@ class Store extends ChangeNotifier {
   /// workspace list and the feature switch. Its own notifier so the file
   /// browser does not rebuild the chat list on every rename.
   late final WorkspaceStore workspace;
+
+  /// Installed skills and the per role selection. Its own notifier so the
+  /// skills page does not rebuild the chat list on every toggle.
+  late final SkillStore skills;
 
   /// The environment stack. Set at startup by main so the tool layer and the
   /// environment page share one channel and one installer.
@@ -251,8 +264,7 @@ class Store extends ChangeNotifier {
 
   /// False until the first-run wizard finishes. Every install starts false, so
   /// an upgrade lands in the wizard exactly once too; the last step is the
-  /// only thing that flips it, and the settings can replay the wizard without
-  /// ever touching it.
+  /// only thing that flips it.
   bool onboarded = false;
 
   /// Persona override wins, the global switch is the fallback. A persona that
@@ -264,12 +276,18 @@ class Store extends ChangeNotifier {
   /// arb files are named after
   String? localeTag;
 
+  /// Release tag the user asked not to be reminded of again. Empty means no
+  /// version is skipped: a new tag always shows, a skipped one only on a
+  /// manual check from settings.
+  String skippedRelease = '';
+
   static Future<Store> load({String? dbPath}) async {
     final s = Store._(await SharedPreferences.getInstance());
     // base/key/model now live in AiConfig and are migrated there
     s._loadPersonas();
     s.human = await HumanHub.load(s._sp);
     s.workspace = await WorkspaceStore.load(s._sp);
+    s.skills = await SkillStore.load(s._sp);
     s.userBio = s._sp.getString('userBio') ?? '';
     s.haptics = s._sp.getBool('haptics') ?? true;
     s.countMuted = s._sp.getBool('countMuted') ?? false;
@@ -292,6 +310,7 @@ class Store extends ChangeNotifier {
     s.recentSearch = s._sp.getStringList('recentSearch') ?? s._sp.getStringList('recentSearches') ?? [];
     final lang = s._sp.getString('locale');
     s.localeTag = lang == null || lang.isEmpty ? null : lang;
+    s.skippedRelease = s._sp.getString('skippedRelease') ?? '';
     await s._loadChats(dbPath: dbPath);
     themeCtl.setDark(s.dark, animate: false);
     return s;
@@ -785,9 +804,12 @@ class Store extends ChangeNotifier {
   }
 
   // the photo lands on its own the moment it is picked, so it must not drag the
-  // half edited name and bio along with it
+  // half edited name and bio along with it. Makes the card first: on a fresh
+  // install there is none yet and writing onto the placeholder would look
+  // saved until the next restart, then be gone.
   void setAvatar(String path) {
-    activePersona.avatarPath = path;
+    final card = personas.isEmpty ? createPersonaCard() : activePersona;
+    card.avatarPath = path;
     _savePersonas();
     notifyListeners();
   }
@@ -938,6 +960,21 @@ class Store extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Whether [tag] was skipped from the update sheet. An empty tag is never
+  /// skipped, so a broken release payload cannot mute a later real one.
+  bool isUpdateSkipped(String tag) => tag.isNotEmpty && skippedRelease == tag;
+
+  /// Remembers [tag] so the automatic check stops nagging about it. A manual
+  /// check from settings still shows it.
+  void setSkippedRelease(String tag) {
+    skippedRelease = tag.trim();
+    if (skippedRelease.isEmpty) {
+      _sp.remove('skippedRelease');
+    } else {
+      _sp.setString('skippedRelease', skippedRelease);
+    }
+  }
+
   // most recent first capped list
   List<String> _bump(List<String> l, String v, int cap) {
     final n = [v, ...l.where((e) => e != v)];
@@ -974,8 +1011,8 @@ class Store extends ChangeNotifier {
     notifyListeners();
   }
 
-  Chat createChat(String name, String prompt, {String bio = '', String greeting = '', String emoji = '', String examples = '', String avatarPath = '', int? color, String modelProvider = '', String modelId = '', bool modelFallback = true, bool? thinking, bool? agent}) {
-    final c = Chat(id: _id(), persona: Persona(name: name, prompt: prompt, color: color ?? name.hashCode.abs() % avatarColorCount, bio: bio, greeting: greeting, emoji: emoji, examples: examples, avatarPath: avatarPath, modelProvider: modelProvider, modelId: modelId, modelFallback: modelFallback, thinking: thinking, agent: agent));
+  Chat createChat(String name, String prompt, {String bio = '', String greeting = '', String emoji = '', String examples = '', String avatarPath = '', int? color, String modelProvider = '', String modelId = '', bool modelFallback = true, bool? thinking, bool? agent, List<String>? skillIds}) {
+    final c = Chat(id: _id(), persona: Persona(name: name, prompt: prompt, color: color ?? name.hashCode.abs() % avatarColorCount, bio: bio, greeting: greeting, emoji: emoji, examples: examples, avatarPath: avatarPath, modelProvider: modelProvider, modelId: modelId, modelFallback: modelFallback, thinking: thinking, agent: agent, skillIds: skillIds));
     if (greeting.trim().isNotEmpty) c.msgs.add(Msg(id: _id(), out: false, text: greeting.trim(), time: DateTime.now().millisecondsSinceEpoch));
     _listen(c);
     chats.add(c);
@@ -985,7 +1022,7 @@ class Store extends ChangeNotifier {
     return c;
   }
 
-  void editPersona(Chat c, String name, String prompt, {String? bio, String? greeting, String? emoji, String? examples, String? avatarPath, int? color, String? modelProvider, String? modelId, bool? modelFallback, bool? thinking, bool? agent}) {
+  void editPersona(Chat c, String name, String prompt, {String? bio, String? greeting, String? emoji, String? examples, String? avatarPath, int? color, String? modelProvider, String? modelId, bool? modelFallback, bool? thinking, bool? agent, List<String>? skillIds, bool clearSkillIds = false}) {
     c.persona
       ..name = name
       ..prompt = prompt;
@@ -1000,6 +1037,17 @@ class Store extends ChangeNotifier {
     if (modelFallback != null) c.persona.modelFallback = modelFallback;
     if (thinking != null) c.persona.thinking = thinking;
     if (agent != null) c.persona.agent = agent;
+    if (clearSkillIds) {
+      c.persona.skillIds = null;
+    } else if (skillIds != null) {
+      c.persona.skillIds = skillIds;
+    }
+    c.touch();
+  }
+
+  /// Replaces the skill selection of one role. Null follows the global set.
+  void setPersonaSkills(Chat c, List<String>? ids) {
+    c.persona.skillIds = ids == null ? null : List<String>.from(ids);
     c.touch();
   }
 
@@ -1141,9 +1189,120 @@ class Store extends ChangeNotifier {
     d['votes'] = votes;
     d['mine'] = mine;
     c.touch();
+    // an ask poll blocks its tool call until the answer lands. Single choice
+    // closes on the first tap so one tap is one answer; multi choice only
+    // stages the selection and waits for submitAskPoll, so several options
+    // can be picked first. Non-ask polls keep the old toggle behaviour and
+    // never touch the pending table.
+    if (d['ask'] == true) {
+      final multiAsk = d['multi'] == true;
+      if (!multiAsk && mine.isNotEmpty) {
+        d['closed'] = true;
+        c.touch();
+        _completeAsk(m);
+      }
+      return;
+    }
+  }
+
+  /// Stages a custom text answer on an ask poll without closing it. The text
+  /// rides in `data['custom']` so it persists with the chat like votes do.
+  void setAskCustom(Chat c, Msg m, String text) {
+    final d = m.data;
+    if (d['ask'] != true || d['closed'] == true) return;
+    final t = text.trim();
+    if (t.length > 500) {
+      d['custom'] = t.substring(0, 500);
+    } else {
+      d['custom'] = t;
+    }
+    c.touch();
+  }
+
+  /// Submits an ask poll: closes the card and returns the answer to the
+  /// blocked tool call. Needs at least one selected option or a custom text,
+  /// unless the poll allows skipping (then use skipAskPoll instead).
+  /// Returns false when there is nothing to submit yet.
+  bool submitAskPoll(Chat c, Msg m) {
+    final d = m.data;
+    if (d['ask'] != true || d['closed'] == true) return false;
+    final mine = List<int>.from((d['mine'] as List?) ?? const []);
+    final custom = '${d['custom'] ?? ''}'.trim();
+    if (mine.isEmpty && custom.isEmpty) return false;
+    d['closed'] = true;
+    c.touch();
+    _completeAsk(m);
+    return true;
+  }
+
+  /// Skips an ask poll: closes the card and tells the blocked tool call the
+  /// user passed. Always succeeds on an open ask card.
+  void skipAskPoll(Chat c, Msg m) {
+    final d = m.data;
+    if (d['ask'] != true || d['closed'] == true) return;
+    d['skipped'] = true;
+    d['closed'] = true;
+    c.touch();
+    _completeAsk(m);
+  }
+
+  /// Formats one ask answer for the model. Plain words rather than JSON: the
+  /// chat models already read tool results as text, and a short sentence
+  /// survives compaction better than a payload.
+  String _askAnswerText(Msg m) {
+    final d = m.data;
+    if ('${d['skipped'] ?? ''}' == 'true' || d['skipped'] == true) {
+      return 'The user skipped the question.';
+    }
+    final opts = List<String>.from((d['opts'] as List?) ?? const []);
+    final mine = List<int>.from((d['mine'] as List?) ?? const []);
+    final picked = [for (final i in mine) if (i >= 0 && i < opts.length) opts[i]];
+    final custom = '${d['custom'] ?? ''}'.trim();
+    if (picked.isEmpty && custom.isEmpty) return 'The user gave no answer.';
+    final parts = <String>[];
+    if (picked.isNotEmpty) parts.add('chose: ${picked.join(', ')}');
+    if (custom.isNotEmpty) parts.add('wrote: $custom');
+    return 'The user answered "${d['q'] ?? ''}" — ${parts.join('; ')}.';
+  }
+
+  /// Completes the pending ask wait for [m], if any. No-op for ordinary
+  /// polls and for an ask that nobody is waiting on (a restart, a restored
+  /// chat, or a vote that arrived after the wait already ended).
+  void _completeAsk(Msg m) {
+    final waiter = _askPending.remove(m.id);
+    if (waiter == null || waiter.isCompleted) return;
+    waiter.complete(_askAnswerText(m));
+  }
+
+  /// Cancels every pending ask of one chat. Called on interrupt / stop /
+  /// regenerate / clear so a blocked tool call never hangs a dead run.
+  void cancelAskForChat(String chatId) {
+    final ids = <String>[];
+    for (final e in _askPending.entries) {
+      // the message id is the key; find its chat by scanning once. Pending
+      // tables are tiny (at most a few per chat), so no index is kept.
+      ids.add(e.key);
+    }
+    if (ids.isEmpty) return;
+    // only complete waits whose message belongs to this chat
+    final c = chats.where((e) => e.id == chatId).firstOrNull;
+    if (c == null) return;
+    final mine = {for (final m in c.msgs) m.id};
+    for (final id in ids) {
+      if (!mine.contains(id)) continue;
+      final waiter = _askPending.remove(id);
+      if (waiter == null || waiter.isCompleted) continue;
+      final m = c.byId(id);
+      if (m != null) {
+        m.data['closed'] = true;
+      }
+      waiter.complete('The user did not answer (cancelled).');
+    }
+    c.touch();
   }
 
   void regenerate(Chat c) {
+    cancelAskForChat(c.id);
     if (humanOn) {
       // one answer is often several bubbles, all of them go
       humanInterrupt(c);
@@ -1162,6 +1321,7 @@ class Store extends ChangeNotifier {
   bool busy(Chat c) => _runs.containsKey(c.id);
 
   void stop(Chat c) {
+    cancelAskForChat(c.id);
     if (humanOn) {
       humanInterrupt(c);
       return;
@@ -1290,7 +1450,15 @@ class Store extends ChangeNotifier {
         return '[Contact: ${m.data['name']}, ${m.data['phone']}]$cap';
       case MsgKind.poll:
         final opts = ((m.data['opts'] as List?) ?? const []).join(' / ');
-        return '[Poll: ${m.data['q']} options: $opts]';
+        final mine = List<int>.from((m.data['mine'] as List?) ?? const []);
+        final all = List<String>.from((m.data['opts'] as List?) ?? const []);
+        final picked = [for (final i in mine) if (i >= 0 && i < all.length) all[i]].join(', ');
+        final custom = '${m.data['custom'] ?? ''}'.trim();
+        final skipped = m.data['skipped'] == true || '${m.data['skipped'] ?? ''}' == 'true';
+        final extra = skipped
+            ? ' (skipped by the user)'
+            : (picked.isEmpty && custom.isEmpty ? '' : ' (answered: ${[if (picked.isNotEmpty) picked, if (custom.isNotEmpty) 'custom: $custom'].join('; ')})');
+        return '[Poll: ${m.data['q']} options: $opts]$extra';
       case MsgKind.sticker:
         final emoji = '${m.data['emoji'] ?? ''}';
         return '[Sticker${m.data['sid'] == null ? '' : ' ${m.data['sid']}'}: ${emoji.isEmpty ? 'image sticker' : emoji}]';
@@ -1339,7 +1507,7 @@ class Store extends ChangeNotifier {
   String _systemPrompt(Chat c) {
     final cfg = _ai;
     final card = personaFor(c);
-    return buildSystemPrompt(
+    final base = buildSystemPrompt(
       PromptInput(
         personaName: c.persona.name,
         personaPrompt: c.persona.prompt,
@@ -1351,6 +1519,73 @@ class Store extends ChangeNotifier {
         userPosition: card.position,
         replyMode: cfg?.settings.replyMode ?? ReplyMode.full,
       ),
+    );
+    final skillsBlock = skillFragmentFor(c);
+    if (skillsBlock.isEmpty) return base;
+    return '$base\n\n$skillsBlock';
+  }
+
+  /// Skills this chat's role sees, after the global enable switches and the
+  /// role's own selection. Empty when the store has none enabled for it.
+  List<Skill> skillsFor(Chat c) {
+    try {
+      return skills.resolveFor(c.persona.skillIds);
+    } catch (_) {
+      return const [];
+    }
+  }
+
+  /// Whether the next reply will offer the skill reader tool. The listing
+  /// is only injected when the tool is there to fetch with: a list the
+  /// model cannot open is noise, not help.
+  bool _skillsOffered(Chat c) {
+    if (skillsFor(c).isEmpty) return false;
+    if (humanOn) return true;
+    return agentFor(c);
+  }
+
+  /// The `<available_skills>` block for one chat, or empty when there is
+  /// nothing to offer. Synchronous on purpose: the records live in memory
+  /// after load, so every reply path (plain, agent, humanized) shares it
+  /// through [_systemPrompt] without turning async.
+  String skillFragmentFor(Chat c) {
+    if (!_skillsOffered(c)) return '';
+    final list = skillsFor(c);
+    if (list.isEmpty) return '';
+    try {
+      return buildAvailableSkillsFragment(list);
+    } catch (_) {
+      return '';
+    }
+  }
+
+  /// The dedicated skill reader. Unlike the workspace file tools it needs
+  /// no binding: skills live under the app directory and are readable in
+  /// every chat that lists them. A successful read counts as a use so the
+  /// listing can put frequently used skills first.
+  HTool? skillToolFor(Chat c) {
+    if (skillsFor(c).isEmpty) return null;
+    return HTool(
+      'read_skill',
+      'Read an installed skill by its id and follow the returned instructions. Call it before doing a task that matches a skill description.',
+      {
+        'skill': _p('string', 'Skill id as listed in <available_skills>, for example "pdf-tools".'),
+      },
+      (a) async {
+        final raw = a['skill'] ?? a['id'] ?? a['name'] ?? '';
+        final id = '$raw'.trim();
+        if (id.isEmpty) {
+          final ids = skillsFor(c).map((s) => s.id).join(', ');
+          return 'Error: skill is required. Available: $ids.';
+        }
+        final body = await skills.readSkill(id);
+        if (body == null) {
+          final ids = skillsFor(c).map((s) => s.id).join(', ');
+          return 'Error: no enabled skill named "$id". Available: $ids.';
+        }
+        return body;
+      },
+      required: const ['skill'],
     );
   }
 

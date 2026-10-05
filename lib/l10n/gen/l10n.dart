@@ -1194,7 +1194,7 @@ abstract class AppLocalizations {
   /// Settings row subtitle of the about entry
   ///
   /// In en, this message translates to:
-  /// **'Version 1.0.1'**
+  /// **'Version 1.0.2'**
   String get settingsAboutSub;
 
   /// Licence and ownership notice in the about dialog
@@ -2180,6 +2180,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{kind} · Multiple answers'**
   String pollKindMultiple(String kind);
+
+  /// Ask card subtitle, an answer unblocks the waiting tool call
+  ///
+  /// In en, this message translates to:
+  /// **'Question · tap to answer'**
+  String get askKind;
+
+  /// Ask card subtitle in multi choice mode
+  ///
+  /// In en, this message translates to:
+  /// **'Question · pick any, then submit'**
+  String get askKindMulti;
+
+  /// Ask card subtitle after the answer was submitted
+  ///
+  /// In en, this message translates to:
+  /// **'Answered'**
+  String get askDone;
+
+  /// Ask card subtitle after the user skipped it
+  ///
+  /// In en, this message translates to:
+  /// **'Skipped'**
+  String get askSkipped;
+
+  /// Hint of the custom answer field on an ask card
+  ///
+  /// In en, this message translates to:
+  /// **'Or write your own answer…'**
+  String get askOtherHint;
+
+  /// Button that submits the answer on an ask card
+  ///
+  /// In en, this message translates to:
+  /// **'Submit'**
+  String get askSubmit;
+
+  /// Button that skips an ask card without answering
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get askSkip;
 
   /// Photo viewer header counter
   ///
@@ -5415,6 +5457,12 @@ abstract class AppLocalizations {
   /// **'Send a pretend red packet, taps to accept'**
   String get toolDescSendTransfer;
 
+  /// No description provided for @toolDescAsk.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask you a question with tappable options and wait for the answer'**
+  String get toolDescAsk;
+
   /// No description provided for @wsToolDescRead.
   ///
   /// In en, this message translates to:
@@ -5994,7 +6042,7 @@ abstract class AppLocalizations {
   /// Brand step tagline
   ///
   /// In en, this message translates to:
-  /// **'An immersive AI chat app. Talk like with a real person.'**
+  /// **'A Telegram-style immersive AI chat app.'**
   String get onboardBrandTagline;
 
   /// Brand step body
@@ -6561,12 +6609,6 @@ abstract class AppLocalizations {
   /// **'Here. Paste the full stack trace if there is an error. Otherwise tell me what you are trying to do and where you are stuck.'**
   String get personaEngineerGreeting;
 
-  /// Settings entry that replays the onboarding
-  ///
-  /// In en, this message translates to:
-  /// **'Replay the introduction'**
-  String get settingsOnboarding;
-
   /// No description provided for @onboardModelOwnOpen.
   ///
   /// In en, this message translates to:
@@ -6584,6 +6626,240 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Night mode, a wallpaper and the size of every bubble. Everything here is a tap away in Settings later.'**
   String get onboardThemeBody;
+
+  /// Title of the update bottom sheet
+  ///
+  /// In en, this message translates to:
+  /// **'New update available'**
+  String get updateTitle;
+
+  /// Version line under the update title
+  ///
+  /// In en, this message translates to:
+  /// **'Current {current} · Latest {latest}'**
+  String updateSubtitle(String current, String latest);
+
+  /// Primary button that opens the release page
+  ///
+  /// In en, this message translates to:
+  /// **'Download'**
+  String get updateDownload;
+
+  /// Button that dismisses the update sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get updateClose;
+
+  /// Checkbox that mutes the automatic prompt for this release
+  ///
+  /// In en, this message translates to:
+  /// **'Skip this version'**
+  String get updateSkipVersion;
+
+  /// Bulletin after a manual check with nothing newer
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re already up to date'**
+  String get updateUpToDate;
+
+  /// Bulletin when the release fetch fails
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t check for updates, try again later'**
+  String get updateCheckFailed;
+
+  /// Settings row that checks GitHub releases by hand
+  ///
+  /// In en, this message translates to:
+  /// **'Check for updates'**
+  String get updateCheckTitle;
+
+  /// Subtitle of the manual update row
+  ///
+  /// In en, this message translates to:
+  /// **'Current version {version}'**
+  String updateCheckSub(String version);
+
+  /// Shown when the release body is empty
+  ///
+  /// In en, this message translates to:
+  /// **'No release notes.'**
+  String get updateNoNotes;
+
+  /// Settings row and page title for skills
+  ///
+  /// In en, this message translates to:
+  /// **'Skills'**
+  String get skillTitle;
+
+  /// Subtitle of the skills row when none is installed
+  ///
+  /// In en, this message translates to:
+  /// **'Teach the assistant reusable abilities'**
+  String get skillSubEmpty;
+
+  /// Subtitle of the skills row with installed count
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 skill} other{{count} skills}}'**
+  String skillSubCount(int count);
+
+  /// Empty skills page headline
+  ///
+  /// In en, this message translates to:
+  /// **'No skills yet'**
+  String get skillEmptyTitle;
+
+  /// Empty skills page body
+  ///
+  /// In en, this message translates to:
+  /// **'Import a SKILL.md file, a zip, or paste the text. The assistant reads the list and opens one only when the task matches.'**
+  String get skillEmptyBody;
+
+  /// Button that opens the skill import choices
+  ///
+  /// In en, this message translates to:
+  /// **'Import skill'**
+  String get skillImport;
+
+  /// Import choice
+  ///
+  /// In en, this message translates to:
+  /// **'Paste text'**
+  String get skillImportPaste;
+
+  /// Import choice
+  ///
+  /// In en, this message translates to:
+  /// **'From file'**
+  String get skillImportFile;
+
+  /// Import choice
+  ///
+  /// In en, this message translates to:
+  /// **'From URL'**
+  String get skillImportUrl;
+
+  /// Title of the paste sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Paste SKILL.md'**
+  String get skillPasteTitle;
+
+  /// Placeholder of the paste field
+  ///
+  /// In en, this message translates to:
+  /// **'Paste the SKILL.md text…'**
+  String get skillPasteHint;
+
+  /// Title of the URL sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Import from URL'**
+  String get skillUrlTitle;
+
+  /// Placeholder of the URL field
+  ///
+  /// In en, this message translates to:
+  /// **'https://github.com/owner/repo/…'**
+  String get skillUrlHint;
+
+  /// Bulletin when a URL import fails
+  ///
+  /// In en, this message translates to:
+  /// **'That URL could not be read as a skill.'**
+  String get skillUrlError;
+
+  /// Bulletin when a file import fails
+  ///
+  /// In en, this message translates to:
+  /// **'That file is not a valid skill.'**
+  String get skillInvalid;
+
+  /// Confirmation title
+  ///
+  /// In en, this message translates to:
+  /// **'Delete skill'**
+  String get skillDeleteTitle;
+
+  /// Confirmation body
+  ///
+  /// In en, this message translates to:
+  /// **'Delete \"{name}\"? The files go with it.'**
+  String skillDeleteMessage(String name);
+
+  /// Skill row subtitle when on
+  ///
+  /// In en, this message translates to:
+  /// **'Enabled'**
+  String get skillEnabled;
+
+  /// Skill row subtitle when off
+  ///
+  /// In en, this message translates to:
+  /// **'Disabled'**
+  String get skillDisabled;
+
+  /// How many times a skill was read
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{Never used} =1{Used once} other{Used {count} times}}'**
+  String skillDetailUses(int count);
+
+  /// Note on the skill detail page
+  ///
+  /// In en, this message translates to:
+  /// **'The instructions live in SKILL.md.'**
+  String get skillOpenFile;
+
+  /// Section header of the role skill picker
+  ///
+  /// In en, this message translates to:
+  /// **'Skills'**
+  String get personaSkillsHeader;
+
+  /// Section footer of the role skill picker
+  ///
+  /// In en, this message translates to:
+  /// **'Follow global uses every enabled skill. Custom picks exactly the ones this role may use.'**
+  String get personaSkillsFooter;
+
+  /// Role skill mode that inherits all enabled skills
+  ///
+  /// In en, this message translates to:
+  /// **'Follow global'**
+  String get personaSkillsFollowGlobal;
+
+  /// Role skill mode with an explicit list
+  ///
+  /// In en, this message translates to:
+  /// **'Custom'**
+  String get personaSkillsCustom;
+
+  /// How many skills a role picked
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No skill} =1{1 selected} other{{count} selected}}'**
+  String personaSkillsCount(int count);
+
+  /// Title of the role skill picker
+  ///
+  /// In en, this message translates to:
+  /// **'Skills for this role'**
+  String get personaSkillsPickTitle;
+
+  /// Tools page description
+  ///
+  /// In en, this message translates to:
+  /// **'Reads an installed skill by id'**
+  String get toolDescReadSkill;
+
+  /// Bulletin while a skill archive downloads
+  ///
+  /// In en, this message translates to:
+  /// **'Importing…'**
+  String get skillImporting;
 }
 
 class _AppLocalizationsDelegate

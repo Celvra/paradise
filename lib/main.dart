@@ -10,6 +10,7 @@ import 'data/human/notifications.dart';
 import 'data/store.dart';
 import 'data/workspace/workspace_bootstrap.dart';
 import 'ui/human_data_pages.dart' show appNav, askToolPermission;
+import 'ui/update_sheet.dart' show checkAndShowUpdate;
 import 'ui/workspace/write_review.dart';
 import 'l10n/x.dart';
 import 'ui/ai_model_picker.dart' show AiScope;
@@ -51,6 +52,15 @@ Future<void> main() async {
   store.startHuman();
   unawaited(registerBackground());
   runApp(TgApp(store: store, ai: ai));
+  // one automatic update check per launch, a couple of seconds after the
+  // first frame so it never covers the launch paint. Lives here rather than
+  // in a widget initState so widget tests pumping TgApp directly never see
+  // the timer or the network call.
+  Future.delayed(const Duration(seconds: 2), () {
+    final ctx = appNav.currentState?.overlay?.context;
+    if (ctx == null) return;
+    unawaited(checkAndShowUpdate(ctx));
+  });
 }
 
 // android reports zh_TW and zh_HK without a script tag often enough that the

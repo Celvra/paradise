@@ -20,6 +20,7 @@ class Persona {
     this.modelFallback = true,
     this.thinking,
     this.agent,
+    this.skillIds,
   });
   String name;
   String prompt;
@@ -68,6 +69,11 @@ class Persona {
   bool? thinking;
   bool? agent;
 
+  /// Skills this role may use. Null follows the global set (every enabled
+  /// skill), an explicit list names exactly the skills in the prompt. Empty
+  /// means this role uses none.
+  List<String>? skillIds;
+
   Map<String, dynamic> toJson() => {
         'name': name,
         'prompt': prompt,
@@ -82,6 +88,7 @@ class Persona {
         'modelFallback': modelFallback,
         if (thinking != null) 'thinking': thinking,
         if (agent != null) 'agent': agent,
+        if (skillIds != null) 'skillIds': skillIds,
       };
   factory Persona.fromJson(Map<String, dynamic> j) => Persona(
         name: j['name'] as String,
@@ -100,6 +107,7 @@ class Persona {
         modelFallback: j['modelFallback'] as bool? ?? true,
         thinking: j['thinking'] as bool?,
         agent: j['agent'] as bool?,
+        skillIds: j['skillIds'] is List ? [for (final e in j['skillIds'] as List) '$e'] : null,
       );
 }
 
@@ -432,6 +440,8 @@ class Msg {
       'sticker' => MsgKind.sticker,
       'transfer' => MsgKind.transfer,
       'trace' => MsgKind.trace,
+      'html' => MsgKind.html,
+      'latex' => MsgKind.latex,
       _ => MsgKind.text,
     };
     var st = j['state'] as int? ?? ((j['read'] as bool? ?? false) ? St.read : St.sent);

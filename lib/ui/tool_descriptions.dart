@@ -43,6 +43,7 @@ String? toolDescription(AppLocalizations l, String tool) => switch (tool) {
       'send_latex' => l.toolDescSendLatex,
       'send_cetz' => l.toolDescSendCetz,
       'send_transfer' => l.toolDescSendTransfer,
+      'ask' => l.toolDescAsk,
       'read_file' => l.wsToolDescRead,
       'write_file' => l.wsToolDescWrite,
       'edit_file' => l.wsToolDescEdit,
@@ -51,6 +52,7 @@ String? toolDescription(AppLocalizations l, String tool) => switch (tool) {
       'grep' => l.wsToolDescGrep,
       'shell' => l.wsToolDescShell,
       'view_image' => l.wsToolDescViewImage,
+      'read_skill' => l.toolDescReadSkill,
       _ => null,
     };
 

@@ -175,32 +175,45 @@ class _MiniProgressState extends State<_MiniProgress> with SingleTickerProviderS
   @override
   Widget build(BuildContext context) {
     final p = context.p;
-    return SizedBox(
-      height: 4,
-      child: AnimatedBuilder(
-        animation: _ctl,
-        builder: (context, _) {
-          final t = _ctl.value;
-          final v = widget.value;
-          final start = v ?? (t < .5 ? t * 2 : (t - .5) * 2);
-          final width = v ?? .3;
-          return Stack(children: [
-            Container(height: 4, decoration: BoxDecoration(color: p.subtitle.withAlpha(40), borderRadius: BorderRadius.circular(2))),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: FractionallySizedBox(
-                widthFactor: v != null ? v.clamp(0.0, 1.0) : width,
-                child: Container(height: 4, decoration: BoxDecoration(color: p.accent, borderRadius: BorderRadius.circular(2))),
-              ),
+    final track = Container(height: 4, decoration: BoxDecoration(color: p.subtitle.withAlpha(40), borderRadius: BorderRadius.circular(2)));
+    final v = widget.value;
+    // Determinate: one fill from the left. Indeterminate used to paint that
+    // same fill at a fixed 30% under the sweep, which read as a stuck
+    // segment; now it is a single segment sliding across on a loop.
+    if (v != null) {
+      return SizedBox(
+        height: 4,
+        child: Stack(children: [
+          track,
+          Align(
+            alignment: Alignment.centerLeft,
+            child: FractionallySizedBox(
+              widthFactor: v.clamp(0.0, 1.0),
+              child: Container(height: 4, decoration: BoxDecoration(color: p.accent, borderRadius: BorderRadius.circular(2))),
             ),
-            if (v == null)
-              Align(
-                alignment: Alignment(-1 + start * 2, 0),
-                child: Container(width: 24, height: 4, decoration: BoxDecoration(color: p.accent, borderRadius: BorderRadius.circular(2))),
+          ),
+        ]),
+      );
+    }
+    return LayoutBuilder(builder: (context, box) {
+      final w = box.maxWidth;
+      return SizedBox(
+        height: 4,
+        child: AnimatedBuilder(
+          animation: _ctl,
+          builder: (context, _) {
+            final seg = w * 0.35;
+            final left = -seg + _ctl.value * (w + seg);
+            return Stack(children: [
+              track,
+              Positioned(
+                left: left,
+                child: Container(width: seg, height: 4, decoration: BoxDecoration(color: p.accent, borderRadius: BorderRadius.circular(2))),
               ),
-          ]);
-        },
-      ),
-    );
+            ]);
+          },
+        ),
+      );
+    });
   }
 }

@@ -55,7 +55,7 @@ void main() {
   testWidgets('the wizard opens on the brand page with the version', (t) async {
     await _boot(t);
     expect(find.text('Paradise'), findsWidgets);
-    expect(find.text('v1.0.1'), findsOneWidget);
+    expect(find.text('v1.0.2'), findsOneWidget);
 
     await t.tap(find.text('Next').first);
     await _settle(t);
@@ -87,6 +87,27 @@ void main() {
     expect(store.onboarded, true);
     expect(find.byType(OnboardingPage), findsNothing);
     expect(find.byType(DialogsPage), findsOneWidget);
+  });
+
+  testWidgets('the self step owns a real card on a fresh install', (t) async {
+    final store = await _boot(t);
+    expect(store.personas, isEmpty);
+    // brand -> permissions -> privacy(Agree) -> theme -> model ->
+    // workspace -> human -> self
+    await t.tap(find.text('Next').first);
+    await _settle(t);
+    await t.tap(find.text('Next').first);
+    await _settle(t);
+    await t.tap(find.text('Agree and start'));
+    await _settle(t);
+    for (var i = 0; i < 4; i++) {
+      await t.tap(find.text('Next').first);
+      await _settle(t);
+    }
+    // the post-frame callback materializes the card the step edits, so the
+    // photo picker and the text fields write onto a card that is actually in
+    // the list instead of a throwaway placeholder.
+    expect(store.personas, isNotEmpty);
   });
 
   testWidgets('declining the privacy keeps the wizard open', (t) async {
