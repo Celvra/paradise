@@ -1,5 +1,8 @@
 blank_issues_enabled: false
 contact_links:
-  - name: Community chat
+  - name: Community chat (QQ group 272298906)
+    url: https://qm.qq.com/q/BeQPYWuzVS
+    about: Questions, ideas and anything that does not need a tracked issue.
+  - name: Community chat (Discord)
     url: https://discord.gg/aQaNUHPsw
     about: Questions, ideas and anything that does not need a tracked issue.

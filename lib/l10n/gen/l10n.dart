@@ -1233,6 +1233,18 @@ abstract class AppLocalizations {
   /// **'https://discord.gg/aQaNUHPsw'**
   String get settingsAboutCommunityUrl;
 
+  /// Label in front of the QQ group link in the about dialog
+  ///
+  /// In en, this message translates to:
+  /// **'QQ group 272298906:'**
+  String get settingsAboutQqGroup;
+
+  /// QQ group link in the about dialog, identical in every language
+  ///
+  /// In en, this message translates to:
+  /// **'https://qm.qq.com/q/BeQPYWuzVS'**
+  String get settingsAboutQqGroupUrl;
+
   /// Small print at the bottom of settings
   ///
   /// In en, this message translates to:

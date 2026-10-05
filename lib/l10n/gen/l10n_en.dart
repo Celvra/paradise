@@ -636,6 +636,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsAboutCommunityUrl => 'https://discord.gg/aQaNUHPsw';
 
   @override
+  String get settingsAboutQqGroup => 'QQ group 272298906:';
+
+  @override
+  String get settingsAboutQqGroupUrl => 'https://qm.qq.com/q/BeQPYWuzVS';
+
+  @override
   String get settingsFooter => 'Developed by Celvra';
 
   @override

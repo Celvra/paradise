@@ -620,6 +620,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsAboutCommunityUrl => 'https://discord.gg/aQaNUHPsw';
 
   @override
+  String get settingsAboutQqGroup => 'QQ 群 272298906:';
+
+  @override
+  String get settingsAboutQqGroupUrl => 'https://qm.qq.com/q/BeQPYWuzVS';
+
+  @override
   String get settingsFooter => 'Developed by Celvra';
 
   @override
@@ -4249,6 +4255,12 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get settingsAboutCommunityUrl => 'https://discord.gg/aQaNUHPsw';
+
+  @override
+  String get settingsAboutQqGroup => 'QQ 群 272298906:';
+
+  @override
+  String get settingsAboutQqGroupUrl => 'https://qm.qq.com/q/BeQPYWuzVS';
 
   @override
   String get settingsFooter => 'Developed by Celvra';

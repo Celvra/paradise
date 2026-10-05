@@ -110,6 +110,7 @@ class SettingsTab extends StatelessWidget {
                       l.settingsAboutLicense,
                       l.settingsAboutRepo,
                       l.settingsAboutThanks,
+                      l.settingsAboutQqGroup + ' ' + l.settingsAboutQqGroupUrl,
                       l.settingsAboutCommunity + ' ' + l.settingsAboutCommunityUrl,
                       l.settingsAboutDeps,
                     ]),

@@ -784,6 +784,14 @@
   "@settingsAboutCommunityUrl": {
     "description": "Community link in the about dialog, identical in every language"
   },
+  "settingsAboutQqGroup": "QQ 群 272298906:",
+  "@settingsAboutQqGroup": {
+    "description": "Label in front of the QQ group link in the about dialog"
+  },
+  "settingsAboutQqGroupUrl": "https://qm.qq.com/q/BeQPYWuzVS",
+  "@settingsAboutQqGroupUrl": {
+    "description": "QQ group link in the about dialog, identical in every language"
+  },
   "settingsFooter": "Developed by Celvra",
   "@settingsFooter": {
     "description": "Small print at the bottom of settings"
