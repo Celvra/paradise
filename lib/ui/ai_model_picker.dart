@@ -246,8 +246,7 @@ class _PickerPageState extends State<_PickerPage> {
                   final o = options[i - (widget.allowFollowChain ? 1 : 0)];
                   return AiPickRow(
                     icon: Ic.ai,
-                    title: o.model.id,
-                    subtitle: [o.providerName, o.model.reasoning ? 'reasoning' : null, o.model.vision ? 'vision' : null]
+                    title: modelDisplayLabel(widget.cfg.settings, o.providerId, o.model.id, () => l.relayAutoModel),                    subtitle: [o.providerName, o.model.reasoning ? 'reasoning' : null, o.model.vision ? 'vision' : null]
                         .whereType<String>()
                         .join(' · '),
                     avatar: ProviderAvatar(name: o.providerName, baseUrl: o.baseUrl, color: p.aiIcon(ready: context.ai.ready), size: 30, radius: 9),

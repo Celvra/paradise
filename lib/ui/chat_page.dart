@@ -20,6 +20,7 @@ import '../l10n/x.dart';
 import 'attach_sheet.dart';
 import 'bubble.dart';
 import 'calendar_sheet.dart';
+import 'canvas_cards.dart';
 import 'emoji_panel.dart';
 import 'input_bar.dart';
 import 'media_bubbles.dart';
@@ -76,6 +77,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    TypstPackageStore.warm();
     _store = Store.read(context);
     _store.openId = chat.id;
     chat.unread = 0;
@@ -232,7 +234,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
     });
   }
 
-  void _menu(Msg m, Rect rect, Widget ghost) {
+  void _menu(Msg m, Rect rect, Widget? ghost) {
     final lastReal = chat.last;
     final l = context.l;
     showTgMenu(context, anchor: rect, blur: true, ghost: ghost, items: [
@@ -641,6 +643,23 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
             decoration: BoxDecoration(color: p.service, borderRadius: BorderRadius.circular(14)),
             child: Text(m.text, textAlign: TextAlign.center, style: const TextStyle(color: Color(0xFFFFFFFF), fontSize: 13, fontWeight: FontWeight.w500, height: 1.25, decoration: TextDecoration.none)),
           ),
+        ),
+      );
+    } else if ((m.kind == MsgKind.html || m.kind == MsgKind.latex) && !m.recalled) {
+      // a rendered document is not a speech bubble: it lies flat on the page,
+      // spans the full column width and grows to its own height. The long
+      // press lands on the rendered thing itself and opens the same menu.
+      row = Padding(
+        padding: EdgeInsets.only(top: grouped ? 1 : 5, left: 4, right: 4),
+        child: CanvasCard(
+          source: '${m.data['source'] ?? ''}',
+          latex: m.kind == MsgKind.latex,
+          cetz: m.data['cetz'] == true,
+          align: parseCardAlign(m.data['align']),
+          onLongPress: (rect) => _menu(m, rect, null),
+          // the engine refused the source: mark the message so the transcript
+          // tells the model, which can resend a corrected card
+          onFailed: (err) => st.canvasRenderFailed(chat, m, err),
         ),
       );
     } else {

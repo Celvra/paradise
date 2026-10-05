@@ -65,6 +65,18 @@ String _str(Map<String, dynamic> a, String k, [String d = '']) => (a[k] ?? d).to
 int _int(Map<String, dynamic> a, String k, int d) => a[k] is num ? (a[k] as num).toInt() : (int.tryParse('${a[k] ?? ''}') ?? d);
 double _num(Map<String, dynamic> a, String k, double d) => a[k] is num ? (a[k] as num).toDouble() : (double.tryParse('${a[k] ?? ''}') ?? d);
 
+/// TikZ is a drawing language, not math, and the math engine (RaTeX) parses
+/// neither its environments nor its \\draw/\\node/\\foreach commands. A model
+/// trained on TikZ reaches for it whenever it wants a picture, so send_latex
+/// refuses it here with a pointer to send_cetz instead of queueing a card the
+/// renderer is guaranteed to reject. Only forms that never occur in real math
+/// are matched, so an ordinary formula is never misread.
+final _tikzRe = RegExp(
+  r'\\begin\s*\{tikz(?:picture)?\}|\\end\s*\{tikz(?:picture)?\}|\\begin\s*\{axis\}|'
+  r'\\draw\b|\\filldraw\b|\\fill\b|\\node\b|\\path\b|\\coordinate\b|\\foreach\b|\\addplot\b',
+);
+bool looksLikeTikz(String s) => _tikzRe.hasMatch(s);
+
 String _ago(int ms) {
   if (ms < 0) return 'just now';
   final m = ms ~/ 60000;
@@ -109,15 +121,26 @@ double _dice(String a, String b) {
 /// the same way twice, so the opening and closing bracket are matched apart:
 /// `[m:a]`, `<m:a]`, `[m:a>` and a bare `m:a 19:29` at the start of a line are
 /// all the same leak.
+///
+/// Lines inside a ``` fence are left untouched: collapsing runs of spaces
+/// there would flatten the indentation of every code block the model sends,
+/// which for Python is not a cosmetic loss.
 String cleanBubble(String text) {
-  return stripBrTags(text)
-      // the id goes together with the space behind it, otherwise a label that
-      // was written mid sentence leaves the line starting with a blank
-      .replaceAllMapped(RegExp(r'[<\[]m:[^\n<>[\]]{0,40}[>\]][ \t]?'), (_) => '')
-      .replaceAllMapped(RegExp(r'^[ \t]*m:\w{1,16}[ \t]+\d{1,2}:\d{2}[ \t]*', multiLine: true), (_) => '')
-      .replaceAll(RegExp(r'[ \t]{2,}'), ' ')
-      .replaceAll(RegExp(r'\n{3,}'), '\n\n')
-      .trim();
+  final lines = stripBrTags(text).replaceAllMapped(RegExp(r'[<\[]m:[^\n<>[\]]{0,40}[>\]][ \t]?'), (_) => '').replaceAllMapped(RegExp(r'^[ \t]*m:\w{1,16}[ \t]+\d{1,2}:\d{2}[ \t]*', multiLine: true), (_) => '').split('\n');
+  final out = <String>[];
+  var inCode = false;
+  for (final line in lines) {
+    if (RegExp(r'^\s*```').hasMatch(line)) {
+      inCode = !inCode;
+      out.add(line.trim());
+      continue;
+    }
+    // prose gets the tidying, code keeps its own spacing: collapsing the runs
+    // of spaces inside a fence would flatten the indentation, which for Python
+    // is not a cosmetic loss
+    out.add(inCode ? line : line.replaceAll(RegExp(r'[ \t]{2,}'), ' '));
+  }
+  return out.join('\n').replaceAll(RegExp(r'\n{3,}'), '\n\n').trim();
 }
 
 extension StoreHuman on Store {
@@ -391,19 +414,31 @@ extension StoreHuman on Store {
   }
 
   String _styled(String text, HumanSettings hs) {
-  final t = cleanBubble(text);
-  if (t.isEmpty) return '';
-  String? tidied;
-  if (hs.punct == 1) {
-    tidied = t.replaceAll(RegExp(r'[。.]+$'), '').replaceAll('。', ' ').trim();
-  } else if (hs.punct == 2) {
-    tidied = t.replaceAll(RegExp(r'[。.，,！!]+$'), '').replaceAll('，', ' ').trim();
+    final t = cleanBubble(text);
+    if (t.isEmpty) return '';
+    if (_inFence(t)) return t; // a code block keeps its own punctuation
+    String? tidied;
+    if (hs.punct == 1) {
+      tidied = t.replaceAll(RegExp(r'[。.]+$'), '').replaceAll('。', ' ').trim();
+    } else if (hs.punct == 2) {
+      tidied = t.replaceAll(RegExp(r'[。.，,！!]+$'), '').replaceAll('，', ' ').trim();
+    }
+    // punctuation style may tidy a bubble but it must never empty it: an
+    // answer that vanishes leaves a hole in the model's own history and it
+    // ends up asking what it had just said
+    return tidied == null || tidied.isEmpty ? t : tidied;
   }
-  // punctuation style may tidy a bubble but it must never empty it: an
-  // answer that vanishes leaves a hole in the model's own history and it
-  // ends up asking what it had just said
-  return tidied == null || tidied.isEmpty ? t : tidied;
-}
+
+  /// True when [text] carries an unclosed ``` fence anywhere in it, or is
+  /// entirely inside one. The punctuation passes and the space collapsing are
+  /// prose shaping; neither may touch a code block.
+  bool _inFence(String text) {
+    var fence = false;
+    for (final line in text.split('\n')) {
+      if (RegExp(r'^\s*```').hasMatch(line)) fence = !fence;
+    }
+    return fence;
+  }
 
   // -------------------------------------------------------------- recalling
 
@@ -615,6 +650,7 @@ extension StoreHuman on Store {
           tools: specs,
           options: ChainOptions(
             cancel: run.token,
+            sessionId: c.id,
             onChunk: (chunk) {
               if (chunk.isText) {
                 onText(chunk.delta);
@@ -1178,12 +1214,58 @@ _runs[c.id]?.row = row;
         final m = await sendNow(_str(a, 'caption'), kind: MsgKind.photo, data: {'path': f.path, 'name': 'image.jpg', 'size': res.bodyBytes.length});
         return m == null ? 'Interrupted.' : 'Image sent.';
       }, required: ['url']),
-      HTool('send_file', 'Create a text file with the given content and send it to the user.', {'name': _p('string', 'file name with extension'), 'content': _p('string', 'file content'), 'caption': _p('string', 'caption')}, (a) async {
+      HTool('send_file', 'Create a text file with the given content and send it to the user as a file card they can tap to preview. Use this to share code, a note, or a standalone .html / .svg document, which the user can render directly.', {'name': _p('string', 'file name with extension, e.g. sketch.html or plot.svg'), 'content': _p('string', 'file content'), 'caption': _p('string', 'caption')}, (a) async {
         final f = await _docFile('ai_files', _str(a, 'name', 'note.txt'));
         await f.writeAsString(_str(a, 'content'));
         final m = await sendNow(_str(a, 'caption'), kind: MsgKind.file, data: {'path': f.path, 'name': _str(a, 'name', 'note.txt'), 'size': f.lengthSync()});
         return m == null ? 'Interrupted.' : 'File sent.';
       }, required: ['name', 'content']),
+      HTool('send_svg', 'Draw a small vector picture and send it as an image card. Supply raw svg markup (the whole <svg>...</svg> document) with an optional caption.', {'svg': _p('string', 'complete svg markup'), 'caption': _p('string', 'caption')}, (a) async {
+        final svg = _str(a, 'svg').trim();
+        if (!svg.startsWith('<')) return 'Error: that does not look like svg markup.';
+        final f = await _docFile('ai_images', 'picture.svg');
+        await f.writeAsString(svg);
+        final m = await sendNow(_str(a, 'caption'), kind: MsgKind.photo, data: {'path': f.path, 'name': 'picture.svg', 'size': f.lengthSync(), 'svg': true});
+        return m == null ? 'Interrupted.' : 'Picture sent.';
+      }, required: ['svg']),
+      HTool('send_html', 'Render an html document directly in the chat as a flat full width card, no bubble around it. Use it for a tiny UI mockup, a styled page, a table, or anything css can lay out. The page is sandboxed and offline, it cannot fetch the network; keep everything inline. Plain text belongs in a normal message, not here.', {
+        'html': _p('string', 'a complete html document or a body fragment'),
+        'align': _p('string', 'horizontal placement on the card: left, center (default) or right', values: ['left', 'center', 'right']),
+      }, (a) async {
+        final html = _str(a, 'html').trim();
+        if (!html.startsWith('<')) return 'Error: that does not look like html markup.';
+        final m = await sendNow('', kind: MsgKind.html, data: {'source': html, 'align': _str(a, 'align')});
+        return m == null ? 'Interrupted.' : 'Rendered.';
+      }, required: ['html']),
+      HTool('send_latex', 'Render LaTeX MATH directly in the chat as a flat full width card, no bubble around it: formulas, fractions, matrices, aligned blocks, \\colorbox, \\rule. This is math only — it is NOT TikZ. Never put \\begin{tikzpicture}, \\draw, \\node, \\fill, \\foreach or any drawing code here; those cannot be parsed and will be rejected. To draw, use send_cetz. A formula that fails to parse shows the user nothing and the failure is reported back to you. Plain text belongs in a normal message, not here.', {
+        'latex': _p('string', 'LaTeX math source, e.g. E = mc^2 or \\begin{aligned}...'),
+        'align': _p('string', 'horizontal placement on the card: left, center (default) or right', values: ['left', 'center', 'right']),
+      }, (a) async {
+        final tex = _str(a, 'latex').trim();
+        if (tex.isEmpty) return 'Error: the latex source is empty.';
+        if (looksLikeTikz(tex)) {
+          return 'Error: send_latex renders math only and cannot parse TikZ drawing code (tikzpicture/\\draw/\\node/\\foreach). '
+              'The user sees nothing for this. Redraw the SAME figure with the send_cetz tool, which is this app\'s drawing language. '
+              'Quick mapping: \\draw[red,thick] (0,0) -- (1,1) -> line((0,0),(1,1),stroke:(paint:red,thickness:1.5pt)); '
+              '\\draw[fill=blue] (0,0) circle (1) -> circle((0,0),radius:1,fill:blue); '
+              '\\draw (0,0) rectangle (2,1) -> rect((0,0),(2,1)); '
+              '\\node at (1,1) {hi} -> content((1,1)[anchor:center], [hi]); '
+              '\\node[above] at (1,1) {hi} -> content((1,1), [hi], anchor:south); '
+              '\\draw[->] (0,0) -- (1,0) -> line((0,0),(1,0),mark:(end:stealth)); '
+              'coordinates use cm, 1 TikZ unit is about 1cm.';
+        }
+        final m = await sendNow('', kind: MsgKind.latex, data: {'source': tex, 'align': _str(a, 'align')});
+        return m == null ? 'Interrupted.' : 'Rendered.';
+      }, required: ['latex']),
+      HTool('send_cetz', 'Draw a diagram directly in the chat as a flat full width card, no bubble around it. This is the app\'s drawing tool and it replaces TikZ: the model knows TikZ, but this renderer speaks CeTZ, a Typst drawing language with the same ideas (canvas, line, circle, rect, content at coordinates, arrows, fill, stroke). Translate any TikZ figure into CeTZ and send it here. Call it with the inside of a cetz.canvas, e.g. `import cetz.draw: *; circle((0,0), radius:1); line((0,0),(1,1))`, or a full `#cetz.canvas(length: 1cm, { ... })` snippet; the import and canvas are added for you if missing. The bundled cetz-plot adds bar/line plots. Typst syntax notes: colors are bare names (red, teal, rgb("#4a7dba")) — never LaTeX \\color{...} and never `blue!30` (mix with color.mix or just pick a color); every identifier must be complete (a truncated name like `olor` fails to compile); text labels are CeTZ content: `content((x,y), [中文 label])` and CJK renders fine. A drawing that fails to compile shows the user nothing and the failure is reported back to you.', {
+        'code': _p('string', 'CeTZ drawing commands, the inside of a cetz.canvas call, or a full cetz snippet with imports'),
+        'align': _p('string', 'horizontal placement on the card: left, center (default) or right', values: ['left', 'center', 'right']),
+      }, (a) async {
+        final code = _str(a, 'code').trim();
+        if (code.isEmpty) return 'Error: the cetz source is empty.';
+        final m = await sendNow('', kind: MsgKind.latex, data: {'source': code, 'cetz': true, 'align': _str(a, 'align')});
+        return m == null ? 'Interrupted.' : 'Rendered.';
+      }, required: ['code']),
     ]);
 
     if (hs.wallet) {

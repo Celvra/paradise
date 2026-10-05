@@ -213,11 +213,17 @@ const _latestAliases = {'latest', 'preview'};
 
 /// Searches the fetched models.dev feed first, then the bundled subset, so an
 /// upstream model list that carries no metadata of its own still gets filled.
-CatalogModel? _lookupAnywhere(String providerId, String modelId, [String? modelName]) =>
-    _lookupIn(_remote ?? const {}, providerId, modelId, modelName) ??
-    _lookupIn(modelCatalog, providerId, modelId, modelName) ??
-    _matchModelId(_remote ?? const {}, modelId) ??
-    _matchModelId(modelCatalog, modelId);
+///
+/// [crossProvider] turns off the last two fallbacks, the by-id search across
+/// every provider. A relay hands out ids under its own name, so `auto` there
+/// must not inherit the window of OpenRouter's `openrouter/auto` (2M context)
+/// merely because the tokens match.
+CatalogModel? _lookupAnywhere(String providerId, String modelId, [String? modelName, bool crossProvider = true]) {
+  final hit = _lookupIn(_remote ?? const {}, providerId, modelId, modelName) ?? _lookupIn(modelCatalog, providerId, modelId, modelName);
+  if (hit != null) return hit;
+  if (!crossProvider) return null;
+  return _matchModelId(_remote ?? const {}, modelId) ?? _matchModelId(modelCatalog, modelId);
+}
 
 /// Pulls the remote feed into memory once. Later synchronous lookups see it.
 Future<void> warmCatalog() => _loadRemote().then((_) {});
@@ -241,10 +247,10 @@ ModelMeta _toMeta(CatalogModel m, String id, String? name, ModelSource source) =
     );
 
 // fill missing capability fields from the catalog without overwriting api data
-ModelMeta enrich(ModelMeta model, String providerId) {
+ModelMeta enrich(ModelMeta model, String providerId, {bool crossProvider = true}) {
   // a bare upstream entry carries no limits at all, so match it against the
   // fetched models.dev feed by id and by name, then the bundled subset
-  final hit = _lookupAnywhere(providerId, model.id, model.name);
+  final hit = _lookupAnywhere(providerId, model.id, model.name, crossProvider);
   if (hit == null) {
     // an id the catalog missed still carries capability hints
     final g = guessFromModelId(model.id);
@@ -305,7 +311,10 @@ List<ModelMeta> mergeModels(Provider provider, List<ModelMeta> fetched) {
     // an entry stored by an earlier fetch may carry zeros from when the
     // catalog was unreachable, so enrich the merged result rather than only
     // the incoming one, otherwise those zeros are permanent
-    byId[model.id] = existing == null ? enrich(model, provider.id) : enrich(_mergeOne(existing, model), provider.id);
+    // relay providers skip the cross-provider match: their ids are their own,
+    // and a plain `auto` must never grow OpenRouter's 2M window
+    final cross = !provider.relay;
+    byId[model.id] = existing == null ? enrich(model, provider.id, crossProvider: cross) : enrich(_mergeOne(existing, model), provider.id, crossProvider: cross);
   }
   return byId.values.toList();
 }

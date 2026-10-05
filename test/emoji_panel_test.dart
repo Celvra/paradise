@@ -28,6 +28,10 @@ Future<(Store, AiConfig)> boot(WidgetTester t) async {
   final store = await Store.load();
   final ai = await AiConfig.load();
   store.attachAi(ai);
+  // starter chats now come from the onboarding, so a UI test seeds its own
+  store.createChat('Assistant', 'You are a helpful, concise assistant.');
+  // the tests drive in-app screens, not the wizard
+  store.onboarded = true;
   await t.pumpWidget(TgApp(store: store, ai: ai));
   await settle(t);
   return (store, ai);

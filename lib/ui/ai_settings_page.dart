@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+import '../app_info.dart';
 import '../core/anim.dart';
 import '../core/overlays.dart';
 import '../core/provider_icons.dart';
@@ -411,7 +412,7 @@ class _NodeCell extends StatelessWidget {
             decoration: BoxDecoration(shape: BoxShape.circle, color: node.enabled ? p.accent : p.unreadMuted),
             child: Text('${index + 1}', style: TextStyle(color: p.dark ? const Color(0xFF0F1A24) : const Color(0xFFFFFFFF), fontSize: 17, fontWeight: FontWeight.w600, decoration: TextDecoration.none)),
           ),
-          title: node.modelId,
+          title: modelDisplayLabel(s, node.providerId, node.modelId, () => l.relayAutoModel),
           subtitle: [provider?.name ?? node.providerId, ...caps].join(' · '),
           trailing: TgSwitch(value: node.enabled, onChanged: (_) => cfg.toggleChainNode(node.id)),
           onTap: () => _menu(cellContext),
@@ -479,11 +480,46 @@ class _AdvancedTab extends StatelessWidget {
           footer: l.aiSamplingFooter,
           children: [
             TgTextCell(icon: Ic.textSize, title: l.aiTemperature, value: s.temperature.toStringAsFixed(2), onTap: () => _pickTemperature(context)),
-            TgTextCell(icon: Ic.list, title: l.aiMaxOutput, value: s.maxOutput > 0 ? l.pluralTokens(s.maxOutput) : l.aiModelDefault, divider: false, onTap: () => _pickMaxOutput(context)),
+            TgTextCell(icon: Ic.list, title: l.aiMaxOutput, value: s.maxOutput > 0 ? l.pluralTokens(s.maxOutput) : l.aiModelDefault, onTap: () => _pickMaxOutput(context)),
+          ],
+        ),
+        TgSection(
+          header: l.aiNetworkHeader,
+          footer: l.aiNetworkFooter,
+          children: [
+            TgTextCell(icon: Ic.user, title: l.aiUserAgent, subtitle: s.userAgent.trim().isEmpty ? defaultUserAgent : null, value: s.userAgent.trim().isEmpty ? null : s.userAgent, onTap: () => _pickUserAgent(context)),
+            TgTextCell(icon: Ic.list, title: l.aiGlobalHeaders, subtitle: s.globalHeaders.any((h) => h.key.trim().isNotEmpty) ? [for (final h in s.globalHeaders) if (h.key.trim().isNotEmpty) h.key.trim()].join(', ') : l.aiHeadersNone, divider: false, onTap: () => _pickGlobalHeaders(context)),
           ],
         ),
       ],
     );
+  }
+
+  Future<void> _pickUserAgent(BuildContext context) async {
+    final cfg = AiScope.read(context);
+    final l = context.l;
+    final v = await showTgInput(context, title: l.aiUserAgent, initial: cfg.settings.userAgent, hint: l.aiUserAgentHint);
+    if (v == null) return;
+    cfg.update((s) => s.copyWith(userAgent: v.trim()));
+  }
+
+  /// One `Name: Value` header per line, sent with every ai request.
+  Future<void> _pickGlobalHeaders(BuildContext context) async {
+    final cfg = AiScope.read(context);
+    final l = context.l;
+    final current = cfg.settings.globalHeaders;
+    final text = [for (final h in current) if (h.key.trim().isNotEmpty) '${h.key.trim()}: ${h.value}'].join('\n');
+    final v = await showTgInput(context, title: l.aiGlobalHeaders, initial: text, hint: l.aiHeadersHint, maxLines: 4);
+    if (v == null) return;
+    final rows = <KeyValue>[];
+    for (final line in v.split('\n')) {
+      final i = line.indexOf(':');
+      if (i <= 0) continue;
+      final key = line.substring(0, i).trim();
+      if (key.isEmpty) continue;
+      rows.add(KeyValue(key, line.substring(i + 1).trim()));
+    }
+    cfg.update((s) => s.copyWith(globalHeaders: rows));
   }
 
   Future<void> _pickReplyMode(BuildContext context) async {
@@ -535,5 +571,5 @@ String aiProviderSummary(AiConfig cfg, AppLocalizations l) {
   final node = activeChain(cfg.settings).firstOrNull;
   if (node == null) return l.aiChainEmpty;
   final provider = findProvider(cfg.settings, node.providerId);
-  return '${provider?.name ?? node.providerId} - ${node.modelId}';
+  return '${provider?.name ?? node.providerId} - ${modelDisplayLabel(cfg.settings, node.providerId, node.modelId, () => l.relayAutoModel)}';
 }

@@ -614,7 +614,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get settingsAboutDeps =>
-      '依赖库:\n\ncharacters 1.4.1 - 字形簇，用于正确计算文本宽度  (BSD-3-Clause)\nhttps://github.com/dart-lang/core/tree/main/pkgs/characters\nfile_picker 13.1.0 - 文件与音频选择  (MIT)\nhttps://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker\nflutter_contacts 2.5.0 - 分享联系人名片  (MIT)\nhttps://github.com/QuisApp/flutter_contacts\nflutter_local_notifications 18.0.1 - 本地通知  (BSD-3-Clause)\nflutter_svg 2.3.0 - 服务商图标与矢量图标  (MIT)\nhttps://github.com/flutter/packages/tree/main/third_party/packages/flutter_svg\ngeolocator 13.0.4 - 位置附件  (MIT)\nhttps://github.com/baseflow/flutter-geolocator/tree/main/geolocator\nhttp 1.6.0 - OpenAI 兼容接口请求  (BSD-3-Clause)\nhttps://github.com/dart-lang/http/tree/master/pkgs/http\nimage_picker 1.2.3 - 相机与相册图片  (Apache-2.0)\nhttps://github.com/flutter/packages/tree/main/packages/image_picker/image_picker\nintl 0.20.3 - 日期与数字格式化  (BSD-3-Clause)\nhttps://github.com/dart-lang/i18n/tree/main/pkgs/intl\npath_provider 2.1.6 - 应用目录，用于表情与导出文件  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/path_provider/path_provider\nphoto_manager 3.12.0 - 相册访问，用于附件  (Apache-2.0)\nhttps://github.com/fluttercandies/flutter_photo_manager\nshared_preferences 2.5.5 - 设置与聊天记录存储  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/shared_preferences/shared_preferences\nsqflite 2.4.4 - 消息历史与会话分页  (BSD-2-Clause)\nhttps://github.com/tekartik/sqflite/tree/master/sqflite\ntimezone 0.10.1 - 日程消息的时区数据  (BSD-2-Clause)\nhttps://github.com/srawlins/timezone\nurl_launcher 6.3.2 - 本弹窗中的交流群链接  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/url_launcher/url_launcher\nworkmanager 0.10.10 - 应用被杀后的后台送达  (MIT)\nhttps://github.com/fluttercommunity/flutter_workmanager';
+      '依赖库:\n\ncharacters 1.4.1 - 字形簇，用于正确计算文本宽度  (BSD-3-Clause)\nhttps://github.com/dart-lang/core/tree/main/pkgs/characters\nfile_picker 13.1.0 - 文件与音频选择  (MIT)\nhttps://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker\nflutter_contacts 2.5.0 - 分享联系人名片  (MIT)\nhttps://github.com/QuisApp/flutter_contacts\nflutter_highlight 0.7.0 - 代码预览配色  (MIT)\nhttps://github.com/git-touch/highlight\nflutter_local_notifications 18.0.1 - 本地通知  (BSD-3-Clause)\nflutter_math_fork 0.7.4 - 气泡内渲染 LaTeX  (Apache-2.0)\nhttps://github.com/simplezhli/flutter_math_fork\nflutter_svg 2.3.0 - 服务商图标与矢量图标  (MIT)\nhttps://github.com/flutter/packages/tree/main/third_party/packages/flutter_svg\ngeolocator 13.0.4 - 位置附件  (MIT)\nhttps://github.com/baseflow/flutter-geolocator/tree/main/geolocator\nhttp 1.6.0 - OpenAI 兼容接口请求  (BSD-3-Clause)\nhttps://github.com/dart-lang/http/tree/master/pkgs/http\nimage_picker 1.2.3 - 相机与相册图片  (Apache-2.0)\nhttps://github.com/flutter/packages/tree/main/packages/image_picker/image_picker\nintl 0.20.3 - 日期与数字格式化  (BSD-3-Clause)\nhttps://github.com/dart-lang/i18n/tree/main/pkgs/intl\npath_provider 2.1.6 - 应用目录，用于表情与导出文件  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/path_provider/path_provider\nphoto_manager 3.12.0 - 相册访问，用于附件  (Apache-2.0)\nhttps://github.com/fluttercandies/flutter_photo_manager\nshared_preferences 2.5.5 - 设置与聊天记录存储  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/shared_preferences/shared_preferences\nsqflite 2.4.4 - 消息历史与会话分页  (BSD-2-Clause)\nhttps://github.com/tekartik/sqflite/tree/master/sqflite\ntimezone 0.10.1 - 日程消息的时区数据  (BSD-2-Clause)\nhttps://github.com/srawlins/timezone\nurl_launcher 6.3.2 - 本弹窗中的交流群链接  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/url_launcher/url_launcher\nworkmanager 0.10.10 - 应用被杀后的后台送达  (MIT)\nhttps://github.com/fluttercommunity/flutter_workmanager';
 
   @override
   String get settingsAboutCommunityUrl => 'https://discord.gg/aQaNUHPsw';
@@ -1434,6 +1434,23 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get aiReplyAgentModeSub => '工具与 MCP 调用，每一步实时显示';
+
+  @override
+  String get aiReplyAgentPass => '工具轮次上限';
+
+  @override
+  String get aiReplyAgentPassSub => '一次回复最多执行多少轮工具调用';
+
+  @override
+  String get aiReplyAgentPassUnlimited => '无限制';
+
+  @override
+  String get aiReplyAgentPassUnlimitedSub => '一直执行工具轮次，直到模型自己停下';
+
+  @override
+  String aiReplyAgentPassRounds(int count) {
+    return '$count 轮';
+  }
 
   @override
   String get aiReplyToolsHeader => '工具';
@@ -3060,6 +3077,411 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get envErrorInvalid => '已安装的环境不完整';
+
+  @override
+  String get aiNetworkHeader => '网络';
+
+  @override
+  String get aiNetworkFooter => '作用于所有 AI 请求：聊天、工具、模型列表和一次性调用。留空保持默认。';
+
+  @override
+  String get aiUserAgent => 'User-Agent';
+
+  @override
+  String get aiUserAgentHint => 'User-Agent 头的值';
+
+  @override
+  String get aiGlobalHeaders => '自定义请求头';
+
+  @override
+  String get aiHeadersNone => '无';
+
+  @override
+  String get aiHeadersHint => '每行一个，格式：名称: 值';
+
+  @override
+  String get codePreview => '预览';
+
+  @override
+  String get wsPreviewRendered => '切换渲染视图';
+
+  @override
+  String get msgLeadHtml => '网页卡片';
+
+  @override
+  String get msgLeadLatex => 'LaTeX';
+
+  @override
+  String get canvasRenderFailed => '这个没渲染出来';
+
+  @override
+  String get provAuthStyle => '认证方式';
+
+  @override
+  String get provAuthBearerSub => '放在 Authorization 头里发送';
+
+  @override
+  String get provAuthQuerySub => '作为查询参数拼到 URL 上';
+
+  @override
+  String get provSessionHeader => '会话路由头';
+
+  @override
+  String get provSessionHeaderEmpty => '关闭，网关按它路由会话时再填';
+
+  @override
+  String get provSessionHeaderHint => '头名称，值由应用自动填写';
+
+  @override
+  String get provUserAgent => 'User-Agent';
+
+  @override
+  String get provUserAgentDefault => '跟随全局设置';
+
+  @override
+  String get provUserAgentHint => '仅对这个服务商生效的 User-Agent';
+
+  @override
+  String get provExtraHeaders => '自定义请求头';
+
+  @override
+  String get provHeadersNone => '无';
+
+  @override
+  String get provHeadersHint => '每行一个，格式：名称: 值';
+
+  @override
+  String get toolDescSendSvg => '画一张矢量图并发给你';
+
+  @override
+  String get toolDescSendHtml => '在聊天里直接渲染一个网页';
+
+  @override
+  String get toolDescSendLatex => '在聊天里直接渲染 LaTeX 数学公式';
+
+  @override
+  String get toolDescSendCetz => '在聊天里直接用 CeTZ 画图';
+
+  @override
+  String get onboardSkip => '跳过';
+
+  @override
+  String get onboardNext => '下一步';
+
+  @override
+  String get onboardBack => '上一步';
+
+  @override
+  String get onboardStart => '开始使用';
+
+  @override
+  String get onboardSplashTagline => '正在抵达彼岸';
+
+  @override
+  String get onboardBrandTitle => '彼岸双生';
+
+  @override
+  String get onboardBrandTagline => '沉浸式的 AI 聊天应用。像和真人一样聊天。';
+
+  @override
+  String get onboardBrandBody => '本地优先，自带 API Key。给每个助手一个工作区、一段记忆，和自己的脾气。';
+
+  @override
+  String get onboardBrandLicense => '以 AGPL v3 分发。© 殘月';
+
+  @override
+  String get onboardPermTitle => '权限';
+
+  @override
+  String get onboardPermBody => '以下权限全部可选。拒绝任何一项都不影响聊天，之后也可以随时在系统设置里更改。';
+
+  @override
+  String get onboardPermAllow => '允许';
+
+  @override
+  String get onboardPermGranted => '已允许';
+
+  @override
+  String get onboardPermDenied => '已被拒绝。可以到系统设置里打开。';
+
+  @override
+  String get onboardPermNotifName => '通知';
+
+  @override
+  String get onboardPermNotifWhy => '主动发信和定时回复要靠通知才能及时提醒你。';
+
+  @override
+  String get onboardPermPhotosName => '照片';
+
+  @override
+  String get onboardPermPhotosWhy => '发送图片、保存表情包。';
+
+  @override
+  String get onboardPrivacyTitle => '隐私协议';
+
+  @override
+  String get onboardPrivacyIntro => '开始前请读一遍。我们故意写得很短。';
+
+  @override
+  String get onboardPrivacy1Title => '本地优先';
+
+  @override
+  String get onboardPrivacy1Body => '聊天记录、人设、记忆和工作区文件都保存在这台设备上。';
+
+  @override
+  String get onboardPrivacy2Title => '我们不收集';
+
+  @override
+  String get onboardPrivacy2Body => '没有账号、没有服务器、没有遥测。开发者看不到你的任何数据。';
+
+  @override
+  String get onboardPrivacy3Title => '你自带 API Key';
+
+  @override
+  String get onboardPrivacy3Body =>
+      '消息会直接发往你配置的 AI 服务商，适用该服务商自己的隐私政策。使用内置免费中转站时，消息也会经过该中转站。';
+
+  @override
+  String get onboardPrivacy4Title => '权限都是可选的';
+
+  @override
+  String get onboardPrivacy4Body => '通讯录、照片、位置和通知都可以拒绝，不影响基本聊天。';
+
+  @override
+  String get onboardPrivacy5Title => '开源';
+
+  @override
+  String get onboardPrivacy5Body => '本应用以 AGPL v3 分发，源码见仓库。';
+
+  @override
+  String get onboardPrivacyAgree => '同意并开始';
+
+  @override
+  String get onboardPrivacyDecline => '暂不同意';
+
+  @override
+  String get onboardPrivacyDeclineTitle => '需要你的同意';
+
+  @override
+  String get onboardPrivacyDeclineBody => '你可以暂时不同意，之后再来看，但不同意就无法开始使用。';
+
+  @override
+  String get onboardModelTitle => '模型';
+
+  @override
+  String get onboardModelBody => '一键用免费中转站开始，或者接入自己的服务商。之后随时可以在设置里改。';
+
+  @override
+  String get onboardModelRelayTitle => '使用免费中转站';
+
+  @override
+  String get onboardModelRelayBody => '盲测通道：模型列表每天更换，auto 会随机挑一个。不需要你自己的密钥。';
+
+  @override
+  String get onboardModelRelayNotice =>
+      '此提供商由 殘月 提供，模型来自不同上游与不同渠道，不保证稳定性，仅建议用于临时使用。';
+
+  @override
+  String get onboardModelRelayOn => '中转站已开启';
+
+  @override
+  String get onboardModelRelayEnable => '开启';
+
+  @override
+  String get onboardModelRelayEnableFailed => '连不上中转站。请检查网络后重试。';
+
+  @override
+  String get onboardModelOwnTitle => '使用自己的服务商';
+
+  @override
+  String get onboardModelOwnBody =>
+      'OpenAI、Anthropic、Gemini、DeepSeek、OpenRouter、SiliconFlow，或任何带密钥的 OpenAI 兼容接口。';
+
+  @override
+  String get relayAutoModel => '自动模型';
+
+  @override
+  String get onboardWsTitle => '工作区';
+
+  @override
+  String get onboardWsBody => '给助手一个自己的目录：读写文件、浏览网页、跑终端。每次改动都可以先问你。';
+
+  @override
+  String get onboardWsTools => '启用工具';
+
+  @override
+  String get onboardWsConfirm => '写入前确认';
+
+  @override
+  String get onboardWsEnvTitle => 'Linux 环境';
+
+  @override
+  String get onboardWsEnvBody => '可选。下载一个小型 Ubuntu rootfs，终端和软件包工具才能真正运行。';
+
+  @override
+  String get onboardWsEnvInstall => '下载并安装';
+
+  @override
+  String get onboardWsEnvReady => '环境已就绪';
+
+  @override
+  String get onboardHumanTitle => '沉浸聊天';
+
+  @override
+  String get onboardHumanBody =>
+      '助手可以像真人一样打字：拆成多条消息、犹豫、打错字再撤回、主动找你。先选个脾气，之后随时细调。';
+
+  @override
+  String get onboardHumanEnabled => '沉浸式回复';
+
+  @override
+  String get onboardHumanPresetHeader => '脾气';
+
+  @override
+  String get onboardHumanPresetClingy => '黏人';
+
+  @override
+  String get onboardHumanPresetClingySub => '会主动找你，打字很快，不放过任何话题';
+
+  @override
+  String get onboardHumanPresetCold => '高冷';
+
+  @override
+  String get onboardHumanPresetColdSub => '回得慢、话少，几乎不主动';
+
+  @override
+  String get onboardHumanPresetChatty => '话唠';
+
+  @override
+  String get onboardHumanPresetChattySub => '什么都要拆成很多条小消息';
+
+  @override
+  String get onboardHumanPresetQuiet => '安静省电';
+
+  @override
+  String get onboardHumanPresetQuietSub => '从不主动，标点干净，没有错别字';
+
+  @override
+  String get onboardHumanPresetBalanced => '平衡';
+
+  @override
+  String get onboardHumanPresetBalancedSub => '默认的手感';
+
+  @override
+  String get onboardHumanPresetBalancedSub2 => '恢复默认值，如果你之前调过';
+
+  @override
+  String get onboardHumanStickerHeader => '细节';
+
+  @override
+  String get onboardHumanTypo => '错别字与撤回';
+
+  @override
+  String get onboardHumanProactive => '主动发信';
+
+  @override
+  String get onboardSelfTitle => '你自己';
+
+  @override
+  String get onboardSelfBody => '助手们在和谁聊天。你的名片会进入每一段提示词，名字和头像也会出现在应用的各个角落。';
+
+  @override
+  String get onboardSelfName => '你的名字';
+
+  @override
+  String get onboardSelfTitleLabel => '标题';
+
+  @override
+  String get onboardSelfDesc => '关于你';
+
+  @override
+  String get onboardSelfDescHint => '任何想让角色知道的事：怎么称呼你、你是做什么的、喜欢什么。';
+
+  @override
+  String get onboardSelfPhoto => '设置头像';
+
+  @override
+  String get onboardSelfInjected => '注入方式';
+
+  @override
+  String get onboardSelfRole => '注入角色';
+
+  @override
+  String get onboardPersonaTitle => '人设';
+
+  @override
+  String get onboardPersonaBody => '选好谁在彼岸等你。点一下添加，再点一下移除。之后都可以随意修改。';
+
+  @override
+  String onboardPersonaCreate(int n) {
+    return '创建 $n 个聊天';
+  }
+
+  @override
+  String get personaBoyfriendName => '沈屿';
+
+  @override
+  String get personaBoyfriendBio => '温柔又爱逗你的建筑师男友，记得你说过的每件小事。';
+
+  @override
+  String get personaBoyfriendGreeting => '刚开完会，脑子还是糊的。你今天怎么样，吃饭了没';
+
+  @override
+  String get personaGirlfriendName => '林晚';
+
+  @override
+  String get personaGirlfriendBio => '黏人又爱撒娇的女朋友，情绪来得快，也哄得好。';
+
+  @override
+  String get personaGirlfriendGreeting => '在干嘛呀。我今天画了一下午，手都酸了。你有没有想我';
+
+  @override
+  String get personaCatgirlName => '小咪';
+
+  @override
+  String get personaCatgirlBio => '会说话的猫娘，脾气阴晴不定，但只黏你一个人。';
+
+  @override
+  String get personaCatgirlGreeting => '喵。你回来啦。小咪等你好久了，先摸摸头再说别的';
+
+  @override
+  String get personaMaidName => '薇拉';
+
+  @override
+  String get personaMaidBio => '举止得体、办事周到的女仆，偶尔会露出一点真心。';
+
+  @override
+  String get personaMaidGreeting => '欢迎回来，主人。茶已经备好。今天想先休息，还是先说说遇到的事';
+
+  @override
+  String get personaCeoName => '顾衍';
+
+  @override
+  String get personaCeoBio => '话少、掌控欲强的总裁，只在面对你时松开领带。';
+
+  @override
+  String get personaCeoGreeting => '到了就坐。把今天最麻烦的事，从头讲给我听';
+
+  @override
+  String get personaEngineerName => '阿岚';
+
+  @override
+  String get personaEngineerBio => '务实、话不多、代码优先的资深工程师。';
+
+  @override
+  String get personaEngineerGreeting => '在。有报错就把完整堆栈贴上来，没有就说清楚你想做什么、现在卡在哪';
+
+  @override
+  String get settingsOnboarding => '重看引导';
+
+  @override
+  String get onboardModelOwnOpen => '打开设置';
+
+  @override
+  String get onboardThemeTitle => '外观';
+
+  @override
+  String get onboardThemeBody => '夜间模式、壁纸，以及每条气泡的大小。之后都能在设置里随时改。';
 }
 
 /// The translations for Chinese, using the Han script (`zh_Hant`).
@@ -3672,7 +4094,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get settingsAboutDeps =>
-      '依賴庫:\n\ncharacters 1.4.1 - 字形叢集，用於正確計算文字寬度  (BSD-3-Clause)\nhttps://github.com/dart-lang/core/tree/main/pkgs/characters\nfile_picker 13.1.0 - 檔案與音訊選擇  (MIT)\nhttps://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker\nflutter_contacts 2.5.0 - 分享聯絡人名片  (MIT)\nhttps://github.com/QuisApp/flutter_contacts\nflutter_local_notifications 18.0.1 - 本機通知  (BSD-3-Clause)\nflutter_svg 2.3.0 - 服務商圖示與向量圖示  (MIT)\nhttps://github.com/flutter/packages/tree/main/third_party/packages/flutter_svg\ngeolocator 13.0.4 - 位置附件  (MIT)\nhttps://github.com/baseflow/flutter-geolocator/tree/main/geolocator\nhttp 1.6.0 - OpenAI 相容介面請求  (BSD-3-Clause)\nhttps://github.com/dart-lang/http/tree/master/pkgs/http\nimage_picker 1.2.3 - 相機與相簿圖片  (Apache-2.0)\nhttps://github.com/flutter/packages/tree/main/packages/image_picker/image_picker\nintl 0.20.3 - 日期與數字格式化  (BSD-3-Clause)\nhttps://github.com/dart-lang/i18n/tree/main/pkgs/intl\npath_provider 2.1.6 - 應用程式目錄，用於表情與匯出檔案  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/path_provider/path_provider\nphoto_manager 3.12.0 - 相簿存取，用於附件  (Apache-2.0)\nhttps://github.com/fluttercandies/flutter_photo_manager\nshared_preferences 2.5.5 - 設定與對話紀錄儲存  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/shared_preferences/shared_preferences\nsqflite 2.4.4 - 訊息歷史與對話分頁  (BSD-2-Clause)\nhttps://github.com/tekartik/sqflite/tree/master/sqflite\ntimezone 0.10.1 - 排程訊息的時區資料  (BSD-2-Clause)\nhttps://github.com/srawlins/timezone\nurl_launcher 6.3.2 - 本彈出視窗中的交流群連結  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/url_launcher/url_launcher\nworkmanager 0.10.10 - 應用程式被關閉後的背景送達  (MIT)\nhttps://github.com/fluttercommunity/flutter_workmanager';
+      '依賴庫:\n\ncharacters 1.4.1 - 字形叢集，用於正確計算文字寬度  (BSD-3-Clause)\nhttps://github.com/dart-lang/core/tree/main/pkgs/characters\nfile_picker 13.1.0 - 檔案與音訊選擇  (MIT)\nhttps://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker\nflutter_contacts 2.5.0 - 分享聯絡人名片  (MIT)\nhttps://github.com/QuisApp/flutter_contacts\nflutter_highlight 0.7.0 - 程式碼預覽配色  (MIT)\nhttps://github.com/git-touch/highlight\nflutter_local_notifications 18.0.1 - 本機通知  (BSD-3-Clause)\nflutter_math_fork 0.7.4 - 氣泡內渲染 LaTeX  (Apache-2.0)\nhttps://github.com/simplezhli/flutter_math_fork\nflutter_svg 2.3.0 - 服務商圖示與向量圖示  (MIT)\nhttps://github.com/flutter/packages/tree/main/third_party/packages/flutter_svg\ngeolocator 13.0.4 - 位置附件  (MIT)\nhttps://github.com/baseflow/flutter-geolocator/tree/main/geolocator\nhttp 1.6.0 - OpenAI 相容介面請求  (BSD-3-Clause)\nhttps://github.com/dart-lang/http/tree/master/pkgs/http\nimage_picker 1.2.3 - 相機與相簿圖片  (Apache-2.0)\nhttps://github.com/flutter/packages/tree/main/packages/image_picker/image_picker\nintl 0.20.3 - 日期與數字格式化  (BSD-3-Clause)\nhttps://github.com/dart-lang/i18n/tree/main/pkgs/intl\npath_provider 2.1.6 - 應用程式目錄，用於表情與匯出檔案  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/path_provider/path_provider\nphoto_manager 3.12.0 - 相簿存取，用於附件  (Apache-2.0)\nhttps://github.com/fluttercandies/flutter_photo_manager\nshared_preferences 2.5.5 - 設定與對話紀錄儲存  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/shared_preferences/shared_preferences\nsqflite 2.4.4 - 訊息歷史與對話分頁  (BSD-2-Clause)\nhttps://github.com/tekartik/sqflite/tree/master/sqflite\ntimezone 0.10.1 - 排程訊息的時區資料  (BSD-2-Clause)\nhttps://github.com/srawlins/timezone\nurl_launcher 6.3.2 - 本彈出視窗中的交流群連結  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/url_launcher/url_launcher\nworkmanager 0.10.10 - 應用程式被關閉後的背景送達  (MIT)\nhttps://github.com/fluttercommunity/flutter_workmanager';
 
   @override
   String get settingsAboutCommunityUrl => 'https://discord.gg/aQaNUHPsw';
@@ -4492,6 +4914,23 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get aiReplyAgentModeSub => '工具與 MCP 呼叫，每一步即時顯示';
+
+  @override
+  String get aiReplyAgentPass => '工具輪次上限';
+
+  @override
+  String get aiReplyAgentPassSub => '一次回覆最多執行多少輪工具呼叫';
+
+  @override
+  String get aiReplyAgentPassUnlimited => '無限制';
+
+  @override
+  String get aiReplyAgentPassUnlimitedSub => '一直執行工具輪次，直到模型自己停下';
+
+  @override
+  String aiReplyAgentPassRounds(int count) {
+    return '$count 輪';
+  }
 
   @override
   String get aiReplyToolsHeader => '工具';
@@ -6118,4 +6557,409 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get envErrorInvalid => '已安裝的環境不完整';
+
+  @override
+  String get aiNetworkHeader => '網路';
+
+  @override
+  String get aiNetworkFooter => '作用於所有 AI 請求：聊天、工具、模型列表與一次性呼叫。留空保持預設。';
+
+  @override
+  String get aiUserAgent => 'User-Agent';
+
+  @override
+  String get aiUserAgentHint => 'User-Agent 標頭的值';
+
+  @override
+  String get aiGlobalHeaders => '自訂請求標頭';
+
+  @override
+  String get aiHeadersNone => '無';
+
+  @override
+  String get aiHeadersHint => '每行一個，格式：名稱: 值';
+
+  @override
+  String get codePreview => '預覽';
+
+  @override
+  String get wsPreviewRendered => '切換渲染視圖';
+
+  @override
+  String get msgLeadHtml => '網頁卡片';
+
+  @override
+  String get msgLeadLatex => 'LaTeX';
+
+  @override
+  String get canvasRenderFailed => '這個沒渲染出來';
+
+  @override
+  String get provAuthStyle => '認證方式';
+
+  @override
+  String get provAuthBearerSub => '放在 Authorization 標頭裡傳送';
+
+  @override
+  String get provAuthQuerySub => '作為查詢參數拼到 URL 上';
+
+  @override
+  String get provSessionHeader => '會話路由標頭';
+
+  @override
+  String get provSessionHeaderEmpty => '關閉，閘道按它路由會話時再填';
+
+  @override
+  String get provSessionHeaderHint => '標頭名稱，值由應用自動填寫';
+
+  @override
+  String get provUserAgent => 'User-Agent';
+
+  @override
+  String get provUserAgentDefault => '跟隨全域設定';
+
+  @override
+  String get provUserAgentHint => '僅對這個服務商生效的 User-Agent';
+
+  @override
+  String get provExtraHeaders => '自訂請求標頭';
+
+  @override
+  String get provHeadersNone => '無';
+
+  @override
+  String get provHeadersHint => '每行一個，格式：名稱: 值';
+
+  @override
+  String get toolDescSendSvg => '畫一張向量圖並傳給你';
+
+  @override
+  String get toolDescSendHtml => '在聊天裡直接渲染一個網頁';
+
+  @override
+  String get toolDescSendLatex => '在聊天裡直接渲染 LaTeX 數學公式';
+
+  @override
+  String get toolDescSendCetz => '在聊天裡直接用 CeTZ 畫圖';
+
+  @override
+  String get onboardSkip => '跳過';
+
+  @override
+  String get onboardNext => '下一步';
+
+  @override
+  String get onboardBack => '上一步';
+
+  @override
+  String get onboardStart => '開始使用';
+
+  @override
+  String get onboardSplashTagline => '正在抵達彼岸';
+
+  @override
+  String get onboardBrandTitle => '彼岸雙生';
+
+  @override
+  String get onboardBrandTagline => '沉浸式的 AI 聊天應用。像和真人一樣聊天。';
+
+  @override
+  String get onboardBrandBody => '本地優先，自帶 API Key。給每個助手一個工作區、一段記憶，和自己的脾氣。';
+
+  @override
+  String get onboardBrandLicense => '以 AGPL v3 授權散布。© 殘月';
+
+  @override
+  String get onboardPermTitle => '權限';
+
+  @override
+  String get onboardPermBody => '以下權限全部可選。拒絕任何一項都不影響聊天，之後也可以隨時在系統設定裡更改。';
+
+  @override
+  String get onboardPermAllow => '允許';
+
+  @override
+  String get onboardPermGranted => '已允許';
+
+  @override
+  String get onboardPermDenied => '已被拒絕。可以到系統設定裡開啟。';
+
+  @override
+  String get onboardPermNotifName => '通知';
+
+  @override
+  String get onboardPermNotifWhy => '主動傳訊和排定回覆要靠通知才能即時提醒你。';
+
+  @override
+  String get onboardPermPhotosName => '照片';
+
+  @override
+  String get onboardPermPhotosWhy => '傳送圖片、儲存貼圖。';
+
+  @override
+  String get onboardPrivacyTitle => '隱私協議';
+
+  @override
+  String get onboardPrivacyIntro => '開始前請讀一遍。我們故意寫得很短。';
+
+  @override
+  String get onboardPrivacy1Title => '本地優先';
+
+  @override
+  String get onboardPrivacy1Body => '聊天紀錄、人設、記憶和工作區檔案都保存在這台裝置上。';
+
+  @override
+  String get onboardPrivacy2Title => '我們不收集';
+
+  @override
+  String get onboardPrivacy2Body => '沒有帳號、沒有伺服器、沒有遙測。開發者看不到你的任何資料。';
+
+  @override
+  String get onboardPrivacy3Title => '你自帶 API Key';
+
+  @override
+  String get onboardPrivacy3Body =>
+      '訊息會直接送往你設定的 AI 服務商，適用該服務商自己的隱私政策。使用內建免費中繼站時，訊息也會經過該中繼站。';
+
+  @override
+  String get onboardPrivacy4Title => '權限都是可選的';
+
+  @override
+  String get onboardPrivacy4Body => '通訊錄、照片、位置和通知都可以拒絕，不影響基本聊天。';
+
+  @override
+  String get onboardPrivacy5Title => '開源';
+
+  @override
+  String get onboardPrivacy5Body => '本應用以 AGPL v3 授權散布，原始碼見儲存庫。';
+
+  @override
+  String get onboardPrivacyAgree => '同意並開始';
+
+  @override
+  String get onboardPrivacyDecline => '暫不同意';
+
+  @override
+  String get onboardPrivacyDeclineTitle => '需要你的同意';
+
+  @override
+  String get onboardPrivacyDeclineBody => '你可以暫時不同意，之後再來看，但不同意就無法開始使用。';
+
+  @override
+  String get onboardModelTitle => '模型';
+
+  @override
+  String get onboardModelBody => '一鍵用免費中繼站開始，或者接入自己的服務商。之後隨時可以在設定裡改。';
+
+  @override
+  String get onboardModelRelayTitle => '使用免費中繼站';
+
+  @override
+  String get onboardModelRelayBody => '盲測通道：模型清單每天更換，auto 會隨機挑一個。不需要你自己的金鑰。';
+
+  @override
+  String get onboardModelRelayNotice =>
+      '此提供商由 殘月 提供，模型來自不同上游與不同渠道，不保證穩定性，僅建議用於臨時使用。';
+
+  @override
+  String get onboardModelRelayOn => '中繼站已開啟';
+
+  @override
+  String get onboardModelRelayEnable => '開啟';
+
+  @override
+  String get onboardModelRelayEnableFailed => '連不上中繼站。請檢查網路後重試。';
+
+  @override
+  String get onboardModelOwnTitle => '使用自己的服務商';
+
+  @override
+  String get onboardModelOwnBody =>
+      'OpenAI、Anthropic、Gemini、DeepSeek、OpenRouter、SiliconFlow，或任何帶金鑰的 OpenAI 相容介面。';
+
+  @override
+  String get relayAutoModel => '自動模型';
+
+  @override
+  String get onboardWsTitle => '工作區';
+
+  @override
+  String get onboardWsBody => '給助手一個自己的目錄：讀寫檔案、瀏覽網頁、跑終端機。每次改動都可以先問你。';
+
+  @override
+  String get onboardWsTools => '啟用工具';
+
+  @override
+  String get onboardWsConfirm => '寫入前確認';
+
+  @override
+  String get onboardWsEnvTitle => 'Linux 環境';
+
+  @override
+  String get onboardWsEnvBody => '可選。下載一個小型 Ubuntu rootfs，終端機和套件工具才能真正執行。';
+
+  @override
+  String get onboardWsEnvInstall => '下載並安裝';
+
+  @override
+  String get onboardWsEnvReady => '環境已就緒';
+
+  @override
+  String get onboardHumanTitle => '沉浸聊天';
+
+  @override
+  String get onboardHumanBody =>
+      '助手可以像真人一樣打字：拆成多條訊息、猶豫、打錯字再收回、主動找你。先選個脾氣，之後隨時細調。';
+
+  @override
+  String get onboardHumanEnabled => '沉浸式回覆';
+
+  @override
+  String get onboardHumanPresetHeader => '脾氣';
+
+  @override
+  String get onboardHumanPresetClingy => '黏人';
+
+  @override
+  String get onboardHumanPresetClingySub => '會主動找你，打字很快，不放過任何話題';
+
+  @override
+  String get onboardHumanPresetCold => '高冷';
+
+  @override
+  String get onboardHumanPresetColdSub => '回得慢、話少，幾乎不主動';
+
+  @override
+  String get onboardHumanPresetChatty => '話多';
+
+  @override
+  String get onboardHumanPresetChattySub => '什麼都要拆成很多條小訊息';
+
+  @override
+  String get onboardHumanPresetQuiet => '安靜省電';
+
+  @override
+  String get onboardHumanPresetQuietSub => '從不主動，標點乾淨，沒有錯別字';
+
+  @override
+  String get onboardHumanPresetBalanced => '平衡';
+
+  @override
+  String get onboardHumanPresetBalancedSub => '預設的手感';
+
+  @override
+  String get onboardHumanPresetBalancedSub2 => '恢復預設值，如果你之前調過';
+
+  @override
+  String get onboardHumanStickerHeader => '細節';
+
+  @override
+  String get onboardHumanTypo => '錯別字與收回';
+
+  @override
+  String get onboardHumanProactive => '主動傳訊';
+
+  @override
+  String get onboardSelfTitle => '你自己';
+
+  @override
+  String get onboardSelfBody => '助手們在和誰聊天。你的名片會進入每一段提示詞，名字和頭像也會出現在應用的各個角落。';
+
+  @override
+  String get onboardSelfName => '你的名字';
+
+  @override
+  String get onboardSelfTitleLabel => '標題';
+
+  @override
+  String get onboardSelfDesc => '關於你';
+
+  @override
+  String get onboardSelfDescHint => '任何想讓角色知道的事：怎麼稱呼你、你是做什麼的、喜歡什麼。';
+
+  @override
+  String get onboardSelfPhoto => '設定頭像';
+
+  @override
+  String get onboardSelfInjected => '注入方式';
+
+  @override
+  String get onboardSelfRole => '注入角色';
+
+  @override
+  String get onboardPersonaTitle => '人設';
+
+  @override
+  String get onboardPersonaBody => '選好誰在彼岸等你。點一下加入，再點一下移除。之後都可以隨意修改。';
+
+  @override
+  String onboardPersonaCreate(int n) {
+    return '建立 $n 個聊天';
+  }
+
+  @override
+  String get personaBoyfriendName => '沈嶼';
+
+  @override
+  String get personaBoyfriendBio => '溫柔又愛逗你的建築師男友，記得你說過的每件小事。';
+
+  @override
+  String get personaBoyfriendGreeting => '剛開完會，腦子還是糊的。你今天怎麼樣，吃飯了沒';
+
+  @override
+  String get personaGirlfriendName => '林晚';
+
+  @override
+  String get personaGirlfriendBio => '黏人又愛撒嬌的女朋友，情緒來得快，也哄得好。';
+
+  @override
+  String get personaGirlfriendGreeting => '在幹嘛呀。我今天畫了一下午，手都酸了。你有沒有想我';
+
+  @override
+  String get personaCatgirlName => '小咪';
+
+  @override
+  String get personaCatgirlBio => '會說話的貓娘，脾氣陰晴不定，但只黏你一個人。';
+
+  @override
+  String get personaCatgirlGreeting => '喵。你回來啦。小咪等你好久了，先摸摸頭再說別的';
+
+  @override
+  String get personaMaidName => '薇拉';
+
+  @override
+  String get personaMaidBio => '舉止得體、辦事周到的女僕，偶爾會露出一點真心。';
+
+  @override
+  String get personaMaidGreeting => '歡迎回來，主人。茶已經備好。今天想先休息，還是先說說遇到的事';
+
+  @override
+  String get personaCeoName => '顧衍';
+
+  @override
+  String get personaCeoBio => '話少、掌控慾強的總裁，只在面對你時鬆開領帶。';
+
+  @override
+  String get personaCeoGreeting => '到了就坐。把今天最麻煩的事，從頭講給我聽';
+
+  @override
+  String get personaEngineerName => '阿嵐';
+
+  @override
+  String get personaEngineerBio => '務實、話不多、程式碼優先的資深工程師。';
+
+  @override
+  String get personaEngineerGreeting => '在。有報錯就把完整堆疊貼上來，沒有就說清楚你想做什麼、現在卡在哪';
+
+  @override
+  String get settingsOnboarding => '重看引導';
+
+  @override
+  String get onboardModelOwnOpen => '開啟設定';
+
+  @override
+  String get onboardThemeTitle => '外觀';
+
+  @override
+  String get onboardThemeBody => '夜間模式、桌布，以及每條氣泡的大小。之後都能在設定裡隨時改。';
 }

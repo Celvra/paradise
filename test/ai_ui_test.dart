@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:paradise/app_info.dart';
 import 'package:paradise/data/ai/provider_model.dart';
 import 'package:paradise/data/ai_config.dart';
 import 'package:paradise/data/store.dart';
@@ -25,6 +26,9 @@ Future<(Store, AiConfig)> boot(WidgetTester t) async {
   final store = await Store.load();
   final ai = await AiConfig.load();
   store.attachAi(ai);
+  // the harness drives the settings screens, not the wizard: a store without
+  // the flag would land on the splash and then the onboarding instead
+  store.onboarded = true;
   await t.pumpWidget(TgApp(store: store, ai: ai));
   await settle(t);
   return (store, ai);
@@ -47,9 +51,9 @@ class _CounterPaneState extends State<_CounterPane> {
 }
 
 void main() {
-  testWidgets('ai screen lists the six built in providers', (t) async {
+  testWidgets('ai screen lists the seven built in providers', (t) async {
     final (_, ai) = await boot(t);
-    expect(ai.settings.providers.length, 6);
+    expect(ai.settings.providers.length, 7);
 
     await t.tap(find.text('Settings').last);
     await settle(t, 700);
@@ -63,7 +67,9 @@ void main() {
     expect(find.text('Anthropic'), findsOneWidget);
     expect(find.text('Google Gemini'), findsOneWidget);
     expect(find.text('DeepSeek'), findsOneWidget);
-    expect(find.text('Add Provider'), findsOneWidget);
+    expect(find.text('Object2 Relay'), findsOneWidget);
+    // the "Add Provider" row sits below the seven cells, off screen until the
+    // page scrolls, so it is not asserted here
   });
 
   testWidgets('no chain shows the empty banner copy', (t) async {
@@ -107,9 +113,126 @@ void main() {
     expect(find.text('Temperature'), findsOneWidget);
     expect(find.text(ai.settings.temperature.toStringAsFixed(2)), findsOneWidget);
     expect(find.text('Max output'), findsOneWidget);
+    // the network section is there, the user agent row shows the app default
+    expect(find.text('User-Agent'), findsOneWidget);
+    expect(find.text(defaultUserAgent), findsOneWidget);
+    expect(find.text('Custom request headers'), findsOneWidget);
+    expect(find.text('None'), findsOneWidget);
     expect(find.text('Extra system prompt'), findsNothing);
     // the markdown switch moved to the AI replies page
     expect(find.text('Strip markdown in character mode'), findsNothing);
+  });
+
+  testWidgets('a user agent typed in advanced settings writes through', (t) async {
+    final (_, ai) = await boot(t);
+    expect(ai.settings.userAgent, '');
+
+    await t.tap(find.text('Settings').last);
+    await settle(t, 700);
+    await t.tap(find.text('AI'));
+    await settle(t, 700);
+    await t.tap(find.text('Advanced'));
+    await settle(t, 500);
+
+    await t.tap(find.text('User-Agent'));
+    await settle(t, 700);
+    await t.enterText(find.byType(EditableText).last, 'ParadiseBot/3.0');
+    await settle(t, 300);
+    await t.tap(find.text('OK'));
+    await settle(t, 700);
+
+    expect(ai.settings.userAgent, 'ParadiseBot/3.0');
+    expect(find.text('ParadiseBot/3.0'), findsOneWidget);
+  });
+
+  testWidgets('global headers parse one Name: Value pair per line', (t) async {
+    final (_, ai) = await boot(t);
+
+    await t.tap(find.text('Settings').last);
+    await settle(t, 700);
+    await t.tap(find.text('AI'));
+    await settle(t, 700);
+    await t.tap(find.text('Advanced'));
+    await settle(t, 500);
+
+    await t.tap(find.text('Custom request headers'));
+    await settle(t, 700);
+    await t.enterText(find.byType(EditableText).last, 'X-Title: paradise\nHTTP-Referer: https://example.org\nnot a header\n');
+    await settle(t, 300);
+    await t.tap(find.text('OK'));
+    await settle(t, 700);
+
+    expect(ai.settings.globalHeaders, hasLength(2));
+    expect(ai.settings.globalHeaders.first.key, 'X-Title');
+    expect(ai.settings.globalHeaders.first.value, 'paradise');
+    expect(ai.settings.globalHeaders.last.key, 'HTTP-Referer');
+    // the row summarises the configured names
+    expect(find.textContaining('X-Title, HTTP-Referer'), findsOneWidget);
+
+    // reopening the editor prefills the saved pairs
+    await t.tap(find.text('Custom request headers'));
+    await settle(t, 700);
+    final field = t.widget<EditableText>(find.byType(EditableText).last);
+    expect(field.controller.text, 'X-Title: paradise\nHTTP-Referer: https://example.org');
+  });
+
+  testWidgets('the provider detail page exposes auth style session header and extra headers', (t) async {
+    final (_, ai) = await boot(t);
+    await t.tap(find.text('Settings').last);
+    await settle(t, 700);
+    await t.tap(find.text('AI'));
+    await settle(t, 700);
+    await t.tap(find.text('OpenAI'));
+    await settle(t, 800);
+
+    expect(find.text('Auth style'), findsOneWidget);
+    expect(find.text('Session header'), findsOneWidget);
+    expect(find.text('User-Agent'), findsOneWidget);
+    expect(find.text('Custom request headers'), findsOneWidget);
+
+    // the provider user agent writes through
+    await t.tap(find.text('User-Agent'));
+    await settle(t, 700);
+    await t.enterText(find.byType(EditableText).last, 'ProviderAgent/5');
+    await settle(t, 300);
+    await t.tap(find.text('OK'));
+    await settle(t, 700);
+
+    expect(ai.settings.providers.firstWhere((p) => p.id == 'openai').userAgent, 'ProviderAgent/5');
+
+    // the provider session header writes through
+    await t.tap(find.text('Session header'));
+    await settle(t, 700);
+    await t.enterText(find.byType(EditableText).last, 'x-my-session');
+    await settle(t, 300);
+    await t.tap(find.text('OK'));
+    await settle(t, 700);
+
+    expect(ai.settings.providers.firstWhere((p) => p.id == 'openai').sessionHeader, 'x-my-session');
+  });
+
+  testWidgets('picking an auth style writes through to the provider', (t) async {
+    final (_, ai) = await boot(t);
+    await t.tap(find.text('Settings').last);
+    await settle(t, 700);
+    await t.tap(find.text('AI'));
+    await settle(t, 700);
+    // seven provider cells push the add row below the fold; scroll to it
+    await t.scrollUntilVisible(find.text('Add Provider'), 200, scrollable: find.byType(Scrollable).last);
+    await settle(t, 300);
+    await t.tap(find.text('Add Provider'));
+    await settle(t, 700);
+    await t.enterText(find.byType(EditableText).last, 'My Relay');
+    await settle(t, 300);
+    await t.tap(find.text('OK'));
+    await drainBulletin(t);
+
+    await t.tap(find.text('Auth style'));
+    await settle(t, 700);
+    await t.tap(find.text('x-api-key'));
+    await settle(t, 700);
+
+    expect(ai.settings.providers.firstWhere((p) => p.name == 'My Relay').authStyle, AuthStyle.xApiKey);
   });
 
   testWidgets('the markdown switch lives on the AI replies page', (t) async {
@@ -238,6 +361,8 @@ void main() {
     await t.tap(find.text('OpenAI'));
     await settle(t, 800);
 
+    await t.scrollUntilVisible(find.text('Test connection'), 300, scrollable: find.byType(Scrollable).first);
+    await settle(t, 300);
     await t.tap(find.text('Test connection'));
     await drainBulletin(t);
 
@@ -276,7 +401,9 @@ void main() {
     await settle(t, 700);
     await t.tap(find.text('AI'));
     await settle(t, 700);
-
+    // seven provider cells push the add row below the fold; scroll to it
+    await t.scrollUntilVisible(find.text('Add Provider'), 200, scrollable: find.byType(Scrollable).last);
+    await settle(t, 300);
     await t.tap(find.text('Add Provider'));
     await settle(t, 700);
     await t.enterText(find.byType(EditableText).last, 'My Relay');
@@ -385,17 +512,20 @@ void main() {
 
   testWidgets('removing a provider drops its chain nodes and key', (t) async {
     final (_, ai) = await boot(t);
-    // built in providers cannot be deleted, so make a custom one first
-    ai.addProvider(Provider.defaults(id: 'relay', name: 'My Relay'));
-    ai.saveApiKey('relay', 'sk-relay');
-    ai.addChainNode('relay', 'some-model');
-    expect(ai.keyOf('relay'), 'sk-relay');
+    // built in providers cannot be deleted, so make a custom one first. Its id
+    // must not collide with the built-in `relay` provider.
+    ai.addProvider(Provider.defaults(id: 'custom_scratch', name: 'My Relay'));
+    ai.saveApiKey('custom_scratch', 'sk-relay');
+    ai.addChainNode('custom_scratch', 'some-model');
+    expect(ai.keyOf('custom_scratch'), 'sk-relay');
     expect(ai.settings.chain.length, 1);
 
     await t.tap(find.text('Settings').last);
     await settle(t, 700);
     await t.tap(find.text('AI'));
     await settle(t, 700);
+    await t.scrollUntilVisible(find.text('My Relay'), 200, scrollable: find.byType(Scrollable).last);
+    await settle(t, 300);
     await t.tap(find.text('My Relay'));
     await settle(t, 800);
 
@@ -411,9 +541,9 @@ void main() {
     await t.tap(find.text('Delete'));
     await drainBulletin(t);
 
-    expect(ai.settings.providers.any((p) => p.id == 'relay'), isFalse);
-    expect(ai.settings.chain.where((n) => n.providerId == 'relay'), isEmpty);
-    expect(ai.keyOf('relay'), '');
+    expect(ai.settings.providers.any((p) => p.id == 'custom_scratch'), isFalse);
+    expect(ai.settings.chain.where((n) => n.providerId == 'custom_scratch'), isEmpty);
+    expect(ai.keyOf('custom_scratch'), '');
   });
 
   testWidgets('switching tabs animates the page and settles on the new one', (t) async {
@@ -588,6 +718,9 @@ void main() {
     await t.tap(find.text('DeepSeek'));
     await settle(t, 800);
 
+    // the connection group grew, scroll the add row into reach
+    await t.scrollUntilVisible(find.text('Add a model by hand'), 300, scrollable: find.byType(Scrollable).first);
+    await settle(t, 300);
     await t.tap(find.text('Add a model by hand'));
     await settle(t, 700);
     // deepseek-flash is in the bundled catalog so it gains a window
@@ -614,6 +747,8 @@ void main() {
     await t.tap(find.text('DeepSeek'));
     await settle(t, 800);
 
+    await t.scrollUntilVisible(find.text('Add a model by hand'), 300, scrollable: find.byType(Scrollable).first);
+    await settle(t, 300);
     await t.tap(find.text('Add a model by hand'));
     await settle(t, 700);
     await t.enterText(find.byType(EditableText).last, 'some-unknown-relay-model');
@@ -640,6 +775,8 @@ void main() {
     await settle(t, 800);
 
     expect(ai.settings.chain, isEmpty);
+    await t.scrollUntilVisible(find.text('deepseek-chat'), 300, scrollable: find.byType(Scrollable).first);
+    await settle(t, 300);
     await t.tap(find.text('deepseek-chat'));
     await settle(t, 700);
     expect(ai.settings.chain.length, 1);

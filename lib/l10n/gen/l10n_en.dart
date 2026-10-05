@@ -1480,6 +1480,25 @@ class AppLocalizationsEn extends AppLocalizations {
       'Tools and MCP calls, each step shown as it runs';
 
   @override
+  String get aiReplyAgentPass => 'Tool pass limit';
+
+  @override
+  String get aiReplyAgentPassSub =>
+      'How many tool rounds one reply may run before it is stopped';
+
+  @override
+  String get aiReplyAgentPassUnlimited => 'Unlimited';
+
+  @override
+  String get aiReplyAgentPassUnlimitedSub =>
+      'Run tool rounds until the model stops on its own';
+
+  @override
+  String aiReplyAgentPassRounds(int count) {
+    return '$count rounds';
+  }
+
+  @override
   String get aiReplyToolsHeader => 'Tools';
 
   @override
@@ -3151,4 +3170,448 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get envErrorInvalid => 'The installed environment is incomplete';
+
+  @override
+  String get aiNetworkHeader => 'Network';
+
+  @override
+  String get aiNetworkFooter =>
+      'Applied to every AI request: chat, tools, model list and the one off calls. Leave empty for defaults.';
+
+  @override
+  String get aiUserAgent => 'User-Agent';
+
+  @override
+  String get aiUserAgentHint => 'User-Agent header value';
+
+  @override
+  String get aiGlobalHeaders => 'Custom request headers';
+
+  @override
+  String get aiHeadersNone => 'None';
+
+  @override
+  String get aiHeadersHint => 'One per line, Name: Value';
+
+  @override
+  String get codePreview => 'Preview';
+
+  @override
+  String get wsPreviewRendered => 'Toggle rendered view';
+
+  @override
+  String get msgLeadHtml => 'Rendered page';
+
+  @override
+  String get msgLeadLatex => 'LaTeX';
+
+  @override
+  String get canvasRenderFailed => 'Couldn\'t render this';
+
+  @override
+  String get provAuthStyle => 'Auth style';
+
+  @override
+  String get provAuthBearerSub => 'Sent as the Authorization header';
+
+  @override
+  String get provAuthQuerySub => 'Appended to the url as a query parameter';
+
+  @override
+  String get provSessionHeader => 'Session header';
+
+  @override
+  String get provSessionHeaderEmpty =>
+      'Off, add one if the gateway routes on it';
+
+  @override
+  String get provSessionHeaderHint => 'Header name, the value is filled in';
+
+  @override
+  String get provUserAgent => 'User-Agent';
+
+  @override
+  String get provUserAgentDefault => 'Follows the global setting';
+
+  @override
+  String get provUserAgentHint => 'User-Agent for this provider only';
+
+  @override
+  String get provExtraHeaders => 'Custom request headers';
+
+  @override
+  String get provHeadersNone => 'None';
+
+  @override
+  String get provHeadersHint => 'One per line, Name: Value';
+
+  @override
+  String get toolDescSendSvg => 'Draw a vector picture and send it as a card';
+
+  @override
+  String get toolDescSendHtml => 'Render an html page straight into the chat';
+
+  @override
+  String get toolDescSendLatex => 'Render LaTeX math straight into the chat';
+
+  @override
+  String get toolDescSendCetz =>
+      'Draw a diagram with CeTZ straight into the chat';
+
+  @override
+  String get onboardSkip => 'Skip';
+
+  @override
+  String get onboardNext => 'Next';
+
+  @override
+  String get onboardBack => 'Back';
+
+  @override
+  String get onboardStart => 'Start';
+
+  @override
+  String get onboardSplashTagline => 'Loading the other shore';
+
+  @override
+  String get onboardBrandTitle => 'Paradise';
+
+  @override
+  String get onboardBrandTagline =>
+      'An immersive AI chat app. Talk like with a real person.';
+
+  @override
+  String get onboardBrandBody =>
+      'Local first. Bring your own key. Give every assistant a workspace, a memory and a temper of its own.';
+
+  @override
+  String get onboardBrandLicense => 'Licensed AGPL v3. © 殘月';
+
+  @override
+  String get onboardPermTitle => 'Permissions';
+
+  @override
+  String get onboardPermBody =>
+      'Everything below is optional. Denying any of them never blocks chatting, and you can change them any time in system settings.';
+
+  @override
+  String get onboardPermAllow => 'Allow';
+
+  @override
+  String get onboardPermGranted => 'Granted';
+
+  @override
+  String get onboardPermDenied => 'Denied. Enable it in system settings.';
+
+  @override
+  String get onboardPermNotifName => 'Notifications';
+
+  @override
+  String get onboardPermNotifWhy =>
+      'Proactive messages and scheduled replies need notifications to reach you in time.';
+
+  @override
+  String get onboardPermPhotosName => 'Photos';
+
+  @override
+  String get onboardPermPhotosWhy => 'Sending pictures and saving stickers.';
+
+  @override
+  String get onboardPrivacyTitle => 'Privacy';
+
+  @override
+  String get onboardPrivacyIntro =>
+      'Read this before you start. It is short on purpose.';
+
+  @override
+  String get onboardPrivacy1Title => 'Local first';
+
+  @override
+  String get onboardPrivacy1Body =>
+      'Chats, personas, memories and workspace files all stay on this device.';
+
+  @override
+  String get onboardPrivacy2Title => 'We collect nothing';
+
+  @override
+  String get onboardPrivacy2Body =>
+      'No account, no server, no telemetry. The developer cannot see any of your data.';
+
+  @override
+  String get onboardPrivacy3Title => 'You bring your own key';
+
+  @override
+  String get onboardPrivacy3Body =>
+      'Messages go straight to the AI provider you configure, under that provider\'s own privacy policy. With the built-in free relay, messages pass through the relay too.';
+
+  @override
+  String get onboardPrivacy4Title => 'Permissions are optional';
+
+  @override
+  String get onboardPrivacy4Body =>
+      'Contacts, photos, location and notifications can all be denied without losing basic chat.';
+
+  @override
+  String get onboardPrivacy5Title => 'Open source';
+
+  @override
+  String get onboardPrivacy5Body =>
+      'This app is distributed under AGPL v3. The source is in the repository.';
+
+  @override
+  String get onboardPrivacyAgree => 'Agree and start';
+
+  @override
+  String get onboardPrivacyDecline => 'Not now';
+
+  @override
+  String get onboardPrivacyDeclineTitle => 'The app needs your agreement';
+
+  @override
+  String get onboardPrivacyDeclineBody =>
+      'You can decline for now and read it again later, but the app cannot start until you agree.';
+
+  @override
+  String get onboardModelTitle => 'Model';
+
+  @override
+  String get onboardModelBody =>
+      'One tap to start with the free relay, or plug in your own provider. You can change this any time in Settings.';
+
+  @override
+  String get onboardModelRelayTitle => 'Use the free relay';
+
+  @override
+  String get onboardModelRelayBody =>
+      'A blind-test lane: the model list changes daily, and auto picks one at random. No key of your own needed.';
+
+  @override
+  String get onboardModelRelayNotice =>
+      'This provider is run by 殘月. Models come from different upstreams and channels, stability is not guaranteed, and it is recommended for temporary use only.';
+
+  @override
+  String get onboardModelRelayOn => 'Relay on';
+
+  @override
+  String get onboardModelRelayEnable => 'Enable';
+
+  @override
+  String get onboardModelRelayEnableFailed =>
+      'Could not reach the relay. Check the network and try again.';
+
+  @override
+  String get onboardModelOwnTitle => 'Use your own provider';
+
+  @override
+  String get onboardModelOwnBody =>
+      'OpenAI, Anthropic, Gemini, DeepSeek, OpenRouter, SiliconFlow, or any OpenAI-compatible endpoint with your key.';
+
+  @override
+  String get relayAutoModel => 'Auto model';
+
+  @override
+  String get onboardWsTitle => 'Workspace';
+
+  @override
+  String get onboardWsBody =>
+      'Give assistants a folder of their own: read and write files, browse, run a terminal. Every write can ask you first.';
+
+  @override
+  String get onboardWsTools => 'Tools on';
+
+  @override
+  String get onboardWsConfirm => 'Confirm writes';
+
+  @override
+  String get onboardWsEnvTitle => 'Linux environment';
+
+  @override
+  String get onboardWsEnvBody =>
+      'Optional. Downloads a small Ubuntu rootfs so the terminal and package tools actually run.';
+
+  @override
+  String get onboardWsEnvInstall => 'Download and install';
+
+  @override
+  String get onboardWsEnvReady => 'Environment ready';
+
+  @override
+  String get onboardHumanTitle => 'Immersive chat';
+
+  @override
+  String get onboardHumanBody =>
+      'Assistants can type like people: split replies, hesitate, mistype and take it back, message you first. Pick a temper, tune it later.';
+
+  @override
+  String get onboardHumanEnabled => 'Immersive replies';
+
+  @override
+  String get onboardHumanPresetHeader => 'Temper';
+
+  @override
+  String get onboardHumanPresetClingy => 'Clingy';
+
+  @override
+  String get onboardHumanPresetClingySub =>
+      'Messages first, types fast, never lets a topic drop';
+
+  @override
+  String get onboardHumanPresetCold => 'Aloof';
+
+  @override
+  String get onboardHumanPresetColdSub =>
+      'Replies late and short, almost never texts first';
+
+  @override
+  String get onboardHumanPresetChatty => 'Chatty';
+
+  @override
+  String get onboardHumanPresetChattySub =>
+      'Splits everything into many small messages';
+
+  @override
+  String get onboardHumanPresetQuiet => 'Quiet';
+
+  @override
+  String get onboardHumanPresetQuietSub =>
+      'Never texts first, clean punctuation, no typos';
+
+  @override
+  String get onboardHumanPresetBalanced => 'Balanced';
+
+  @override
+  String get onboardHumanPresetBalancedSub => 'The default feel';
+
+  @override
+  String get onboardHumanPresetBalancedSub2 =>
+      'The defaults, in case you tuned them before';
+
+  @override
+  String get onboardHumanStickerHeader => 'Details';
+
+  @override
+  String get onboardHumanTypo => 'Typos and recalls';
+
+  @override
+  String get onboardHumanProactive => 'Messages first';
+
+  @override
+  String get onboardSelfTitle => 'You';
+
+  @override
+  String get onboardSelfBody =>
+      'Who the assistants are talking to. Your card goes into every prompt, and your name and photo show across the app.';
+
+  @override
+  String get onboardSelfName => 'Your name';
+
+  @override
+  String get onboardSelfTitleLabel => 'Title';
+
+  @override
+  String get onboardSelfDesc => 'About you';
+
+  @override
+  String get onboardSelfDescHint =>
+      'Anything you want the characters to know: how to call you, what you do, what you like.';
+
+  @override
+  String get onboardSelfPhoto => 'Set photo';
+
+  @override
+  String get onboardSelfInjected => 'Injected as';
+
+  @override
+  String get onboardSelfRole => 'Injected as role';
+
+  @override
+  String get onboardPersonaTitle => 'Personas';
+
+  @override
+  String get onboardPersonaBody =>
+      'Pick who is waiting for you on the other shore. Tap to add, tap again to remove. Everything is editable later.';
+
+  @override
+  String onboardPersonaCreate(int n) {
+    return 'Create $n chats';
+  }
+
+  @override
+  String get personaBoyfriendName => 'Shen Yu';
+
+  @override
+  String get personaBoyfriendBio =>
+      'A warm architect boyfriend who teases you and remembers every little thing.';
+
+  @override
+  String get personaBoyfriendGreeting =>
+      'Just got out of a meeting, head still foggy. How was your day? Did you eat?';
+
+  @override
+  String get personaGirlfriendName => 'Lin Wan';
+
+  @override
+  String get personaGirlfriendBio =>
+      'A clingy, playful girlfriend whose moods arrive fast and melt fast.';
+
+  @override
+  String get personaGirlfriendGreeting =>
+      'What are you up to? I drew all afternoon and my hand is dead. Did you miss me?';
+
+  @override
+  String get personaCatgirlName => 'Mimi';
+
+  @override
+  String get personaCatgirlBio =>
+      'A catgirl who talks, changes moods without warning, and only clings to you.';
+
+  @override
+  String get personaCatgirlGreeting =>
+      'Meow. You are back. Mimi waited forever. Headpats first, talk later.';
+
+  @override
+  String get personaMaidName => 'Vera';
+
+  @override
+  String get personaMaidBio =>
+      'A composed, capable maid who lets a little real feeling slip through.';
+
+  @override
+  String get personaMaidGreeting =>
+      'Welcome home, Master. The tea is ready. Rest first, or tell me what happened today?';
+
+  @override
+  String get personaCeoName => 'Gu Yan';
+
+  @override
+  String get personaCeoBio =>
+      'A terse, controlling CEO who loosens his tie only for you.';
+
+  @override
+  String get personaCeoGreeting =>
+      'You are here. Sit. Tell me the worst thing that happened today, from the start.';
+
+  @override
+  String get personaEngineerName => 'Ada';
+
+  @override
+  String get personaEngineerBio =>
+      'A pragmatic, low-words, code-first senior engineer.';
+
+  @override
+  String get personaEngineerGreeting =>
+      'Here. Paste the full stack trace if there is an error. Otherwise tell me what you are trying to do and where you are stuck.';
+
+  @override
+  String get settingsOnboarding => 'Replay the introduction';
+
+  @override
+  String get onboardModelOwnOpen => 'Open settings';
+
+  @override
+  String get onboardThemeTitle => 'Theme';
+
+  @override
+  String get onboardThemeBody =>
+      'Night mode, a wallpaper and the size of every bubble. Everything here is a tap away in Settings later.';
 }

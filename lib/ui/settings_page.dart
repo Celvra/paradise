@@ -23,6 +23,7 @@ import 'ai_model_picker.dart';
 import 'ai_reply_page.dart';
 import 'ai_settings_page.dart';
 import 'human_pages.dart';
+import 'onboarding/onboarding_page.dart';
 
 // IconBackgroundColors pairs top and bottom
 const _blue = [Color(0xFF1CA5ED), Color(0xFF1488E1)];
@@ -82,6 +83,13 @@ class SettingsTab extends StatelessWidget {
               ]),
               const SizedBox(height: 12),
               _Group(children: [
+                _Cell(
+                  icon: Ic.info,
+                  colors: _cyan,
+                  title: l.settingsOnboarding,
+                  sub: l.settingsAboutSub,
+                  onTap: () => Navigator.of(context).push(TgRoute(builder: (_) => const OnboardingPage(replay: true))),
+                ),
                 _Cell(
                   icon: Ic.info,
                   colors: _gray,

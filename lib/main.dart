@@ -14,6 +14,7 @@ import 'ui/workspace/write_review.dart';
 import 'l10n/x.dart';
 import 'ui/ai_model_picker.dart' show AiScope;
 import 'ui/dialogs_page.dart';
+import 'ui/onboarding/onboarding_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -109,7 +110,7 @@ class TgApp extends StatelessWidget {
                   child: child!,
                 ),
               ),
-              home: const DialogsPage(),
+              home: st.onboarded ? const DialogsPage() : const OnboardingPage(),
             ),
           );
         }),

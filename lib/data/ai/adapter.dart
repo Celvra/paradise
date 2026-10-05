@@ -49,6 +49,8 @@ class StreamRequest {
     required this.maxOutput,
     this.cancel,
     this.tools = const [],
+    this.settings,
+    this.sessionId,
   });
 
   final List<ToolSpec> tools;
@@ -60,6 +62,13 @@ class StreamRequest {
   final double temperature;
   final int maxOutput;
   final AiCancel? cancel;
+
+  /// Carries the global user agent and global headers down to the wire.
+  final AiSettings? settings;
+
+  /// A stable per conversation id, handed to the provider's session header
+  /// when it names one. Only constancy matters, the value is never parsed.
+  final String? sessionId;
 }
 
 abstract class ProviderAdapter {

@@ -19,7 +19,10 @@ plugins {
 
 android {
     namespace = "fan.x0.para"
-    compileSdk = flutter.compileSdkVersion
+    // permission_handler_android 14.1 references Manifest.permission
+    // ACCESS_LOCAL_NETWORK and VERSION_CODES.CINNAMON_BUN, which the android-36
+    // platform jars do not ship; they first exist in API 37 (Cinnamon Bun)
+    compileSdk = 37
     // Pinned rather than taken from flutter.ndkVersion. The PTY JNI needs a
     // CMake that knows posix_openpt and that has been true since 22, and an
     // unpinned NDK is how a toolchain bump turns into a build failure on a

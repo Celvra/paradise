@@ -3,6 +3,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../core/anim.dart';
 import '../core/overlays.dart';
@@ -13,6 +14,7 @@ import '../data/models.dart';
 import '../data/store.dart';
 import '../l10n/x.dart';
 import 'workspace/file_preview_page.dart';
+import 'workspace/html_svg_view.dart';
 
 // painted stand in for a map tile used by the location tab and the location bubble
 class MapPainter extends CustomPainter {
@@ -212,6 +214,28 @@ Widget mediaBody(BuildContext context, {required Msg m, required Pal p, required
     case MsgKind.photo:
       final path = m.data['path'] as String?;
       final radius = math.max(4.0, context.store.bubbleRadius - 3);
+      // an svg the model drew is markup, not pixels: it paints through
+      // flutter_svg, and a tap opens the rendered preview with a flip to the
+      // source instead of the photo viewer
+      final isSvg = '${m.data['svg'] ?? ''}' == 'true' || (path != null && path.toLowerCase().endsWith('.svg'));
+      if (isSvg && path != null && File(path).existsSync()) {
+        return GestureDetector(
+          onTap: () => showSnippetPreviewFromFile(context, File(path)),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(radius),
+            child: Stack(children: [
+              Container(
+                width: width,
+                constraints: const BoxConstraints(maxHeight: 360, minHeight: 120),
+                padding: const EdgeInsets.all(10),
+                color: p.dark ? const Color(0xFF101418) : const Color(0xFFFFFFFF),
+                child: SvgPicture.file(File(path), fit: BoxFit.contain, placeholderBuilder: (_) => Center(child: TypingDots(color: p.subtitle))),
+              ),
+              if (timePill != null) Positioned(right: 6, bottom: 6, child: timePill),
+            ]),
+          ),
+        );
+      }
       return GestureDetector(
         onTap: onPhoto,
         child: ClipRRect(
@@ -299,6 +323,10 @@ Widget mediaBody(BuildContext context, {required Msg m, required Pal p, required
     case MsgKind.sticker:
     // a trace row is drawn by TraceView, it never reaches a bubble
     case MsgKind.trace:
+    // canvas cards are drawn flat by CanvasCard, they never reach a bubble
+    // either; this only keeps the switch total
+    case MsgKind.html:
+    case MsgKind.latex:
       return const SizedBox.shrink();
   }
 }

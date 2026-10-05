@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math' show Random, max, min;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as p;
@@ -92,12 +93,6 @@ class Store extends ChangeNotifier {
   /// so the closure is kept where removal can find it.
   final Map<Chat, VoidCallback> _chatListeners = {};
 
-  /// True once this install has been seen with chats, however that was
-  /// recorded: the legacy blob key, the marker, or rows in the database. A
-  /// user who deleted everything must not be handed the starter chats again
-  /// on the next boot, so first launch is the only seed trigger.
-  bool _everPopulated = false;
-
   /// Sidebar position per chat id, database ordinals when SQLite is on and
   /// list indexes when it is not. New chats take [maxOrd] + 1, so adding one
   /// cannot shuffle the existing ones.
@@ -163,7 +158,7 @@ class Store extends ChangeNotifier {
   /// chain node that actually has a key behind it. Keys are per provider, so
   /// reading `providers.first` used to report an empty key even when the user
   /// had configured one on any other provider.
-  ({String baseUrl, String key, String model})? get _endpoint {
+  ({Provider provider, String baseUrl, String key, String model})? get _endpoint {
     final cfg = _ai;
     if (cfg == null) return null;
     for (final node in activeChain(cfg.settings)) {
@@ -171,16 +166,19 @@ class Store extends ChangeNotifier {
       if (provider == null) continue;
       final key = cfg.keyOf(provider.id);
       if (key.isEmpty) continue;
-      return (baseUrl: provider.baseUrl, key: key, model: node.modelId);
+      return (provider: provider, baseUrl: provider.baseUrl, key: key, model: node.modelId);
     }
     // no chain entry can run yet, so settle for any provider holding a key
     for (final provider in cfg.settings.providers) {
       final key = cfg.keyOf(provider.id);
       if (key.isEmpty) continue;
-      return (baseUrl: provider.baseUrl, key: key, model: provider.models.firstOrNull?.id ?? '');
+      return (provider: provider, baseUrl: provider.baseUrl, key: key, model: provider.models.firstOrNull?.id ?? '');
     }
     return null;
   }
+
+  /// The provider behind [baseUrl], for callers that must ride the same wire.
+  Provider? get endpointProvider => _endpoint?.provider;
 
   String get baseUrl => _endpoint?.baseUrl ?? 'https://api.openai.com/v1';
 
@@ -245,6 +243,12 @@ class Store extends ChangeNotifier {
   /// tools that layer already offers.
   bool agentMode = false;
 
+  /// False until the first-run wizard finishes. Every install starts false, so
+  /// an upgrade lands in the wizard exactly once too; the last step is the
+  /// only thing that flips it, and the settings can replay the wizard without
+  /// ever touching it.
+  bool onboarded = false;
+
   /// Persona override wins, the global switch is the fallback. A persona that
   /// never touched the row has null on both halves and simply follows.
   bool thinkingFor(Chat c) => c.persona.thinking ?? showThinking;
@@ -265,6 +269,7 @@ class Store extends ChangeNotifier {
     s.countMuted = s._sp.getBool('countMuted') ?? false;
     s.showThinking = s._sp.getBool('showThinking') ?? false;
     s.agentMode = s._sp.getBool('agentMode') ?? false;
+    s.onboarded = s._sp.getBool('onboarded') ?? false;
     s.dark = s._sp.getBool('dark') ?? false;
     s.textSize = s._sp.getDouble('textSize') ?? 16;
     s.bubbleRadius = s._sp.getDouble('radius') ?? 17;
@@ -295,10 +300,6 @@ class Store extends ChangeNotifier {
   /// later run.
   Future<void> _loadChats({String? dbPath}) async {
     final raw = _sp.getString('chats');
-    // the key in any shape, even '[]', means a user was here before; the
-    // marker covers a store that was seeded on SQLite and saved straight to
-    // the database, where no blob key ever existed
-    _everPopulated = raw != null || (_sp.getBool('chatsSeen') ?? false);
     try {
       _db = await ChatDb.open(path: dbPath);
     } catch (_) {
@@ -320,7 +321,6 @@ class Store extends ChangeNotifier {
         for (final c in chats) {
           c.msgs.addAll(await _db!.loadMsgs(c.id));
         }
-        if (chats.isNotEmpty) _everPopulated = true;
       } catch (_) {
         // a database that opened but cannot be read falls back to the blob,
         // which the migration above has not touched in that case
@@ -347,19 +347,11 @@ class Store extends ChangeNotifier {
     for (var i = 0; i < chats.length; i++) {
       _chatOrd.putIfAbsent(chats[i].id, () => i);
     }
-    if (chats.isNotEmpty) _everPopulated = true;
-    // seeding only on the true first launch: an explicit empty list or an
-    // empty database is a user who deleted everything, not a missed first run
-    if (!_everPopulated) {
-      _seed();
-      _dirtyIds.addAll(chats.map((e) => e.id));
-      // the marker set alone starts no timer, and an app the user never types
-      // into must still persist its starter chats
-      _scheduleSave();
-    }
-    // written on every load, not only when seeding: a store that arrived by
-    // migration and was later emptied must not look like a missed first run
-    _everPopulated = true;
+    // The starter chats moved into the onboarding: a fresh install now begins
+    // empty and the template picker on the last step creates the first ones.
+    // An explicit empty list or an empty database stays a user who deleted
+    // everything, not a missed first run. The marker is still written on every
+    // load so the migration bookkeeping keeps a single meaning.
     _sp.setBool('chatsSeen', true);
     for (final c in chats) {
       _listen(c);
@@ -387,7 +379,6 @@ class Store extends ChangeNotifier {
     }
     if (migrated != inBlob) return; // unverifiable, keep the blob
     await _sp.remove('chats');
-    _everPopulated = true;
   }
 
   static Store of(BuildContext c) => c.dependOnInheritedWidgetOfExactType<StoreScope>()!.notifier!;
@@ -414,21 +405,6 @@ class Store extends ChangeNotifier {
   }
 
   String _id() => '${DateTime.now().microsecondsSinceEpoch}_${_seq++}';
-
-  void _seed() {
-    final now = DateTime.now().millisecondsSinceEpoch;
-    Chat mk(String name, int color, String prompt, String hello, int ago, {int unread = 0, bool pinned = false}) {
-      final c = Chat(id: _id(), persona: Persona(name: name, prompt: prompt, color: color), unread: unread, pinned: pinned);
-      c.msgs.add(Msg(id: _id(), out: false, text: hello, time: now - ago));
-      return c;
-    }
-
-    chats.addAll([
-      mk('Assistant', 5, 'You are a helpful, concise assistant.', 'Hi! Ask me anything. Add your API key in **Settings** to start chatting.', 1000 * 30, unread: 1, pinned: true),
-      mk('Code Buddy', 3, 'You are a senior software engineer. Answer with short explanations and runnable code in fenced blocks.', 'Paste an error or describe what you are building and I will help.', 1000 * 60 * 60 * 5),
-      mk('Translator', 2, 'You translate between English and Chinese. Detect the language and reply only with the translation.', 'Send me any text and I will translate it.', 1000 * 60 * 60 * 30),
-    ]);
-  }
 
   // dialogs order pinned first then newest
   List<Chat> get sorted {
@@ -833,6 +809,16 @@ class Store extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Called by the last step of the onboarding. Flipping it rebuilds [TgApp]'s
+  /// home, which is how the wizard hands over to the dialog list without any
+  /// navigator surgery.
+  void setOnboarded(bool v) {
+    if (onboarded == v) return;
+    onboarded = v;
+    _sp.setBool('onboarded', v);
+    notifyListeners();
+  }
+
   void setDark(bool v) {
     dark = v;
     _sp.setBool('dark', v);
@@ -975,8 +961,8 @@ class Store extends ChangeNotifier {
     notifyListeners();
   }
 
-  Chat createChat(String name, String prompt, {String bio = '', String greeting = '', String emoji = '', String avatarPath = '', int? color, String modelProvider = '', String modelId = '', bool modelFallback = true, bool? thinking, bool? agent}) {
-    final c = Chat(id: _id(), persona: Persona(name: name, prompt: prompt, color: color ?? name.hashCode.abs() % avatarColorCount, bio: bio, greeting: greeting, emoji: emoji, avatarPath: avatarPath, modelProvider: modelProvider, modelId: modelId, modelFallback: modelFallback, thinking: thinking, agent: agent));
+  Chat createChat(String name, String prompt, {String bio = '', String greeting = '', String emoji = '', String examples = '', String avatarPath = '', int? color, String modelProvider = '', String modelId = '', bool modelFallback = true, bool? thinking, bool? agent}) {
+    final c = Chat(id: _id(), persona: Persona(name: name, prompt: prompt, color: color ?? name.hashCode.abs() % avatarColorCount, bio: bio, greeting: greeting, emoji: emoji, examples: examples, avatarPath: avatarPath, modelProvider: modelProvider, modelId: modelId, modelFallback: modelFallback, thinking: thinking, agent: agent));
     if (greeting.trim().isNotEmpty) c.msgs.add(Msg(id: _id(), out: false, text: greeting.trim(), time: DateTime.now().millisecondsSinceEpoch));
     _listen(c);
     chats.add(c);
@@ -986,12 +972,13 @@ class Store extends ChangeNotifier {
     return c;
   }
 
-  void editPersona(Chat c, String name, String prompt, {String? bio, String? greeting, String? emoji, String? avatarPath, int? color, String? modelProvider, String? modelId, bool? modelFallback, bool? thinking, bool? agent}) {
+  void editPersona(Chat c, String name, String prompt, {String? bio, String? greeting, String? emoji, String? examples, String? avatarPath, int? color, String? modelProvider, String? modelId, bool? modelFallback, bool? thinking, bool? agent}) {
     c.persona
       ..name = name
       ..prompt = prompt;
     if (bio != null) c.persona.bio = bio;
     if (greeting != null) c.persona.greeting = greeting;
+    if (examples != null) c.persona.examples = examples;
     if (emoji != null) c.persona.emoji = emoji;
     if (avatarPath != null) c.persona.avatarPath = avatarPath;
     if (color != null) c.persona.color = color;
@@ -1025,6 +1012,17 @@ class Store extends ChangeNotifier {
   void deleteMsg(Chat c, Msg m) {
     c.msgs.remove(m);
     c.touch();
+  }
+
+  /// The native engine could not render a canvas card. Recording it on the
+  /// message is what turns the failure into feedback: the transcript tells the
+  /// model, which can resend a corrected card on its next turn.
+  void canvasRenderFailed(Chat c, Msg m, String error) {
+    final trimmed = error.length > 160 ? error.substring(0, 160) : error;
+    if ('${m.data['renderError'] ?? ''}' == trimmed) return;
+    m.data['renderError'] = trimmed;
+    c.touch();
+    if (kDebugMode) debugPrint('ParaStore: canvasRenderFailed [${m.kind.name}] $trimmed');
   }
 
   void togglePin(Chat c) {
@@ -1289,6 +1287,18 @@ class Store extends ChangeNotifier {
         // a trace row is a service message and never reaches this, the case
         // exists so the switch stays total
         return '';
+      case MsgKind.html:
+      case MsgKind.latex:
+        // the source already sits in the tool call that sent it, repeating it
+        // here would only burn context. A card the engine refused is marked on
+        // the message, so the model learns the syntax was wrong and can send a
+        // fixed one; the user only sees the small notice.
+        final what = m.kind == MsgKind.html
+            ? 'HTML'
+            : (m.data['cetz'] == true ? 'CeTZ drawing' : 'LaTeX');
+        final err = '${m.data['renderError'] ?? ''}';
+        if (err.isNotEmpty) return '[$what card render FAILED: $err. The user sees a small notice, not the source. Send a corrected version or move on.]$cap';
+        return '[$what card rendered]$cap';
     }
   }
 
@@ -1321,6 +1331,7 @@ class Store extends ChangeNotifier {
         personaName: c.persona.name,
         personaPrompt: c.persona.prompt,
         personaBio: c.persona.bio,
+        personaExamples: c.persona.examples,
         userName: card.name,
         userBio: userBio,
         userDescription: expandMacros(card.description, c.persona.name, card.name),
@@ -1587,6 +1598,7 @@ class Store extends ChangeNotifier {
           tools: specs,
           options: ChainOptions(
             cancel: run.token,
+            sessionId: c.id,
             onChunk: (chunk) {
               if (chunk.isText) {
                 onText(chunk.delta);

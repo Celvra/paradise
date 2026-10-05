@@ -13,6 +13,7 @@ class Persona {
     this.bio = '',
     this.greeting = '',
     this.emoji = '',
+    this.examples = '',
     this.avatarPath = '',
     this.modelProvider = '',
     this.modelId = '',
@@ -29,6 +30,11 @@ class Persona {
   String greeting;
   // single glyph used in place of the name for the avatar
   String emoji;
+
+  /// A few lines of `{{user}}:` / `{{char}}:` transcript the model reads as a
+  /// style reference, the SillyTavern example messages slot. Empty on personas
+  /// that predate the field; normalized by formatExamples before the send.
+  String examples;
 
   /// Local image path for this persona's avatar. Empty falls back to the
   /// gradient plus emoji or initial, so an older persona without one still
@@ -69,6 +75,7 @@ class Persona {
         'bio': bio,
         'greeting': greeting,
         'emoji': emoji,
+        if (examples.isNotEmpty) 'examples': examples,
         'avatarPath': avatarPath,
         'modelProvider': modelProvider,
         'modelId': modelId,
@@ -83,6 +90,7 @@ class Persona {
         bio: j['bio'] as String? ?? '',
         greeting: j['greeting'] as String? ?? '',
         emoji: j['emoji'] as String? ?? '',
+        examples: j['examples'] as String? ?? '',
         // personas saved before the photo existed simply have no key
         avatarPath: j['avatarPath'] as String? ?? '',
         modelProvider: j['modelProvider'] as String? ?? '',
@@ -203,7 +211,7 @@ class St {
 /// stretch of reasoning, or a tool call with its result. Trace rows are always
 /// service rows, so they stay out of the model history and out of search while
 /// still living in the chat json where the user can scroll back and open them.
-enum MsgKind { text, photo, file, music, location, contact, poll, sticker, transfer, trace }
+enum MsgKind { text, photo, file, music, location, contact, poll, sticker, transfer, html, latex, trace }
 
 class Msg {
   Msg({
@@ -379,6 +387,10 @@ class Msg {
       case MsgKind.trace:
         // never shown, it is a service row, but the switch has to be total
         return '${data['tool'] ?? l.traceThinking}';
+      case MsgKind.html:
+        lead = l.msgLeadHtml;
+      case MsgKind.latex:
+        lead = l.msgLeadLatex;
     }
     return t.isEmpty ? lead : '$lead, $t';
   }

@@ -31,6 +31,8 @@ void main() {
       final ai = await AiConfig.load();
       store.attachAi(ai);
       store.createChat('Coder', 'be brief');
+      // the tests drive in-app screens, not the wizard
+      store.onboarded = true;
       await t.pumpWidget(TgApp(store: store, ai: ai));
       await settle(t, 900);
 
@@ -55,6 +57,8 @@ void main() {
     final store = await Store.load();
     final ai = await AiConfig.load();
     store.attachAi(ai);
+    // the tests drive in-app screens, not the wizard
+    store.onboarded = true;
     await t.pumpWidget(TgApp(store: store, ai: ai));
     await settle(t, 700);
     // the settings tab lives at the bottom bar, the last 设置 is the tab itself

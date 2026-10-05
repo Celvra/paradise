@@ -76,7 +76,7 @@ class _AiEditorSheetState extends State<AiEditorSheet> {
       final r = await store.ai.complete(baseUrl: store.baseUrl, key: store.apiKey, model: store.model, messages: [
         {'role': 'system', 'content': _system()},
         {'role': 'user', 'content': widget.text},
-      ]);
+      ], base: store.endpointProvider, settings: store.aiConfig.settings);
       if (!mounted) return;
       _cache[key] = r;
       if (gen == _gen) setState(() => _loading = false);

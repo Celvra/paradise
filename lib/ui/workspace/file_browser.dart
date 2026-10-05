@@ -274,7 +274,7 @@ class _FileBrowserState extends State<FileBrowser> {
         // unreadable, leave it out rather than failing the whole export
       }
     }
-    await out.writeAsBytes(ZipEncoder().encode(archive) ?? const []);
+    await out.writeAsBytes(ZipEncoder().encode(archive));
   }
 
   Future<void> _rename(FileEntry e) async {

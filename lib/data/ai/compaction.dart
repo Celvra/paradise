@@ -116,7 +116,9 @@ Future<String> _summarizeOnce({
     system: system,
     messages: [ChatTurn('user', [textPart(prompt)])],
     nodes: [node],
-    options: ChainOptions(onChunk: (chunk) {
+    // the same node keeps one session id so a gateway that routes on it
+    // keeps every summary for this model on one warm backend
+    options: ChainOptions(sessionId: 'compact:${node.providerId}:${node.modelId}', onChunk: (chunk) {
       if (chunk.isText) collected += chunk.delta;
     }, backoffMs: const [800, 1600]),
   );

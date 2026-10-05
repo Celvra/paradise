@@ -338,6 +338,8 @@ void main() {
     final store = await Store.load();
     final ai = await AiConfig.load();
     store.attachAi(ai);
+    // the tests drive in-app screens, not the wizard
+    store.onboarded = true;
     await t.pumpWidget(TgApp(store: store, ai: ai));
     await settle(t);
 
@@ -519,6 +521,8 @@ group('card persistence shape', () {    test('an unknown position or role falls 
     final store = await Store.load();
     final ai = await AiConfig.load();
     store.attachAi(ai);
+    // the tests drive in-app screens, not the wizard
+    store.onboarded = true;
     await t.pumpWidget(TgApp(store: store, ai: ai));
     await settle(t);
 
@@ -565,6 +569,8 @@ group('card persistence shape', () {    test('an unknown position or role falls 
     final store = await Store.load();
     final ai = await AiConfig.load();
     store.attachAi(ai);
+    // the tests drive in-app screens, not the wizard
+    store.onboarded = true;
     await t.pumpWidget(TgApp(store: store, ai: ai));
     await settle(t);
 
@@ -615,6 +621,8 @@ group('card persistence shape', () {    test('an unknown position or role falls 
     final ai = await AiConfig.load();
     ai.patchProvider('openai', (p) => p.models = [emptyModel('gpt-4o')]);
     store.attachAi(ai);
+    // the tests drive in-app screens, not the wizard
+    store.onboarded = true;
     await t.pumpWidget(TgApp(store: store, ai: ai));
     await settle(t);
 
@@ -667,6 +675,8 @@ group('card persistence shape', () {    test('an unknown position or role falls 
     final store = await Store.load();
     final ai = await AiConfig.load();
     store.attachAi(ai);
+    // the tests drive in-app screens, not the wizard
+    store.onboarded = true;
     await t.pumpWidget(TgApp(store: store, ai: ai));
     await settle(t);
 
@@ -693,6 +703,8 @@ group('card persistence shape', () {    test('an unknown position or role falls 
     final store = await Store.load();
     final ai = await AiConfig.load();
     store.attachAi(ai);
+    // the tests drive in-app screens, not the wizard
+    store.onboarded = true;
     await t.pumpWidget(TgApp(store: store, ai: ai));
     await settle(t);
 

@@ -132,6 +132,12 @@ class _ProviderDetailPageState extends State<ProviderDetailPage> {
                     onTap: () => _pickKind(provider, cfg),
                   ),
                   AiRow(
+                    icon: Ic.lock,
+                    title: l.provAuthStyle,
+                    subtitle: authStyleLabel(provider.authStyle),
+                    onTap: () => _pickAuthStyle(provider, cfg),
+                  ),
+                  AiRow(
                     icon: Ic.key,
                     title: l.provApiKey,
                     subtitle: _mask(cfg.keyOf(provider.id)),
@@ -147,8 +153,26 @@ class _ProviderDetailPageState extends State<ProviderDetailPage> {
                     icon: Ic.file,
                     title: l.provChatPath,
                     subtitle: pathIsEditable(provider.kind) ? provider.chatPath : l.provChatPathFixed,
-                    last: true,
                     onTap: pathIsEditable(provider.kind) ? () => _editText(provider, cfg, l.provChatPath, provider.chatPath, '/chat/completions', (v) => cfg.patchProvider(provider.id, (x) => x.chatPath = v.trim())) : null,
+                  ),
+                  AiRow(
+                    icon: Ic.link,
+                    title: l.provSessionHeader,
+                    subtitle: provider.sessionHeader.trim().isEmpty ? l.provSessionHeaderEmpty : provider.sessionHeader,
+                    onTap: () => _editText(provider, cfg, l.provSessionHeader, provider.sessionHeader, l.provSessionHeaderHint, (v) => cfg.patchProvider(provider.id, (x) => x.sessionHeader = v.trim())),
+                  ),
+                  AiRow(
+                    icon: Ic.user,
+                    title: l.provUserAgent,
+                    subtitle: provider.userAgent.trim().isEmpty ? l.provUserAgentDefault : provider.userAgent,
+                    onTap: () => _editText(provider, cfg, l.provUserAgent, provider.userAgent, l.provUserAgentHint, (v) => cfg.patchProvider(provider.id, (x) => x.userAgent = v.trim())),
+                  ),
+                  AiRow(
+                    icon: Ic.list,
+                    title: l.provExtraHeaders,
+                    subtitle: _headerSummary(provider.extraHeaders, l.provHeadersNone),
+                    last: true,
+                    onTap: () => _editHeaders(provider, cfg, l.provExtraHeaders, provider.extraHeaders, (v) => cfg.patchProvider(provider.id, (x) => x.extraHeaders = v)),
                   ),
                 ],
               ),
@@ -239,6 +263,48 @@ class _ProviderDetailPageState extends State<ProviderDetailPage> {
 
   String _mask(String key) => key.isEmpty ? L10n.current.humanNotSet : '${key.substring(0, key.length < 6 ? key.length : 6)}****';
 
+  String _headerSummary(List<KeyValue> headers, String empty) {
+    final rows = headers.where((h) => h.key.trim().isNotEmpty).toList();
+    if (rows.isEmpty) return empty;
+    return rows.map((h) => h.key.trim()).join(', ');
+  }
+
+  /// One multiline prompt, one `Name: Value` header per line. A sharp format
+  /// would need a form per row; this stays readable, copyable and restorable
+  /// from a backup with no schema work.
+  Future<void> _editHeaders(Provider provider, AiConfig cfg, String title, List<KeyValue> initial, void Function(List<KeyValue>) apply) async {
+    final l = context.l;
+    final text = [for (final h in initial) if (h.key.trim().isNotEmpty) '${h.key.trim()}: ${h.value}'].join('\n');
+    final v = await showTgInput(context, title: title, initial: text, hint: l.provHeadersHint, maxLines: 4);
+    if (v == null) return;
+    final rows = <KeyValue>[];
+    for (final line in v.split('\n')) {
+      final i = line.indexOf(':');
+      if (i <= 0) continue;
+      final key = line.substring(0, i).trim();
+      if (key.isEmpty) continue;
+      rows.add(KeyValue(key, line.substring(i + 1).trim()));
+    }
+    apply(rows);
+    if (mounted) showBulletin(context, l.provSaved);
+  }
+
+  Future<void> _pickAuthStyle(Provider provider, AiConfig cfg) async {
+    final l = context.l;
+    final v = await showAiSelect<AuthStyle>(
+      context,
+      title: l.provAuthStyle,
+      value: provider.authStyle,
+      options: [
+        (value: AuthStyle.bearer, label: authStyleLabel(AuthStyle.bearer), sub: l.provAuthBearerSub),
+        (value: AuthStyle.xApiKey, label: authStyleLabel(AuthStyle.xApiKey), sub: null),
+        (value: AuthStyle.queryKey, label: authStyleLabel(AuthStyle.queryKey), sub: l.provAuthQuerySub),
+      ],
+    );
+    if (v == null || v == provider.authStyle) return;
+    cfg.patchProvider(provider.id, (x) => x.authStyle = v);
+  }
+
   Future<void> _editKey(Provider provider, AiConfig cfg) async {
     final l = context.l;
     final v = await showTgInput(context, title: l.provApiKey, initial: cfg.keyOf(provider.id), hint: l.provPasteKey, obscure: true);
@@ -275,7 +341,7 @@ class _ProviderDetailPageState extends State<ProviderDetailPage> {
   Future<void> _loadModels(Provider provider, AiConfig cfg) async {
     final l = context.l;
     setState(() => _busy = true);
-    final result = await fetchProviderModels(provider, cfg.keyOf(provider.id));
+    final result = await fetchProviderModels(provider, cfg.keyOf(provider.id), settings: cfg.settings);
     if (!mounted) return;
     if (result.ok) {
       cfg.patchProvider(provider.id, (x) {
@@ -339,6 +405,9 @@ class _ProviderDetailPageState extends State<ProviderDetailPage> {
       messages: [ChatTurn('user', [textPart('Reply with exactly two words: OK')])],
       nodes: [ChainNode(id: 'test', providerId: provider.id, modelId: first, retries: 0, enabled: true)],
       options: ChainOptions(
+        // a gateways that requires its session header would reject the probe
+        // without one, and the probe must fail exactly where a chat would
+        sessionId: 'test:${provider.id}',
         onChunk: (chunk) {
           if (chunk.isText) collected += chunk.delta;
         },
@@ -381,6 +450,12 @@ String chatPathForKind(ProviderKind kind) => switch (kind) {
       ProviderKind.anthropic => '/messages',
       ProviderKind.gemini => '/models',
       _ => '/chat/completions',
+    };
+
+String authStyleLabel(AuthStyle style) => switch (style) {
+      AuthStyle.bearer => 'Authorization: Bearer',
+      AuthStyle.xApiKey => 'x-api-key',
+      AuthStyle.queryKey => '?key=',
     };
 
 class _InlineNameField extends StatefulWidget {

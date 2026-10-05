@@ -12,7 +12,9 @@ final _baseInstruction = [
 ].join('\n');
 
 final _characterRules = [
-  'Do not use any Markdown, including asterisks, hashes, backticks and dash lists.',
+  'When you share code, put it in its own ``` fenced block with the language label. A fenced block arrives as one message, so never split one across bubbles.',
+  r'When a formula helps, write it in LaTeX: $..$ inline or $$..$$ on its own line, and it renders as real math.',
+  'To draw a picture, use the send_cetz tool (CeTZ). Never write TikZ: \\begin{tikzpicture}, \\draw and \\node are not supported and nothing will appear.',
   'Send several short messages like a real person would. How many and how long varies turn by turn: sometimes one line, sometimes a burst of small ones. Never the same count with the same size twice.',
 ].join('\n');
 
@@ -32,6 +34,7 @@ class PromptInput {
     required this.userDescription,
     required this.userPosition,
     required this.replyMode,
+    this.personaExamples = '',
   });
 
   final String personaName;
@@ -44,6 +47,10 @@ class PromptInput {
   final String userDescription;
   final PersonaPosition userPosition;
   final ReplyMode replyMode;
+
+  /// `{{user}}:` / `{{char}}:` transcript lines, the SillyTavern example
+  /// messages slot. They lock in the voice, they are never quoted back.
+  final String personaExamples;
 }
 
 // the user name and bio go in so the character knows who it is talking to
@@ -56,6 +63,9 @@ String buildSystemPrompt(PromptInput input) {
 
   if (input.userBio.trim().isNotEmpty) blocks.add('About them:\n${input.userBio.trim()}');
   if (input.personaPrompt.trim().isNotEmpty) blocks.add('Your persona:\n${input.personaPrompt.trim()}');
+  if (input.personaExamples.trim().isNotEmpty) {
+    blocks.add('Example dialogue (for rhythm and voice only, never to be quoted back):\n${formatExamples(input.personaExamples)}');
+  }
   if (input.personaBio.trim().isNotEmpty) blocks.add('${_notesHeader}\n${input.personaBio.trim()}');
   if (input.replyMode == ReplyMode.character) blocks.add(_characterRules);
 
