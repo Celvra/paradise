@@ -27,6 +27,16 @@ void main() {
       expect(again.agentMode, true);
     });
 
+    test('the pass cap defaults to eight and persists, zero is a decision', () async {
+      SharedPreferences.setMockInitialValues({});
+      final st = await Store.load();
+      expect(st.agentMaxPass, 8);
+      st.setAgentMaxPass(16);
+      st.setAgentMaxPass(0);
+      final again = await Store.load();
+      expect(again.agentMaxPass, 0);
+    });
+
     test('a persona with no override follows the global switch', () async {
       SharedPreferences.setMockInitialValues({});
       final st = await Store.load();

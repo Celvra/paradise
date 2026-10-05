@@ -640,7 +640,10 @@ extension StoreHuman on Store {
         if (wsBlock != null) wsBlock,
       ].join('\n\n');
 
-      for (var pass = 0; pass < 8 && !run.cancelled; pass++) {
+      // the same cap the agent loop uses, read live so a change in the
+      // settings lands on the next reply without a restart
+      final maxPass = agentMaxPass;
+      for (var pass = 0; (maxPass <= 0 || pass < maxPass) && !run.cancelled; pass++) {
         final outcome = await runChain(
           settings: cfg.settings,
           apiKeys: cfg.apiKeys,

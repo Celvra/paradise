@@ -36,6 +36,7 @@ extension BackupStore on Store {
         'countMuted': countMuted,
         'showThinking': showThinking,
         'agentMode': agentMode,
+        'agentMaxPass': agentMaxPass,
         'userBio': userBio,
         'locale': localeTag,
         'wallpaperPath': wallpaperPath,
@@ -151,6 +152,7 @@ extension BackupStore on Store {
     put('countMuted', countMuted, setCountMuted);
     put('showThinking', showThinking, setShowThinking);
     put('agentMode', agentMode, setAgentMode);
+    put('agentMaxPass', agentMaxPass, setAgentMaxPass);
     put('userBio', userBio, (v) => setProfile(bio: v));
     put('locale', localeTag ?? '', (v) => setLocale(v.isEmpty ? null : v));
     put('wallpaperPath', wallpaperPath, setWallpaper);

@@ -12,6 +12,7 @@ import 'common.dart';
 /// and says why.
 OnboardingStep buildPrivacyStep() => OnboardingStep(
       skippable: false,
+      // The lock animation keeps the legal wall from reading as a bare text
       build: (c, flow) => const _PrivacyBody(),
       bottomBuilder: (c, flow, onLast) => const _PrivacyButtons(),
     );

@@ -41,10 +41,16 @@ class _PermListState extends State<_PermList> {
 
   Future<void> _probe() async {
     // A status read never pops a dialog, so this is safe on page enter and
-    // keeps the rows honest if the user came back from system settings.
+    // keeps the rows honest if the user came back from system settings. It
+    // throws MissingPluginException on a platform without the plugin (tests,
+    // desktop): treat that as "not granted yet" and stay silent.
     for (final perm in _rows.map((r) => r.$1)) {
       if (perm == ph.Permission.notification) continue; // plugin owned, see below
-      _states[perm] = await perm.status;
+      try {
+        _states[perm] = await perm.status;
+      } catch (_) {
+        _states[perm] = ph.PermissionStatus.denied;
+      }
     }
     if (mounted) setState(() {});
   }
@@ -76,8 +82,7 @@ class _PermListState extends State<_PermList> {
     }
     final status = await askPermission(perm);
     setState(() => _states[perm] = status);
-    if (status == ph.PermissionStatus.permanentlyDenied) _suggestSettings(l);
-  }
+    if (status == ph.PermissionStatus.permanentlyDenied) _suggestSettings(l);  }
 
   Future<void> _suggestSettings(AppLocalizations l) async {
     final open = await showTgDialog<bool>(

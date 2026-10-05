@@ -7,7 +7,15 @@ import 'package:paradise/data/store.dart';
 import 'package:paradise/main.dart';
 import 'package:paradise/ui/dialogs_page.dart';
 import 'package:paradise/ui/onboarding/onboarding_page.dart';
-import 'package:paradise/ui/onboarding/splash_page.dart';
+
+/// The step illustrations loop forever, so pumpAndSettle would time out.
+/// Pump a bounded span instead: enough for the 260ms page transition and the
+/// 220ms selection tweens, not the repeating art.
+Future<void> _settle(WidgetTester t) async {
+  for (var i = 0; i < 10; i++) {
+    await t.pump(const Duration(milliseconds: 60));
+  }
+}
 
 Future<Store> _boot(WidgetTester t, {bool onboarded = false}) async {
   SharedPreferences.setMockInitialValues({});
@@ -16,30 +24,28 @@ Future<Store> _boot(WidgetTester t, {bool onboarded = false}) async {
   store.attachAi(ai);
   store.onboarded = onboarded;
   await t.pumpWidget(TgApp(store: store, ai: ai));
-  // past the 900ms splash swap, plus a settle frame
-  await t.pump(const Duration(milliseconds: 1000));
+  await _settle(t);
   return store;
 }
 
 /// Walks the wizard from the brand page to the persona page. The privacy step
 /// is the odd one out: it advances through its Agree button, not Next.
 Future<void> _walkToPersonas(WidgetTester t) async {
-  for (var i = 0; i < 7; i++) {
+  for (var i = 0; i < 8; i++) {
     await t.tap(find.text(i == 2 ? 'Agree and start' : 'Next').first);
-    await t.pumpAndSettle();
+    await _settle(t);
   }
 }
 
 void main() {
-  testWidgets('a finished store goes straight from the splash to the dialogs', (t) async {
+  testWidgets('a finished store opens straight on the dialogs', (t) async {
     final store = await _boot(t, onboarded: true);
-    expect(find.byType(SplashPage), findsNothing);
     expect(find.byType(OnboardingPage), findsNothing);
     expect(find.byType(DialogsPage), findsOneWidget);
     expect(store.onboarded, true);
   });
 
-  testWidgets('a fresh store lands in the wizard after the splash', (t) async {
+  testWidgets('a fresh store opens the wizard', (t) async {
     final store = await _boot(t);
     expect(find.byType(OnboardingPage), findsOneWidget);
     expect(find.byType(DialogsPage), findsNothing);
@@ -52,7 +58,7 @@ void main() {
     expect(find.text('v1.0.1'), findsOneWidget);
 
     await t.tap(find.text('Next').first);
-    await t.pumpAndSettle();
+    await _settle(t);
     expect(find.byType(OnboardingPage), findsOneWidget);
   });
 
@@ -60,25 +66,23 @@ void main() {
     final store = await _boot(t);
     // brand -> permissions -> privacy
     await t.tap(find.text('Next').first);
-    await t.pumpAndSettle();
+    await _settle(t);
     await t.tap(find.text('Next').first);
-    await t.pumpAndSettle();
+    await _settle(t);
 
-    // the privacy gate is the only road: no bottom Next, Agree is present
     expect(find.text('Agree and start'), findsOneWidget);
-
     await t.tap(find.text('Agree and start'));
-    await t.pumpAndSettle();
-    // agreeing advances to the model step, it does not finish the wizard
+    await _settle(t);
+    // agreeing advances to the theme step, it does not finish the wizard
     expect(store.onboarded, false);
 
-    // model -> workspace -> human -> self -> personas is four Nexts
-    for (var i = 0; i < 4; i++) {
+    // theme -> model -> workspace -> human -> self -> personas is five Nexts
+    for (var i = 0; i < 5; i++) {
       await t.tap(find.text('Next').first);
-      await t.pumpAndSettle();
+      await _settle(t);
     }
     await t.tap(find.text('Start').first);
-    await t.pumpAndSettle();
+    await _settle(t);
 
     expect(store.onboarded, true);
     expect(find.byType(OnboardingPage), findsNothing);
@@ -88,51 +92,61 @@ void main() {
   testWidgets('declining the privacy keeps the wizard open', (t) async {
     final store = await _boot(t);
     await t.tap(find.text('Next').first);
-    await t.pumpAndSettle();
+    await _settle(t);
     await t.tap(find.text('Next').first);
-    await t.pumpAndSettle();
+    await _settle(t);
 
     await t.tap(find.text('Not now'));
-    await t.pumpAndSettle();
+    await _settle(t);
     await t.tap(find.text('OK'));
-    await t.pumpAndSettle();
+    await _settle(t);
 
     expect(store.onboarded, false);
     expect(find.byType(OnboardingPage), findsOneWidget);
+  });
+
+  testWidgets('skip finishes the wizard from any step', (t) async {
+    final store = await _boot(t);
+    await t.tap(find.text('Skip'));
+    await _settle(t);
+    expect(store.onboarded, true);
+    expect(find.byType(DialogsPage), findsOneWidget);
   });
 
   testWidgets('the persona step creates one chat per pick with its greeting', (t) async {
     final store = await _boot(t);
     await _walkToPersonas(t);
 
+    // the list builds lazily: scroll each pick into view first. The wizard
+    // wraps each step in a PageView, itself a Scrollable, so the list is the
+    // last one.
+    await t.scrollUntilVisible(find.text('Mimi'), 160, scrollable: find.byType(Scrollable).last);
+    await _settle(t);
     await t.tap(find.text('Mimi').first);
-    await t.pumpAndSettle();
-    // Ada sits below the fold on the short test viewport; the list lazily
-    // builds its cards, so bring the row on screen before tapping it
-    await t.scrollUntilVisible(find.text('Ada').first, 160, scrollable: find.byType(Scrollable).first);
-    await t.pumpAndSettle();
+    await _settle(t);
+    await t.scrollUntilVisible(find.text('Ada'), 160, scrollable: find.byType(Scrollable).last);
+    await _settle(t);
     await t.tap(find.text('Ada').first);
-    await t.pumpAndSettle();
+    await _settle(t);
 
     await t.tap(find.text('Start').first);
-    await t.pumpAndSettle();
+    await _settle(t);
+    // let the chat save debounce (400ms) fire before the tree is torn down
+    await t.pump(const Duration(milliseconds: 700));
+    await _settle(t);
 
     expect(store.onboarded, true);
     expect(store.chats.length, 2);
     final names = store.chats.map((c) => c.persona.name).toSet();
     expect(names.contains('Mimi'), true);
     expect(names.contains('Ada'), true);
-    // the greeting landed as the first message of its chat
     for (final c in store.chats) {
       expect(c.msgs, isNotEmpty);
     }
-    // the engineer carries its preset: thinking and agent both on
     final ada = store.chats.firstWhere((c) => c.persona.name == 'Ada');
     expect(ada.persona.thinking, true);
     expect(ada.persona.agent, true);
-    // and its examples rode along for the prompt
     expect(ada.persona.examples, isNotEmpty);
-    // the catgirl does not: only the engineer leaves the defaults
     final mimi = store.chats.firstWhere((c) => c.persona.name == 'Mimi');
     expect(mimi.persona.thinking, isNull);
     expect(mimi.persona.agent, isNull);
@@ -143,23 +157,14 @@ void main() {
     final cfg = store.aiConfig;
     expect(cfg.keyOf('relay'), isEmpty);
 
-    // brand -> permissions -> privacy -> model
-    await t.tap(find.text('Next').first);
-    await t.pumpAndSettle();
-    await t.tap(find.text('Next').first);
-    await t.pumpAndSettle();
-    await t.tap(find.text('Agree and start'));
-    await t.pumpAndSettle();
-
-    // The sandbox blocks real sockets: the model fetch fails fast with its
-    // warning, while the shared key and the auto-only fallback chain still
-    // land, which is the offline behavior a real user on a dead network gets.
-    await t.tap(find.text('Enable'));
-    await t.pump(); // tap processed
-    await t.pump(const Duration(seconds: 11)); // past the 10s list timeout
-    await t.pumpAndSettle();
+    // Drive the relay switch directly: it does a real network fetch with a
+    // 10s timeout, and a widget tap would strand that timer inside the fake
+    // clock. In the test sandbox sockets are blocked, so the fetch fails fast
+    // and the key plus the auto-only fallback chain still land, which is the
+    // offline behavior a real user on a dead network gets.
+    await t.runAsync(() => cfg.enableRelay());
+    await _settle(t);
     expect(cfg.keyOf('relay'), 'public');
-    // the chain keeps at least auto so the app stays usable offline
     expect(cfg.settings.chain.where((n) => n.providerId == 'relay'), isNotEmpty);
     expect(cfg.settings.chain.first.modelId, 'auto');
   });

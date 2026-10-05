@@ -222,8 +222,15 @@ class StepDots extends StatelessWidget {
 
 /// Asks through permission_handler, the one place the wizard talks to it.
 /// Returns the state after the ask so the row can render granted, denied or
-/// permanently-denied without a second probe.
-Future<ph.PermissionStatus> askPermission(ph.Permission permission) => permission.request();
+/// permanently-denied without a second probe. A platform without the plugin
+/// (tests, desktop) reports denied rather than throwing.
+Future<ph.PermissionStatus> askPermission(ph.Permission permission) async {
+  try {
+    return await permission.request();
+  } catch (_) {
+    return ph.PermissionStatus.denied;
+  }
+}
 
 /// The wizard's eight pages live with the page itself (onboarding_page.dart):
 /// importing them here would be a cycle, since every step builds on this file.

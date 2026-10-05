@@ -55,9 +55,11 @@ class _HumanBody extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(18, 4, 18, 8),
           children: [
             TgSection(
+              footer: l.humanFooter,
               children: [
                 TgCheckCell(
                   title: l.onboardHumanEnabled,
+                  subtitle: l.humanSubtitle,
                   icon: Ic.smile,
                   value: h.settings.enabled,
                   onChanged: (v) {

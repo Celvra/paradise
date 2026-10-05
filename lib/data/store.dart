@@ -243,6 +243,12 @@ class Store extends ChangeNotifier {
   /// tools that layer already offers.
   bool agentMode = false;
 
+  /// How many tool passes one reply may run before the store pulls the brake.
+  /// 0 runs without a cap: the loop only spins while the model keeps asking
+  /// for tools, so a well behaved model never lands on the brake anyway.
+  /// Eight covers every sane agent task, which is why it is the default.
+  int agentMaxPass = 8;
+
   /// False until the first-run wizard finishes. Every install starts false, so
   /// an upgrade lands in the wizard exactly once too; the last step is the
   /// only thing that flips it, and the settings can replay the wizard without
@@ -269,6 +275,7 @@ class Store extends ChangeNotifier {
     s.countMuted = s._sp.getBool('countMuted') ?? false;
     s.showThinking = s._sp.getBool('showThinking') ?? false;
     s.agentMode = s._sp.getBool('agentMode') ?? false;
+    s.agentMaxPass = s._sp.getInt('agentMaxPass') ?? 8;
     s.onboarded = s._sp.getBool('onboarded') ?? false;
     s.dark = s._sp.getBool('dark') ?? false;
     s.textSize = s._sp.getDouble('textSize') ?? 16;
@@ -806,6 +813,12 @@ class Store extends ChangeNotifier {
   void setAgentMode(bool v) {
     agentMode = v;
     _sp.setBool('agentMode', v);
+    notifyListeners();
+  }
+
+  void setAgentMaxPass(int v) {
+    agentMaxPass = v;
+    _sp.setInt('agentMaxPass', v);
     notifyListeners();
   }
 
@@ -1585,10 +1598,10 @@ class Store extends ChangeNotifier {
       var turns = await _history(c);
       final system = agent ? await agentSystem(c) : _systemPrompt(c);
       // a plain reply is one pass, an agent reply keeps going while the model
-      // asks for tools. Eight rounds is far past anything sane and only there
-      // so a confused model cannot spin forever.
-      final maxPass = agent ? 8 : 1;
-      for (var pass = 0; pass < maxPass; pass++) {
+      // asks for tools. The cap is the agentMaxPass setting: a confused model
+      // cannot spin forever unless the user opened the cap to none.
+      final maxPass = agent ? agentMaxPass : 1;
+      for (var pass = 0; maxPass <= 0 || pass < maxPass; pass++) {
         final outcome = await runChain(
           settings: cfg.settings,
           apiKeys: cfg.apiKeys,

@@ -50,8 +50,6 @@ dependencies:
   flutter_math_fork: ^0.7.4
   ratex_flutter: ^0.1.14
   typst_flutter: ^3.0.0
-  # onboarding animations, CC0/MIT json from the lottiefiles community picks
-  lottie: ^3.6.1
   # one place to ask for photos / contacts / location / notifications and to
   # send the user to the system settings when a permission was denied for good
   permission_handler: ^13.0.2
@@ -77,8 +75,6 @@ flutter:
     # fonts have no CJK glyphs), GPL-3.0-with-font-exception, see
     # assets/fonts/FONTEXCEPTION
     - assets/fonts/wqy-microhei.ttc
-    # onboarding illustrations, see ui/onboarding/
-    - assets/lottie/
   fonts:
     - family: KaTeX_AMS
       fonts:
