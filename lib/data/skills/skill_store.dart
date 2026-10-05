@@ -31,31 +31,56 @@ class SkillStore extends ChangeNotifier {
   SkillStore._(this._sp, this._dir);
 
   final SharedPreferences _sp;
-  final Directory? _dir;
+  Directory? _dir;
+
+  /// Whether [_dir] has been resolved. False until [rescan] (or an import)
+  /// asks path_provider for the real directory.
+  bool _resolved = false;
 
   final List<Skill> _skills = [];
 
   /// The in-memory view, sorted by id.
   List<Skill> get skills => List.unmodifiable(_skills);
 
-  /// The directory skills live in, null when the platform gave us none
-  /// (tests without a documents directory). Reads still work from memory;
-  /// imports report an error instead of crashing.
+  /// The directory skills live in, null before [rescan] resolves it and when
+  /// the platform gives us none. Reads still work from memory; imports report
+  /// an error instead of crashing.
   Directory? get dir => _dir;
 
   static Future<SkillStore> load(SharedPreferences sp, {Directory? dir}) async {
-    final root = dir ?? await _resolveRoot();
-    final store = SkillStore._(sp, root);
-    await store._rescan();
+    // An explicit directory is the caller choosing the disk now (the skill
+    // tests). Without one the store starts memory-only: resolving it needs
+    // path_provider, and a widget test runs in a fake-async zone where that
+    // future never completes, so Store.load would hang. The app calls
+    // [rescan] from main instead, and any import resolves it lazily.
+    final store = SkillStore._(sp, dir);
+    if (dir != null) {
+      store._resolved = true;
+      await store._rescan();
+    }
     return store;
+  }
+
+  /// Resolves the directory and reads every skill from it. Called once by the
+  /// app after startup; safe to call again. Nothing here runs under a widget
+  /// test, whose fake clock would never complete the I/O.
+  Future<void> rescan() async {
+    await _ensureResolved();
+    await _rescan();
+  }
+
+  Future<void> _ensureResolved() async {
+    if (_resolved) return;
+    _resolved = true;
+    _dir = await _resolveRoot();
   }
 
   static Future<Directory?> _resolveRoot() async {
     try {
       return await AppDirs.skills();
     } catch (_) {
-      // path_provider is unavailable (unit tests). A fresh temp directory
-      // keeps each load isolated instead of sharing state across tests.
+      // path_provider is unavailable. A fresh temp directory keeps a plain
+      // test isolated instead of sharing state across loads.
       try {
         return await Directory.systemTemp.createTemp('paradise-skills');
       } catch (_) {
@@ -81,10 +106,6 @@ class SkillStore extends ChangeNotifier {
     if (filter == null) return enabled;
     final allowed = filter.toSet();
     return [for (final s in enabled) if (allowed.contains(s.id)) s];
-  }
-
-  Future<void> rescan() async {
-    await _rescan();
   }
 
   Future<void> _rescan() async {
@@ -189,7 +210,11 @@ class SkillStore extends ChangeNotifier {
     }
   }
 
-  Directory _requireRoot() {
+  /// The directory for a write, resolving it if [rescan] has not run. Kept
+  /// separate from the resolved getter so an import on a store that was
+  /// loaded without a directory still works.
+  Future<Directory> _ensureRoot() async {
+    await _ensureResolved();
     final root = _dir;
     if (root == null) throw StateError('Skills directory is unavailable.');
     return root;
@@ -200,7 +225,7 @@ class SkillStore extends ChangeNotifier {
     final doc = SkillDoc.parse(markdown);
     final errors = doc.validate();
     if (errors.isNotEmpty) throw FormatException('Invalid skill: ${errors.join(', ')}.');
-    final root = _requireRoot();
+    final root = await _ensureRoot();
     final id = await _allocateId(root, skillSlug(doc.name));
     await _writeFiles(root, id, {'SKILL.md': utf8.encode(markdown)});
     return _register(root, id, source);
@@ -215,7 +240,7 @@ class SkillStore extends ChangeNotifier {
       return importFromText(await file.readAsString(), SkillSource.file);
     }
     if (ext == '.zip') {
-      final root = _requireRoot();
+      final root = await _ensureRoot();
       final files = _extractZip(await _readBounded(file, skillImportMaxBytes));
       return _commitFiles(root, files, SkillSource.file);
     }
@@ -226,7 +251,7 @@ class SkillStore extends ChangeNotifier {
   /// direct link to a `SKILL.md`. The archive is downloaded as a zip and the
   /// skill inside it is installed.
   Future<Skill> importFromGitHub(String url, {Future<void>? cancelSignal}) async {
-    final root = _requireRoot();
+    final root = await _ensureRoot();
     var cancelled = false;
     unawaited(cancelSignal?.then((_) => cancelled = true));
     final ref = GitHubSkillRef.parse(url);
@@ -320,7 +345,7 @@ class SkillStore extends ChangeNotifier {
   }
 
   Future<void> delete(String id) async {
-    final root = _requireRoot();
+    final root = await _ensureRoot();
     final records = _readRecords();
     records.remove(id);
     _saveRecords(records);

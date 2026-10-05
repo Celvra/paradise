@@ -23,6 +23,10 @@ Future<void> main() async {
   final store = await Store.load();
   final ai = await AiConfig.load();
   store.attachAi(ai);
+  // Read the installed skills off disk once the binding is up. Kept out of
+  // Store.load because a widget test's fake-async zone never completes the
+  // file I/O, and every test would hang on the load.
+  await store.skills.rescan();
   // The wallpaper accent lives in the store but colours the palette, so the two
   // are kept in step here rather than either reaching into the other: once at
   // startup for the saved value, then on every store change. setAccent is a
