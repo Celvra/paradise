@@ -3968,6 +3968,8 @@
   "aiSettingsTtsModel": "語音模型",
   "aiSettingsTtsVoice": "預設音色",
   "aiSettingsTtsSpeed": "語速",
+  "aiSettingsTtsSpeedSub": "合成語音的播放速度，1.00x 為介面預設值",
+  "actionNone": "無",
   "voiceImageFollowGlobal": "跟隨全域",
   "speechTitle": "語音",
   "speechSummarySystem": "裝置語音",

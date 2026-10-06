@@ -819,7 +819,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dataBackupImportSub => 'From a file you exported before';
 
   @override
-  String dataBackupRestored(num chats, Object messages) {
+  String dataBackupRestored(int chats, int messages) {
     String _temp0 = intl.Intl.pluralLogic(
       chats,
       locale: localeName,
@@ -3990,4 +3990,211 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get whatsNewEntry => 'What\'s new';
+
+  @override
+  String get voiceImageHeader => 'Voice and drawing';
+
+  @override
+  String get voiceImageFooter =>
+      'Each role decides for itself. Turning a channel on gives the model a tool it can call: it draws when it wants to show something, and speaks when a line is worth hearing. The endpoint comes from the global default unless this role overrides it.';
+
+  @override
+  String get voiceImageDraw => 'Drawing';
+
+  @override
+  String get voiceImageDrawSub =>
+      'Let this role generate pictures with an OpenAI compatible image endpoint';
+
+  @override
+  String get voiceImageDrawModel => 'Image model';
+
+  @override
+  String get voiceImageDrawSize => 'Image size';
+
+  @override
+  String get voiceImageSpeak => 'Voice';
+
+  @override
+  String get voiceImageSpeakSub => 'Let this role read lines out loud';
+
+  @override
+  String get voiceImageEngine => 'Engine';
+
+  @override
+  String get voiceImageEngineSystem => 'Device voice';
+
+  @override
+  String get voiceImageEngineSystemSub =>
+      'The phone\'s own text to speech. Works offline and costs nothing.';
+
+  @override
+  String get voiceImageEngineApi => 'Speech endpoint';
+
+  @override
+  String get voiceImageEngineApiSub =>
+      'Any OpenAI compatible audio/speech endpoint. Can carry a cloned voice.';
+
+  @override
+  String get voiceImageVoice => 'Voice id';
+
+  @override
+  String get voiceImageVoiceSub => 'Empty uses the global default';
+
+  @override
+  String get voiceImageAutoSpeak => 'Read replies aloud';
+
+  @override
+  String get voiceImageAutoSpeakSub =>
+      'Speak every finished reply without being asked';
+
+  @override
+  String get voiceImageNotConfigured =>
+      'Set a default image and speech endpoint in Settings > AI replies first.';
+
+  @override
+  String get aiSettingsVoiceImage => 'Voice and drawing';
+
+  @override
+  String get aiSettingsVoiceImageSub =>
+      'Default endpoints for the roles that ask for them';
+
+  @override
+  String get aiSettingsImageProvider => 'Image endpoint';
+
+  @override
+  String get aiSettingsImageModel => 'Image model';
+
+  @override
+  String get aiSettingsImageSize => 'Image size';
+
+  @override
+  String get aiSettingsTtsEngine => 'Speech engine';
+
+  @override
+  String get aiSettingsTtsProvider => 'Speech endpoint';
+
+  @override
+  String get aiSettingsTtsModel => 'Speech model';
+
+  @override
+  String get aiSettingsTtsVoice => 'Default voice';
+
+  @override
+  String get aiSettingsTtsSpeed => 'Speed';
+
+  @override
+  String get aiSettingsTtsSpeedSub =>
+      'Playback rate for synthesized speech, 1.00x is the endpoint default';
+
+  @override
+  String get actionNone => 'None';
+
+  @override
+  String get voiceImageFollowGlobal => 'Follow global';
+
+  @override
+  String get speechTitle => 'Voice';
+
+  @override
+  String get speechSummarySystem => 'Device voice';
+
+  @override
+  String get speechEngineHeader => 'Engine';
+
+  @override
+  String get speechEngineFooter =>
+      'The device voice works offline and costs nothing; an endpoint can carry a cloned voice at the price of a request per line.';
+
+  @override
+  String get speechEngineSystem => 'Device voice';
+
+  @override
+  String get speechEngineApi => 'Speech endpoint';
+
+  @override
+  String get speechEndpointHeader => 'Endpoint';
+
+  @override
+  String get speechEndpointFooter =>
+      'This is the one server the voice module talks to. It is separate from the AI providers on purpose: a speech endpoint is not a chat model.';
+
+  @override
+  String get speechBaseUrl => 'Base url';
+
+  @override
+  String get speechBaseUrlHint => 'https://api.openai.com/v1';
+
+  @override
+  String get speechApiKey => 'API key';
+
+  @override
+  String get speechApiKeyHint => 'Paste the key';
+
+  @override
+  String get speechAuthStyle => 'Auth';
+
+  @override
+  String get speechAuthBearer => 'Bearer';
+
+  @override
+  String get speechAuthXApiKey => 'x-api-key';
+
+  @override
+  String get speechAuthQuery => 'Query key';
+
+  @override
+  String get speechModel => 'Model';
+
+  @override
+  String get speechVoiceHeader => 'Voice';
+
+  @override
+  String get speechVoiceFooter =>
+      'The voice id is free text: a gateway with cloned voices accepts ids no fixed list could carry.';
+
+  @override
+  String get speechVoice => 'Voice id';
+
+  @override
+  String get speechVoicePickSub =>
+      'Type a voice id the endpoint accepts. The configured voice is shown as the hint.';
+
+  @override
+  String get speechSpeed => 'Speed';
+
+  @override
+  String get speechInstructions => 'Instructions';
+
+  @override
+  String get speechInstructionsHint =>
+      'Optional: how the voice should read. Only gpt-4o-mini-tts reads this.';
+
+  @override
+  String get speechNotReady => 'Fill in the base url to use the endpoint';
+
+  @override
+  String get speechClear => 'Clear endpoint';
+
+  @override
+  String get speechClearMessage =>
+      'Remove the endpoint and the key? The device voice stays selected.';
+
+  @override
+  String get speechDeviceHeader => 'Device voice';
+
+  @override
+  String get speechDeviceFooter =>
+      'The phone\'s own text to speech is already configured: nothing to fill in.';
+
+  @override
+  String get speechTest => 'Test voice';
+
+  @override
+  String get speechTestSub => 'Speak a line through the selected engine';
+
+  @override
+  String get speechTestLine => 'Hello, this is a test of the voice.';
+
+  @override
+  String get speechTestFailed => 'Could not speak: ';
 }

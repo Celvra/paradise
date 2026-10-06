@@ -3968,6 +3968,8 @@
   "aiSettingsTtsModel": "语音模型",
   "aiSettingsTtsVoice": "默认音色",
   "aiSettingsTtsSpeed": "语速",
+  "aiSettingsTtsSpeedSub": "合成语音的播放速度，1.00x 为接口默认值",
+  "actionNone": "无",
   "voiceImageFollowGlobal": "跟随全局",
   "speechTitle": "语音",
   "speechSummarySystem": "设备语音",
