@@ -599,7 +599,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get aboutLinkFailed => '无法打开链接';
 
   @override
-  String get settingsAboutSub => '版本 1.0.3';
+  String get settingsAboutSub => '版本 1.0.2';
 
   @override
   String get settingsAboutLicense =>
@@ -613,11 +613,11 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get settingsAboutThanks =>
-      '鸣谢:\n\nKelivo - ToolCall 参考\nhttps://github.com/Chevey339/kelivo\n\nSillyTavern - 人设卡参考\nhttps://github.com/SillyTavern/SillyTavern\n\nUser-6170 & Kimi work-K2.8 Preview - v1.0.3 功能开发\nhttps://github.com/yzc12345779';
+      '鸣谢:\n\nKelivo - ToolCall 参考\nhttps://github.com/Chevey339/kelivo\n\nSillyTavern - 人设卡参考\nhttps://github.com/SillyTavern/SillyTavern';
 
   @override
   String get settingsAboutDeps =>
-      '依赖库:\n\ncharacters 1.4.1 - 字形簇，用于正确计算文本宽度  (BSD-3-Clause)\nhttps://github.com/dart-lang/core/tree/main/pkgs/characters\nfile_picker 13.1.0 - 文件与音频选择  (MIT)\nhttps://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker\nflutter_contacts 2.5.0 - 分享联系人名片  (MIT)\nhttps://github.com/QuisApp/flutter_contacts\nflutter_highlight 0.7.0 - 代码预览配色  (MIT)\nhttps://github.com/git-touch/highlight\nflutter_local_notifications 18.0.1 - 本地通知  (BSD-3-Clause)\nflutter_math_fork 0.7.4 - 气泡内渲染 LaTeX  (Apache-2.0)\nhttps://github.com/simplezhli/flutter_math_fork\nflutter_svg 2.3.0 - 服务商图标与矢量图标  (MIT)\nhttps://github.com/flutter/packages/tree/main/third_party/packages/flutter_svg\ngeolocator 13.0.4 - 位置附件  (MIT)\nhttps://github.com/baseflow/flutter-geolocator/tree/main/geolocator\nhttp 1.6.0 - OpenAI 兼容接口请求  (BSD-3-Clause)\nhttps://github.com/dart-lang/http/tree/master/pkgs/http\nimage_picker 1.2.3 - 相机与相册图片  (Apache-2.0)\nhttps://github.com/flutter/packages/tree/main/packages/image_picker/image_picker\nintl 0.20.3 - 日期与数字格式化  (BSD-3-Clause)\nhttps://github.com/dart-lang/i18n/tree/main/pkgs/intl\npath_provider 2.1.6 - 应用目录，用于表情与导出文件  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/path_provider/path_provider\npermission_handler 13.0.2 - 照片、联系人、位置与通知权限的统一申请入口  (MIT)\nhttps://github.com/baseflow/flutter-permission-handler\nphoto_manager 3.12.0 - 相册访问，用于附件  (Apache-2.0)\nhttps://github.com/fluttercandies/flutter_photo_manager\nratex_flutter 0.1.14 - 原生渲染 LaTeX 数学卡片  (MIT)\nhttps://github.com/erweixin/RaTeX\nshared_preferences 2.5.5 - 设置与聊天记录存储  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/shared_preferences/shared_preferences\nsqflite 2.4.4 - 消息历史与会话分页  (BSD-2-Clause)\nhttps://github.com/tekartik/sqflite/tree/master/sqflite\ntimezone 0.10.1 - 日程消息的时区数据  (BSD-2-Clause)\nhttps://github.com/srawlins/timezone\ntypst_flutter 3.0.0 - CeTZ 绘图卡片背后的内嵌 Typst 编译器  (Apache-2.0)\nhttps://github.com/ajmalbuv/typst_flutter\nurl_launcher 6.3.2 - 本弹窗中的交流群链接  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/url_launcher/url_launcher\nworkmanager 0.10.10 - 应用被杀后的后台送达  (MIT)\nhttps://github.com/fluttercommunity/flutter_workmanager';
+      '依赖库:\n\ncharacters 1.4.1 - 字形簇，用于正确计算文本宽度  (BSD-3-Clause)\nhttps://github.com/dart-lang/core/tree/main/pkgs/characters\nfile_picker 13.1.0 - 文件与音频选择  (MIT)\nhttps://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker\nflutter_contacts 2.5.0 - 分享联系人名片  (MIT)\nhttps://github.com/QuisApp/flutter_contacts\nflutter_highlight 0.7.0 - 代码预览配色  (MIT)\nhttps://github.com/git-touch/highlight\nflutter_local_notifications 18.0.1 - 本地通知  (BSD-3-Clause)\nflutter_math_fork 0.7.4 - 气泡内渲染 LaTeX  (Apache-2.0)\nhttps://github.com/simplezhli/flutter_math_fork\nflutter_svg 2.3.0 - 服务商图标与矢量图标  (MIT)\nhttps://github.com/flutter/packages/tree/main/third_party/packages/flutter_svg\ngeolocator 13.0.4 - 位置附件  (MIT)\nhttps://github.com/baseflow/flutter-geolocator/tree/main/geolocator\nhttp 1.6.0 - OpenAI 兼容接口请求  (BSD-3-Clause)\nhttps://github.com/dart-lang/http/tree/master/pkgs/http\nimage_picker 1.2.3 - 相机与相册图片  (Apache-2.0)\nhttps://github.com/flutter/packages/tree/main/packages/image_picker/image_picker\nintl 0.20.3 - 日期与数字格式化  (BSD-3-Clause)\nhttps://github.com/dart-lang/i18n/tree/main/pkgs/intl\npath_provider 2.1.6 - 应用目录，用于表情与导出文件  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/path_provider/path_provider\npermission_handler 13.0.2 - 照片、联系人、位置与通知权限的统一申请入口  (MIT)\nhttps://github.com/baseflow/flutter-permission-handler\nphoto_manager 3.12.0 - 相册访问，用于附件  (Apache-2.0)\nhttps://github.com/fluttercandies/flutter_photo_manager\nratex_flutter 0.1.14 - 原生渲染 LaTeX 数学卡片  (MIT)\nhttps://github.com/erweixin/RaTeX\nshared_preferences 2.5.5 - 设置与聊天记录存储  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/shared_preferences/shared_preferences\nsqflite 2.4.4 - 消息历史与会话分页  (BSD-2-Clause)\nhttps://github.com/tekartik/sqflite/tree/master/sqflite\ntimezone 0.10.1 - 日程消息的时区数据  (BSD-2-Clause)\nhttps://github.com/srawlins/timezone\ntypst_flutter 3.0.0 - CeTZ 绘图卡片背后的内嵌 Typst 编译器  (Apache-2.0)\nhttps://github.com/ajmalbuv/typst_flutter\nurl_launcher 6.3.2 - 本弹窗中的交流群链接  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/url_launcher/url_launcher\nvideo_player 2.14.1 - 聊天气泡内的视频播放  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/video_player/video_player\nworkmanager 0.10.10 - 应用被杀后的后台送达  (MIT)\nhttps://github.com/fluttercommunity/flutter_workmanager';
 
   @override
   String get settingsAboutCommunityUrl => 'https://discord.gg/aQaNUHPsw';
@@ -2588,7 +2588,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get whatsNewBody =>
-      'v1.0.3 更新内容：\n\n• 视频消息：相册与文件均可发送视频，AI 能看懂视频内容\n• 文件直读：小文件直接注入上下文，AI 真正读到内容\n• 贴纸三件套：AI 先读懂表情包含义再主动发送，并显示缩略图\n• 粘人度：可配置 AI 主动发话的频率与次数上限\n• 商城改版：购买后跳转聊天，礼物以卡片送达且 AI 真正收到；商城入口更明显\n• 自动备份：默认开启，覆盖式备份可随更新与重装存活，首次启动检测到备份可一键恢复\n• 模型目录：内置离线快照兜底，补上 GLM-5.3-Flash 系列视频支持标记\n• 编辑器保护：人设编辑器所有退出方式都会先确认再丢弃修改\n• 同步上游 v1.0.2：向导、SKILLS、LaTeX 绘图卡片、检查更新\n• 界面与性能优化';
+      '本次更新内容：\n\n• 视频消息：相册与文件均可发送视频，AI 能看懂视频内容\n• 文件直读：小文件直接注入上下文，AI 真正读到内容\n• 贴纸三件套：AI 先读懂表情包含义再主动发送，并显示缩略图\n• 粘人度：可配置 AI 主动发话的频率与次数上限\n• 商城改版：购买后跳转聊天，礼物以卡片送达且 AI 真正收到；商城入口更明显\n• 自动备份：默认开启，覆盖式备份可随更新与重装存活，首次启动检测到备份可一键恢复\n• 模型目录：修正 models.dev 数据滞后导致的视频能力误判（DeepSeek V4.1 Flash）\n• 编辑器保护：人设编辑器所有退出方式都会先确认再丢弃修改\n• 同步上游 v1.0.2：向导、SKILLS、LaTeX 绘图卡片、检查更新\n• 界面与性能优化';
 
   @override
   String get attachCamera => '相机';
@@ -4424,7 +4424,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get aboutLinkFailed => '無法開啟連結';
 
   @override
-  String get settingsAboutSub => '版本 1.0.3';
+  String get settingsAboutSub => '版本 1.0.2';
 
   @override
   String get settingsAboutLicense =>
@@ -4438,11 +4438,11 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get settingsAboutThanks =>
-      '鳴謝:\n\nKelivo - ToolCall 參考\nhttps://github.com/Chevey339/kelivo\n\nSillyTavern - 人設卡參考\nhttps://github.com/SillyTavern/SillyTavern\n\nUser-6170 & Kimi work-K2.8 Preview - v1.0.3 功能開發\nhttps://github.com/yzc12345779';
+      '鳴謝:\n\nKelivo - ToolCall 參考\nhttps://github.com/Chevey339/kelivo\n\nSillyTavern - 人設卡參考\nhttps://github.com/SillyTavern/SillyTavern';
 
   @override
   String get settingsAboutDeps =>
-      '依賴庫:\n\ncharacters 1.4.1 - 字形叢集，用於正確計算文字寬度  (BSD-3-Clause)\nhttps://github.com/dart-lang/core/tree/main/pkgs/characters\nfile_picker 13.1.0 - 檔案與音訊選擇  (MIT)\nhttps://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker\nflutter_contacts 2.5.0 - 分享聯絡人名片  (MIT)\nhttps://github.com/QuisApp/flutter_contacts\nflutter_highlight 0.7.0 - 程式碼預覽配色  (MIT)\nhttps://github.com/git-touch/highlight\nflutter_local_notifications 18.0.1 - 本機通知  (BSD-3-Clause)\nflutter_math_fork 0.7.4 - 氣泡內渲染 LaTeX  (Apache-2.0)\nhttps://github.com/simplezhli/flutter_math_fork\nflutter_svg 2.3.0 - 服務商圖示與向量圖示  (MIT)\nhttps://github.com/flutter/packages/tree/main/third_party/packages/flutter_svg\ngeolocator 13.0.4 - 位置附件  (MIT)\nhttps://github.com/baseflow/flutter-geolocator/tree/main/geolocator\nhttp 1.6.0 - OpenAI 相容介面請求  (BSD-3-Clause)\nhttps://github.com/dart-lang/http/tree/master/pkgs/http\nimage_picker 1.2.3 - 相機與相簿圖片  (Apache-2.0)\nhttps://github.com/flutter/packages/tree/main/packages/image_picker/image_picker\nintl 0.20.3 - 日期與數字格式化  (BSD-3-Clause)\nhttps://github.com/dart-lang/i18n/tree/main/pkgs/intl\npath_provider 2.1.6 - 應用程式目錄，用於表情與匯出檔案  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/path_provider/path_provider\npermission_handler 13.0.2 - 照片、聯絡人、位置與通知權限的統一申請入口  (MIT)\nhttps://github.com/baseflow/flutter-permission-handler\nphoto_manager 3.12.0 - 相簿存取，用於附件  (Apache-2.0)\nhttps://github.com/fluttercandies/flutter_photo_manager\nratex_flutter 0.1.14 - 原生渲染 LaTeX 數學卡片  (MIT)\nhttps://github.com/erweixin/RaTeX\nshared_preferences 2.5.5 - 設定與對話紀錄儲存  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/shared_preferences/shared_preferences\nsqflite 2.4.4 - 訊息歷史與對話分頁  (BSD-2-Clause)\nhttps://github.com/tekartik/sqflite/tree/master/sqflite\ntimezone 0.10.1 - 排程訊息的時區資料  (BSD-2-Clause)\nhttps://github.com/srawlins/timezone\ntypst_flutter 3.0.0 - CeTZ 繪圖卡片背後的內嵌 Typst 編譯器  (Apache-2.0)\nhttps://github.com/ajmalbuv/typst_flutter\nurl_launcher 6.3.2 - 本彈出視窗中的交流群連結  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/url_launcher/url_launcher\nworkmanager 0.10.10 - 應用程式被關閉後的背景送達  (MIT)\nhttps://github.com/fluttercommunity/flutter_workmanager';
+      '依賴庫:\n\ncharacters 1.4.1 - 字形叢集，用於正確計算文字寬度  (BSD-3-Clause)\nhttps://github.com/dart-lang/core/tree/main/pkgs/characters\nfile_picker 13.1.0 - 檔案與音訊選擇  (MIT)\nhttps://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker\nflutter_contacts 2.5.0 - 分享聯絡人名片  (MIT)\nhttps://github.com/QuisApp/flutter_contacts\nflutter_highlight 0.7.0 - 程式碼預覽配色  (MIT)\nhttps://github.com/git-touch/highlight\nflutter_local_notifications 18.0.1 - 本機通知  (BSD-3-Clause)\nflutter_math_fork 0.7.4 - 氣泡內渲染 LaTeX  (Apache-2.0)\nhttps://github.com/simplezhli/flutter_math_fork\nflutter_svg 2.3.0 - 服務商圖示與向量圖示  (MIT)\nhttps://github.com/flutter/packages/tree/main/third_party/packages/flutter_svg\ngeolocator 13.0.4 - 位置附件  (MIT)\nhttps://github.com/baseflow/flutter-geolocator/tree/main/geolocator\nhttp 1.6.0 - OpenAI 相容介面請求  (BSD-3-Clause)\nhttps://github.com/dart-lang/http/tree/master/pkgs/http\nimage_picker 1.2.3 - 相機與相簿圖片  (Apache-2.0)\nhttps://github.com/flutter/packages/tree/main/packages/image_picker/image_picker\nintl 0.20.3 - 日期與數字格式化  (BSD-3-Clause)\nhttps://github.com/dart-lang/i18n/tree/main/pkgs/intl\npath_provider 2.1.6 - 應用程式目錄，用於表情與匯出檔案  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/path_provider/path_provider\npermission_handler 13.0.2 - 照片、聯絡人、位置與通知權限的統一申請入口  (MIT)\nhttps://github.com/baseflow/flutter-permission-handler\nphoto_manager 3.12.0 - 相簿存取，用於附件  (Apache-2.0)\nhttps://github.com/fluttercandies/flutter_photo_manager\nratex_flutter 0.1.14 - 原生渲染 LaTeX 數學卡片  (MIT)\nhttps://github.com/erweixin/RaTeX\nshared_preferences 2.5.5 - 設定與對話紀錄儲存  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/shared_preferences/shared_preferences\nsqflite 2.4.4 - 訊息歷史與對話分頁  (BSD-2-Clause)\nhttps://github.com/tekartik/sqflite/tree/master/sqflite\ntimezone 0.10.1 - 排程訊息的時區資料  (BSD-2-Clause)\nhttps://github.com/srawlins/timezone\ntypst_flutter 3.0.0 - CeTZ 繪圖卡片背後的內嵌 Typst 編譯器  (Apache-2.0)\nhttps://github.com/ajmalbuv/typst_flutter\nurl_launcher 6.3.2 - 本彈出視窗中的交流群連結  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/url_launcher/url_launcher\nvideo_player 2.14.1 - 聊天氣泡內的影片播放  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/video_player/video_player\nworkmanager 0.10.10 - 應用程式被關閉後的背景送達  (MIT)\nhttps://github.com/fluttercommunity/flutter_workmanager';
 
   @override
   String get settingsAboutCommunityUrl => 'https://discord.gg/aQaNUHPsw';
@@ -6413,7 +6413,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get whatsNewBody =>
-      'v1.0.3 更新內容：\n\n• 視訊訊息：相簿與檔案均可傳送視訊，AI 能看懂視訊內容\n• 檔案直讀：小檔案直接注入上下文，AI 真正讀到內容\n• 貼紙三件套：AI 先讀懂表情包含義再主動傳送，並顯示縮圖\n• 黏人度：可配置 AI 主動發話的頻率與次數上限\n• 商城改版：購買後跳轉聊天，禮物以卡片送達且 AI 真正收到；商城入口更明顯\n• 自動備份：預設開啟，覆蓋式備份可隨更新與重裝存活，首次啟動偵測到備份可一鍵恢復\n• 模型目錄：內建離線快照兜底，補上 GLM-5.3-Flash 系列視訊支援標記\n• 編輯器保護：人設編輯器所有退出方式都會先確認再丟棄修改\n• 同步上游 v1.0.2：嚮導、SKILLS、LaTeX 繪圖卡片、檢查更新\n• 介面與效能優化';
+      '本次更新內容：\n\n• 視訊訊息：相簿與檔案均可傳送視訊，AI 能看懂視訊內容\n• 檔案直讀：小檔案直接注入上下文，AI 真正讀到內容\n• 貼紙三件套：AI 先讀懂表情包含義再主動傳送，並顯示縮圖\n• 黏人度：可配置 AI 主動發話的頻率與次數上限\n• 商城改版：購買後跳轉聊天，禮物以卡片送達且 AI 真正收到；商城入口更明顯\n• 自動備份：預設開啟，覆蓋式備份可隨更新與重裝存活，首次啟動偵測到備份可一鍵恢復\n• 模型目錄：修正 models.dev 資料滯後導致的視訊能力誤判（DeepSeek V4.1 Flash）\n• 編輯器保護：人設編輯器所有退出方式都會先確認再丟棄修改\n• 同步上游 v1.0.2：嚮導、SKILLS、LaTeX 繪圖卡片、檢查更新\n• 介面與效能優化';
 
   @override
   String get attachCamera => '相機';
