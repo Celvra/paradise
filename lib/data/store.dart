@@ -12,6 +12,7 @@ import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../core/perf.dart';
+import '../core/speech.dart';
 import '../core/theme.dart';
 import '../l10n/errors.dart';
 import '../l10n/x.dart';
@@ -19,7 +20,9 @@ import 'ai/chain.dart';
 import 'ai/compaction.dart';
 import 'ai/content.dart';
 import 'ai/errors.dart';
+import 'ai/image_gen.dart';
 import 'ai/prompt.dart';
+import 'ai/speech.dart';
 import 'ai/provider_model.dart';
 import 'ai/segmenter.dart' show Segmenter, humanDelay, jitterMs, typingMs;
 import 'ai/adapter.dart';
@@ -30,6 +33,8 @@ import 'auto_backup.dart';
 import 'backup.dart';
 import 'db.dart';
 import 'file_text.dart';
+import 'gen_prefs.dart';
+import 'speech_config.dart';
 import 'human/br_parser.dart';
 import 'human/hub.dart';
 import 'human/human_models.dart';
@@ -52,6 +57,7 @@ import 'workspace/workspace_tools.dart';
 
 part 'store_human.dart';
 part 'store_agent.dart';
+part 'store_gen.dart';
 part 'store_workspace.dart';
 part 'backup_store.dart';
 
@@ -192,8 +198,17 @@ class Store extends ChangeNotifier {
   /// Provider list, fallback chain and API keys. Set once at startup.
   AiConfig? _ai;
 
+  /// The voice module. Held separately from the AI config because it is a
+  /// module of its own, not a provider in the chat list.
+  SpeechConfig? _speech;
+
   /// The last node that actually answered, shown as a footer on the reply.
   String? lastServedBy;  AiConfig get aiConfig => _ai!;
+
+  /// The voice module. Attached during [load] rather than from main, so a
+  /// widget test that only builds a [Store] still has one: the drawing and
+  /// speech tools read this, and a missing module silently drops both.
+  SpeechConfig get speechConfig => _speech!;
 
   /// The nodes a chat actually runs on. A persona model override goes in front
   /// of the global chain, or stands alone when the persona opted out of the
@@ -365,6 +380,10 @@ class Store extends ChangeNotifier {
     await s._loadChats(dbPath: dbPath);
     s._loadAutoBackup();
     s._backupSink = MediaStoreBackupSink();
+    // the voice module rides along here rather than being handed in from main:
+    // it reads the same SharedPreferences this store already holds, and every
+    // path that builds a Store gets a working module without a second load.
+    s.attachSpeech(SpeechConfig.fromPrefs(s._sp));
     themeCtl.setDark(s.dark, animate: false);
     return s;
   }
@@ -463,7 +482,12 @@ class Store extends ChangeNotifier {
   static Store of(BuildContext c) => c.dependOnInheritedWidgetOfExactType<StoreScope>()!.notifier!;
   static Store read(BuildContext c) => (c.getElementForInheritedWidgetOfExactType<StoreScope>()!.widget as StoreScope).notifier!;
 
-  /// Called once from main after AiConfig has loaded.
+  /// Called once from [load], right after the module has read its keys.
+  void attachSpeech(SpeechConfig config) {
+    _speech = config;
+    _speech!.addListener(notifyListeners);
+  }
+
   void attachAi(AiConfig config) {
     _ai = config;
     _ai!.addListener(_onAiChanged);
@@ -1219,8 +1243,8 @@ class Store extends ChangeNotifier {
     notifyListeners();
   }
 
-  Chat createChat(String name, String prompt, {String bio = '', String greeting = '', String emoji = '', String examples = '', String avatarPath = '', int? color, String modelProvider = '', String modelId = '', bool modelFallback = true, bool? thinking, bool? agent, bool clingy = false, int clingySilentMin = 90, bool clingyCap = false, int clingyMax = 3, List<String>? skillIds}) {
-    final c = Chat(id: _id(), persona: Persona(name: name, prompt: prompt, color: color ?? name.hashCode.abs() % avatarColorCount, bio: bio, greeting: greeting, emoji: emoji, examples: examples, avatarPath: avatarPath, modelProvider: modelProvider, modelId: modelId, modelFallback: modelFallback, thinking: thinking, agent: agent, clingy: clingy, clingySilentMin: clingySilentMin, clingyCap: clingyCap, clingyMax: clingyMax, skillIds: skillIds));
+Chat createChat(String name, String prompt, {String bio = '', String greeting = '', String emoji = '', String examples = '', String avatarPath = '', int? color, String modelProvider = '', String modelId = '', bool modelFallback = true, bool? thinking, bool? agent, bool clingy = false, int clingySilentMin = 90, bool clingyCap = false, int clingyMax = 3, List<String>? skillIds, bool imageEnabled = false, String imageProvider = '', String imageModel = '', String imageSize = '', bool ttsEnabled = false, TtsEngine? ttsEngine, String ttsBaseUrl = '', String ttsModel = '', String ttsVoice = '', bool ttsAutoSpeak = false}) {
+    final c = Chat(id: _id(), persona: Persona(name: name, prompt: prompt, color: color ?? name.hashCode.abs() % avatarColorCount, bio: bio, greeting: greeting, emoji: emoji, examples: examples, avatarPath: avatarPath, modelProvider: modelProvider, modelId: modelId, modelFallback: modelFallback, thinking: thinking, agent: agent, clingy: clingy, clingySilentMin: clingySilentMin, clingyCap: clingyCap, clingyMax: clingyMax, skillIds: skillIds, imageEnabled: imageEnabled, imageProvider: imageProvider, imageModel: imageModel, imageSize: imageSize, ttsEnabled: ttsEnabled, ttsEngine: ttsEngine, ttsBaseUrl: ttsBaseUrl, ttsModel: ttsModel, ttsVoice: ttsVoice, ttsAutoSpeak: ttsAutoSpeak));
     if (greeting.trim().isNotEmpty) c.msgs.add(Msg(id: _id(), out: false, text: greeting.trim(), time: DateTime.now().millisecondsSinceEpoch));
     _listen(c);
     chats.add(c);
@@ -1263,6 +1287,38 @@ class Store extends ChangeNotifier {
     c.touch();
   }
 
+  /// Replaces the drawing and speaking settings of one role.
+  ///
+  /// One call rather than ten setters because the card saves the whole
+  /// section at once, and a half applied group would leave the persona
+  /// claiming a channel it has no endpoint for.
+  void setPersonaGen(
+    Chat c, {
+    required bool imageEnabled,
+    required String imageProvider,
+    required String imageModel,
+    required String imageSize,
+    required bool ttsEnabled,
+    required TtsEngine? ttsEngine,
+    required String ttsBaseUrl,
+    required String ttsModel,
+    required String ttsVoice,
+    required bool ttsAutoSpeak,
+  }) {
+    c.persona
+      ..imageEnabled = imageEnabled
+      ..imageProvider = imageProvider
+      ..imageModel = imageModel
+      ..imageSize = imageSize
+      ..ttsEnabled = ttsEnabled
+      ..ttsEngine = ttsEngine
+      ..ttsBaseUrl = ttsBaseUrl
+      ..ttsModel = ttsModel
+      ..ttsVoice = ttsVoice
+      ..ttsAutoSpeak = ttsAutoSpeak;
+    c.touch();
+  }
+
   void deleteChat(Chat c) {
     stop(c);
     _unlisten(c);
@@ -1290,6 +1346,14 @@ class Store extends ChangeNotifier {
     c.msgs.remove(m);
     // Removing from the middle shifts every index after it, so the hooks are
     // re-pointed before the next flush reads them.
+    //
+    // The chat is also marked for a full rewrite *before* the touch, and that
+    // order is load bearing: _reindex sets _hooked to the new length, so the
+    // length check in _onChat would see no change and skip the fallback, and a
+    // delete expressed only as a per-message dirty index cannot remove a row.
+    // The row would survive the flush and the message would come back on the
+    // next launch.
+    _dirtyIdsFallback.add(c.id);
     _reindex(c);
     c.touch();
   }
@@ -1824,8 +1888,14 @@ class Store extends ChangeNotifier {
       ),
     );
     final skillsBlock = skillFragmentFor(c);
-    if (skillsBlock.isEmpty) return base;
-    return '$base\n\n$skillsBlock';
+    // the generative channels are announced the same way skills are: only when
+    // the role actually has one, so a persona that never asked for them is not
+    // told about a tool it cannot call
+    final voice = _speech;
+    final genBlock = cfg == null || voice == null ? '' : genCapabilityBlock(genPrefsFor(c, cfg.settings, voice));
+    final extra = [if (skillsBlock.isNotEmpty) skillsBlock, if (genBlock.isNotEmpty) genBlock];
+    if (extra.isEmpty) return base;
+    return '$base\n\n${extra.join('\n\n')}';
   }
 
   /// Skills this chat's role sees, after the global enable switches and the

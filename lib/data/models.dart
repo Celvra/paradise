@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 import '../l10n/x.dart';
+import 'ai/provider_model.dart';
 import 'human/human_models.dart';
 import 'observable.dart';
 import 'workspace/workspace.dart';
@@ -25,6 +26,16 @@ class Persona {
     this.clingyCap = false,
     this.clingyMax = 3,
     this.skillIds,
+    this.imageEnabled = false,
+    this.imageProvider = '',
+    this.imageModel = '',
+    this.imageSize = '',
+    this.ttsEnabled = false,
+    this.ttsEngine,
+    this.ttsBaseUrl = '',
+    this.ttsModel = '',
+    this.ttsVoice = '',
+    this.ttsAutoSpeak = false,
   });
   String name;
   String prompt;
@@ -94,6 +105,45 @@ class Persona {
   /// means this role uses none.
   List<String>? skillIds;
 
+  /// Whether this role may draw. Off unless the role turns it on: there is no
+  /// app wide switch to inherit from, and a character that quietly starts
+  /// spending the user's image credits the moment it is imported is a
+  /// surprise worth avoiding.
+  bool imageEnabled;
+
+  /// Image endpoint override. Empty follows the global default, which is
+  /// what every persona written before this field wants.
+  String imageProvider;
+  String imageModel;
+
+  /// Pixel size for this role, e.g. `1024x1024`. Empty follows the global
+  /// default so a gateway that only accepts one size stays working.
+  String imageSize;
+
+  /// Whether this role speaks. Off unless turned on, same rule as drawing.
+  bool ttsEnabled;
+
+  /// Which engine speaks for this role. Null follows the voice module's own
+  /// setting, so one character can use the phone's voice while another uses a
+  /// cloned voice on the server.
+  TtsEngine? ttsEngine;
+
+  /// Per role override of the voice module's endpoint and model. Empty follows
+  /// the module, which is the common case: a user with one voice service sets
+  /// it once and every character shares it.
+  String ttsBaseUrl;
+  String ttsModel;
+
+  /// The voice id this role speaks in. This is the field worth setting per
+  /// character: one voice service can carry several characters, and the whole
+  /// point of a cloned voice is that it differs per role.
+  String ttsVoice;
+
+  /// Read every finished reply out loud without being asked. Off by default:
+  /// a chat that starts talking on its own the first time a role is imported
+  /// is worse than one that waits to be told.
+  bool ttsAutoSpeak;
+
   Map<String, dynamic> toJson() => {
         'name': name,
         'prompt': prompt,
@@ -113,6 +163,16 @@ class Persona {
         'clingyCap': clingyCap,
         'clingyMax': clingyMax,
         if (skillIds != null) 'skillIds': skillIds,
+        if (imageEnabled) 'imageEnabled': true,
+        if (imageProvider.isNotEmpty) 'imageProvider': imageProvider,
+        if (imageModel.isNotEmpty) 'imageModel': imageModel,
+        if (imageSize.isNotEmpty) 'imageSize': imageSize,
+        if (ttsEnabled) 'ttsEnabled': true,
+        if (ttsEngine != null) 'ttsEngine': ttsEngineWire(ttsEngine!),
+        if (ttsBaseUrl.isNotEmpty) 'ttsBaseUrl': ttsBaseUrl,
+        if (ttsModel.isNotEmpty) 'ttsModel': ttsModel,
+        if (ttsVoice.isNotEmpty) 'ttsVoice': ttsVoice,
+        if (ttsAutoSpeak) 'ttsAutoSpeak': true,
       };
   factory Persona.fromJson(Map<String, dynamic> j) => Persona(
         name: j['name'] as String,
@@ -137,6 +197,19 @@ class Persona {
         clingyCap: j['clingyCap'] as bool? ?? false,
         clingyMax: (j['clingyMax'] as num?)?.toInt() ?? 3,
         skillIds: j['skillIds'] is List ? [for (final e in j['skillIds'] as List) '$e'] : null,
+        // every one of these is optional: a persona saved before the
+        // field existed has no key and follows the global setting, the
+        // same rule the two reply switches already follow
+        imageEnabled: j['imageEnabled'] as bool? ?? false,
+        imageProvider: j['imageProvider'] as String? ?? '',
+        imageModel: j['imageModel'] as String? ?? '',
+        imageSize: j['imageSize'] as String? ?? '',
+        ttsEnabled: j['ttsEnabled'] as bool? ?? false,
+        ttsEngine: j['ttsEngine'] is String ? ttsEngineOf(j['ttsEngine'] as String) : null,
+        ttsBaseUrl: j['ttsBaseUrl'] as String? ?? '',
+        ttsModel: j['ttsModel'] as String? ?? '',
+        ttsVoice: j['ttsVoice'] as String? ?? '',
+        ttsAutoSpeak: j['ttsAutoSpeak'] as bool? ?? false,
       );
 }
 

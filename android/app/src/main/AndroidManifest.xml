@@ -69,5 +69,11 @@
             <action android:name="android.intent.action.VIEW"/>
             <data android:scheme="https"/>
         </intent>
+        <!-- flutter_tts: on API 30+ an app cannot see the installed text to
+             speech engines without asking for them here, and without this the
+             device voice silently reports itself as unavailable. -->
+        <intent>
+            <action android:name="android.intent.action.TTS_SERVICE"/>
+        </intent>
     </queries>
 </manifest>
