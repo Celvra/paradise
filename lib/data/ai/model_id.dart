@@ -71,10 +71,9 @@ IdGuess guessFromModelId(String id) {
   // gemini is the one family that reliably takes native video input; its
   // image-generation variants are the exception, so require vision too
   var video = family == 'gemini' && vision && !n.contains('image');
-  // qwen vl/omni generations understand video; deepseek v4.1 flash is
-  // image-vision only (verified against the official API: no video input);
-  // the id arrives normalized (dashes, lowercased)
-  final videoRe = RegExp(r'qwen(-vl|2-5-vl|3-vl|3-omni)');
+  // qwen vl/omni generations understand video, and deepseek v4.1 takes
+  // native video input; the id arrives normalized (dashes, lowercased)
+  final videoRe = RegExp(r'qwen(-vl|2-5-vl|3-vl|3-omni)|deepseek-v4(-1|p1)\b');
   if (videoRe.hasMatch(n)) video = true;
   return IdGuess(vision: vision, reasoning: reasoning, textToImage: t2i, video: video);
 }

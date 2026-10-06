@@ -102,6 +102,12 @@ const _cacheVersion = 2;
 
 void _writeCache(Map<String, dynamic> feed) => AiRegistryCache.write(jsonEncode({'v': _cacheVersion, 'at': DateTime.now().millisecondsSinceEpoch, 'data': feed}));
 
+// models.dev lags the providers on video input: the deepseek v4.1 flash
+// family takes native video (verified against the official API) while the
+// feed lists text+image only. Trust the provider, not the feed.
+bool _feedOmitsVideo(String id) =>
+    id == 'deepseek-flash' || id.endsWith('/deepseek-flash') || id.endsWith('deepseek-v4.1-flash') || id.endsWith('deepseek-v4p1-flash');
+
 Catalog _normalize(Map raw) {
   final out = <String, CatalogProvider>{};
   raw.forEach((key, value) {
@@ -122,7 +128,7 @@ Catalog _normalize(Map raw) {
           m['attachment'] == true || input.contains('image'),
           output.contains('image'),
           m['reasoning'] == true,
-          input.contains('video'),
+          input.contains('video') || _feedOmitsVideo(id),
         );
       });
     }

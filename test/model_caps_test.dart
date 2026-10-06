@@ -74,11 +74,9 @@ void main() {
     expect(guessFromModelId('deepseek-chat').vision ?? false, isFalse);
   });
 
-  test('deepseek v4.1 is image-vision only, qwen vl/omni ids guess video', () {
-    // verified against the official deepseek API: v4.1 flash accepts images
-    // but no video
-    expect(guessFromModelId('deepseek-v4.1-flash').video ?? false, isFalse);
-    expect(guessFromModelId('deepseek-v4p1-flash').video ?? false, isFalse);
+  test('deepseek v4.1 and qwen vl/omni ids guess video', () {
+    expect(guessFromModelId('deepseek-v4.1-flash').video, isTrue);
+    expect(guessFromModelId('deepseek-v4p1-flash').video, isTrue);
     expect(guessFromModelId('deepseek-v4.1-flash').vision, isTrue);
     // v4 flash is image-vision only, no video understanding
     expect(guessFromModelId('deepseek-v4-flash').video ?? false, isFalse);
@@ -88,12 +86,12 @@ void main() {
     expect(guessFromModelId('qwen-plus').video ?? false, isFalse);
   });
 
-  test('bundled catalog marks deepseek v4.1 flash image-vision only', () {
+  test('bundled catalog marks deepseek v4.1 flash video', () {
     // no warmed remote: the lookup must fall through to the bundled subset
     resetCatalog();
     final flash = enrich(_m('deepseek-flash'), 'deepseek');
     expect(flash.vision, isTrue);
-    expect(flash.video, isFalse);
+    expect(flash.video, isTrue);
     final v4 = enrich(_m('deepseek-v4-flash'), 'deepseek');
     expect(v4.vision, isTrue);
     expect(v4.video, isFalse);
@@ -128,5 +126,40 @@ void main() {
     expect(meta.vision, isTrue);
     expect(meta.video, isTrue);
     expect(meta.contextWindow, 1000000);
+  });
+
+  test('the feed cannot strip video from deepseek v4.1 flash', () async {
+    // models.dev lists deepseek-flash as text+image only, but the official
+    // API takes native video: the registry must not let the feed block a
+    // capability the provider ships
+    final feed = jsonEncode({
+      'v': 2,
+      'at': DateTime.now().millisecondsSinceEpoch,
+      'data': {
+        'deepseek': {
+          'name': 'DeepSeek',
+          'models': {
+            'deepseek-flash': {
+              'name': 'DeepSeek V4.1 Flash',
+              'modalities': {'input': ['text', 'image'], 'output': ['text']},
+              'limit': {'context': 1000000, 'output': 393216},
+            },
+          },
+        },
+      },
+    });
+    AiRegistryCache.reader = () => feed;
+    AiRegistryCache.writer = (_) {};
+    addTearDown(() {
+      AiRegistryCache.reader = null;
+      AiRegistryCache.writer = null;
+      resetCatalog();
+    });
+    await warmCatalog();
+    final flash = enrich(emptyModel('deepseek-flash'), 'deepseek');
+    expect(flash.vision, isTrue);
+    expect(flash.video, isTrue, reason: 'deepseek v4.1 flash takes native video input');
+    final viaRouter = enrich(emptyModel('deepseek/deepseek-v4.1-flash'), 'openrouter');
+    expect(viaRouter.video, isTrue);
   });
 }
