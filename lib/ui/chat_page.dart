@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math' as math;
 
+import 'package:flutter/rendering.dart' show ScrollCacheExtent;
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import '../data/human/human_models.dart';
@@ -493,7 +494,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
                 reverse: true,
                 physics: const ClampingScrollPhysics(),
                 // render further ahead so a fast fling does not paint blank
-                cacheExtent: 900,
+                scrollCacheExtent: const ScrollCacheExtent.pixels(900),
                 findChildIndexCallback: (k) {
                   final id = k is ValueKey<String> ? k.value : null;
                   final j = ms.indexWhere((m) => m.id == id);
