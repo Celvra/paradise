@@ -4,9 +4,14 @@
 
 ## 下载
 
-- `app-release.apk`（ universal，约 78 MB）
+按手机处理器选择（不知道就选 universal）：
 
-安装前无需卸载旧版；如之前关闭过自动备份，建议先在 设置 → 数据 → 自动备份 中确认备份已开启。
+- `paradise-1.0.3-arm64-v8a.apk`（约 30 MB，绝大多数近年的手机）
+- `paradise-1.0.3-armeabi-v7a.apk`（约 28 MB，较老的 32 位手机）
+- `paradise-1.0.3-x86_64.apk`（约 31 MB，平板/模拟器）
+- `paradise-1.0.3-universal.apk`（约 76 MB，通吃版，体积最大）
+
+下方 Assets 里的 `Source code` 为 GitHub 自动生成的源码压缩包。安装前无需卸载旧版；如之前关闭过自动备份，建议先在 设置 → 数据 → 自动备份 中确认备份已开启。
 
 ## 新功能
 
