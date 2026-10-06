@@ -1,7 +1,7 @@
 name: paradise
 description: Telegram styled AI chat client
 publish_to: none
-version: 1.0.3+4
+version: 1.0.2+3
 
 environment:
   sdk: ">=3.6.0 <4.0.0"
@@ -76,10 +76,6 @@ flutter:
     # fonts have no CJK glyphs), GPL-3.0-with-font-exception, see
     # assets/fonts/FONTEXCEPTION
     - assets/fonts/wqy-microhei.ttc
-    # offline fallback for the models.dev catalog (minified snapshot of the
-    # models.dev shape, picked up by data/ai/registry.dart when the network
-    # fetch fails), see assets/catalog/README
-    - assets/catalog/models.dev.snapshot.json
   fonts:
     - family: KaTeX_AMS
       fonts:

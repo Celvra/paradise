@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:flutter/services.dart' show rootBundle;
 import 'package:http/http.dart' as http;
 
 import 'model_catalog.dart';
@@ -9,7 +8,6 @@ import 'model_id.dart';
 import 'provider_model.dart';
 
 const _catalogUrl = 'https://models.dev/api.json';
-const _snapshotAsset = 'assets/catalog/models.dev.snapshot.json';
 const _cacheTtl = Duration(days: 14);
 // models.dev answers in seconds on a fast link but crawls at a few KB/s from
 // networks that need a long handshake, so give the pull real headroom
@@ -46,34 +44,10 @@ Future<Catalog> _fetchRemote() async {
       return data;
     }
   } catch (_) {
-    // offline is fine, the bundled snapshot covers the whole catalog
+    // offline: the bundled catalog subset still covers the common models
   }
-  _remote = cached != null && cached.data.isNotEmpty ? cached.data : await _loadSnapshot();
+  _remote = cached != null && cached.data.isNotEmpty ? cached.data : const {};
   return _remote ?? const {};
-}
-
-/// Minified models.dev payload shipped inside the apk, so a device that cannot
-/// reach the feed at all still sees every provider. Loaded lazily and memoised
-/// because parsing 1.5MB of json has a real cost on first launch.
-Future<Catalog>? _snapshotPending;
-Future<Catalog> _loadSnapshot() {
-  return _snapshotPending ??= _readSnapshot().whenComplete(() => _snapshotPending = null);
-}
-
-Future<Catalog> _readSnapshot() async {
-  try {
-    // widget tests never answer the asset channel, which leaves loadString
-    // pending forever rather than throwing; the timeout keeps that failure
-    // mode inside the catch below. a bundled asset read is milliseconds on a
-    // real device, so a short leash costs nothing there and keeps the
-    // fallback snappy everywhere
-    final raw = await rootBundle.loadString(_snapshotAsset).timeout(const Duration(milliseconds: 300));
-    final parsed = jsonDecode(raw);
-    if (parsed is Map<String, dynamic>) return _normalize(parsed);
-  } catch (_) {
-    // tests run without assets; a missing snapshot just means no catalog
-  }
-  return const {};
 }
 
 class AiRegistryException implements Exception {
