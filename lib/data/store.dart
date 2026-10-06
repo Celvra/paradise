@@ -11,6 +11,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../core/perf.dart';
 import '../core/theme.dart';
 import '../l10n/errors.dart';
 import '../l10n/x.dart';
@@ -113,10 +114,39 @@ class Store extends ChangeNotifier {
   /// backup restore can swap the object under a live id.
   final Set<String> _dirtyIds = {};
 
+  /// Message indexes changed inside a chat since the last flush, keyed by chat
+  /// id. This is the incremental half of [_dirtyIds]: the id says *which* chat
+  /// to write, this says *which rows* of it. Without it every flush rewrites
+  /// the chat's whole history, so a streamed chunk in a 2000 message chat costs
+  /// 2000 encodes and 2000 row writes. Empty for a chat means "the head changed
+  /// but the messages did not" (a draft keystroke, a mute toggle), which still
+  /// needs the head row written.
+  final Map<String, Set<int>> _dirtyMsgs = {};
+
+  /// A message id that changed without a usable index. Falling back to a full
+  /// rewrite for that chat is always correct, just slower, so a message that
+  /// cannot be located never silently fails to persist.
+  final Set<String> _dirtyIdsFallback = {};
+
+  /// Per-message streaming fan-out. A streamed chunk bumps one message's
+  /// revision instead of notifying the whole store, so only the bubble that
+  /// listens to that message repaints.
+  final StreamBus streams = StreamBus();
+
   /// Per chat listener closures. Tearoffs cannot carry the chat, and a fresh
   /// `() => _onChat(c)` at remove time would not match the one at add time,
   /// so the closure is kept where removal can find it.
   final Map<Chat, VoidCallback> _chatListeners = {};
+
+  /// How many of a chat's messages currently carry a change hook.
+  ///
+  /// Messages are appended from a dozen places — the send path, the trace rows,
+  /// the greeting seeder, the humanize layer, the agent loop — and hooking each
+  /// site by hand means the one that gets missed silently stops persisting.
+  /// Comparing this count against `c.msgs.length` on the chat-level change
+  /// signal catches every one of them for the price of an int compare, and only
+  /// a real change pays for the re-walk.
+  final Map<Chat, int> _hooked = {};
 
   /// Sidebar position per chat id, database ordinals when SQLite is on and
   /// list indexes when it is not. New chats take [maxOrd] + 1, so adding one
@@ -510,7 +540,45 @@ class Store extends ChangeNotifier {
 
   void _onChat(Chat c) {
     _dirtyIds.add(c.id);
+    // A chat that grew a message since the last walk has an unhooked one, so
+    // re-walk before the flush reads the hooks. This is what makes the
+    // incremental path safe to rely on rather than something every one of the
+    // dozen append sites has to remember to feed.
+    if ((_hooked[c] ?? -1) != c.msgs.length) {
+      // The transcript shape moved: rows were appended or removed, which the
+      // per-message dirty set cannot express (a new row is not a change to an
+      // old one, and a removed row leaves no index behind). A full rewrite is
+      // the only correct statement of that, and it is rare enough - one per
+      // message, not one per chunk - to stay cheap.
+      _dirtyIdsFallback.add(c.id);
+      _reindex(c);
+    }
     notifyListeners();
+    _scheduleSave();
+  }
+
+  /// Marks one message of [c] as changed.
+  ///
+  /// Wired to [Msg.onChange], which every message owns but nothing had ever
+  /// pointed at a listener: the store learned a chat was dirty through
+  /// `Chat.touch()` alone, which says nothing about *which* message moved and
+  /// so forced every flush to rewrite the whole history. [i] is the index the
+  /// hook was built with; it is validated here rather than trusted, so a message
+  /// that has moved, been deleted or been detached from the transcript falls
+  /// back to the whole-chat path instead of writing the wrong row.
+  void _onMsg(Chat c, Msg m, int i) {
+    _dirtyIds.add(c.id);
+    if (i < 0 || i >= c.msgs.length || !identical(c.msgs[i], m)) {
+      // The index the hook was built with no longer names this message: the
+      // list was reordered, spliced or restored under it. Falling back to the
+      // whole-chat rewrite is always correct, just slower.
+      _dirtyIdsFallback.add(c.id);
+    } else {
+      (_dirtyMsgs[c.id] ??= <int>{}).add(i);
+      // The bubble's own pixels moved. Bumping its revision repaints that
+      // bubble alone; the page is not notified, which is the whole point.
+      streams.bump(m.id);
+    }
     _scheduleSave();
   }
 
@@ -521,16 +589,81 @@ class Store extends ChangeNotifier {
     final fn = () => _onChat(c);
     _chatListeners[c] = fn;
     c.addListener(fn);
+    // Each message reports its own changes. This is the hook that makes the
+    // incremental flush possible; without it the only signal is the chat-level
+    // one, which cannot name a row.
+    _reindex(c);
   }
 
   void _unlisten(Chat c) {
     final fn = _chatListeners.remove(c);
     if (fn != null) c.removeListener(fn);
+    for (final m in c.msgs) {
+      m.onChange = null;
+    }
+    _dirtyMsgs.remove(c.id);
+    _dirtyIdsFallback.remove(c.id);
+    _hooked.remove(c);
   }
 
+  /// Attaches the per-message change hook to a message that was just added.
+  ///
+  /// A message constructed after [_listen] ran has no `onChange` yet, and the
+  /// streaming path constructs the live bubble mid-run, so every append goes
+  /// through here. The owning chat and the index are passed rather than looked
+  /// up: the caller knows both, and a scan of the history per chunk would cost
+  /// more than the incremental save it exists to make cheap. The index is
+  /// validated against the list at call time, so a stale one degrades to the
+  /// full rewrite rather than writing the wrong row.
+  void _watch(Msg m, Chat c, [int? at]) {
+    final i = at ?? c.msgs.indexOf(m);
+    m.onChange = (_) => _onMsg(c, m, i);
+  }
+
+  /// Re-points every message's hook at its current index.
+  ///
+  /// Called whenever the list is restructured (a load, a restore, a delete that
+  /// shifts the tail) because the captured index would otherwise name a
+  /// different message.
+  void _reindex(Chat c) {
+    for (var i = 0; i < c.msgs.length; i++) {
+      _watch(c.msgs[i], c, i);
+    }
+    _hooked[c] = c.msgs.length;
+  }
+
+  /// Floor between two flushes while changes keep arriving.
+  ///
+  /// This is kelivo's `LatestWinsCheckpointWriter.minimumInterval`, 250 ms, and
+  /// it exists because the previous implementation was a plain reset debounce:
+  /// every change cancelled the timer and started a fresh 400 ms one, so a
+  /// stream that produced a delta more often than that never flushed at all
+  /// until the reply ended. A ten minute answer, or a phone that kills the app
+  /// mid-reply, lost the whole thing. Here a pending flush is never pushed back,
+  /// so the transcript is written at least four times a second while it grows.
+  static const _flushMinInterval = Duration(milliseconds: 250);
+
+  /// How long to wait after the last change before writing, when nothing is
+  /// arriving. Keeps a typing user from writing on every keystroke.
+  static const _flushIdle = Duration(milliseconds: 400);
+
+  DateTime? _lastSaveAt;
+
+  /// Schedules the next flush.
+  ///
+  /// An already pending flush is left alone rather than postponed. That single
+  /// difference is what turns the old starving reset-debounce into a
+  /// bounded-staleness writer: the write happens no later than
+  /// [_flushMinInterval] after the previous one, whatever the delta rate.
   void _scheduleSave() {
-    _saveTimer?.cancel();
-    _saveTimer = Timer(const Duration(milliseconds: 400), _save);
+    if (_saveTimer?.isActive ?? false) return;
+    final last = _lastSaveAt;
+    var wait = _flushIdle;
+    if (last != null) {
+      final since = DateTime.now().difference(last);
+      if (since < _flushMinInterval) wait = _flushMinInterval - since;
+    }
+    _saveTimer = Timer(wait, _save);
   }
 
   /// Says the chat list itself changed, rather than the contents of one chat.
@@ -541,6 +674,10 @@ class Store extends ChangeNotifier {
   void chatsChanged() {
     _dirtyIds.addAll(chats.map((e) => e.id));
     _backupDirty = true;
+    // A restore replaces chat objects wholesale, so every message row of every
+    // chat is new. Marking them head-only here would write the metadata and
+    // silently keep the old bodies.
+    _dirtyIdsFallback.addAll(chats.map((e) => e.id));
     notifyListeners();
     _scheduleSave();
   }
@@ -566,19 +703,41 @@ class Store extends ChangeNotifier {
   /// surviving list in full.
   void _save() {
     _backupDirty = true;
+    _lastSaveAt = DateTime.now();
     final db = _db;
     if (db == null) {
       _sp.setString('chats', jsonEncode(chats.map((e) => e.toJson()).toList()));
       _dirtyIds.clear();
+      _dirtyMsgs.clear();
+      _dirtyIdsFallback.clear();
       return;
     }
     if (_dirtyIds.isEmpty) return;
     final ids = [..._dirtyIds];
+    final dirty = Map<String, Set<int>>.from(_dirtyMsgs);
+    final fallback = Set<String>.of(_dirtyIdsFallback);
     _dirtyIds.clear();
-    unawaited(_saveChats(db, ids));
+    _dirtyMsgs.clear();
+    _dirtyIdsFallback.clear();
+    unawaited(_saveChats(db, ids, dirty, fallback));
   }
 
-  Future<void> _saveChats(ChatDb db, List<String> ids) async {
+  /// Serializes the actual writes.
+  ///
+  /// [_save] can fire again while a previous flush is still on the SQLite
+  /// thread — a stream produces a chunk every few tens of milliseconds and the
+  /// debounce only spaces the *starts* — so two flushes could otherwise
+  /// interleave transactions against the same chat and one could read the other
+  /// half applied. Chaining on this future keeps them in order without blocking
+  /// the caller.
+  Future<void> _writes = Future<void>.value();
+
+  Future<void> _saveChats(ChatDb db, List<String> ids, Map<String, Set<int>> dirty, Set<String> fallback) async {
+    _writes = _writes.then((_) => _saveChatsNow(db, ids, dirty, fallback));
+    return _writes;
+  }
+
+  Future<void> _saveChatsNow(ChatDb db, List<String> ids, Map<String, Set<int>> dirty, Set<String> fallback) async {
     for (final id in ids) {
       final at = chats.indexWhere((e) => e.id == id);
       try {
@@ -588,7 +747,13 @@ class Store extends ChangeNotifier {
         } else {
           final c = chats[at];
           _chatOrd[id] ??= maxOrd + 1;
-          await db.saveChat(c, _chatOrd[id]!, msgs: c.msgs);
+          // Three states, and they have to stay distinct:
+          //   null        -> the messages changed wholesale (or moved under
+          //                  their hooks), so rewrite the lot
+          //   {}          -> only the head changed, so write no message rows
+          //   {i, j, ...} -> rewrite just those, which is the streaming case
+          final rows = fallback.contains(id) ? null : (dirty[id] ?? const <int>{});
+          await db.saveChat(c, _chatOrd[id]!, msgs: c.msgs, dirty: rows);
         }
       } catch (_) {
         // a failed write must not take the run that touched the chat down
@@ -1114,11 +1279,18 @@ class Store extends ChangeNotifier {
     c.msgs.clear();
     c.unread = 0;
     c.markedUnread = false;
+    // Every captured index is now stale and the rows are gone, so the chat has
+    // to take the full-rewrite path: there is no narrower statement of "all of
+    // it changed".
+    _dirtyIdsFallback.add(c.id);
     c.touch();
   }
 
   void deleteMsg(Chat c, Msg m) {
     c.msgs.remove(m);
+    // Removing from the middle shifts every index after it, so the hooks are
+    // re-pointed before the next flush reads them.
+    _reindex(c);
     c.touch();
   }
 
@@ -1160,6 +1332,7 @@ class Store extends ChangeNotifier {
       c.msgs.clear();
       c.unread = 0;
       c.markedUnread = false;
+      _dirtyIdsFallback.add(c.id);
       c.touch();
     }
   }
@@ -1168,6 +1341,7 @@ class Store extends ChangeNotifier {
   Msg addOut(Chat c, {String text = '', MsgKind kind = MsgKind.text, Map<String, dynamic>? data, String? reply}) {
     final m = Msg(id: _id(), out: true, text: text.trim(), time: DateTime.now().millisecondsSinceEpoch, reply: reply, state: St.sending, kind: kind, data: data);
     c.msgs.add(m);
+    _watch(m, c, c.msgs.length - 1);
     c.draft = '';
     c.touch();
     return m;
@@ -1383,6 +1557,10 @@ class Store extends ChangeNotifier {
     while (c.msgs.isNotEmpty && c.msgs.last.service) {
       c.msgs.removeLast();
     }
+    // The tail was truncated, so the surviving hooks still name the right rows
+    // (only trailing indexes went away) but the deleted rows have to be dropped
+    // from storage, which the full rewrite is the safe way to state.
+    _dirtyIdsFallback.add(c.id);
     c.touch();
     _reply(c);
   }
@@ -1866,32 +2044,79 @@ class Store extends ChangeNotifier {
     final table = agent ? <String, HTool>{for (final t in await agentTools(c, _runs[c.id])) t.name: t} : <String, HTool>{};
     final specs = [for (final t in table.values) t.spec];
 
-    final buf = StringBuffer();
+    // Deltas accumulate here and the string is only built when a frame asks for
+    // it. \`live.text += delta\` reallocated the whole reply per chunk, which is
+    // quadratic over an answer and was the largest single allocation source on
+    // the streaming path.
+    final buf = StreamTextBuffer();
     var accepted = false;
     var reported = false;
     Msg? live;
-    var lastPaint = DateTime.now();
+    // Painted at most this often, matching kelivo's 50 ms stream publish
+    // interval. A provider that bursts a screenful in one read now lands as a
+    // steady crawl rather than one jump.
+    var lastPaint = 0;
+    const paintIntervalMs = 50;
+
+    /// Pushes the accumulated buffer into the live bubble and repaints just it.
+    ///
+    /// The buffer holds the whole reply, not a tail, so this writes the full
+    /// text each time. That is one string build per *paint* rather than per
+    /// chunk: the throttle below is what keeps it from being quadratic in the
+    /// number of deltas.
+    void paint({bool force = false}) {
+      final current = live;
+      if (current == null) return;
+      final text = buf.value;
+      if (text == current.text) return;
+      if (!force) {
+        // Leading-edge throttle: the first delta after each window paints, so a
+        // delta rate above 20/s cannot starve the display — the next one past
+        // the boundary always gets through. This is kelivo's
+        // \`_streamThrottleInterval\`, 50 ms, the same 20 Hz ceiling.
+        final now = _nowMs;
+        if (now - lastPaint < paintIntervalMs) return;
+        lastPaint = now;
+      }
+      // The assignment runs [Msg.onChange], which is what marks the row dirty
+      // and bumps this bubble's revision. Nothing here calls \`c.touch()\`: that
+      // would rebuild the whole page — every message in the history — once per
+      // chunk, which is exactly what the per-message revision replaces.
+      current.text = text;
+    }
 
     // each call appends finished text to the live bubble, opening it if needed.
     // Only the plain path streams into one bubble; character mode hands every
     // finished segment to placeSeg below instead.
     void emit(List<String> texts) {
+      var opened = false;
       for (final text in texts) {
         if (text.isEmpty) continue;
         final current = live;
         if (current == null) {
           final fresh = Msg(id: _id(), out: false, text: text, time: DateTime.now().millisecondsSinceEpoch, streaming: true);
           live = fresh;
+          buf.value = text;
           c.typing = false;
           if (haptics) HapticFeedback.lightImpact();
           _advance(c, St.sent, St.read);
           c.msgs.add(fresh);
+          _watch(fresh, c, c.msgs.length - 1);
           if (openId != c.id) c.unread++;
+          opened = true;
         } else {
-          current.text += text;
+          buf.add(text);
         }
       }
-      if (live != null) c.touch();
+      // Opening the bubble appends a row, which is a structural change the page
+      // and the list both have to see. A chunk that merely grew the bubble that
+      // already exists is not: that repaints the one bubble through its own
+      // revision and leaves the page alone.
+      if (opened) {
+        c.touch();
+      } else {
+        paint();
+      }
     }
 
     // Character mode owes the reader one bubble per segment with a human pause
@@ -1916,6 +2141,7 @@ class Store extends ChangeNotifier {
       final fresh = Msg(id: _id(), out: false, text: text, time: DateTime.now().millisecondsSinceEpoch);
       if (haptics) HapticFeedback.lightImpact();
       c.msgs.add(fresh);
+      _watch(fresh, c, c.msgs.length - 1);
       if (openId != c.id) c.unread++;
       c.typing = false;
       segNextAt = _nowMs + humanDelay(text, random: segRandom, scale: cfg.settings.bubbleGapScale, spread: jitter);
@@ -1992,16 +2218,13 @@ class Store extends ChangeNotifier {
         queueSegs(segmenter.push(delta));
         return;
       }
-      buf.write(delta);
+      buf.add(delta);
       if (live == null) {
-        emit([buf.toString()]);
-        buf.clear();
+        // Nothing on screen yet: open the bubble with everything buffered so
+        // the first paint is the whole opening line, not one character.
+        emit([buf.value]);
       } else {
-        final now = DateTime.now();
-        if (now.difference(lastPaint).inMilliseconds > 40) {
-          lastPaint = now;
-          c.touch();
-        }
+        paint();
       }
     }
 
@@ -2066,8 +2289,13 @@ class Store extends ChangeNotifier {
           pumpSeg(drained);
           await drained.future;
         } else if (buf.isNotEmpty) {
-          emit([buf.toString()]);
-          buf.clear();
+          // Forced: the reply is over, so the last chunk must land regardless
+          // of where the paint window happened to be.
+          if (live == null) {
+            emit([buf.value]);
+          } else {
+            paint(force: true);
+          }
         }
 
         // a pass that produced nothing at all is an empty answer, a pass that
@@ -2132,11 +2360,20 @@ class Store extends ChangeNotifier {
       segHolding = null;
       for (final m in c.msgs.where((m) => m.streaming)) {
         m.streaming = false;
+        // The reply is over, so this bubble will never be repainted by a
+        // revision again. Releasing the notifier here keeps the bus from
+        // growing one entry per message of every conversation ever streamed,
+        // which is the same retention kelivo avoids by handing inactive rows an
+        // immutable listenable.
+        streams.drop(m.id);
       }
       _advance(c, St.sending, St.sent);
       c.typing = false;
       _runs.remove(c.id);
       c.touch();
+      // The terminal flush writes the finished reply, so it is the one place a
+      // whole-chat rewrite is cheap and certain.
+      _dirtyIdsFallback.add(c.id);
       _save();
     }
   }

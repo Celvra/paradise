@@ -78,3 +78,6 @@ tmp/
 # verified against tool/proot_checksums.txt. jniLibs/NOTICE explains why these
 # are exec'd rather than linked.
 android/app/src/main/jniLibs/**/*.so
+
+# locally built installers are not source
+apk/*.apk
