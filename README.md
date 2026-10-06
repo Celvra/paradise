@@ -73,7 +73,6 @@
 - [Kelivo](https://github.com/Chevey339/kelivo)  ToolCall、MCP 参考、PRoot 容器、沙箱.
 - [SillyTavern](https://github.com/SillyTavern/SillyTavern)  人设卡参考
 - [Telegram Android](https://github.com/DrKLO/Telegram)     UI/UX，移植到 Flutter。
-- [User-6170](https://github.com/yzc12345779) & Kimi work-K2.8 Preview  v1.0.3 新功能开发。
 
 ### 翻译致谢
 
