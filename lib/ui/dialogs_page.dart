@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:flutter/rendering.dart' show ScrollCacheExtent;
 import 'package:flutter/widgets.dart';
 
 import '../core/anim.dart';
@@ -267,7 +268,7 @@ class _ChatsTabState extends State<ChatsTab> {
               : ListView.builder(
                   controller: _scroll,
                   physics: const ClampingScrollPhysics(),
-                  cacheExtent: 700,
+                  scrollCacheExtent: const ScrollCacheExtent.pixels(700),
                   padding: EdgeInsets.only(top: top + 56 + 52, bottom: mq.padding.bottom + 100),
                   itemCount: list.length,
                   itemBuilder: (_, i) {
