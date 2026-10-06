@@ -491,8 +491,92 @@ class _AdvancedTab extends StatelessWidget {
             TgTextCell(icon: Ic.list, title: l.aiGlobalHeaders, subtitle: s.globalHeaders.any((h) => h.key.trim().isNotEmpty) ? [for (final h in s.globalHeaders) if (h.key.trim().isNotEmpty) h.key.trim()].join(', ') : l.aiHeadersNone, divider: false, onTap: () => _pickGlobalHeaders(context)),
           ],
         ),
+        _genSection(context, s),
       ],
     );
+  }
+
+  /// Default image endpoint settings.
+  ///
+  /// Image generation is a provider and a model chosen from the AI list, so it
+  /// lives here next to the chain. Speech is deliberately not here: it has its
+  /// own module (openSpeechSettings) because a voice endpoint is not a chat
+  /// provider and folding it into this list made a user add a fake provider
+  /// just to hear a character talk.
+  Widget _genSection(BuildContext context, AiSettings s) {
+    final l = context.l;
+    final imageProvider = s.imageProviderId.trim().isEmpty ? null : findProvider(s, s.imageProviderId);
+
+    return TgSection(
+      header: l.aiSettingsVoiceImage,
+      footer: l.aiSettingsVoiceImageSub,
+      children: [
+        TgTextCell(
+          icon: Ic.image,
+          title: l.aiSettingsImageProvider,
+          subtitle: imageProvider?.name ?? (s.imageProviderId.trim().isEmpty ? l.voiceImageNotConfigured : s.imageProviderId),
+          value: l.personaModelChange,
+          onTap: () => _pickGenProvider(context),
+        ),
+        TgTextCell(
+          icon: Ic.ai,
+          title: l.aiSettingsImageModel,
+          subtitle: s.imageModelId.trim().isEmpty ? l.voiceImageNotConfigured : s.imageModelId,
+          value: l.personaModelChange,
+          onTap: () => _pickImageModel(context),
+        ),
+        TgTextCell(
+          icon: Ic.image,
+          title: l.aiSettingsImageSize,
+          subtitle: s.imageSize,
+          value: l.personaModelChange,
+          divider: false,
+          onTap: () => _pickGenImageSize(context),
+        ),
+      ],
+    );
+  }
+
+  Future<void> _pickGenProvider(BuildContext context) async {
+    final cfg = AiScope.read(context);
+    final l = context.l;
+    final picked = await showAiModelPicker(
+      context,
+      cfg: cfg,
+      title: l.aiSettingsImageProvider,
+      allowFollowChain: false,
+      followTitle: l.actionNone,
+      followSubtitle: l.aiModelDefault,
+    );
+    if (picked == null) return;
+    cfg.update((s) => s.copyWith(imageProviderId: picked.providerId, imageModelId: picked.modelId));
+  }
+
+  Future<void> _pickImageModel(BuildContext context) async {
+    final cfg = AiScope.read(context);
+    final l = context.l;
+    final v = await showTgInput(
+      context,
+      title: l.aiSettingsImageModel,
+      initial: cfg.settings.imageModelId,
+      hint: 'gpt-image-1',
+    );
+    if (v == null) return;
+    cfg.update((s) => s.copyWith(imageModelId: v.trim()));
+  }
+
+  Future<void> _pickGenImageSize(BuildContext context) async {
+    final cfg = AiScope.read(context);
+    final l = context.l;
+    const sizes = ['1024x1024', '1536x1024', '1024x1536', '1792x1024', '1024x1792', '512x512'];
+    final v = await showAiSelect<String>(
+      context,
+      title: l.aiSettingsImageSize,
+      value: cfg.settings.imageSize,
+      options: [for (final s in sizes) (value: s, label: s, sub: null)],
+    );
+    if (v == null) return;
+    cfg.update((s) => s.copyWith(imageSize: v));
   }
 
   Future<void> _pickUserAgent(BuildContext context) async {

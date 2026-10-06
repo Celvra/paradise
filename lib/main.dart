@@ -7,6 +7,7 @@ import 'package:flutter/widgets.dart';
 import 'core/theme.dart';
 import 'data/ai_config.dart';
 import 'data/human/notifications.dart';
+import 'data/speech_config.dart';
 import 'data/store.dart';
 import 'data/workspace/workspace_bootstrap.dart';
 import 'ui/human_data_pages.dart' show appNav, askToolPermission;
@@ -90,46 +91,53 @@ class TgApp extends StatelessWidget {
       store: store,
       child: AiScope(
         config: ai,
-        child: ThemeScope(
-          controller: themeCtl,
-          child: Builder(builder: (context) {
-          // Both dependencies have to be taken here, and neither of them is
-          // obvious. context.p only subscribes to the palette, so a language
-          // change would notify the store and rebuild the pages underneath
-          // while MaterialApp kept the old locale and its delegate tree with
-          // it, which reads as "the change lands after a restart". Reading the
-          // store registers it, so MaterialApp is rebuilt and the whole
-          // Localizations subtree follows in the same frame.
-          final p = context.p;
-          final st = context.store;
-          final dark = p.dark;
-          return AnnotatedRegion<SystemUiOverlayStyle>(
-            value: SystemUiOverlayStyle(
-              statusBarColor: const Color(0x00000000),
-              systemNavigationBarColor: const Color(0x00000000),
-              statusBarIconBrightness: dark ? Brightness.light : Brightness.dark,
-              systemNavigationBarIconBrightness: dark ? Brightness.light : Brightness.dark,
-              systemNavigationBarContrastEnforced: false,
-            ),
-            child: MaterialApp(
-              onGenerateTitle: (context) => context.l.appTitle,
-              navigatorKey: appNav,
-              debugShowCheckedModeBanner: false,
-              locale: st.locale,
-              localizationsDelegates: AppLocalizations.localizationsDelegates,
-              supportedLocales: AppLocalizations.supportedLocales,
-              localeResolutionCallback: resolveLocale,
-              theme: ThemeData(splashFactory: NoSplash.splashFactory),
-              builder: (context, child) => L10nSync(
-                child: DefaultTextStyle(
-                  style: const TextStyle(fontSize: 16, color: Color(0xFF000000), decoration: TextDecoration.none, fontWeight: FontWeight.w400),
-                  child: child!,
+        child: SpeechScope(
+          // The voice module hangs off the store, which attached it during
+          // load. Mounted here for the same reason AiScope is: the settings
+          // list, the persona card and the speech page all read it by scope,
+          // and an unmounted scope takes the whole settings tab down with it.
+          config: store.speechConfig,
+          child: ThemeScope(
+            controller: themeCtl,
+            child: Builder(builder: (context) {
+              // Both dependencies have to be taken here, and neither of them is
+              // obvious. context.p only subscribes to the palette, so a language
+              // change would notify the store and rebuild the pages underneath
+              // while MaterialApp kept the old locale and its delegate tree with
+              // it, which reads as "the change lands after a restart". Reading the
+              // store registers it, so MaterialApp is rebuilt and the whole
+              // Localizations subtree follows in the same frame.
+              final p = context.p;
+              final st = context.store;
+              final dark = p.dark;
+              return AnnotatedRegion<SystemUiOverlayStyle>(
+                value: SystemUiOverlayStyle(
+                  statusBarColor: const Color(0x00000000),
+                  systemNavigationBarColor: const Color(0x00000000),
+                  statusBarIconBrightness: dark ? Brightness.light : Brightness.dark,
+                  systemNavigationBarIconBrightness: dark ? Brightness.light : Brightness.dark,
+                  systemNavigationBarContrastEnforced: false,
                 ),
-              ),
-              home: st.onboarded ? const DialogsPage() : const OnboardingPage(),
-            ),
-          );
-        }),
+                child: MaterialApp(
+                  onGenerateTitle: (context) => context.l.appTitle,
+                  navigatorKey: appNav,
+                  debugShowCheckedModeBanner: false,
+                  locale: st.locale,
+                  localizationsDelegates: AppLocalizations.localizationsDelegates,
+                  supportedLocales: AppLocalizations.supportedLocales,
+                  localeResolutionCallback: resolveLocale,
+                  theme: ThemeData(splashFactory: NoSplash.splashFactory),
+                  builder: (context, child) => L10nSync(
+                    child: DefaultTextStyle(
+                      style: const TextStyle(fontSize: 16, color: Color(0xFF000000), decoration: TextDecoration.none, fontWeight: FontWeight.w400),
+                      child: child!,
+                    ),
+                  ),
+                  home: st.onboarded ? const DialogsPage() : const OnboardingPage(),
+                ),
+              );
+            }),
+          ),
         ),
       ),
     );

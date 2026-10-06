@@ -55,25 +55,26 @@ void main() {
       expect(page[8].text, 'm8');
     });
 
-    test('an incremental write cannot resurrect a deleted row', () async {
+    test('an incremental write touches only the rows it names', () async {
       final c = chat('a');
       for (var i = 0; i < 5; i++) {
         c.msgs.add(msg('m$i'));
       }
       await db.saveChat(c, 0, msgs: c.msgs);
 
-      // Drop the tail, then write only index 0 incrementally. The rows that
-      // were removed from the list are still in the database, which is the
-      // known cost of the incremental path; the store avoids it by marking a
-      // structural change as a full rewrite. This pins that the incremental
-      // path really does only touch what it is told to.
-      c.msgs.removeLast();
+      // Write index 0 incrementally and nothing else. Every other row has to
+      // come back exactly as it went in, which is the point of tracking
+      // ordinals at all. The store handles a structural change such as a
+      // delete by marking the chat for a full rewrite instead, so this only
+      // pins the narrow behaviour of the incremental write itself.
       c.msgs[0].text = 'head';
       await db.saveChat(c, 0, msgs: c.msgs, dirty: {0});
 
       final page = await db.page('a', 0, 30);
+      expect(page.length, 5, reason: 'the untouched rows must survive');
       expect(page.first.text, 'head');
-      expect(page.length, 5, reason: 'incremental writes leave other rows alone');
+      expect(page[1].text, 'm1');
+      expect(page[4].text, 'm4');
     });
 
     test('an empty dirty set writes the head and no message rows', () async {
@@ -126,13 +127,16 @@ void main() {
   });
 
   group('schema is durable under the pragmas', () {
-    test('WAL and NORMAL are actually in force', () async {
+    test('the connection contract is in force', () async {
       // The pragmas are set in onConfigure; if a refactor moves them somewhere
       // a transaction cannot see, this fails rather than silently reverting to
       // two fsyncs per commit.
-      expect('${await db.pragma('journal_mode')}'.toLowerCase(), 'wal');
+      //
+      // journal_mode is deliberately not asserted: an in memory database
+      // cannot use WAL at all and SQLite reports "memory" for it. The file
+      // backed case is covered by the store tests, which open a real file.
       expect(await db.pragma('synchronous'), 1, reason: 'synchronous = NORMAL');
-      expect(await db.pragma('foreign_keys'), 1);
+      expect(await db.pragma('foreign_keys'), 1, reason: 'the cascade depends on it');
       expect(await db.pragma('wal_autocheckpoint'), 1000);
     });
   });
@@ -157,13 +161,16 @@ void main() {
     });
 
     test('get refreshes recency', () {
-      final cache = ByteLruCache<String, String>(maxBytes: 30, sizeOf: (k, v) => v.length);
+      // 25 bytes of room fits two 10 byte entries and forces the third to
+      // evict, which is what makes the recency order observable at all
+      final cache = ByteLruCache<String, String>(maxBytes: 25, sizeOf: (k, v) => v.length);
       cache.put('a', 'x' * 10);
       cache.put('b', 'x' * 10);
-      cache.get('a'); // a is now newer than b
-      cache.put('c', 'x' * 10); // must evict b
-      expect(cache.get('a'), isNotNull);
+      cache.get('a'); // a is now the newer of the two
+      cache.put('c', 'x' * 10); // must evict b, not a
+      expect(cache.get('a'), isNotNull, reason: 'a was read, so it is not the coldest');
       expect(cache.get('b'), isNull);
+      expect(cache.get('c'), isNotNull);
     });
   });
 

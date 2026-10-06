@@ -1022,7 +1022,15 @@
   },
   "dataBackupRestored": "{chats} 個對話，{messages} 則訊息",
   "@dataBackupRestored": {
-    "description": "Bulletin after a restore that changed something"
+    "description": "Bulletin after a restore that changed something",
+    "placeholders": {
+      "chats": {
+        "type": "int"
+      },
+      "messages": {
+        "type": "int"
+      }
+    }
   },
   "dataBackupNothing": "這個檔案裡沒有可還原的內容",
   "@dataBackupNothing": {
@@ -3931,5 +3939,67 @@
   "whatsNewEntry": "更新說明",
   "@whatsNewEntry": {
     "description": "Settings row that reopens the current version highlights"
-  }
+  },
+  "voiceImageHeader": "語音與畫圖",
+  "voiceImageFooter": "每個角色單獨決定。開啟後模型會多一個可呼叫的工具：想展示什麼時會畫圖，遇到值得聽的話時會說話。介面預設跟隨全域設定，也可以給這個角色單獨指定。",
+  "voiceImageDraw": "畫圖",
+  "voiceImageDrawSub": "允許這個角色用 OpenAI 相容的畫圖介面生成圖片",
+  "voiceImageDrawModel": "畫圖模型",
+  "voiceImageDrawSize": "圖片尺寸",
+  "voiceImageSpeak": "語音",
+  "voiceImageSpeakSub": "允許這個角色朗讀台詞",
+  "voiceImageEngine": "引擎",
+  "voiceImageEngineSystem": "裝置語音",
+  "voiceImageEngineSystemSub": "手機內建的語音合成，離線可用、不消耗額度。",
+  "voiceImageEngineApi": "語音介面",
+  "voiceImageEngineApiSub": "任意 OpenAI 相容的 audio/speech 介面，可以使用克隆音色。",
+  "voiceImageVoice": "音色",
+  "voiceImageVoiceSub": "留空則使用全域預設",
+  "voiceImageAutoSpeak": "自動朗讀回覆",
+  "voiceImageAutoSpeakSub": "每條回覆完成後自動朗讀，無需模型呼叫工具",
+  "voiceImageNotConfigured": "請先在 設定 > AI 回覆 裡設定預設的畫圖和語音介面。",
+  "aiSettingsVoiceImage": "語音與畫圖",
+  "aiSettingsVoiceImageSub": "需要這些能力的角色使用的預設介面",
+  "aiSettingsImageProvider": "畫圖介面",
+  "aiSettingsImageModel": "畫圖模型",
+  "aiSettingsImageSize": "圖片尺寸",
+  "aiSettingsTtsEngine": "語音引擎",
+  "aiSettingsTtsProvider": "語音介面",
+  "aiSettingsTtsModel": "語音模型",
+  "aiSettingsTtsVoice": "預設音色",
+  "aiSettingsTtsSpeed": "語速",
+  "voiceImageFollowGlobal": "跟隨全域",
+  "speechTitle": "語音",
+  "speechSummarySystem": "裝置語音",
+  "speechEngineHeader": "引擎",
+  "speechEngineFooter": "裝置語音離線可用、不消耗額度；語音介面可以使用克隆音色，但每行要消耗一次請求。",
+  "speechEngineSystem": "裝置語音",
+  "speechEngineApi": "語音介面",
+  "speechEndpointHeader": "介面",
+  "speechEndpointFooter": "這是語音模組連接的伺服器。它刻意與 AI 供應商分開：語音介面不是聊天模型。",
+  "speechBaseUrl": "介面位址",
+  "speechBaseUrlHint": "https://api.openai.com/v1",
+  "speechApiKey": "API 金鑰",
+  "speechApiKeyHint": "貼上金鑰",
+  "speechAuthStyle": "認證",
+  "speechAuthBearer": "Bearer",
+  "speechAuthXApiKey": "x-api-key",
+  "speechAuthQuery": "Query key",
+  "speechModel": "模型",
+  "speechVoiceHeader": "音色",
+  "speechVoiceFooter": "音色是自由文本：支援克隆音色的介面可以接受任何 id，固定列表裝不下。",
+  "speechVoice": "音色",
+  "speechVoicePickSub": "輸入介面接受的音色 id。已配置的音色會顯示為提示。",
+  "speechSpeed": "語速",
+  "speechInstructions": "指令",
+  "speechInstructionsHint": "可選：語音如何朗讀。只有 gpt-4o-mini-tts 會讀取。",
+  "speechNotReady": "填寫介面位址後才能使用語音介面",
+  "speechClear": "清除介面",
+  "speechClearMessage": "要清除介面和金鑰嗎？裝置語音會保留。",
+  "speechDeviceHeader": "裝置語音",
+  "speechDeviceFooter": "手機內建的語音合成已可用，無需配置。",
+  "speechTest": "試聽語音",
+  "speechTestSub": "用目前引擎朗讀一行",
+  "speechTestLine": "你好，這是語音測試。",
+  "speechTestFailed": "無法朗讀："
 }
