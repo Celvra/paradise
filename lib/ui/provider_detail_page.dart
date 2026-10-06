@@ -530,6 +530,7 @@ class _ModelRow extends StatelessWidget {
                 if (model.maxOutput > 0) Text(l.provOut(formatTokens(model.maxOutput)), style: TextStyle(color: p.subtitle, fontSize: 11.5, decoration: TextDecoration.none)),
                 if (model.reasoning) AiTag(l.aiCapsReasoning),
                 if (model.vision) AiTag(l.aiCapsVision),
+                if (model.video) AiTag(l.aiCapsVideo),
                 if (model.textToImage) AiTag(l.provTagImage),
                 if (model.contextWindow == 0) AiTag(l.provTagUnknownWindow),
               ]),

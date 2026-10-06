@@ -783,6 +783,12 @@ abstract class AppLocalizations {
   /// **'vision'**
   String get aiCapsVision;
 
+  /// Capability tag on a chain node
+  ///
+  /// In en, this message translates to:
+  /// **'video'**
+  String get aiCapsVideo;
+
   /// Shown for a context window the catalog does not know
   ///
   /// In en, this message translates to:
@@ -1224,7 +1230,7 @@ abstract class AppLocalizations {
   /// Direct dependencies with their licence, the transitive tree is in the lockfile
   ///
   /// In en, this message translates to:
-  /// **'Dependencies:\n\narchive 4.3.0 - zipping a workspace for export  (MIT)\nhttps://github.com/brendan-duncan/archive\nasync 2.13.0 - not used directly, pulled in by flutter_local_notifications  (BSD-2-Clause)\nhttps://github.com/dart-lang/async\ncharacters 1.4.1 - grapheme clusters for text measurement  (BSD-3-Clause)\nhttps://github.com/dart-lang/core/tree/main/pkgs/characters\ncrypto 3.0.7 - declared for the workspace, nothing on device is hashed yet  (BSD-3-Clause)\nhttps://github.com/dart-lang/core/tree/main/pkgs/crypto\nfile_picker 13.1.0 - picking documents and audio files  (MIT)\nhttps://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker\nflutter_contacts 2.5.0 - sharing a contact card  (MIT)\nhttps://github.com/QuisApp/flutter_contacts\nflutter_highlight 0.7.0 - colouring the code preview  (MIT)\nhttps://github.com/git-touch/highlight\nflutter_local_notifications 18.0.1 - local notifications  (BSD-3-Clause)\nhttps://github.com/MaikuB/flutter_local_notifications\nflutter_math_fork 0.7.4 - inline TeX math in a bubble  (Apache-2.0)\nhttps://github.com/simplezhli/flutter_math_fork\nflutter_svg 2.3.0 - provider logos and vector icons  (MIT)\nhttps://github.com/flutter/packages/tree/main/third_party/packages/flutter_svg\ngeolocator 13.0.4 - location attachments  (MIT)\nhttps://github.com/baseflow/flutter-geolocator/tree/main/geolocator\nglob 2.2.0 - the workspace find tool  (BSD-3-Clause)\nhttps://github.com/dart-lang/tools/tree/main/pkgs/glob\nhighlight 0.7.0 - the grammar data behind the code preview  (MIT)\nhttps://github.com/pd4d10/highlight\nhttp 1.6.0 - OpenAI compatible endpoints  (BSD-3-Clause)\nhttps://github.com/dart-lang/http/tree/master/pkgs/http\nimage_picker 1.2.3 - camera and gallery photos  (Apache-2.0)\nhttps://github.com/flutter/packages/tree/main/packages/image_picker/image_picker\nintl 0.20.3 - date and number formatting  (BSD-3-Clause)\nhttps://github.com/dart-lang/i18n/tree/main/pkgs/intl\npath 1.9.1 - path arithmetic in the workspace sandbox  (BSD-3-Clause)\nhttps://github.com/dart-lang/core/tree/main/pkgs/path\npath_provider 2.1.6 - app directory for stickers and exports  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/path_provider/path_provider\npermission_handler 13.0.2 - one place to ask for photos, contacts, location and notifications  (MIT)\nhttps://github.com/baseflow/flutter-permission-handler\nphoto_manager 3.12.0 - album access for attachments  (Apache-2.0)\nhttps://github.com/fluttercandies/flutter_photo_manager\nratex_flutter 0.1.14 - the native LaTeX math card  (MIT)\nhttps://github.com/erweixin/RaTeX\nshared_preferences 2.5.5 - settings and chat storage  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/shared_preferences/shared_preferences\nsqflite 2.4.4 - message history and per chat paging  (BSD-2-Clause)\nhttps://github.com/tekartik/sqflite/tree/master/sqflite\ntimezone 0.10.1 - timezone data for scheduled messages  (BSD-2-Clause)\nhttps://github.com/srawlins/timezone\ntypst_flutter 3.0.0 - the embedded Typst compiler behind the CeTZ drawing card  (Apache-2.0)\nhttps://github.com/ajmalbuv/typst_flutter\nurl_launcher 6.3.2 - the community link in this dialog  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/url_launcher/url_launcher\nwebview_flutter 4.14.1 - rendering html in a file preview  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/webview_flutter/webview_flutter\nworkmanager 0.10.10 - background delivery when the app is killed  (MIT)\nhttps://github.com/fluttercommunity/flutter_workmanager'**
+  /// **'Dependencies:\n\narchive 4.3.0 - zipping a workspace for export  (MIT)\nhttps://github.com/brendan-duncan/archive\nasync 2.13.0 - not used directly, pulled in by flutter_local_notifications  (BSD-2-Clause)\nhttps://github.com/dart-lang/async\ncharacters 1.4.1 - grapheme clusters for text measurement  (BSD-3-Clause)\nhttps://github.com/dart-lang/core/tree/main/pkgs/characters\ncrypto 3.0.7 - declared for the workspace, nothing on device is hashed yet  (BSD-3-Clause)\nhttps://github.com/dart-lang/core/tree/main/pkgs/crypto\nfile_picker 13.1.0 - picking documents and audio files  (MIT)\nhttps://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker\nflutter_contacts 2.5.0 - sharing a contact card  (MIT)\nhttps://github.com/QuisApp/flutter_contacts\nflutter_highlight 0.7.0 - colouring the code preview  (MIT)\nhttps://github.com/git-touch/highlight\nflutter_local_notifications 18.0.1 - local notifications  (BSD-3-Clause)\nhttps://github.com/MaikuB/flutter_local_notifications\nflutter_math_fork 0.7.4 - inline TeX math in a bubble  (Apache-2.0)\nhttps://github.com/simplezhli/flutter_math_fork\nflutter_svg 2.3.0 - provider logos and vector icons  (MIT)\nhttps://github.com/flutter/packages/tree/main/third_party/packages/flutter_svg\ngeolocator 13.0.4 - location attachments  (MIT)\nhttps://github.com/baseflow/flutter-geolocator/tree/main/geolocator\nglob 2.2.0 - the workspace find tool  (BSD-3-Clause)\nhttps://github.com/dart-lang/tools/tree/main/pkgs/glob\nhighlight 0.7.0 - the grammar data behind the code preview  (MIT)\nhttps://github.com/pd4d10/highlight\nhttp 1.6.0 - OpenAI compatible endpoints  (BSD-3-Clause)\nhttps://github.com/dart-lang/http/tree/master/pkgs/http\nimage_picker 1.2.3 - camera and gallery photos  (Apache-2.0)\nhttps://github.com/flutter/packages/tree/main/packages/image_picker/image_picker\nintl 0.20.3 - date and number formatting  (BSD-3-Clause)\nhttps://github.com/dart-lang/i18n/tree/main/pkgs/intl\npath 1.9.1 - path arithmetic in the workspace sandbox  (BSD-3-Clause)\nhttps://github.com/dart-lang/core/tree/main/pkgs/path\npath_provider 2.1.6 - app directory for stickers and exports  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/path_provider/path_provider\npermission_handler 13.0.2 - one place to ask for photos, contacts, location and notifications  (MIT)\nhttps://github.com/baseflow/flutter-permission-handler\nphoto_manager 3.12.0 - album access for attachments  (Apache-2.0)\nhttps://github.com/fluttercandies/flutter_photo_manager\nratex_flutter 0.1.14 - the native LaTeX math card  (MIT)\nhttps://github.com/erweixin/RaTeX\nshared_preferences 2.5.5 - settings and chat storage  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/shared_preferences/shared_preferences\nsqflite 2.4.4 - message history and per chat paging  (BSD-2-Clause)\nhttps://github.com/tekartik/sqflite/tree/master/sqflite\ntimezone 0.10.1 - timezone data for scheduled messages  (BSD-2-Clause)\nhttps://github.com/srawlins/timezone\ntypst_flutter 3.0.0 - the embedded Typst compiler behind the CeTZ drawing card  (Apache-2.0)\nhttps://github.com/ajmalbuv/typst_flutter\nurl_launcher 6.3.2 - the community link in this dialog  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/url_launcher/url_launcher\nwebview_flutter 4.14.1 - rendering html in a file preview  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/webview_flutter/webview_flutter\nvideo_player 2.14.1 - video playback in chat bubbles  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/video_player/video_player\nworkmanager 0.10.10 - background delivery when the app is killed  (MIT)\nhttps://github.com/fluttercommunity/flutter_workmanager'**
   String get settingsAboutDeps;
 
   /// Community link in the about dialog, identical in every language
@@ -2120,6 +2126,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Music'**
   String get msgLeadMusic;
+
+  /// Preview lead for a video message
+  ///
+  /// In en, this message translates to:
+  /// **'Video'**
+  String get msgLeadVideo;
 
   /// Preview lead for a contact message
   ///
@@ -4605,6 +4617,234 @@ abstract class AppLocalizations {
   /// **'Gallery'**
   String get attachTabGallery;
 
+  /// Gallery filter chip showing photos and videos together
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get attachFilterAll;
+
+  /// Gallery filter chip limiting the grid to photos
+  ///
+  /// In en, this message translates to:
+  /// **'Photos'**
+  String get attachFilterImages;
+
+  /// Gallery filter chip limiting the grid to videos
+  ///
+  /// In en, this message translates to:
+  /// **'Videos'**
+  String get attachFilterVideos;
+
+  /// Album chip that merges every album back together
+  ///
+  /// In en, this message translates to:
+  /// **'All albums'**
+  String get attachFilterAllAlbums;
+
+  /// Name shown for an unnamed album
+  ///
+  /// In en, this message translates to:
+  /// **'Album'**
+  String get attachAlbumFallback;
+
+  /// Hint when the user tries to attach an image to a model without image input
+  ///
+  /// In en, this message translates to:
+  /// **'The current model does not accept images, so only plain text files can be sent'**
+  String get attachNoVision;
+
+  /// Hint when the user tries to attach a video to a model without video input
+  ///
+  /// In en, this message translates to:
+  /// **'The current model does not accept videos, so this clip cannot be sent to it'**
+  String get attachNoVideo;
+
+  /// Message in the fullscreen video player when the file fails to decode
+  ///
+  /// In en, this message translates to:
+  /// **'This video cannot be played'**
+  String get attachVideoFailed;
+
+  /// Section header of the clinginess settings on the persona editor
+  ///
+  /// In en, this message translates to:
+  /// **'Clinginess'**
+  String get personaClingyHeader;
+
+  /// Note under the clinginess section
+  ///
+  /// In en, this message translates to:
+  /// **'When on, this persona messages you on its own after you stay quiet for the chosen time.'**
+  String get personaClingyFooter;
+
+  /// Switch that lets the persona speak up on its own
+  ///
+  /// In en, this message translates to:
+  /// **'Proactive messages'**
+  String get personaClingyTitle;
+
+  /// Subtitle of the proactive messages switch
+  ///
+  /// In en, this message translates to:
+  /// **'Speaks up on its own when you have been quiet'**
+  String get personaClingySub;
+
+  /// Row that picks how long the user has to stay quiet before the persona writes first
+  ///
+  /// In en, this message translates to:
+  /// **'Message after quiet for'**
+  String get personaClingyInterval;
+
+  /// Switch that caps consecutive proactive messages
+  ///
+  /// In en, this message translates to:
+  /// **'Limit proactive count'**
+  String get personaClingyCap;
+
+  /// Subtitle of the proactive count limit switch
+  ///
+  /// In en, this message translates to:
+  /// **'Pauses after this many proactive messages in a row; your reply resets the count'**
+  String get personaClingyCapSub;
+
+  /// Row that picks the cap on consecutive proactive messages
+  ///
+  /// In en, this message translates to:
+  /// **'Max proactive in a row'**
+  String get personaClingyMax;
+
+  /// Minutes label for the clinginess interval picker
+  ///
+  /// In en, this message translates to:
+  /// **'{min} min'**
+  String personaClingyMinutes(int min);
+
+  /// Hours label for the clinginess interval picker
+  ///
+  /// In en, this message translates to:
+  /// **'{h} h'**
+  String personaClingyHours(int h);
+
+  /// Warning under the clinginess section while the global proactive switch is off
+  ///
+  /// In en, this message translates to:
+  /// **'The global proactive messages switch is off, so this stays quiet until it is turned on.'**
+  String get personaClingyNeedsProactive;
+
+  /// Title of the shop page
+  ///
+  /// In en, this message translates to:
+  /// **'Shop'**
+  String get shopTitle;
+
+  /// Row in the wallet page that opens the shop
+  ///
+  /// In en, this message translates to:
+  /// **'Shop'**
+  String get shopEntry;
+
+  /// Subtitle of the shop row in the wallet page
+  ///
+  /// In en, this message translates to:
+  /// **'Spend balance on boosts for your personas'**
+  String get shopEntrySub;
+
+  /// Balance line at the top of the shop page
+  ///
+  /// In en, this message translates to:
+  /// **'Current balance'**
+  String get shopBalance;
+
+  /// Shop item: +10 affection
+  ///
+  /// In en, this message translates to:
+  /// **'Affection boost'**
+  String get shopItemAffection;
+
+  /// Subtitle of the affection boost item
+  ///
+  /// In en, this message translates to:
+  /// **'+10 affection for the persona you pick'**
+  String get shopItemAffectionSub;
+
+  /// Shop item: +30 energy
+  ///
+  /// In en, this message translates to:
+  /// **'Energy refill'**
+  String get shopItemEnergy;
+
+  /// Subtitle of the energy refill item
+  ///
+  /// In en, this message translates to:
+  /// **'+30 energy for the persona you pick'**
+  String get shopItemEnergySub;
+
+  /// Shop item: +20 mood
+  ///
+  /// In en, this message translates to:
+  /// **'Mood lift'**
+  String get shopItemMood;
+
+  /// Subtitle of the mood lift item
+  ///
+  /// In en, this message translates to:
+  /// **'+20 mood for the persona you pick'**
+  String get shopItemMoodSub;
+
+  /// Title of the target picker in the shop
+  ///
+  /// In en, this message translates to:
+  /// **'Choose who it goes to'**
+  String get shopChoose;
+
+  /// Message when the shop has nobody to boost
+  ///
+  /// In en, this message translates to:
+  /// **'No chats yet, create a persona first'**
+  String get shopNoChat;
+
+  /// Message when a purchase exceeds the balance
+  ///
+  /// In en, this message translates to:
+  /// **'Not enough balance'**
+  String get shopNotEnough;
+
+  /// Confirmation after a shop purchase
+  ///
+  /// In en, this message translates to:
+  /// **'Redeemed, it is already in effect'**
+  String get shopDone;
+
+  /// Confirm dialog message naming the price
+  ///
+  /// In en, this message translates to:
+  /// **'Deducts ¥{price} from your balance'**
+  String shopDeduct(String price);
+
+  /// Shop item: cools the global annoyance to the minimum
+  ///
+  /// In en, this message translates to:
+  /// **'Apology card'**
+  String get shopItemApology;
+
+  /// Subtitle of the apology card
+  ///
+  /// In en, this message translates to:
+  /// **'Drops the cold war dial to its minimum, nobody to pick'**
+  String get shopItemApologySub;
+
+  /// Title of the one-time whats-new dialog
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s new in v{version}'**
+  String whatsNewTitle(String version);
+
+  /// Body of the one-time whats-new dialog, one bullet per line
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s new in this build:\n\n• Video messages: send videos from the gallery or as files, and the AI can actually watch them\n• Inline files: small files are injected into the context so the AI truly reads them\n• Stickers: the AI reads a sticker\'s meaning before sending it, with thumbnails\n• Clinginess: choose how often the AI speaks first, with an optional cap on proactive messages\n• Shop rework: gifts now land in the chat as a card the AI actually receives, and the shop sits one tap away\n• Auto backup: on by default, overwrite backups survive updates and reinstalls, restore offered on first launch\n• Model catalog: video capability flags corrected where the models.dev feed lags the provider (deepseek v4.1 flash)\n• Editor guard: every way out of the persona editor now asks before discarding edits\n• Upstream v1.0.2 merged: onboarding, SKILLS, LaTeX canvas cards, update checks\n• UI and performance polish'**
+  String get whatsNewBody;
+
   /// Label of the camera tile at the top of the gallery grid
   ///
   /// In en, this message translates to:
@@ -6872,6 +7112,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Importing…'**
   String get skillImporting;
+
+  /// No description provided for @autoBackupTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto backup'**
+  String get autoBackupTitle;
+
+  /// No description provided for @autoBackupSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Backups overwrite one file kept outside the app, so they survive updates and reinstalls.'**
+  String get autoBackupSub;
+
+  /// No description provided for @autoBackupModeChange.
+  ///
+  /// In en, this message translates to:
+  /// **'On data change (recommended)'**
+  String get autoBackupModeChange;
+
+  /// auto backup
+  ///
+  /// In en, this message translates to:
+  /// **'Every {n} hours'**
+  String autoBackupModeInterval(int n);
+
+  /// auto backup
+  ///
+  /// In en, this message translates to:
+  /// **'Daily {from} – {to}'**
+  String autoBackupModeWindow(String from, String to);
+
+  /// No description provided for @autoBackupOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get autoBackupOff;
+
+  /// auto backup
+  ///
+  /// In en, this message translates to:
+  /// **'Last: {when}'**
+  String autoBackupLast(String when);
+
+  /// No description provided for @autoBackupNever.
+  ///
+  /// In en, this message translates to:
+  /// **'Never backed up'**
+  String get autoBackupNever;
+
+  /// No description provided for @autoBackupOffTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn off auto backup?'**
+  String get autoBackupOffTitle;
+
+  /// No description provided for @autoBackupOffMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'With auto backup off, updating or uninstalling the app can lose your chats, personas and settings.'**
+  String get autoBackupOffMessage;
+
+  /// No description provided for @autoBackupOffAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn off'**
+  String get autoBackupOffAction;
+
+  /// No description provided for @autoBackupRestoreTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup found'**
+  String get autoBackupRestoreTitle;
+
+  /// auto backup
+  ///
+  /// In en, this message translates to:
+  /// **'A backup from {when} was found. Restore your chats, personas and settings?'**
+  String autoBackupRestoreMessage(String when);
+
+  /// No description provided for @autoBackupRestoreAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore'**
+  String get autoBackupRestoreAction;
+
+  /// No description provided for @autoBackupRestored.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup restored'**
+  String get autoBackupRestored;
+
+  /// No description provided for @autoBackupRestoreFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The backup could not be read'**
+  String get autoBackupRestoreFailed;
+
+  /// Settings row that reopens the current version highlights
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s new'**
+  String get whatsNewEntry;
 }
 
 class _AppLocalizationsDelegate

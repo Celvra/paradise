@@ -378,6 +378,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get aiCapsVision => '视觉';
 
   @override
+  String get aiCapsVideo => '视频';
+
+  @override
   String get aiTokensUnknown => '未知';
 
   @override
@@ -614,7 +617,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get settingsAboutDeps =>
-      '依赖库:\n\ncharacters 1.4.1 - 字形簇，用于正确计算文本宽度  (BSD-3-Clause)\nhttps://github.com/dart-lang/core/tree/main/pkgs/characters\nfile_picker 13.1.0 - 文件与音频选择  (MIT)\nhttps://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker\nflutter_contacts 2.5.0 - 分享联系人名片  (MIT)\nhttps://github.com/QuisApp/flutter_contacts\nflutter_highlight 0.7.0 - 代码预览配色  (MIT)\nhttps://github.com/git-touch/highlight\nflutter_local_notifications 18.0.1 - 本地通知  (BSD-3-Clause)\nflutter_math_fork 0.7.4 - 气泡内渲染 LaTeX  (Apache-2.0)\nhttps://github.com/simplezhli/flutter_math_fork\nflutter_svg 2.3.0 - 服务商图标与矢量图标  (MIT)\nhttps://github.com/flutter/packages/tree/main/third_party/packages/flutter_svg\ngeolocator 13.0.4 - 位置附件  (MIT)\nhttps://github.com/baseflow/flutter-geolocator/tree/main/geolocator\nhttp 1.6.0 - OpenAI 兼容接口请求  (BSD-3-Clause)\nhttps://github.com/dart-lang/http/tree/master/pkgs/http\nimage_picker 1.2.3 - 相机与相册图片  (Apache-2.0)\nhttps://github.com/flutter/packages/tree/main/packages/image_picker/image_picker\nintl 0.20.3 - 日期与数字格式化  (BSD-3-Clause)\nhttps://github.com/dart-lang/i18n/tree/main/pkgs/intl\npath_provider 2.1.6 - 应用目录，用于表情与导出文件  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/path_provider/path_provider\npermission_handler 13.0.2 - 照片、联系人、位置与通知权限的统一申请入口  (MIT)\nhttps://github.com/baseflow/flutter-permission-handler\nphoto_manager 3.12.0 - 相册访问，用于附件  (Apache-2.0)\nhttps://github.com/fluttercandies/flutter_photo_manager\nratex_flutter 0.1.14 - 原生渲染 LaTeX 数学卡片  (MIT)\nhttps://github.com/erweixin/RaTeX\nshared_preferences 2.5.5 - 设置与聊天记录存储  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/shared_preferences/shared_preferences\nsqflite 2.4.4 - 消息历史与会话分页  (BSD-2-Clause)\nhttps://github.com/tekartik/sqflite/tree/master/sqflite\ntimezone 0.10.1 - 日程消息的时区数据  (BSD-2-Clause)\nhttps://github.com/srawlins/timezone\ntypst_flutter 3.0.0 - CeTZ 绘图卡片背后的内嵌 Typst 编译器  (Apache-2.0)\nhttps://github.com/ajmalbuv/typst_flutter\nurl_launcher 6.3.2 - 本弹窗中的交流群链接  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/url_launcher/url_launcher\nworkmanager 0.10.10 - 应用被杀后的后台送达  (MIT)\nhttps://github.com/fluttercommunity/flutter_workmanager';
+      '依赖库:\n\ncharacters 1.4.1 - 字形簇，用于正确计算文本宽度  (BSD-3-Clause)\nhttps://github.com/dart-lang/core/tree/main/pkgs/characters\nfile_picker 13.1.0 - 文件与音频选择  (MIT)\nhttps://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker\nflutter_contacts 2.5.0 - 分享联系人名片  (MIT)\nhttps://github.com/QuisApp/flutter_contacts\nflutter_highlight 0.7.0 - 代码预览配色  (MIT)\nhttps://github.com/git-touch/highlight\nflutter_local_notifications 18.0.1 - 本地通知  (BSD-3-Clause)\nflutter_math_fork 0.7.4 - 气泡内渲染 LaTeX  (Apache-2.0)\nhttps://github.com/simplezhli/flutter_math_fork\nflutter_svg 2.3.0 - 服务商图标与矢量图标  (MIT)\nhttps://github.com/flutter/packages/tree/main/third_party/packages/flutter_svg\ngeolocator 13.0.4 - 位置附件  (MIT)\nhttps://github.com/baseflow/flutter-geolocator/tree/main/geolocator\nhttp 1.6.0 - OpenAI 兼容接口请求  (BSD-3-Clause)\nhttps://github.com/dart-lang/http/tree/master/pkgs/http\nimage_picker 1.2.3 - 相机与相册图片  (Apache-2.0)\nhttps://github.com/flutter/packages/tree/main/packages/image_picker/image_picker\nintl 0.20.3 - 日期与数字格式化  (BSD-3-Clause)\nhttps://github.com/dart-lang/i18n/tree/main/pkgs/intl\npath_provider 2.1.6 - 应用目录，用于表情与导出文件  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/path_provider/path_provider\npermission_handler 13.0.2 - 照片、联系人、位置与通知权限的统一申请入口  (MIT)\nhttps://github.com/baseflow/flutter-permission-handler\nphoto_manager 3.12.0 - 相册访问，用于附件  (Apache-2.0)\nhttps://github.com/fluttercandies/flutter_photo_manager\nratex_flutter 0.1.14 - 原生渲染 LaTeX 数学卡片  (MIT)\nhttps://github.com/erweixin/RaTeX\nshared_preferences 2.5.5 - 设置与聊天记录存储  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/shared_preferences/shared_preferences\nsqflite 2.4.4 - 消息历史与会话分页  (BSD-2-Clause)\nhttps://github.com/tekartik/sqflite/tree/master/sqflite\ntimezone 0.10.1 - 日程消息的时区数据  (BSD-2-Clause)\nhttps://github.com/srawlins/timezone\ntypst_flutter 3.0.0 - CeTZ 绘图卡片背后的内嵌 Typst 编译器  (Apache-2.0)\nhttps://github.com/ajmalbuv/typst_flutter\nurl_launcher 6.3.2 - 本弹窗中的交流群链接  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/url_launcher/url_launcher\nvideo_player 2.14.1 - 聊天气泡内的视频播放  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/video_player/video_player\nworkmanager 0.10.10 - 应用被杀后的后台送达  (MIT)\nhttps://github.com/fluttercommunity/flutter_workmanager';
 
   @override
   String get settingsAboutCommunityUrl => 'https://discord.gg/aQaNUHPsw';
@@ -1085,6 +1088,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get msgLeadMusic => '音乐';
+
+  @override
+  String get msgLeadVideo => '视频';
 
   @override
   String get msgLeadContact => '联系人';
@@ -2462,6 +2468,129 @@ class AppLocalizationsZh extends AppLocalizations {
   String get attachTabGallery => '相册';
 
   @override
+  String get attachFilterAll => '全部';
+
+  @override
+  String get attachFilterImages => '图片';
+
+  @override
+  String get attachFilterVideos => '视频';
+
+  @override
+  String get attachFilterAllAlbums => '全部相簿';
+
+  @override
+  String get attachAlbumFallback => '相簿';
+
+  @override
+  String get attachNoVision => '当前模型不支持图片输入，只能发送普通文字文件';
+
+  @override
+  String get attachNoVideo => '当前模型不支持视频输入，无法发送此视频';
+
+  @override
+  String get attachVideoFailed => '无法播放此视频';
+
+  @override
+  String get personaClingyHeader => '粘人度';
+
+  @override
+  String get personaClingyFooter => '开启后，你长时间没回复时，这个人设会主动给你发消息。';
+
+  @override
+  String get personaClingyTitle => '主动发消息';
+
+  @override
+  String get personaClingySub => '你长时间没回复时主动找话';
+
+  @override
+  String get personaClingyInterval => '多久没回复后发';
+
+  @override
+  String get personaClingyCap => '限制主动次数';
+
+  @override
+  String get personaClingyCapSub => '连续主动发言达到这个数后暂停，你回复后计数重置';
+
+  @override
+  String get personaClingyMax => '最多连续主动';
+
+  @override
+  String personaClingyMinutes(int min) {
+    return '$min 分钟';
+  }
+
+  @override
+  String personaClingyHours(int h) {
+    return '$h 小时';
+  }
+
+  @override
+  String get personaClingyNeedsProactive => '全局主动消息开关处于关闭状态，打开前粘人设置不会生效。';
+
+  @override
+  String get shopTitle => '商城';
+
+  @override
+  String get shopEntry => '商城';
+
+  @override
+  String get shopEntrySub => '用余额给 AI 兑换好感、体力';
+
+  @override
+  String get shopBalance => '当前余额';
+
+  @override
+  String get shopItemAffection => '好感度提升';
+
+  @override
+  String get shopItemAffectionSub => '指定一位 AI，好感度 +10';
+
+  @override
+  String get shopItemEnergy => '体力补充';
+
+  @override
+  String get shopItemEnergySub => '指定一位 AI，体力 +30';
+
+  @override
+  String get shopItemMood => '心情提振';
+
+  @override
+  String get shopItemMoodSub => '指定一位 AI，心情 +20';
+
+  @override
+  String get shopChoose => '选择送给哪位 AI';
+
+  @override
+  String get shopNoChat => '还没有会话，先创建一个人设';
+
+  @override
+  String get shopNotEnough => '余额不足';
+
+  @override
+  String get shopDone => '兑换成功，已生效';
+
+  @override
+  String shopDeduct(String price) {
+    return '将从余额中扣除 ¥$price';
+  }
+
+  @override
+  String get shopItemApology => '道歉卡';
+
+  @override
+  String get shopItemApologySub => '立刻平息 AI 的赌气情绪，无需选择对象';
+
+  @override
+  String whatsNewTitle(String version) {
+    return '更新内容（v$version）';
+  }
+
+  @override
+  String get whatsNewBody =>
+      '本次更新内容：\n\n• 视频消息：相册与文件均可发送视频，AI 能看懂视频内容\n• 文件直读：小文件直接注入上下文，AI 真正读到内容\n• 贴纸三件套：AI 先读懂表情包含义再主动发送，并显示缩略图\n• 粘人度：可配置 AI 主动发话的频率与次数上限\n• 商城改版：购买后跳转聊天，礼物以卡片送达且 AI 真正收到；商城入口更明显\n• 自动备份：默认开启，覆盖式备份可随更新与重装存活，首次启动检测到备份可一键恢复\n• 模型目录：修正 models.dev 数据滞后导致的视频能力误判（DeepSeek V4.1 Flash）\n• 编辑器保护：人设编辑器所有退出方式都会先确认再丢弃修改\n• 同步上游 v1.0.2：向导、SKILLS、LaTeX 绘图卡片、检查更新\n• 界面与性能优化';
+
+  @override
   String get attachCamera => '相机';
 
   @override
@@ -3639,6 +3768,65 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get skillImporting => '导入中…';
+
+  @override
+  String get autoBackupTitle => '自动备份';
+
+  @override
+  String get autoBackupSub => '备份以覆盖方式写入应用外部的一个文件，更新或重装后仍可找回。';
+
+  @override
+  String get autoBackupModeChange => '数据变化时自动备份（推荐）';
+
+  @override
+  String autoBackupModeInterval(int n) {
+    return '每隔 $n 小时';
+  }
+
+  @override
+  String autoBackupModeWindow(String from, String to) {
+    return '每天 $from – $to';
+  }
+
+  @override
+  String get autoBackupOff => '关闭';
+
+  @override
+  String autoBackupLast(String when) {
+    return '上次：$when';
+  }
+
+  @override
+  String get autoBackupNever => '尚未备份';
+
+  @override
+  String get autoBackupOffTitle => '关闭自动备份？';
+
+  @override
+  String get autoBackupOffMessage => '关闭后，更新或卸载应用可能会导致聊天、人设和设置丢失。';
+
+  @override
+  String get autoBackupOffAction => '关闭';
+
+  @override
+  String get autoBackupRestoreTitle => '发现备份';
+
+  @override
+  String autoBackupRestoreMessage(String when) {
+    return '检测到 $when 的备份，要恢复聊天、人设和设置吗？';
+  }
+
+  @override
+  String get autoBackupRestoreAction => '恢复';
+
+  @override
+  String get autoBackupRestored => '备份已恢复';
+
+  @override
+  String get autoBackupRestoreFailed => '备份读取失败';
+
+  @override
+  String get whatsNewEntry => '更新说明';
 }
 
 /// The translations for Chinese, using the Han script (`zh_Hant`).
@@ -4015,6 +4203,9 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get aiCapsVision => '視覺';
 
   @override
+  String get aiCapsVideo => '影片';
+
+  @override
   String get aiTokensUnknown => '未知';
 
   @override
@@ -4251,7 +4442,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get settingsAboutDeps =>
-      '依賴庫:\n\ncharacters 1.4.1 - 字形叢集，用於正確計算文字寬度  (BSD-3-Clause)\nhttps://github.com/dart-lang/core/tree/main/pkgs/characters\nfile_picker 13.1.0 - 檔案與音訊選擇  (MIT)\nhttps://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker\nflutter_contacts 2.5.0 - 分享聯絡人名片  (MIT)\nhttps://github.com/QuisApp/flutter_contacts\nflutter_highlight 0.7.0 - 程式碼預覽配色  (MIT)\nhttps://github.com/git-touch/highlight\nflutter_local_notifications 18.0.1 - 本機通知  (BSD-3-Clause)\nflutter_math_fork 0.7.4 - 氣泡內渲染 LaTeX  (Apache-2.0)\nhttps://github.com/simplezhli/flutter_math_fork\nflutter_svg 2.3.0 - 服務商圖示與向量圖示  (MIT)\nhttps://github.com/flutter/packages/tree/main/third_party/packages/flutter_svg\ngeolocator 13.0.4 - 位置附件  (MIT)\nhttps://github.com/baseflow/flutter-geolocator/tree/main/geolocator\nhttp 1.6.0 - OpenAI 相容介面請求  (BSD-3-Clause)\nhttps://github.com/dart-lang/http/tree/master/pkgs/http\nimage_picker 1.2.3 - 相機與相簿圖片  (Apache-2.0)\nhttps://github.com/flutter/packages/tree/main/packages/image_picker/image_picker\nintl 0.20.3 - 日期與數字格式化  (BSD-3-Clause)\nhttps://github.com/dart-lang/i18n/tree/main/pkgs/intl\npath_provider 2.1.6 - 應用程式目錄，用於表情與匯出檔案  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/path_provider/path_provider\npermission_handler 13.0.2 - 照片、聯絡人、位置與通知權限的統一申請入口  (MIT)\nhttps://github.com/baseflow/flutter-permission-handler\nphoto_manager 3.12.0 - 相簿存取，用於附件  (Apache-2.0)\nhttps://github.com/fluttercandies/flutter_photo_manager\nratex_flutter 0.1.14 - 原生渲染 LaTeX 數學卡片  (MIT)\nhttps://github.com/erweixin/RaTeX\nshared_preferences 2.5.5 - 設定與對話紀錄儲存  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/shared_preferences/shared_preferences\nsqflite 2.4.4 - 訊息歷史與對話分頁  (BSD-2-Clause)\nhttps://github.com/tekartik/sqflite/tree/master/sqflite\ntimezone 0.10.1 - 排程訊息的時區資料  (BSD-2-Clause)\nhttps://github.com/srawlins/timezone\ntypst_flutter 3.0.0 - CeTZ 繪圖卡片背後的內嵌 Typst 編譯器  (Apache-2.0)\nhttps://github.com/ajmalbuv/typst_flutter\nurl_launcher 6.3.2 - 本彈出視窗中的交流群連結  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/url_launcher/url_launcher\nworkmanager 0.10.10 - 應用程式被關閉後的背景送達  (MIT)\nhttps://github.com/fluttercommunity/flutter_workmanager';
+      '依賴庫:\n\ncharacters 1.4.1 - 字形叢集，用於正確計算文字寬度  (BSD-3-Clause)\nhttps://github.com/dart-lang/core/tree/main/pkgs/characters\nfile_picker 13.1.0 - 檔案與音訊選擇  (MIT)\nhttps://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker\nflutter_contacts 2.5.0 - 分享聯絡人名片  (MIT)\nhttps://github.com/QuisApp/flutter_contacts\nflutter_highlight 0.7.0 - 程式碼預覽配色  (MIT)\nhttps://github.com/git-touch/highlight\nflutter_local_notifications 18.0.1 - 本機通知  (BSD-3-Clause)\nflutter_math_fork 0.7.4 - 氣泡內渲染 LaTeX  (Apache-2.0)\nhttps://github.com/simplezhli/flutter_math_fork\nflutter_svg 2.3.0 - 服務商圖示與向量圖示  (MIT)\nhttps://github.com/flutter/packages/tree/main/third_party/packages/flutter_svg\ngeolocator 13.0.4 - 位置附件  (MIT)\nhttps://github.com/baseflow/flutter-geolocator/tree/main/geolocator\nhttp 1.6.0 - OpenAI 相容介面請求  (BSD-3-Clause)\nhttps://github.com/dart-lang/http/tree/master/pkgs/http\nimage_picker 1.2.3 - 相機與相簿圖片  (Apache-2.0)\nhttps://github.com/flutter/packages/tree/main/packages/image_picker/image_picker\nintl 0.20.3 - 日期與數字格式化  (BSD-3-Clause)\nhttps://github.com/dart-lang/i18n/tree/main/pkgs/intl\npath_provider 2.1.6 - 應用程式目錄，用於表情與匯出檔案  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/path_provider/path_provider\npermission_handler 13.0.2 - 照片、聯絡人、位置與通知權限的統一申請入口  (MIT)\nhttps://github.com/baseflow/flutter-permission-handler\nphoto_manager 3.12.0 - 相簿存取，用於附件  (Apache-2.0)\nhttps://github.com/fluttercandies/flutter_photo_manager\nratex_flutter 0.1.14 - 原生渲染 LaTeX 數學卡片  (MIT)\nhttps://github.com/erweixin/RaTeX\nshared_preferences 2.5.5 - 設定與對話紀錄儲存  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/shared_preferences/shared_preferences\nsqflite 2.4.4 - 訊息歷史與對話分頁  (BSD-2-Clause)\nhttps://github.com/tekartik/sqflite/tree/master/sqflite\ntimezone 0.10.1 - 排程訊息的時區資料  (BSD-2-Clause)\nhttps://github.com/srawlins/timezone\ntypst_flutter 3.0.0 - CeTZ 繪圖卡片背後的內嵌 Typst 編譯器  (Apache-2.0)\nhttps://github.com/ajmalbuv/typst_flutter\nurl_launcher 6.3.2 - 本彈出視窗中的交流群連結  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/url_launcher/url_launcher\nvideo_player 2.14.1 - 聊天氣泡內的影片播放  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/video_player/video_player\nworkmanager 0.10.10 - 應用程式被關閉後的背景送達  (MIT)\nhttps://github.com/fluttercommunity/flutter_workmanager';
 
   @override
   String get settingsAboutCommunityUrl => 'https://discord.gg/aQaNUHPsw';
@@ -4722,6 +4913,9 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get msgLeadMusic => '音樂';
+
+  @override
+  String get msgLeadVideo => '影片';
 
   @override
   String get msgLeadContact => '聯絡人';
@@ -6099,6 +6293,129 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get attachTabGallery => '相簿';
 
   @override
+  String get attachFilterAll => '全部';
+
+  @override
+  String get attachFilterImages => '圖片';
+
+  @override
+  String get attachFilterVideos => '影片';
+
+  @override
+  String get attachFilterAllAlbums => '全部相簿';
+
+  @override
+  String get attachAlbumFallback => '相簿';
+
+  @override
+  String get attachNoVision => '目前模型不支援圖片輸入，只能傳送普通文字檔案';
+
+  @override
+  String get attachNoVideo => '目前模型不支援影片輸入，無法傳送此影片';
+
+  @override
+  String get attachVideoFailed => '無法播放此影片';
+
+  @override
+  String get personaClingyHeader => '黏人度';
+
+  @override
+  String get personaClingyFooter => '開啟後，你長時間沒回覆時，這個人設會主動傳訊息給你。';
+
+  @override
+  String get personaClingyTitle => '主動傳訊息';
+
+  @override
+  String get personaClingySub => '你長時間沒回覆時主動找話';
+
+  @override
+  String get personaClingyInterval => '多久沒回覆後發';
+
+  @override
+  String get personaClingyCap => '限制主動次數';
+
+  @override
+  String get personaClingyCapSub => '連續主動發言達到這個數後暫停，你回覆後計數重置';
+
+  @override
+  String get personaClingyMax => '最多連續主動';
+
+  @override
+  String personaClingyMinutes(int min) {
+    return '$min 分鐘';
+  }
+
+  @override
+  String personaClingyHours(int h) {
+    return '$h 小時';
+  }
+
+  @override
+  String get personaClingyNeedsProactive => '全域主動訊息開關處於關閉狀態，打開前黏人設定不會生效。';
+
+  @override
+  String get shopTitle => '商城';
+
+  @override
+  String get shopEntry => '商城';
+
+  @override
+  String get shopEntrySub => '用餘額給 AI 兌換好感、體力';
+
+  @override
+  String get shopBalance => '目前餘額';
+
+  @override
+  String get shopItemAffection => '好感度提升';
+
+  @override
+  String get shopItemAffectionSub => '指定一位 AI，好感度 +10';
+
+  @override
+  String get shopItemEnergy => '體力補充';
+
+  @override
+  String get shopItemEnergySub => '指定一位 AI，體力 +30';
+
+  @override
+  String get shopItemMood => '心情提振';
+
+  @override
+  String get shopItemMoodSub => '指定一位 AI，心情 +20';
+
+  @override
+  String get shopChoose => '選擇送給哪位 AI';
+
+  @override
+  String get shopNoChat => '還沒有會話，先建立一個人設';
+
+  @override
+  String get shopNotEnough => '餘額不足';
+
+  @override
+  String get shopDone => '兌換成功，已生效';
+
+  @override
+  String shopDeduct(String price) {
+    return '將從餘額中扣除 ¥$price';
+  }
+
+  @override
+  String get shopItemApology => '道歉卡';
+
+  @override
+  String get shopItemApologySub => '立刻平息 AI 的賭氣情緒，無需選擇對象';
+
+  @override
+  String whatsNewTitle(String version) {
+    return '更新內容（v$version）';
+  }
+
+  @override
+  String get whatsNewBody =>
+      '本次更新內容：\n\n• 視訊訊息：相簿與檔案均可傳送視訊，AI 能看懂視訊內容\n• 檔案直讀：小檔案直接注入上下文，AI 真正讀到內容\n• 貼紙三件套：AI 先讀懂表情包含義再主動傳送，並顯示縮圖\n• 黏人度：可配置 AI 主動發話的頻率與次數上限\n• 商城改版：購買後跳轉聊天，禮物以卡片送達且 AI 真正收到；商城入口更明顯\n• 自動備份：預設開啟，覆蓋式備份可隨更新與重裝存活，首次啟動偵測到備份可一鍵恢復\n• 模型目錄：修正 models.dev 資料滯後導致的視訊能力誤判（DeepSeek V4.1 Flash）\n• 編輯器保護：人設編輯器所有退出方式都會先確認再丟棄修改\n• 同步上游 v1.0.2：嚮導、SKILLS、LaTeX 繪圖卡片、檢查更新\n• 介面與效能優化';
+
+  @override
   String get attachCamera => '相機';
 
   @override
@@ -7276,4 +7593,63 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get skillImporting => '匯入中…';
+
+  @override
+  String get autoBackupTitle => '自動備份';
+
+  @override
+  String get autoBackupSub => '備份以覆蓋方式寫入應用外部的一個檔案，更新或重裝後仍可找回。';
+
+  @override
+  String get autoBackupModeChange => '資料變更時自動備份（推薦）';
+
+  @override
+  String autoBackupModeInterval(int n) {
+    return '每隔 $n 小時';
+  }
+
+  @override
+  String autoBackupModeWindow(String from, String to) {
+    return '每天 $from – $to';
+  }
+
+  @override
+  String get autoBackupOff => '關閉';
+
+  @override
+  String autoBackupLast(String when) {
+    return '上次：$when';
+  }
+
+  @override
+  String get autoBackupNever => '尚未備份';
+
+  @override
+  String get autoBackupOffTitle => '關閉自動備份？';
+
+  @override
+  String get autoBackupOffMessage => '關閉後，更新或解除安裝應用可能會導致聊天、人設和設定遺失。';
+
+  @override
+  String get autoBackupOffAction => '關閉';
+
+  @override
+  String get autoBackupRestoreTitle => '發現備份';
+
+  @override
+  String autoBackupRestoreMessage(String when) {
+    return '偵測到 $when 的備份，要恢復聊天、人設和設定嗎？';
+  }
+
+  @override
+  String get autoBackupRestoreAction => '恢復';
+
+  @override
+  String get autoBackupRestored => '備份已恢復';
+
+  @override
+  String get autoBackupRestoreFailed => '備份讀取失敗';
+
+  @override
+  String get whatsNewEntry => '更新說明';
 }

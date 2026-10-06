@@ -371,7 +371,7 @@ class _ProfilePageState extends State<ProfilePage> {
     for (final c in src) {
       for (final m in c.msgs) {
         final ok = switch (_tab) {
-          0 => m.kind == MsgKind.photo,
+          0 => m.kind == MsgKind.photo || m.kind == MsgKind.video,
           1 => m.kind == MsgKind.file,
           2 => m.kind == MsgKind.music,
           _ => m.kind == MsgKind.text && m.hasLink,
@@ -404,7 +404,9 @@ class _ProfilePageState extends State<ProfilePage> {
               onTap: () => openChat(context, r.$1, jumpTo: r.$2.id),
               child: r.$2.kind == MsgKind.photo && r.$2.data['path'] != null
                   ? ClipRect(child: Image.file(File(r.$2.data['path'] as String), fit: BoxFit.cover, width: 300, errorBuilder: (_, __, ___) => const SizedBox.shrink()))
-                  : Container(color: const Color(0xFF26303B), child: Center(child: TgIcon(Ic.video, color: const Color(0xFFFFFFFF), size: 30))),
+                  : r.$2.kind == MsgKind.video && r.$2.data['thumb'] != null
+                      ? ClipRect(child: Image.file(File(r.$2.data['thumb'] as String), fit: BoxFit.cover, width: 300, errorBuilder: (_, __, ___) => const SizedBox.shrink()))
+                      : Container(color: const Color(0xFF26303B), child: Center(child: TgIcon(Ic.video, color: const Color(0xFFFFFFFF), size: 30))),
             ),
         ],
       );

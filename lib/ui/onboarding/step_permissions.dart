@@ -29,14 +29,31 @@ class _PermList extends StatefulWidget {
   State<_PermList> createState() => _PermListState();
 }
 
-class _PermListState extends State<_PermList> {
+class _PermListState extends State<_PermList> with WidgetsBindingObserver {
   final Map<ph.Permission, ph.PermissionStatus> _states = {};
   bool _notifAsked = false;
+  // a second tap while the system dialog is up makes Android answer the extra
+  // request with a plain denied, which used to read as the user refusing
+  bool _asking = false;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _probe();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // back from the system dialog or the settings app: reread every row so
+    // the granted check shows now, not after a page leave and return
+    if (state == AppLifecycleState.resumed) _probe();
   }
 
   Future<void> _probe() async {
@@ -71,18 +88,25 @@ class _PermListState extends State<_PermList> {
   ];
 
   Future<void> _ask(ph.Permission perm) async {
+    if (_asking) return;
+    _asking = true;
     final l = context.l;
-    if (perm == ph.Permission.notification) {
-      // flutter_local_notifications owns this dialog on Android 13; going
-      // through permission_handler as well would race it.
-      final ok = await Notifier.instance.requestPermission();
-      setState(() => _notifAsked = ok);
-      if (!ok) _suggestSettings(l);
-      return;
+    try {
+      if (perm == ph.Permission.notification) {
+        // flutter_local_notifications owns this dialog on Android 13; going
+        // through permission_handler as well would race it.
+        final ok = await Notifier.instance.requestPermission();
+        setState(() => _notifAsked = ok);
+        if (!ok) _suggestSettings(l);
+        return;
+      }
+      final status = await askPermission(perm);
+      setState(() => _states[perm] = status);
+      if (status == ph.PermissionStatus.permanentlyDenied) _suggestSettings(l);
+    } finally {
+      _asking = false;
     }
-    final status = await askPermission(perm);
-    setState(() => _states[perm] = status);
-    if (status == ph.PermissionStatus.permanentlyDenied) _suggestSettings(l);  }
+  }
 
   Future<void> _suggestSettings(AppLocalizations l) async {
     final open = await showTgDialog<bool>(

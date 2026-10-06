@@ -166,8 +166,13 @@ void main() {
 
   test('without a database the blob path still works', () async {
     // an unusable path makes ChatDb.open throw, which is the stand in for a
-    // platform where the plugin does not exist
-    final fallback = await boot(legacy, path: '/dev/null/not/a/database.db');
+    // platform where the plugin does not exist. a directory standing where
+    // the file belongs fails the open on every platform; /dev/null would
+    // not, Windows happily resolves it to <drive>:\dev\null and creates a
+    // real database there, which then leaks state into the next run
+    final blocker = Directory(p.join(device.path, 'blocker'));
+    await blocker.create();
+    final fallback = await boot(legacy, path: blocker.path);
     expect(fallback.chats.map((c) => c.id), ['c1', 'c2']);
     fallback.deleteChat(fallback.chats.first);
     await flush();

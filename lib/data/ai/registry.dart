@@ -9,6 +9,9 @@ import 'provider_model.dart';
 
 const _catalogUrl = 'https://models.dev/api.json';
 const _cacheTtl = Duration(days: 14);
+// models.dev answers in seconds on a fast link but crawls at a few KB/s from
+// networks that need a long handshake, so give the pull real headroom
+const _fetchTimeout = Duration(seconds: 30);
 
 // the remote feed and the bundled subset are both flattened into this shape so
 // every lookup below works against one type
@@ -29,7 +32,7 @@ Future<Catalog> _fetchRemote() async {
     return cached.data;
   }
   try {
-    final res = await http.get(Uri.parse(_catalogUrl)).timeout(const Duration(seconds: 10));
+    final res = await http.get(Uri.parse(_catalogUrl)).timeout(_fetchTimeout);
     if (res.statusCode != 200) throw AiRegistryException('catalog ${res.statusCode}');
     final parsed = jsonDecode(utf8.decode(res.bodyBytes));
     if (parsed is Map<String, dynamic>) {
@@ -41,9 +44,9 @@ Future<Catalog> _fetchRemote() async {
       return data;
     }
   } catch (_) {
-    // offline is fine, the bundled subset covers the common providers
+    // offline: the bundled catalog subset still covers the common models
   }
-  _remote = cached != null && cached.data.isNotEmpty ? cached.data : null;
+  _remote = cached != null && cached.data.isNotEmpty ? cached.data : const {};
   return _remote ?? const {};
 }
 
@@ -73,6 +76,12 @@ const _cacheVersion = 2;
 
 void _writeCache(Map<String, dynamic> feed) => AiRegistryCache.write(jsonEncode({'v': _cacheVersion, 'at': DateTime.now().millisecondsSinceEpoch, 'data': feed}));
 
+// models.dev lags the providers on video input: the deepseek v4.1 flash
+// family takes native video (verified against the official API) while the
+// feed lists text+image only. Trust the provider, not the feed.
+bool _feedOmitsVideo(String id) =>
+    id == 'deepseek-flash' || id.endsWith('/deepseek-flash') || id.endsWith('deepseek-v4.1-flash') || id.endsWith('deepseek-v4p1-flash');
+
 Catalog _normalize(Map raw) {
   final out = <String, CatalogProvider>{};
   raw.forEach((key, value) {
@@ -93,6 +102,7 @@ Catalog _normalize(Map raw) {
           m['attachment'] == true || input.contains('image'),
           output.contains('image'),
           m['reasoning'] == true,
+          input.contains('video') || _feedOmitsVideo(id),
         );
       });
     }
@@ -244,6 +254,7 @@ ModelMeta _toMeta(CatalogModel m, String id, String? name, ModelSource source) =
       textToImage: m.t2i,
       reasoning: m.r,
       source: source,
+      video: m.video,
     );
 
 // fill missing capability fields from the catalog without overwriting api data
@@ -258,6 +269,7 @@ ModelMeta enrich(ModelMeta model, String providerId, {bool crossProvider = true}
       vision: model.vision || (g.vision ?? false),
       reasoning: model.reasoning || (g.reasoning ?? false),
       textToImage: model.textToImage || (g.textToImage ?? false),
+      video: model.video || (g.video ?? false),
     );
   }
   final fromCatalog = _toMeta(hit, model.id, model.name, model.source == ModelSource.manual ? ModelSource.catalog : model.source);
@@ -268,6 +280,7 @@ ModelMeta enrich(ModelMeta model, String providerId, {bool crossProvider = true}
     vision: model.vision || fromCatalog.vision,
     textToImage: model.textToImage || fromCatalog.textToImage,
     reasoning: model.reasoning || fromCatalog.reasoning,
+    video: model.video || fromCatalog.video,
   );
 }
 
@@ -284,6 +297,7 @@ Future<ModelMeta?> lookupModel(String providerId, String modelId, [String? model
       vision: g.vision ?? false,
       reasoning: g.reasoning ?? false,
       textToImage: g.textToImage ?? false,
+      video: g.video ?? false,
     );
   }
   // never let a guessed entry rename the model

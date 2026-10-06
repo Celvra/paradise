@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:paradise/data/workspace/workspace_paths.dart';
+import 'package:path/path.dart' as path_lib;
 
 // The sandbox. Every case here is a way a model could reach something it was not
 // offered, so they are written as attacks rather than as API calls.
@@ -16,11 +17,14 @@ void main() {
 
   setUp(() async {
     tmp = await Directory.systemTemp.createTemp('ws_paths');
-    wsRoot = '${tmp.path}/ws';
-    chatRoot = '${tmp.path}/chat';
-    skillsRoot = '${tmp.path}/skills';
-    tmpRoot = '${tmp.path}/tmp';
-    outside = '${tmp.path}/outside';
+    // p.join, not string interpolation: the lib returns package:path form
+    // (backslashes on Windows, forward slashes elsewhere) and a hand-built
+    // expected path with mixed separators never matches on one of the two
+    wsRoot = path_lib.join(tmp.path, 'ws');
+    chatRoot = path_lib.join(tmp.path, 'chat');
+    skillsRoot = path_lib.join(tmp.path, 'skills');
+    tmpRoot = path_lib.join(tmp.path, 'tmp');
+    outside = path_lib.join(tmp.path, 'outside');
     for (final d in [wsRoot, chatRoot, skillsRoot, tmpRoot, outside]) {
       await Directory(d).create(recursive: true);
     }
@@ -52,10 +56,10 @@ void main() {
   group('lexical', () {
     test('maps each zone root', () {
       final p = paths();
-      expect(p.resolve('/workspace/a.txt').hostPath, '$wsRoot/a.txt');
+      expect(p.resolve('/workspace/a.txt').hostPath, path_lib.join(wsRoot, 'a.txt'));
       expect(p.resolve('/workspace').hostPath, wsRoot);
       expect(p.resolve('/workspace/a.txt').zone, WorkspaceZone.workspace);
-      expect(p.resolve('/chat/attachments/x.png').hostPath, '$chatRoot/attachments/x.png');
+      expect(p.resolve('/chat/attachments/x.png').hostPath, path_lib.join(chatRoot, 'attachments', 'x.png'));
       expect(p.resolve('/chat/attachments/x.png').zone, WorkspaceZone.chat);
       expect(p.resolve('/tmp/scratch').zone, WorkspaceZone.tmp);
       expect(p.resolve('/skills/k/SKILL.md').zone, WorkspaceZone.skills);
@@ -63,7 +67,7 @@ void main() {
 
     test('a relative path lands under the cwd', () {
       final p = paths(cwd: '/workspace/sub');
-      expect(p.resolve('notes.md').hostPath, '$wsRoot/sub/notes.md');
+      expect(p.resolve('notes.md').hostPath, path_lib.join(wsRoot, 'sub', 'notes.md'));
     });
 
     test('a dotted cwd means the root', () {
@@ -89,7 +93,7 @@ void main() {
     test('dot dot that stays inside the zone is allowed', () {
       // the reason the anchor is classified rather than the normalized path:
       // this stays a workspace write while the one above is not
-      expect(paths().resolve('/workspace/a/../b.txt').hostPath, '$wsRoot/b.txt');
+      expect(paths().resolve('/workspace/a/../b.txt').hostPath, path_lib.join(wsRoot, 'b.txt'));
     });
 
     test('a relative dot dot cannot climb above the root', () {
@@ -116,16 +120,16 @@ void main() {
       // after resolution it does not, which is what the write gate reads
       final real = await paths().resolveReal('/workspace/escape/secret.txt');
       expect(real.zone, WorkspaceZone.outside);
-      expect(real.hostPath, '$outside/secret.txt');
+      expect(real.hostPath, path_lib.join(outside, 'secret.txt'));
     });
 
     test('a path that does not exist yet still resolves its parents', () async {
       // the tail below does not exist, the link above it does
-      final target = '${tmp.path}/real';
+      final target = path_lib.join(tmp.path, 'real');
       await Directory(target).create();
       await Link('$wsRoot/link').create(target);
       final real = await paths().resolveReal('/workspace/link/not/created/yet.txt');
-      expect(real.hostPath, '$target/not/created/yet.txt');
+      expect(real.hostPath, path_lib.join(target, 'not', 'created', 'yet.txt'));
     });
 
     test('a symlinked root still matches itself', () async {
@@ -139,9 +143,9 @@ void main() {
       // resolve is lexical on purpose, it stays on the path it was handed and
       // never touches the disk. the zone check still matches because it compares
       // both the lexical and the resolved form of the root
-      expect(p.resolve('/workspace/a.txt').hostPath, '${tmp.path}/alias/a.txt');
+      expect(p.resolve('/workspace/a.txt').hostPath, path_lib.join(tmp.path, 'alias', 'a.txt'));
       // resolveReal is the one that follows the link
-      expect((await p.resolveReal('/workspace/a.txt')).hostPath, '$wsRoot/a.txt');
+      expect((await p.resolveReal('/workspace/a.txt')).hostPath, path_lib.join(wsRoot, 'a.txt'));
       expect((await p.resolveReal('/workspace/a.txt')).zone, WorkspaceZone.workspace);
     });
   });
@@ -166,7 +170,7 @@ void main() {
     late ExternalMount mountB;
 
     setUp(() async {
-      final mA = '${tmp.path}/mA';
+      final mA = path_lib.join(tmp.path, 'mA');
       final mB = '${tmp.path}/mB';
       await Directory(mA).create(recursive: true);
       await Directory(mB).create(recursive: true);
@@ -176,7 +180,7 @@ void main() {
 
     test('maps into a mount', () {
       final p = paths(mounts: [mountA, mountB]);
-      expect(p.resolve('/mounts/a/x.txt').hostPath, '${mountA.hostPath}/x.txt');
+      expect(p.resolve('/mounts/a/x.txt').hostPath, path_lib.join(mountA.hostPath, 'x.txt'));
       expect(p.resolve('/mounts/a/x.txt').zone, WorkspaceZone.external);
       expect(p.toModelPath('${mountA.hostPath}/x.txt'), '/mounts/a/x.txt');
     });
@@ -221,7 +225,7 @@ void main() {
       expect(p.cwd, WorkspacePaths.guestWorkspace);
       expect(refused(p, ''), isFalse);
       expect(p.resolve('').modelPath, WorkspacePaths.guestWorkspace);
-      expect(p.resolve('a.txt').hostPath, '$wsRoot/a.txt');
+      expect(p.resolve('a.txt').hostPath, path_lib.join(wsRoot, 'a.txt'));
     });
 
     test('a dotted cwd is the root too', () {
@@ -231,7 +235,7 @@ void main() {
     test('a relative cwd is folded onto the root', () {
       final p = paths(cwd: 'sub');
       expect(p.cwd, '${WorkspacePaths.guestWorkspace}/sub');
-      expect(p.resolve('a.txt').hostPath, '$wsRoot/sub/a.txt');
+      expect(p.resolve('a.txt').hostPath, path_lib.join(wsRoot, 'sub', 'a.txt'));
     });
 
     test('the prompt sees an absolute default, not a blank one', () {

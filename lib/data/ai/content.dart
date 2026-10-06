@@ -17,6 +17,15 @@ class ImagePart extends ContentPart {
   final String mime;
 }
 
+// base64 video with its mime, same on-demand loading as ImagePart. Only Gemini
+// endpoints accept it today; the other adapters drop the part and keep the
+// text lead, so a fallback chain that degrades to a text model stays valid
+class VideoPart extends ContentPart {
+  const VideoPart(this.data, this.mime);
+  final String data;
+  final String mime;
+}
+
 /// A tool invocation the model asked for. Kept in the turn history so the next
 /// request can replay it next to its result.
 class ToolCallPart extends ContentPart {

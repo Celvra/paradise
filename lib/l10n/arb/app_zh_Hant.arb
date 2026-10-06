@@ -484,6 +484,10 @@
   "@aiCapsVision": {
     "description": "Capability tag on a chain node"
   },
+  "aiCapsVideo": "影片",
+  "@aiCapsVideo": {
+    "description": "Capability tag on a chain node"
+  },
   "aiTokensUnknown": "未知",
   "@aiTokensUnknown": {
     "description": "Shown for a context window the catalog does not know"
@@ -776,7 +780,7 @@
   "@settingsAboutThanks": {
     "description": "Acknowledgements to the projects this one was modelled on"
   },
-  "settingsAboutDeps": "依賴庫:\n\ncharacters 1.4.1 - 字形叢集，用於正確計算文字寬度  (BSD-3-Clause)\nhttps://github.com/dart-lang/core/tree/main/pkgs/characters\nfile_picker 13.1.0 - 檔案與音訊選擇  (MIT)\nhttps://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker\nflutter_contacts 2.5.0 - 分享聯絡人名片  (MIT)\nhttps://github.com/QuisApp/flutter_contacts\nflutter_highlight 0.7.0 - 程式碼預覽配色  (MIT)\nhttps://github.com/git-touch/highlight\nflutter_local_notifications 18.0.1 - 本機通知  (BSD-3-Clause)\nflutter_math_fork 0.7.4 - 氣泡內渲染 LaTeX  (Apache-2.0)\nhttps://github.com/simplezhli/flutter_math_fork\nflutter_svg 2.3.0 - 服務商圖示與向量圖示  (MIT)\nhttps://github.com/flutter/packages/tree/main/third_party/packages/flutter_svg\ngeolocator 13.0.4 - 位置附件  (MIT)\nhttps://github.com/baseflow/flutter-geolocator/tree/main/geolocator\nhttp 1.6.0 - OpenAI 相容介面請求  (BSD-3-Clause)\nhttps://github.com/dart-lang/http/tree/master/pkgs/http\nimage_picker 1.2.3 - 相機與相簿圖片  (Apache-2.0)\nhttps://github.com/flutter/packages/tree/main/packages/image_picker/image_picker\nintl 0.20.3 - 日期與數字格式化  (BSD-3-Clause)\nhttps://github.com/dart-lang/i18n/tree/main/pkgs/intl\npath_provider 2.1.6 - 應用程式目錄，用於表情與匯出檔案  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/path_provider/path_provider\npermission_handler 13.0.2 - 照片、聯絡人、位置與通知權限的統一申請入口  (MIT)\nhttps://github.com/baseflow/flutter-permission-handler\nphoto_manager 3.12.0 - 相簿存取，用於附件  (Apache-2.0)\nhttps://github.com/fluttercandies/flutter_photo_manager\nratex_flutter 0.1.14 - 原生渲染 LaTeX 數學卡片  (MIT)\nhttps://github.com/erweixin/RaTeX\nshared_preferences 2.5.5 - 設定與對話紀錄儲存  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/shared_preferences/shared_preferences\nsqflite 2.4.4 - 訊息歷史與對話分頁  (BSD-2-Clause)\nhttps://github.com/tekartik/sqflite/tree/master/sqflite\ntimezone 0.10.1 - 排程訊息的時區資料  (BSD-2-Clause)\nhttps://github.com/srawlins/timezone\ntypst_flutter 3.0.0 - CeTZ 繪圖卡片背後的內嵌 Typst 編譯器  (Apache-2.0)\nhttps://github.com/ajmalbuv/typst_flutter\nurl_launcher 6.3.2 - 本彈出視窗中的交流群連結  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/url_launcher/url_launcher\nworkmanager 0.10.10 - 應用程式被關閉後的背景送達  (MIT)\nhttps://github.com/fluttercommunity/flutter_workmanager",
+  "settingsAboutDeps": "依賴庫:\n\ncharacters 1.4.1 - 字形叢集，用於正確計算文字寬度  (BSD-3-Clause)\nhttps://github.com/dart-lang/core/tree/main/pkgs/characters\nfile_picker 13.1.0 - 檔案與音訊選擇  (MIT)\nhttps://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker\nflutter_contacts 2.5.0 - 分享聯絡人名片  (MIT)\nhttps://github.com/QuisApp/flutter_contacts\nflutter_highlight 0.7.0 - 程式碼預覽配色  (MIT)\nhttps://github.com/git-touch/highlight\nflutter_local_notifications 18.0.1 - 本機通知  (BSD-3-Clause)\nflutter_math_fork 0.7.4 - 氣泡內渲染 LaTeX  (Apache-2.0)\nhttps://github.com/simplezhli/flutter_math_fork\nflutter_svg 2.3.0 - 服務商圖示與向量圖示  (MIT)\nhttps://github.com/flutter/packages/tree/main/third_party/packages/flutter_svg\ngeolocator 13.0.4 - 位置附件  (MIT)\nhttps://github.com/baseflow/flutter-geolocator/tree/main/geolocator\nhttp 1.6.0 - OpenAI 相容介面請求  (BSD-3-Clause)\nhttps://github.com/dart-lang/http/tree/master/pkgs/http\nimage_picker 1.2.3 - 相機與相簿圖片  (Apache-2.0)\nhttps://github.com/flutter/packages/tree/main/packages/image_picker/image_picker\nintl 0.20.3 - 日期與數字格式化  (BSD-3-Clause)\nhttps://github.com/dart-lang/i18n/tree/main/pkgs/intl\npath_provider 2.1.6 - 應用程式目錄，用於表情與匯出檔案  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/path_provider/path_provider\npermission_handler 13.0.2 - 照片、聯絡人、位置與通知權限的統一申請入口  (MIT)\nhttps://github.com/baseflow/flutter-permission-handler\nphoto_manager 3.12.0 - 相簿存取，用於附件  (Apache-2.0)\nhttps://github.com/fluttercandies/flutter_photo_manager\nratex_flutter 0.1.14 - 原生渲染 LaTeX 數學卡片  (MIT)\nhttps://github.com/erweixin/RaTeX\nshared_preferences 2.5.5 - 設定與對話紀錄儲存  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/shared_preferences/shared_preferences\nsqflite 2.4.4 - 訊息歷史與對話分頁  (BSD-2-Clause)\nhttps://github.com/tekartik/sqflite/tree/master/sqflite\ntimezone 0.10.1 - 排程訊息的時區資料  (BSD-2-Clause)\nhttps://github.com/srawlins/timezone\ntypst_flutter 3.0.0 - CeTZ 繪圖卡片背後的內嵌 Typst 編譯器  (Apache-2.0)\nhttps://github.com/ajmalbuv/typst_flutter\nurl_launcher 6.3.2 - 本彈出視窗中的交流群連結  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/url_launcher/url_launcher\nvideo_player 2.14.1 - 聊天氣泡內的影片播放  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/video_player/video_player\nworkmanager 0.10.10 - 應用程式被關閉後的背景送達  (MIT)\nhttps://github.com/fluttercommunity/flutter_workmanager",
   "@settingsAboutDeps": {
     "description": "Direct dependencies with their licence, the transitive tree is in the lockfile"
   },
@@ -1381,6 +1385,10 @@
     "description": "Preview lead for a photo message"
   },
   "msgLeadMusic": "音樂",
+  "msgLeadVideo": "影片",
+  "@msgLeadVideo": {
+    "description": "影片訊息的預覽前綴"
+  },
   "@msgLeadMusic": {
     "description": "Preview lead for a music message"
   },
@@ -3142,6 +3150,178 @@
   "@attachTabGallery": {
     "description": ""
   },
+  "attachFilterAll": "全部",
+  "@attachFilterAll": {
+    "description": "相簿篩選：圖片和影片一起顯示"
+  },
+  "attachFilterImages": "圖片",
+  "@attachFilterImages": {
+    "description": "相簿篩選：只看圖片"
+  },
+  "attachFilterVideos": "影片",
+  "@attachFilterVideos": {
+    "description": "相簿篩選：只看影片"
+  },
+  "attachFilterAllAlbums": "全部相簿",
+  "@attachFilterAllAlbums": {
+    "description": "相簿篩選：合併顯示所有相簿"
+  },
+  "attachAlbumFallback": "相簿",
+  "@attachAlbumFallback": {
+    "description": "未命名相簿的預設名稱"
+  },
+  "attachNoVision": "目前模型不支援圖片輸入，只能傳送普通文字檔案",
+  "@attachNoVision": {
+    "description": "使用者給不支援圖片的模型選擇圖片時的提示"
+  },
+  "attachNoVideo": "目前模型不支援影片輸入，無法傳送此影片",
+  "@attachNoVideo": {
+    "description": "使用者給不支援影片的模型選擇影片時的提示"
+  },
+  "attachVideoFailed": "無法播放此影片",
+  "@attachVideoFailed": {
+    "description": "全螢幕影片播放器解碼失敗時的文案"
+  },
+  "personaClingyHeader": "黏人度",
+  "@personaClingyHeader": {
+    "description": "Section header of the clinginess settings on the persona editor"
+  },
+  "personaClingyFooter": "開啟後，你長時間沒回覆時，這個人設會主動傳訊息給你。",
+  "@personaClingyFooter": {
+    "description": "Note under the clinginess section"
+  },
+  "personaClingyTitle": "主動傳訊息",
+  "@personaClingyTitle": {
+    "description": "Switch that lets the persona speak up on its own"
+  },
+  "personaClingySub": "你長時間沒回覆時主動找話",
+  "@personaClingySub": {
+    "description": "Subtitle of the proactive messages switch"
+  },
+  "personaClingyInterval": "多久沒回覆後發",
+  "@personaClingyInterval": {
+    "description": "Row that picks how long the user has to stay quiet before the persona writes first"
+  },
+  "personaClingyCap": "限制主動次數",
+  "@personaClingyCap": {
+    "description": "Switch that caps consecutive proactive messages"
+  },
+  "personaClingyCapSub": "連續主動發言達到這個數後暫停，你回覆後計數重置",
+  "@personaClingyCapSub": {
+    "description": "Subtitle of the proactive count limit switch"
+  },
+  "personaClingyMax": "最多連續主動",
+  "@personaClingyMax": {
+    "description": "Row that picks the cap on consecutive proactive messages"
+  },
+  "personaClingyMinutes": "{min} 分鐘",
+  "@personaClingyMinutes": {
+    "description": "Minutes label for the clinginess interval picker",
+    "placeholders": {
+      "min": {
+        "type": "int"
+      }
+    }
+  },
+  "personaClingyHours": "{h} 小時",
+  "@personaClingyHours": {
+    "description": "Hours label for the clinginess interval picker",
+    "placeholders": {
+      "h": {
+        "type": "int"
+      }
+    }
+  },
+  "personaClingyNeedsProactive": "全域主動訊息開關處於關閉狀態，打開前黏人設定不會生效。",
+  "@personaClingyNeedsProactive": {
+    "description": "Warning under the clinginess section while the global proactive switch is off"
+  },
+  "shopTitle": "商城",
+  "@shopTitle": {
+    "description": "Title of the shop page"
+  },
+  "shopEntry": "商城",
+  "@shopEntry": {
+    "description": "Row in the wallet page that opens the shop"
+  },
+  "shopEntrySub": "用餘額給 AI 兌換好感、體力",
+  "@shopEntrySub": {
+    "description": "Subtitle of the shop row in the wallet page"
+  },
+  "shopBalance": "目前餘額",
+  "@shopBalance": {
+    "description": "Balance line at the top of the shop page"
+  },
+  "shopItemAffection": "好感度提升",
+  "@shopItemAffection": {
+    "description": "Shop item: +10 affection"
+  },
+  "shopItemAffectionSub": "指定一位 AI，好感度 +10",
+  "@shopItemAffectionSub": {
+    "description": "Subtitle of the affection boost item"
+  },
+  "shopItemEnergy": "體力補充",
+  "@shopItemEnergy": {
+    "description": "Shop item: +30 energy"
+  },
+  "shopItemEnergySub": "指定一位 AI，體力 +30",
+  "@shopItemEnergySub": {
+    "description": "Subtitle of the energy refill item"
+  },
+  "shopItemMood": "心情提振",
+  "@shopItemMood": {
+    "description": "Shop item: +20 mood"
+  },
+  "shopItemMoodSub": "指定一位 AI，心情 +20",
+  "@shopItemMoodSub": {
+    "description": "Subtitle of the mood lift item"
+  },
+  "shopChoose": "選擇送給哪位 AI",
+  "@shopChoose": {
+    "description": "Title of the target picker in the shop"
+  },
+  "shopNoChat": "還沒有會話，先建立一個人設",
+  "@shopNoChat": {
+    "description": "Message when the shop has nobody to boost"
+  },
+  "shopNotEnough": "餘額不足",
+  "@shopNotEnough": {
+    "description": "Message when a purchase exceeds the balance"
+  },
+  "shopDone": "兌換成功，已生效",
+  "@shopDone": {
+    "description": "Confirmation after a shop purchase"
+  },
+  "shopDeduct": "將從餘額中扣除 ¥{price}",
+  "@shopDeduct": {
+    "description": "Confirm dialog message naming the price",
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "shopItemApology": "道歉卡",
+  "@shopItemApology": {
+    "description": "Shop item: cools the global annoyance to the minimum"
+  },
+  "shopItemApologySub": "立刻平息 AI 的賭氣情緒，無需選擇對象",
+  "@shopItemApologySub": {
+    "description": "Subtitle of the apology card"
+  },
+  "whatsNewTitle": "更新內容（v{version}）",
+  "@whatsNewTitle": {
+    "description": "Title of the one-time whats-new dialog",
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "whatsNewBody": "本次更新內容：\n\n• 視訊訊息：相簿與檔案均可傳送視訊，AI 能看懂視訊內容\n• 檔案直讀：小檔案直接注入上下文，AI 真正讀到內容\n• 貼紙三件套：AI 先讀懂表情包含義再主動傳送，並顯示縮圖\n• 黏人度：可配置 AI 主動發話的頻率與次數上限\n• 商城改版：購買後跳轉聊天，禮物以卡片送達且 AI 真正收到；商城入口更明顯\n• 自動備份：預設開啟，覆蓋式備份可隨更新與重裝存活，首次啟動偵測到備份可一鍵恢復\n• 模型目錄：修正 models.dev 資料滯後導致的視訊能力誤判（DeepSeek V4.1 Flash）\n• 編輯器保護：人設編輯器所有退出方式都會先確認再丟棄修改\n• 同步上游 v1.0.2：嚮導、SKILLS、LaTeX 繪圖卡片、檢查更新\n• 介面與效能優化",
+  "@whatsNewBody": {
+    "description": "Body of the one-time whats-new dialog, one bullet per line"
+  },
   "attachCamera": "相機",
   "@attachCamera": {
     "description": "相簿網格頂部相機入口的文案"
@@ -3696,5 +3876,60 @@
   "skillImporting": "匯入中…",
   "@skillImporting": {
     "description": "技能下載時的提示"
+  },
+  "autoBackupTitle": "自動備份",
+  "autoBackupSub": "備份以覆蓋方式寫入應用外部的一個檔案，更新或重裝後仍可找回。",
+  "autoBackupModeChange": "資料變更時自動備份（推薦）",
+  "autoBackupModeInterval": "每隔 {n} 小時",
+  "@autoBackupModeInterval": {
+    "description": "auto backup",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "autoBackupModeWindow": "每天 {from} – {to}",
+  "@autoBackupModeWindow": {
+    "description": "auto backup",
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "autoBackupOff": "關閉",
+  "autoBackupLast": "上次：{when}",
+  "@autoBackupLast": {
+    "description": "auto backup",
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "autoBackupNever": "尚未備份",
+  "autoBackupOffTitle": "關閉自動備份？",
+  "autoBackupOffMessage": "關閉後，更新或解除安裝應用可能會導致聊天、人設和設定遺失。",
+  "autoBackupOffAction": "關閉",
+  "autoBackupRestoreTitle": "發現備份",
+  "autoBackupRestoreMessage": "偵測到 {when} 的備份，要恢復聊天、人設和設定嗎？",
+  "@autoBackupRestoreMessage": {
+    "description": "auto backup",
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "autoBackupRestoreAction": "恢復",
+  "autoBackupRestored": "備份已恢復",
+  "autoBackupRestoreFailed": "備份讀取失敗",
+  "whatsNewEntry": "更新說明",
+  "@whatsNewEntry": {
+    "description": "Settings row that reopens the current version highlights"
   }
 }

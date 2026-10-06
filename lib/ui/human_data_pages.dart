@@ -18,6 +18,7 @@ import '../data/human/sticker_lib.dart';
 import '../data/store.dart';
 import '../l10n/x.dart';
 import 'human_pages.dart';
+import 'shop_page.dart';
 import 'tool_descriptions.dart';
 import 'tg_cells.dart';
 
@@ -47,6 +48,8 @@ Future<bool> askToolPermission(String tool, Map<String, dynamic> args) async {
 // ---------------------------------------------------------------- stickers
 
 /// One sticker drawn at any size, shared by the settings page and the panel.
+/// A library thumb wins over the full file so a grid of a hundred stickers
+/// never decodes a hundred full size originals.
 Widget stickerView(UserSticker s, double size) {
   if (s.kind == StickerKind.emoji) {
     return SizedBox(
@@ -59,19 +62,23 @@ Widget stickerView(UserSticker s, double size) {
                     height: 1.1,
                     decoration: TextDecoration.none))));
   }
+  final cache = (size * 2).round();
+  final local = s.thumb.isNotEmpty && File(s.thumb).existsSync() ? s.thumb : s.value;
   final img = s.isRemote
       ? Image.network(s.value,
           width: size,
           height: size,
           fit: BoxFit.cover,
           gaplessPlayback: true,
+          cacheWidth: cache,
           errorBuilder: (_, __, ___) => SizedBox(width: size, height: size))
-      : (File(s.value).existsSync()
-          ? Image.file(File(s.value),
+      : (File(local).existsSync()
+          ? Image.file(File(local),
               width: size,
               height: size,
               fit: BoxFit.cover,
-              gaplessPlayback: true)
+              gaplessPlayback: true,
+              cacheWidth: cache)
           : SizedBox(width: size, height: size));
   return ClipRRect(borderRadius: BorderRadius.circular(8), child: img);
 }
@@ -90,6 +97,21 @@ Future<String?> _copyIn(String dir, String path) async {
   }
 }
 
+/// Still preview of a freshly imported sticker. Empty string when the codec
+/// cannot read the file, the sticker then simply renders from its full copy.
+Future<String> _thumbIn(String copiedPath) async {
+  try {
+    final base = await getApplicationDocumentsDirectory();
+    final d = Directory('${base.path}/stickers_thumbs');
+    if (!d.existsSync()) d.createSync(recursive: true);
+    final f = File(
+        '${d.path}/${DateTime.now().millisecondsSinceEpoch}_thumb.png');
+    return await makeStickerThumb(copiedPath, f.path) ?? '';
+  } catch (_) {
+    return '';
+  }
+}
+
 /// Add flow shared with the sticker tab and this page: a picked file or an url
 /// becomes a sticker, and a file or link that ends in .gif lands as a GIF.
 Future<void> addStickerFlow(BuildContext c) async {
@@ -105,6 +127,7 @@ Future<void> addStickerFlow(BuildContext c) async {
   if (how == null || !c.mounted) return;
   late String value;
   var kind = StickerKind.image;
+  var thumb = '';
   if (how == 'gallery') {
     final x = await ip.ImagePicker().pickImage(source: ip.ImageSource.gallery);
     if (x == null) return;
@@ -112,6 +135,7 @@ Future<void> addStickerFlow(BuildContext c) async {
     kind = x.path.toLowerCase().endsWith('.gif')
         ? StickerKind.gif
         : StickerKind.image;
+    if (value.isNotEmpty) thumb = await _thumbIn(value);
   } else {
     value = (await hAsk(c, l.stickerLink, 'https://…'))?.trim() ?? '';
     kind = value.toLowerCase().contains('.gif')
@@ -125,7 +149,8 @@ Future<void> addStickerFlow(BuildContext c) async {
       kind: kind,
       value: value,
       emotion: (emotion ?? '').trim(),
-      tags: [if ((emotion ?? '').trim().isNotEmpty) emotion!.trim()]);
+      tags: [if ((emotion ?? '').trim().isNotEmpty) emotion!.trim()],
+      thumb: thumb);
   h.changed();
 }
 
@@ -813,12 +838,25 @@ class WalletPage extends StatelessWidget {
                   style: hStyle(p, size: 12.5, color: const Color(0xB3FFFFFF))),
             ]),
           ),
+          TgSection(children: [
+            TgTextCell(
+                icon: Ic.crown,
+                title: l.shopEntry,
+                subtitle: l.shopEntrySub,
+                divider: false,
+                onTap: () => Navigator.of(c)
+                    .push(TgRoute(builder: (_) => const ShopPage()))),
+          ]),
           TgSection(header: l.walletRecords, children: [
             if (w.txs.isEmpty) TgTextCell(title: l.walletEmpty, divider: false),
             for (final t in w.txs)
               TgTextCell(
-                icon: t.kind == 'redpacket' ? Ic.hongbao : Ic.wallet,
-                color: t.kind == 'redpacket' ? const Color(0xFFE14A3E) : null,
+                icon: t.kind == 'shop'
+                    ? Ic.crown
+                    : (t.kind == 'redpacket' ? Ic.hongbao : Ic.wallet),
+                color: t.kind == 'redpacket'
+                    ? const Color(0xFFE14A3E)
+                    : (t.kind == 'shop' ? p.accent : null),
                 title: t.title.isEmpty
                     ? (t.kind == 'redpacket'
                         ? l.walletRedPacket
@@ -826,7 +864,8 @@ class WalletPage extends StatelessWidget {
                     : t.title,
                 subtitle:
                     '${DateTime.fromMillisecondsSinceEpoch(t.at).toIso8601String().substring(0, 16).replaceFirst('T', ' ')} · ${t.status}',
-                value: '+${t.amount.toStringAsFixed(2)}',
+                value:
+                    '${t.amount >= 0 ? '+' : '−'}${t.amount.abs().toStringAsFixed(2)}',
               ),
           ]),
           TgSection(children: [

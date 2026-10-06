@@ -71,7 +71,7 @@ class _SearchPageState extends State<SearchPage> {
   bool _match(Msg m) {
     switch (_filter) {
       case 3:
-        return m.kind == MsgKind.photo;
+        return m.kind == MsgKind.photo || m.kind == MsgKind.video;
       case 4:
         return m.hasLink;
       case 5:

@@ -15,6 +15,7 @@ import 'persona_card.dart';
 import 'profile_page.dart';
 import 'search_page.dart';
 import 'settings_page.dart';
+import 'shop_page.dart';
 import 'workspace/workspace_prompts.dart' show askTypeDelete;
 
 // main tabs shell like MainTabsActivity with the glass tab row floating at the bottom
@@ -226,6 +227,7 @@ class _ChatsTabState extends State<ChatsTab> {
     final l = context.l;
     showTgMenu(context, anchor: Rect.fromLTWH(o.dx, o.dy, box.size.width, box.size.height), items: [
       MenuItem(l.chatsNewPersona, Ic.user, _newPersona),
+      MenuItem(l.shopEntry, Ic.crown, () => Navigator.of(context).push(TgRoute(builder: (_) => const ShopPage()))),
       MenuItem(l.chatsMenuReadAll, Ic.check2, () {
         for (final c in st.chats) {
           c.unread = 0;
@@ -265,6 +267,7 @@ class _ChatsTabState extends State<ChatsTab> {
               : ListView.builder(
                   controller: _scroll,
                   physics: const ClampingScrollPhysics(),
+                  cacheExtent: 700,
                   padding: EdgeInsets.only(top: top + 56 + 52, bottom: mq.padding.bottom + 100),
                   itemCount: list.length,
                   itemBuilder: (_, i) {

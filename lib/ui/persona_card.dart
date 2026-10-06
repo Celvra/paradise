@@ -97,6 +97,12 @@ class _PersonaCardPageState extends State<PersonaCardPage> {
   // per persona answer to the two global reply switches, null follows them
   late bool? _thinking = widget.chat?.persona.thinking;
   late bool? _agent = widget.chat?.persona.agent;
+  // clingy: proactive check-ins after the user stays quiet, plus an optional
+  // cap on how many proactive messages in a row the persona may send
+  late bool _clingy = widget.chat?.persona.clingy ?? false;
+  late int _clingySilentMin = widget.chat?.persona.clingySilentMin ?? 90;
+  late bool _clingyCap = widget.chat?.persona.clingyCap ?? false;
+  late int _clingyMax = widget.chat?.persona.clingyMax ?? 3;
   // skills this role may use, null follows the global set
   late List<String>? _skillIds = widget.chat?.persona.skillIds == null ? null : [...widget.chat!.persona.skillIds!];
   int _preset = -1;
@@ -108,7 +114,22 @@ class _PersonaCardPageState extends State<PersonaCardPage> {
       _modelProvider.trim().isNotEmpty && _modelId.trim().isNotEmpty;
 
   @override
+  void initState() {
+    super.initState();
+    // PopScope.canPop reads _dirty at build time, so every keystroke has to
+    // rebuild the page or the back button would act on a stale answer
+    for (final c in [_name, _bio, _prompt, _greet]) {
+      c.addListener(_onFieldChange);
+    }
+  }
+
+  void _onFieldChange() => setState(() {});
+
+  @override
   void dispose() {
+    for (final c in [_name, _bio, _prompt, _greet]) {
+      c.removeListener(_onFieldChange);
+    }
     _name.dispose();
     _bio.dispose();
     _prompt.dispose();
@@ -177,6 +198,10 @@ class _PersonaCardPageState extends State<PersonaCardPage> {
           modelFallback: _modelFallback,
           thinking: _thinking,
           agent: _agent,
+          clingy: _clingy,
+          clingySilentMin: _clingySilentMin,
+          clingyCap: _clingyCap,
+          clingyMax: _clingyMax,
           skillIds: _skillIds == null ? null : [..._skillIds!],
           clearSkillIds: _skillIds == null);
       Navigator.of(context).pop(widget.chat);
@@ -192,6 +217,10 @@ class _PersonaCardPageState extends State<PersonaCardPage> {
           modelFallback: _modelFallback,
           thinking: _thinking,
           agent: _agent,
+          clingy: _clingy,
+          clingySilentMin: _clingySilentMin,
+          clingyCap: _clingyCap,
+          clingyMax: _clingyMax,
           skillIds: _skillIds == null ? null : [..._skillIds!]));
     }
   }
@@ -246,6 +275,10 @@ class _PersonaCardPageState extends State<PersonaCardPage> {
         _modelFallback != c.modelFallback ||
         _thinking != c.thinking ||
         _agent != c.agent ||
+        _clingy != c.clingy ||
+        _clingySilentMin != c.clingySilentMin ||
+        _clingyCap != c.clingyCap ||
+        _clingyMax != c.clingyMax ||
         !_sameSkills(_skillIds, c.skillIds);
   }
 
@@ -256,11 +289,11 @@ class _PersonaCardPageState extends State<PersonaCardPage> {
     return a.every(set.contains);
   }
 
-  Future<void> _back() async {
-    if (!_dirty) {
-      Navigator.of(context).maybePop();
-      return;
-    }
+  /// Whether leaving is safe: true pops, false stays. The close button, the
+  /// system back and the right-swipe gesture all funnel through here so no
+  /// exit path skips the discard confirmation.
+  Future<bool> _confirmLeave() async {
+    if (!_dirty) return true;
     final l = context.l;
     final r = await showTgDialog<bool>(context,
         title: l.accountDiscardTitle,
@@ -269,7 +302,11 @@ class _PersonaCardPageState extends State<PersonaCardPage> {
           DialogAction(l.actionCancel, false),
           DialogAction(l.actionDiscard, true, danger: true),
         ]);
-    if (r == true && mounted) Navigator.of(context).maybePop();
+    return r == true;
+  }
+
+  Future<void> _back() async {
+    if (await _confirmLeave() && mounted) Navigator.of(context).pop();
   }
 
   double _offset = 0;
@@ -283,7 +320,18 @@ class _PersonaCardPageState extends State<PersonaCardPage> {
     // the bar fades from transparent over the cover to the solid action bar
     final heroH = 268 + top;
     final solid = ((_offset - (heroH - top - 56 - 40)) / 40).clamp(0.0, 1.0);
-    return SwipeBack(
+    // Every exit asks before discarding: system back goes through PopScope,
+    // the finger swipe through SwipeBack.confirm, the close button through
+    // _back, and all three end up in _confirmLeave.
+    return PopScope(
+      canPop: !_dirty,
+      onPopInvokedWithResult: (didPop, _) async {
+        if (didPop || !mounted) return;
+        // confirmed: a direct pop, so the guard does not see its own attempt
+        if (await _confirmLeave() && mounted) Navigator.of(context).pop();
+      },
+      child: SwipeBack(
+        confirm: _confirmLeave,
       child: ColoredBox(
         color: p.gray,
         child: Stack(children: [
@@ -343,6 +391,7 @@ class _PersonaCardPageState extends State<PersonaCardPage> {
                   ),
                   _modelSection(p),
                   _replySection(),
+                  _clingySection(),
                   _skillsSection(),
                 ],
               ),
@@ -433,6 +482,7 @@ class _PersonaCardPageState extends State<PersonaCardPage> {
             ),
           ),
         ]),
+      ),
       ),
     );
   }
@@ -533,6 +583,7 @@ class _PersonaCardPageState extends State<PersonaCardPage> {
                                   decoration: TextDecoration.none)))
                       : Image.file(File(_avatar),
                           fit: BoxFit.cover,
+                          cacheWidth: 240,
                           errorBuilder: (_, __, ___) => const Center(
                               child: TgIcon(Ic.camera,
                                   color: Color(0xFFFFFFFF),
@@ -670,6 +721,87 @@ class _PersonaCardPageState extends State<PersonaCardPage> {
     );
   }
 
+  // Clinginess: how soon this persona speaks up on its own after the user
+  // goes quiet, and an optional cap on consecutive proactive messages. The
+  // scheduler measures silence from the newest message on either side, so a
+  // check-in never chains straight into the next one.
+  Widget _clingySection() {
+    final l = context.l;
+    // the gate drops every proactive task while the global switch is off, so
+    // a clingy persona would silently stay quiet: say so right in the editor
+    final proactiveOn = Store.read(context).human?.settings.proactive ?? false;
+    return TgSection(
+      header: l.personaClingyHeader,
+      footer: _clingy && !proactiveOn ? l.personaClingyNeedsProactive : l.personaClingyFooter,
+      children: [
+        TgCheckCell(
+          icon: Ic.bell,
+          title: l.personaClingyTitle,
+          subtitle: l.personaClingySub,
+          value: _clingy,
+          divider: _clingy,
+          onChanged: (v) => setState(() => _clingy = v),
+        ),
+        if (_clingy) ...[
+          TgTextCell(
+            icon: Ic.calendar,
+            title: l.personaClingyInterval,
+            value: _fmtMin(_clingySilentMin),
+            onTap: _pickInterval,
+          ),
+          TgCheckCell(
+            icon: Ic.minus,
+            title: l.personaClingyCap,
+            subtitle: l.personaClingyCapSub,
+            value: _clingyCap,
+            divider: _clingyCap,
+            onChanged: (v) => setState(() => _clingyCap = v),
+          ),
+          if (_clingyCap)
+            TgTextCell(
+              icon: Ic.list,
+              title: l.personaClingyMax,
+              value: '$_clingyMax',
+              divider: false,
+              onTap: _pickMax,
+            ),
+        ],
+      ],
+    );
+  }
+
+  String _fmtMin(int m) {
+    final l = context.l;
+    return m % 60 == 0 ? l.personaClingyHours(m ~/ 60) : l.personaClingyMinutes(m);
+  }
+
+  Future<void> _pickInterval() async {
+    final l = context.l;
+    const opts = [15, 30, 60, 120, 240, 480];
+    final v = await showAiSelect<int>(
+      context,
+      title: l.personaClingyInterval,
+      value: _clingySilentMin,
+      options: [
+        for (final m in opts) (value: m, label: _fmtMin(m), sub: null),
+      ],
+    );
+    if (v != null) setState(() => _clingySilentMin = v);
+  }
+
+  Future<void> _pickMax() async {
+    final l = context.l;
+    final v = await showAiSelect<int>(
+      context,
+      title: l.personaClingyMax,
+      value: _clingyMax,
+      options: [
+        for (var n = 1; n <= 8; n++) (value: n, label: '$n', sub: null),
+      ],
+    );
+    if (v != null) setState(() => _clingyMax = v);
+  }
+
   // Skills this role may use. Null follows the global set (every enabled
   // skill), an explicit list names exactly the ones in its prompt.
   Widget _skillsSection() {
@@ -801,6 +933,7 @@ class _PersonaCardPageState extends State<PersonaCardPage> {
                                   color: const Color(0x66FFFFFF), width: 2)),
                           child: Image.file(File(_avatar),
                               fit: BoxFit.cover,
+                              cacheWidth: 360,
                               errorBuilder: (_, __, ___) => Center(
                                   child: Text(initial,
                                       style: const TextStyle(

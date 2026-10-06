@@ -13,6 +13,7 @@ import '../core/ui_kit.dart';
 import '../data/models.dart';
 import '../data/store.dart';
 import '../l10n/x.dart';
+import 'video_view.dart';
 import 'workspace/file_preview_page.dart';
 import 'workspace/html_svg_view.dart';
 
@@ -211,6 +212,32 @@ Widget mediaBody(BuildContext context, {required Msg m, required Pal p, required
   switch (m.kind) {
     case MsgKind.transfer:
       return WalletCard(msg: m, width: width, onTap: onAction);
+    case MsgKind.gift:
+      final gt = '${m.data['title'] ?? ''}';
+      final ge = '${m.data['effect'] ?? ''}';
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(math.max(4.0, context.store.bubbleRadius - 3)),
+        child: Stack(children: [
+          Container(
+            width: width,
+            padding: const EdgeInsets.fromLTRB(13, 11, 13, 11),
+            child: Row(children: [
+              TgIcon(Ic.hongbao, color: accent, size: 28, stroke: 1.7),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
+                  Text(gt, maxLines: 1, overflow: TextOverflow.ellipsis, style: title),
+                  if (ge.isNotEmpty) ...[
+                    const SizedBox(height: 1),
+                    Text(ge, maxLines: 1, overflow: TextOverflow.ellipsis, style: sub),
+                  ],
+                ]),
+              ),
+            ]),
+          ),
+          if (timePill != null) Positioned(right: 6, bottom: 6, child: timePill),
+        ]),
+      );
     case MsgKind.photo:
       final path = m.data['path'] as String?;
       final radius = math.max(4.0, context.store.bubbleRadius - 3);
@@ -255,6 +282,44 @@ Widget mediaBody(BuildContext context, {required Msg m, required Pal p, required
                   : SizedBox(width: width, height: 160, child: ColoredBox(color: p.gray, child: Center(child: TgIcon(Ic.image, color: p.hint, size: 40)))),
             ),
             if (timePill != null) Positioned(right: 6, bottom: 6, child: timePill),
+          ]),
+        ),
+      );
+    case MsgKind.video:
+      final path = m.data['path'] as String?;
+      final thumb = m.data['thumb'] as String?;
+      final radius = math.max(4.0, context.store.bubbleRadius - 3);
+      final secs = (m.data['duration'] as num?)?.toInt() ?? 0;
+      final dur = secs > 0 ? '${secs ~/ 60}:${(secs % 60).toString().padLeft(2, '0')}' : '';
+      final poster = thumb != null && File(thumb).existsSync()
+          ? Image.file(File(thumb), width: width, fit: BoxFit.cover, cacheWidth: 900)
+          : ColoredBox(color: p.gray, child: Center(child: TgIcon(Ic.video, color: p.hint, size: 40)));
+      return GestureDetector(
+        onTap: path != null && File(path).existsSync() ? () => showVideoView(context, path) : null,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(radius),
+          child: Stack(children: [
+            ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: width, maxHeight: 360, minHeight: 120),
+              child: poster,
+            ),
+            const Center(
+              child: DecoratedBox(
+                decoration: BoxDecoration(color: Color(0x99000000), shape: BoxShape.circle),
+                child: Padding(padding: EdgeInsets.all(12), child: TgIcon(Ic.video, color: Color(0xFFFFFFFF), size: 28)),
+              ),
+            ),
+            if (dur.isNotEmpty)
+              Positioned(
+                right: 6,
+                bottom: 6,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  decoration: BoxDecoration(color: const Color(0x99000000), borderRadius: BorderRadius.circular(8)),
+                  child: Text(dur, style: const TextStyle(color: Color(0xFFFFFFFF), fontSize: 12, fontWeight: FontWeight.w500, height: 1.1, decoration: TextDecoration.none)),
+                ),
+              ),
+            if (timePill != null) Positioned(right: 6, bottom: dur.isEmpty ? 6 : 28, child: timePill),
           ]),
         ),
       );
@@ -663,8 +728,12 @@ Widget _stickerFace(Msg m) {
   if (emoji.isNotEmpty || path.isEmpty) return Text(emoji, style: const TextStyle(fontSize: 112, height: 1.15, decoration: TextDecoration.none));
   final remote = path.startsWith('http');
   if (!remote && !File(path).existsSync()) return const SizedBox(width: 150, height: 150);
+  // the library thumbnail travels with the message, older bubbles fall back
+  // to the full file at a decode size matched to the 150 slot
+  final thumb = '${m.data['thumb'] ?? ''}';
+  final local = !remote && thumb.isNotEmpty && File(thumb).existsSync() ? thumb : path;
   return ClipRRect(
     borderRadius: BorderRadius.circular(10),
-    child: remote ? Image.network(path, width: 150, height: 150, fit: BoxFit.cover, gaplessPlayback: true, errorBuilder: (_, __, ___) => const SizedBox(width: 150, height: 150)) : Image.file(File(path), width: 150, height: 150, fit: BoxFit.cover, gaplessPlayback: true),
+    child: remote ? Image.network(path, width: 150, height: 150, fit: BoxFit.cover, gaplessPlayback: true, cacheWidth: 300, errorBuilder: (_, __, ___) => const SizedBox(width: 150, height: 150)) : Image.file(File(local), width: 150, height: 150, fit: BoxFit.cover, gaplessPlayback: true, cacheWidth: 300),
   );
 }
