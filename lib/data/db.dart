@@ -24,6 +24,21 @@ class ChatDb {
   static const _file = 'paradise.db';
   static const _version = 1;
 
+  /// Pages SQLite keeps in the write-ahead log before it checkpoints back into
+  /// the database file. Kelivo pins the same 1000-page cadence explicitly
+  /// (`AppDatabase.walAutoCheckpointPages`) rather than trusting the default,
+  /// so the cost of a checkpoint is a known quantity rather than a surprise
+  /// during a streaming flush.
+  static const _walAutoCheckpointPages = 1000;
+
+  /// Ceiling on retained journal/WAL storage after a checkpoint. Kelivo's
+  /// `journalSizeLimitBytes` is 16 MiB and this matches it: it is not a promise
+  /// that a live WAL never exceeds the value, only that a checkpointed one does
+  /// not keep the space.
+  static const _journalSizeLimitBytes = 16 << 20;
+
+  static const _busyTimeoutMillis = 5000;
+
   static Future<ChatDb> open({String? path}) async {
     final db = await openDatabase(
       path ?? _file,
@@ -33,6 +48,23 @@ class ChatDb {
         // transaction and onCreate runs in one, so setting it there turns the
         // cascade below off without saying so
         await db.execute('PRAGMA foreign_keys = ON');
+        // Ported from kelivo's AppDatabase setup. The default rollback journal
+        // fsyncs the journal and the database on every committing transaction,
+        // and the store commits one chat per streaming flush, so the default
+        // put a synchronous disk barrier in the path of every checkpoint.
+        // Under WAL, `synchronous = NORMAL` still guarantees crash
+        // consistency — a power loss can only drop transactions since the last
+        // checkpoint, and the chat is rewritten in full by the next flush — so
+        // it removes the per-write fsync without trading away the record.
+        await db.execute('PRAGMA journal_mode = WAL');
+        await db.execute('PRAGMA synchronous = NORMAL');
+        await db.execute('PRAGMA busy_timeout = $_busyTimeoutMillis');
+        await db.execute('PRAGMA wal_autocheckpoint = $_walAutoCheckpointPages');
+        await db.execute('PRAGMA journal_size_limit = $_journalSizeLimitBytes');
+        // A 64 MiB page cache for the connection. The history is read whole per
+        // chat, so a warmer cache turns a re-entered conversation into a memory
+        // read instead of a set of page faults against the file.
+        await db.execute('PRAGMA cache_size = -65536');
       },
       onCreate: (db, _) async {
         await db.execute('''
@@ -56,6 +88,19 @@ class ChatDb {
   }
 
   Future<void> close() => _db.close();
+
+  /// Reads a SQLite pragma back.
+  ///
+  /// Exposed so a test can prove the connection contract actually took effect.
+  /// The pragmas are set in `onConfigure`, and a refactor that moved them
+  /// somewhere a transaction cannot observe would otherwise revert to the
+  /// default two-fsync commit with nothing failing. Kelivo reads its contract
+  /// back the same way (`ChatDatabaseRepository` asserts journal_mode and
+  /// synchronous after opening).
+  Future<Object?> pragma(String name) async {
+    final rows = await _db.rawQuery('PRAGMA $name');
+    return rows.isEmpty ? null : rows.first.values.first;
+  }
 
   // ---- chats -------------------------------------------------------------
 
@@ -109,15 +154,55 @@ class ChatDb {
   /// With [msgs] set, the whole message list is rewritten in the same
   /// transaction, which is how the store persists a chat: one chat per flush,
   /// never the whole list, and never a half saved chat.
-  Future<void> saveChat(Chat c, int ord, {List<Msg>? msgs}) async {
+  ///
+  /// [dirty] is the incremental path and is what a streaming flush uses. The
+  /// full rewrite above is O(history) per save: deleting and re-inserting every
+  /// row of a 2000 message chat costs 2000 encodes and 2000 row writes, and the
+  /// store flushes once per streamed chunk. With [dirty] only the ordinals whose
+  /// messages actually changed are written, so a chunk that grew one bubble
+  /// costs one encode and one row. This mirrors kelivo's
+  /// `_replaceMessageParts`, which rewrites the parts of the one revision that
+  /// changed rather than the conversation. A null [dirty] keeps the old
+  /// whole-list behaviour, which is still the right answer for a restore, a
+  /// migration or a reorder, where every row is genuinely new.
+  Future<void> saveChat(Chat c, int ord, {List<Msg>? msgs, Set<int>? dirty}) async {
     final head = c.toJson()..remove('msgs');
     await _db.transaction((txn) async {
-      await txn.insert(
-        'chats',
-        {'id': c.id, 'ord': ord, 'head': jsonEncode(head)},
-        conflictAlgorithm: ConflictAlgorithm.replace,
+      // UPSERT, not INSERT OR REPLACE. `replace` resolves an id conflict by
+      // deleting the old chats row first, and messages.chat_id carries ON
+      // DELETE CASCADE, so every message of the chat is wiped before the new
+      // head lands. The full rewrite path hid this by re-inserting all rows
+      // inside the same transaction; the incremental and head-only paths write
+      // only their own rows and lost the rest. `ON CONFLICT DO UPDATE` keeps
+      // the parent row alive, which keeps the children alive.
+      await txn.rawInsert(
+        'INSERT INTO chats (id, ord, head) VALUES (?, ?, ?) '
+        'ON CONFLICT(id) DO UPDATE SET ord = excluded.ord, head = excluded.head',
+        [c.id, ord, jsonEncode(head)],
       );
       if (msgs == null) return;
+      // An explicitly empty set means "the head changed, the messages did not"
+      // (a draft keystroke, a mute toggle). There is nothing to write, and
+      // skipping the delete-and-reinsert is the whole point of tracking rows at
+      // all: the old code rewrote every message of the chat for a keystroke.
+      if (dirty != null && dirty.isEmpty) return;
+      final incremental = dirty != null && dirty.length * 4 < msgs.length;
+      if (incremental) {
+        final batch = txn.batch();
+        // The full rewrite below keys rows by dense index (0..n-1), so the
+        // incremental path has to use the same ordinal or the two would
+        // disagree about which row a message lives in.
+        for (final i in dirty) {
+          if (i < 0 || i >= msgs.length) continue;
+          batch.insert(
+            'messages',
+            {'chat_id': c.id, 'ord': i.toDouble(), 'data': jsonEncode(msgs[i].toJson())},
+            conflictAlgorithm: ConflictAlgorithm.replace,
+          );
+        }
+        await batch.commit(noResult: true);
+        return;
+      }
       await txn.delete('messages', where: 'chat_id = ?', whereArgs: [c.id]);
       final batch = txn.batch();
       for (var i = 0; i < msgs.length; i++) {
