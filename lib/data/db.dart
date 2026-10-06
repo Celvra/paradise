@@ -44,27 +44,55 @@ class ChatDb {
       path ?? _file,
       version: _version,
       onConfigure: (db) async {
+        // Every pragma below is best effort, and they do not all go through the
+        // same call. Both halves of that are load bearing.
+        //
+        // journal_mode answers with a row (the mode it settled on), and
+        // Android's SQLiteDatabase.execSQL refuses any statement that returns
+        // rows: `execute` throws "Queries can be performed using SQLiteDatabase
+        // query or rawQuery methods only", onConfigure propagates it, and
+        // openDatabase closes the connection. That took the whole database down
+        // with it, and because the chat blob is deleted once it has been
+        // migrated there was no fallback left, so the app came up with no
+        // history at all — the data was on disk the whole time, unread.
+        // rawQuery is the call that accepts a result set.
+        //
+        // Wrapped, all of them, because a device whose SQLite rejects a knob
+        // must not lose the history over it. foreign_keys is the one that
+        // costs something when it does not take (messages outlive their chat),
+        // so it goes first and on its own; everything after it is tuning.
+        //
         // onConfigure, not onCreate: foreign_keys is a no-op inside a
         // transaction and onCreate runs in one, so setting it there turns the
-        // cascade below off without saying so
-        await db.execute('PRAGMA foreign_keys = ON');
-        // Ported from kelivo's AppDatabase setup. The default rollback journal
-        // fsyncs the journal and the database on every committing transaction,
-        // and the store commits one chat per streaming flush, so the default
-        // put a synchronous disk barrier in the path of every checkpoint.
-        // Under WAL, `synchronous = NORMAL` still guarantees crash
+        // cascade off without saying so.
+        try {
+          await db.execute('PRAGMA foreign_keys = ON');
+        } catch (_) {}
+        // WAL is ported from kelivo's AppDatabase setup. The default rollback
+        // journal fsyncs the journal and the database on every committing
+        // transaction, and the store commits one chat per streaming flush, so
+        // the default put a synchronous disk barrier in the path of every
+        // checkpoint. Under WAL, `synchronous = NORMAL` still guarantees crash
         // consistency — a power loss can only drop transactions since the last
         // checkpoint, and the chat is rewritten in full by the next flush — so
         // it removes the per-write fsync without trading away the record.
-        await db.execute('PRAGMA journal_mode = WAL');
-        await db.execute('PRAGMA synchronous = NORMAL');
-        await db.execute('PRAGMA busy_timeout = $_busyTimeoutMillis');
-        await db.execute('PRAGMA wal_autocheckpoint = $_walAutoCheckpointPages');
-        await db.execute('PRAGMA journal_size_limit = $_journalSizeLimitBytes');
-        // A 64 MiB page cache for the connection. The history is read whole per
-        // chat, so a warmer cache turns a re-entered conversation into a memory
-        // read instead of a set of page faults against the file.
-        await db.execute('PRAGMA cache_size = -65536');
+        try {
+          await db.rawQuery('PRAGMA journal_mode = WAL');
+        } catch (_) {}
+        for (final p in const [
+          'PRAGMA synchronous = NORMAL',
+          'PRAGMA busy_timeout = $_busyTimeoutMillis',
+          'PRAGMA wal_autocheckpoint = $_walAutoCheckpointPages',
+          'PRAGMA journal_size_limit = $_journalSizeLimitBytes',
+          // A 64 MiB page cache for the connection. The history is read whole
+          // per chat, so a warmer cache turns a re-entered conversation into a
+          // memory read instead of a set of page faults against the file.
+          'PRAGMA cache_size = -65536',
+        ]) {
+          try {
+            await db.execute(p);
+          } catch (_) {}
+        }
       },
       onCreate: (db, _) async {
         await db.execute('''
