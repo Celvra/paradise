@@ -2,6 +2,7 @@ import 'package:flutter/material.dart' show Scrollable;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:paradise/app_info.dart';
 import 'package:paradise/data/ai_config.dart';
 import 'package:paradise/data/store.dart';
 import 'package:paradise/main.dart';
@@ -55,7 +56,7 @@ void main() {
   testWidgets('the wizard opens on the brand page with the version', (t) async {
     await _boot(t);
     expect(find.text('Paradise'), findsWidgets);
-    expect(find.text('v1.0.2'), findsOneWidget);
+    expect(find.text('v$appVersion'), findsOneWidget);
 
     await t.tap(find.text('Next').first);
     await _settle(t);

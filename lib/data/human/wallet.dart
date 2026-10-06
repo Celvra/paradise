@@ -61,6 +61,17 @@ class Wallet {
     return true;
   }
 
+  /// Buys something in the shop: deducts the price and records an already
+  /// accepted tx with a negative amount, so the history reads as a spend.
+  /// Returns false when the balance does not cover it.
+  bool spend(double amount, {required String title, int? now}) {
+    final a = amount.clamp(0.01, maxSingle).toDouble();
+    if (balance < a) return false;
+    balance = double.parse((balance - a).toStringAsFixed(2));
+    txs.insert(0, WalletTx(id: 'tx_${DateTime.now().microsecondsSinceEpoch}_${_seq++}', chatId: '', title: title, amount: -double.parse(a.toStringAsFixed(2)), kind: 'shop', at: now ?? DateTime.now().millisecondsSinceEpoch, status: 'accepted'));
+    return true;
+  }
+
   Map<String, dynamic> toJson() => {'balance': balance, 'txs': [for (final t in txs) t.toJson()]};
 
   void loadJson(Map<String, dynamic> j) {

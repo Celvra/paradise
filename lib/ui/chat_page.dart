@@ -285,7 +285,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
 
   void _sendLibSticker(UserSticker s) {
     _store.human!.stickers.markUsed(s.id);
-    _store.send(chat, '', kind: MsgKind.sticker, data: {'emoji': s.kind == StickerKind.emoji ? s.value : '', 'sid': s.id, 'path': s.kind == StickerKind.emoji ? '' : s.value, 'gif': s.kind == StickerKind.gif}, reply: _reply?.id);
+    _store.send(chat, '', kind: MsgKind.sticker, data: {'emoji': s.kind == StickerKind.emoji ? s.value : '', 'sid': s.id, 'path': s.kind == StickerKind.emoji ? '' : s.value, 'gif': s.kind == StickerKind.gif, 'thumb': s.thumb}, reply: _reply?.id);
     setState(() {
       _reply = null;
       _phase++;
@@ -492,6 +492,8 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
                 controller: _scroll,
                 reverse: true,
                 physics: const ClampingScrollPhysics(),
+                // render further ahead so a fast fling does not paint blank
+                cacheExtent: 900,
                 findChildIndexCallback: (k) {
                   final id = k is ValueKey<String> ? k.value : null;
                   final j = ms.indexWhere((m) => m.id == id);

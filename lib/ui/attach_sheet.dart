@@ -8,15 +8,18 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_contacts/flutter_contacts.dart' as fc;
 import 'package:geolocator/geolocator.dart' as geo;
 import 'package:image_picker/image_picker.dart' as ip;
+import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart' as pm;
 
 import '../core/anim.dart';
 import '../core/overlays.dart';
 import '../core/theme.dart';
 import '../core/ui_kit.dart';
+import '../data/ai/provider_model.dart';
 import '../data/models.dart';
 import '../data/store.dart';
 import '../l10n/x.dart';
+import 'ai_model_picker.dart' show AiScope;
 import 'media_bubbles.dart';
 
 typedef _Item = ({MsgKind kind, Map<String, dynamic> data, String text});
@@ -26,17 +29,37 @@ Future<void> showAttachSheet(BuildContext context, {required Chat chat, String? 
   return showTgSheet<void>(context, (_) => _AttachSheet(chat: chat, replyId: replyId));
 }
 
+// extension based classification for files that arrive through the file
+// picker rather than the album, where the media type is the send decision
+enum _FileClass { image, video, other }
+
+const _imgExts = {'jpg', 'jpeg', 'png', 'webp', 'gif', 'bmp', 'heic', 'heif', 'avif'};
+const _vidExts = {'mp4', 'mkv', 'webm', 'mov', 'avi', '3gp', '3g2', 'm4v', 'mpeg', 'mpg'};
+
+_FileClass classifyFile(String name) {
+  final ext = name.contains('.') ? name.split('.').last.toLowerCase() : '';
+  if (_imgExts.contains(ext)) return _FileClass.image;
+  if (_vidExts.contains(ext)) return _FileClass.video;
+  return _FileClass.other;
+}
+
+// picked media is either an album asset or a camera path; the file browser
+// classifies by extension before it builds a message, so a _Pick arriving
+// here from the camera is never a video
 class _Pick {
   _Pick.asset(pm.AssetEntity a)
       : asset = a,
         path = null,
+        video = a.type == pm.AssetType.video,
         key = a.id;
   _Pick.file(String p)
       : asset = null,
         path = p,
+        video = false,
         key = p;
   final pm.AssetEntity? asset;
   final String? path;
+  final bool video;
   final String key;
 }
 
@@ -62,10 +85,23 @@ class _AttachSheetState extends State<_AttachSheet> {
     super.dispose();
   }
 
+  /// What the chat's fallback chain can actually take. The union decides what
+  /// is selectable: the primary node answers most turns, but any enabled
+  /// fallback can end up serving the request.
+  ModelCaps get _caps {
+    final store = Store.read(context);
+    return chainCaps(AiScope.read(context).settings, store.chainFor(widget.chat));
+  }
+
   void _send(List<_Item> items) {
     if (items.isEmpty) return;
     Store.read(context).sendBatch(widget.chat, items, reply: widget.replyId);
     Navigator.of(context).pop();
+  }
+
+  void _unsupported(bool video) {
+    final l = L10n.current;
+    showBulletin(context, video ? l.attachNoVideo : l.attachNoVision);
   }
 
   void _toggle(_Pick p) {
@@ -88,17 +124,58 @@ class _AttachSheetState extends State<_AttachSheet> {
     }
   }
 
-  Future<void> _sendPhotos() async {
+  Future<void> _sendMedia() async {
     final items = <_Item>[];
     for (var i = 0; i < _sel.length; i++) {
       final s = _sel[i];
+      final caption = items.isEmpty ? _cap.text : '';
+      if (s.video) {
+        String? path = s.path;
+        var duration = 0;
+        String? thumb;
+        if (s.asset != null) {
+          final f = await s.asset!.originFile;
+          path = f?.path;
+          // videoDuration is null on some assets (downloads, screen recordings)
+          // and an unguarded null here dropped the whole selection silently
+          duration = s.asset!.videoDuration.inSeconds;
+          thumb = await _thumbFile(s.asset!);
+        }
+        if (path == null) continue;
+        items.add((
+          kind: MsgKind.video,
+          data: {'path': path, 'name': path.split('/').last, 'size': await File(path).length(), 'duration': duration, if (thumb != null) 'thumb': thumb},
+          text: caption,
+        ));
+        continue;
+      }
       String? path = s.path;
       if (s.asset != null) path = (await s.asset!.originFile)?.path;
       if (path == null) continue;
-      items.add((kind: MsgKind.photo, data: {'path': path, 'name': path.split('/').last}, text: items.isEmpty ? _cap.text : ''));
+      items.add((kind: MsgKind.photo, data: {'path': path, 'name': path.split('/').last}, text: caption));
     }
     if (!mounted) return;
     _send(items);
+  }
+
+  /// A JPEG the video bubble can paint without decoding a frame. Lives in the
+  /// temp dir, so the OS reclaims it; a missing file falls back to the icon.
+  static final _thumbDir = Future<Directory>(() async {
+    final d = Directory('${(await getTemporaryDirectory()).path}/video_thumbs');
+    if (!d.existsSync()) d.createSync(recursive: true);
+    return d;
+  });
+
+  static Future<String?> _thumbFile(pm.AssetEntity a) async {
+    try {
+      final bytes = await a.thumbnailDataWithSize(const pm.ThumbnailSize(480, 480));
+      if (bytes == null) return null;
+      final f = File('${(await _thumbDir).path}/${a.id}.jpg');
+      await f.writeAsBytes(bytes, flush: true);
+      return f.path;
+    } catch (_) {
+      return null;
+    }
   }
 
   @override
@@ -142,15 +219,16 @@ class _AttachSheetState extends State<_AttachSheet> {
   }
 
   Widget _body() {
+    final caps = _caps;
     switch (_tab) {
       case 0:
-        return _Gallery(sel: _sel, onToggle: _toggle, onCamera: _camera, onUpload: _send);
+        return _Gallery(sel: _sel, caps: caps, onToggle: _toggle, onCamera: _camera, onUpload: _send, onUnsupported: _unsupported);
       case 1:
-        return _Files(music: false, onSend: _send);
+        return _Files(music: false, caps: caps, onSend: _send, onUnsupported: _unsupported);
       case 2:
         return _LocationTab(onSend: _send);
       case 3:
-        return _Files(music: true, onSend: _send);
+        return _Files(music: true, caps: caps, onSend: _send, onUnsupported: _unsupported);
       case 4:
         return _PollTab(onSend: _send);
       default:
@@ -175,7 +253,7 @@ class _AttachSheetState extends State<_AttachSheet> {
         const SizedBox(width: 8),
         Tap(
           scale: .9,
-          onTap: _sendPhotos,
+          onTap: _sendMedia,
           child: SizedBox(
             width: 52,
             height: 48,
@@ -208,13 +286,17 @@ class _AttachSheetState extends State<_AttachSheet> {
   }
 }
 
-// gallery grid with a camera tile and numbered selection circles
+// gallery grid with a camera tile, media type filters, album chips and
+// numbered selection circles; tiles the model cannot take are dimmed and say
+// why when tapped
 class _Gallery extends StatefulWidget {
-  const _Gallery({required this.sel, required this.onToggle, required this.onCamera, required this.onUpload});
+  const _Gallery({required this.sel, required this.caps, required this.onToggle, required this.onCamera, required this.onUpload, required this.onUnsupported});
   final List<_Pick> sel;
+  final ModelCaps caps;
   final void Function(_Pick) onToggle;
   final VoidCallback onCamera;
   final void Function(List<_Item>) onUpload;
+  final void Function(bool video) onUnsupported;
 
   @override
   State<_Gallery> createState() => _GalleryState();
@@ -226,6 +308,19 @@ class _GalleryState extends State<_Gallery> {
   bool _denied = false;
   final Map<String, Future<Uint8List?>> _thumbs = {};
 
+  /// 0 everything, 1 photos only, 2 videos only
+  var _type = 0;
+
+  /// every album the platform offered for the active type filter
+  List<pm.AssetPathEntity> _albums = [];
+
+  /// selected album ids; empty means the merged "all" view
+  final Set<String> _albumSel = {};
+
+  /// more than one album picked means merge mode: a fixed pull per album
+  /// instead of the infinite page scroll, which only works per album
+  var _multi = false;
+
   /// The album is read in pages as the grid scrolls. Asking for a fixed
   /// 150 items meant anyone with a real camera library simply never saw
   /// anything older than their last few hundred shots, and there was no way to
@@ -236,6 +331,12 @@ class _GalleryState extends State<_Gallery> {
   var _page = 0;
   var _loadingMore = false;
   var _reachedEnd = false;
+
+  pm.RequestType get _reqType => switch (_type) {
+        1 => pm.RequestType.image,
+        2 => pm.RequestType.video,
+        _ => pm.RequestType.common,
+      };
 
   @override
   void initState() {
@@ -252,10 +353,43 @@ class _GalleryState extends State<_Gallery> {
   }
 
   void _onScroll() {
-    if (!_scroll.hasClients || _loadingMore || _reachedEnd) return;
+    if (!_scroll.hasClients || _loadingMore || _reachedEnd || _multi) return;
     // a screen and a half ahead of the thumb, so the next page is usually
     // already there by the time the reader gets to it
     if (_scroll.position.pixels >= _scroll.position.maxScrollExtent - 400) _loadMore();
+  }
+
+  void _setType(int t) {
+    if (t == _type) return;
+    setState(() {
+      _type = t;
+      _loading = true;
+      _assets = [];
+      _album = null;
+      _albums = [];
+      _albumSel.clear();
+      _page = 0;
+      _reachedEnd = false;
+    });
+    _load();
+  }
+
+  void _toggleAlbum(pm.AssetPathEntity a) {
+    setState(() {
+      if (!_albumSel.remove(a.id)) _albumSel.add(a.id);
+      _loading = true;
+      _assets = [];
+      _album = null;
+      _page = 0;
+      _reachedEnd = false;
+    });
+    _load();
+  }
+
+  List<pm.AssetPathEntity>? _selectedAlbums() {
+    if (_albumSel.isEmpty) return null;
+    final picked = _albums.where((a) => _albumSel.contains(a.id)).toList();
+    return picked.isEmpty ? null : picked;
   }
 
   Future<void> _load() async {
@@ -272,14 +406,39 @@ class _GalleryState extends State<_Gallery> {
       final filter = pm.FilterOptionGroup(
         orders: [const pm.OrderOption(type: pm.OrderOptionType.createDate, asc: false)],
       );
-      final paths = await pm.PhotoManager.getAssetPathList(type: pm.RequestType.image, onlyAll: true, filterOption: filter);
+      final paths = await pm.PhotoManager.getAssetPathList(type: _reqType, filterOption: filter);
+      _albums = paths;
+      // albums come and go with the type filter, drop selections it no longer
+      // offers instead of silently pinning a hidden album
+      final ids = paths.map((e) => e.id).toSet();
+      _albumSel.removeWhere((id) => !ids.contains(id));
       if (paths.isEmpty) {
         if (mounted) setState(() => _reachedEnd = true);
         return;
       }
-      // the "all" album should be the only one, but its position is not
-      // guaranteed across OEM skins, so take whichever holds the most
-      final album = await _biggest(paths);
+      final selected = _selectedAlbums();
+      if (selected != null && selected.length > 1) {
+        // merge mode: one page per album, newest on top, no scrolling pager
+        _album = null;
+        _multi = true;
+        final merged = <pm.AssetEntity>[];
+        for (final a in selected) {
+          try {
+            merged.addAll(await a.getAssetListPaged(page: 0, size: _pageSize));
+          } catch (_) {
+            // an album that fails to read contributes nothing, the rest stay
+          }
+        }
+        merged.sort((x, y) => y.createDateTime.compareTo(x.createDateTime));
+        if (!mounted) return;
+        setState(() {
+          _assets = merged;
+          _reachedEnd = true;
+        });
+        return;
+      }
+      _multi = false;
+      final album = selected != null ? selected.first : await _biggest(paths);
       if (album == null) {
         if (mounted) setState(() => _reachedEnd = true);
         return;
@@ -300,9 +459,13 @@ class _GalleryState extends State<_Gallery> {
     }
   }
 
-  /// Picks the album holding the most assets. photo_manager exposes the count
-  /// only as a future, so this cannot be a reduce over a synchronous getter.
+  /// Picks the album holding the most assets, preferring the platform "all"
+  /// album. photo_manager exposes the count only as a future, so this cannot
+  /// be a reduce over a synchronous getter.
   Future<pm.AssetPathEntity?> _biggest(List<pm.AssetPathEntity> paths) async {
+    for (final p in paths) {
+      if (p.isAll) return p;
+    }
     pm.AssetPathEntity? best;
     var bestCount = -1;
     for (final p in paths) {
@@ -349,7 +512,24 @@ class _GalleryState extends State<_Gallery> {
         final path = f.path;
         if (path == null) continue;
         final size = await f.length() ?? 0;
-        items.add((kind: MsgKind.file, data: {'path': path, 'name': f.name, 'size': size}, text: ''));
+        switch (classifyFile(f.name)) {
+          case _FileClass.image:
+            if (!widget.caps.vision) {
+              widget.onUnsupported(false);
+              continue;
+            }
+            // images through the picker ride the same photo path as album
+            // picks, so the model actually receives them
+            items.add((kind: MsgKind.photo, data: {'path': path, 'name': f.name, 'size': size}, text: ''));
+          case _FileClass.video:
+            if (!widget.caps.video) {
+              widget.onUnsupported(true);
+              continue;
+            }
+            items.add((kind: MsgKind.video, data: {'path': path, 'name': f.name, 'size': size, 'duration': 0}, text: ''));
+          case _FileClass.other:
+            items.add((kind: MsgKind.file, data: {'path': path, 'name': f.name, 'size': size}, text: ''));
+        }
       }
       widget.onUpload(items);
     } catch (_) {
@@ -365,6 +545,7 @@ class _GalleryState extends State<_Gallery> {
     // photo permission is refused
     return Column(children: [
       _bigRow(p, Ic.file, l.attachUploadFiles, l.attachUploadFilesSub, _upload),
+      _filterBar(p, l),
       Expanded(
         child: Builder(
           builder: (context) {
@@ -414,23 +595,123 @@ class _GalleryState extends State<_Gallery> {
     ]);
   }
 
+  Widget _filterBar(Pal p, AppLocalizations l) {
+    Widget chip(String label, bool on, VoidCallback tap) => Padding(
+          padding: const EdgeInsets.only(right: 6),
+          child: Tap(
+            scale: .94,
+            onTap: tap,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 180),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: on ? p.accent : p.gray,
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: Text(label, style: TextStyle(color: on ? const Color(0xFFFFFFFF) : p.subtitle, fontSize: 13, fontWeight: FontWeight.w500, decoration: TextDecoration.none)),
+            ),
+          ),
+        );
+    return SizedBox(
+      height: 76,
+      child: Column(children: [
+        SizedBox(
+          height: 34,
+          child: ListView(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+            children: [
+              chip(l.attachFilterAll, _type == 0, () => _setType(0)),
+              chip(l.attachFilterImages, _type == 1, () => _setType(1)),
+              chip(l.attachFilterVideos, _type == 2, () => _setType(2)),
+            ],
+          ),
+        ),
+        SizedBox(
+          height: 38,
+          child: ListView(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+            children: [
+              chip(l.attachFilterAllAlbums, _albumSel.isEmpty, () {
+                setState(() => _albumSel.clear());
+                _reloadSameAlbums();
+              }),
+              for (final a in _albums)
+                chip(
+                  a.name.isEmpty ? l.attachAlbumFallback : a.name,
+                  _albumSel.contains(a.id),
+                  () => _toggleAlbum(a),
+                ),
+            ],
+          ),
+        ),
+      ]),
+    );
+  }
+
+  // album chips mutate the selection without touching the type filter, which
+  // _toggleAlbum would not survive being folded into otherwise
+  void _reloadSameAlbums() {
+    setState(() {
+      _loading = true;
+      _assets = [];
+      _album = null;
+      _page = 0;
+      _reachedEnd = false;
+    });
+    _load();
+  }
+
   Widget _tile(Pal p, pm.AssetEntity a) {
     final idx = widget.sel.indexWhere((e) => e.key == a.id);
     final on = idx >= 0;
+    final isVideo = a.type == pm.AssetType.video;
+    final supported = isVideo ? widget.caps.video : widget.caps.vision;
     return GestureDetector(
-      onTap: () => widget.onToggle(_Pick.asset(a)),
+      onTap: () {
+        if (!supported) {
+          widget.onUnsupported(isVideo);
+          return;
+        }
+        widget.onToggle(_Pick.asset(a));
+      },
       child: Stack(fit: StackFit.expand, children: [
         ColoredBox(color: p.gray),
         AnimatedScale(
           duration: const Duration(milliseconds: 180),
           curve: TgCurves.easeOut,
           scale: on ? .86 : 1,
-          child: FutureBuilder<Uint8List?>(
-            future: _thumb(a),
-            builder: (_, s) => s.data == null ? const SizedBox.shrink() : Image.memory(s.data!, fit: BoxFit.cover, gaplessPlayback: true),
+          child: Opacity(
+            opacity: supported ? 1 : .35,
+            child: FutureBuilder<Uint8List?>(
+              future: _thumb(a),
+              builder: (_, s) => s.data == null ? const SizedBox.shrink() : Image.memory(s.data!, fit: BoxFit.cover, gaplessPlayback: true),
+            ),
           ),
         ),
-        Positioned(top: 6, right: 6, child: _Check(n: on ? idx + 1 : null)),
+        if (isVideo)
+          Positioned(
+            left: 6,
+            bottom: 6,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+              decoration: BoxDecoration(color: const Color(0x99000000), borderRadius: BorderRadius.circular(8)),
+              child: FutureBuilder<Duration?>(
+                future: Future.value(a.videoDuration),
+                builder: (_, s) {
+                  final d = s.data;
+                  if (d == null) return const SizedBox.shrink();
+                  final sec = d.inSeconds;
+                  return Text('${sec ~/ 60}:${(sec % 60).toString().padLeft(2, '0')}', style: const TextStyle(color: Color(0xFFFFFFFF), fontSize: 11.5, fontWeight: FontWeight.w500, height: 1.1, decoration: TextDecoration.none));
+                },
+              ),
+            ),
+          ),
+        if (!supported)
+          Center(child: TgIcon(Ic.lock, color: const Color(0xE6FFFFFF), size: 24))
+        else
+          Positioned(top: 6, right: 6, child: _Check(n: on ? idx + 1 : null)),
       ]),
     );
   }
@@ -499,9 +780,11 @@ Widget _bigRow(Pal p, Ic ic, String title, String sub, VoidCallback? onTap, {Col
 
 // file and music tabs browse the device or resend something shared before
 class _Files extends StatelessWidget {
-  const _Files({required this.music, required this.onSend});
+  const _Files({required this.music, required this.caps, required this.onSend, required this.onUnsupported});
   final bool music;
+  final ModelCaps caps;
   final void Function(List<_Item>) onSend;
+  final void Function(bool video) onUnsupported;
 
   Future<void> _browse(BuildContext context) async {
     try {
@@ -511,6 +794,29 @@ class _Files extends StatelessWidget {
         final path = f.path;
         if (path == null) continue;
         final size = await f.length() ?? 0;
+        if (!music) {
+          // images and videos picked here take the real media path, not the
+          // file one, or the model would never receive the bytes; a model
+          // without the matching modality gets a hint instead of the file
+          switch (classifyFile(f.name)) {
+            case _FileClass.image:
+              if (!caps.vision) {
+                onUnsupported(false);
+                continue;
+              }
+              items.add((kind: MsgKind.photo, data: {'path': path, 'name': f.name, 'size': size}, text: ''));
+              continue;
+            case _FileClass.video:
+              if (!caps.video) {
+                onUnsupported(true);
+                continue;
+              }
+              items.add((kind: MsgKind.video, data: {'path': path, 'name': f.name, 'size': size, 'duration': 0}, text: ''));
+              continue;
+            case _FileClass.other:
+              break;
+          }
+        }
         items.add((kind: music ? MsgKind.music : MsgKind.file, data: {'path': path, 'name': f.name, 'size': size}, text: ''));
       }
       onSend(items);

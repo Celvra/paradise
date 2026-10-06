@@ -50,8 +50,13 @@ class TgRoute<T> extends PageRoute<T> {
 
 // drag the page with the finger and reveal the one below
 class SwipeBack extends StatefulWidget {
-  const SwipeBack({super.key, required this.child});
+  const SwipeBack({super.key, required this.child, this.confirm});
   final Widget child;
+
+  /// Ask before a swipe that crossed the threshold actually pops the route.
+  /// Returning false slides the page back in. Editors with unsaved text use
+  /// this so a fast right-swipe cannot throw edits away.
+  final Future<bool> Function()? confirm;
 
   @override
   State<SwipeBack> createState() => _SwipeBackState();
@@ -111,7 +116,21 @@ class _SwipeBackState extends State<SwipeBack> with SingleTickerProviderStateMix
         _drag = false;
         final v = d.velocity.pixelsPerSecond.dx;
         if (_dx > w / 3 || v > 900) {
-          _animate(w, w, pop: true);
+          final ask = widget.confirm;
+          if (ask == null) {
+            _animate(w, w, pop: true);
+          } else {
+            // the confirm dialog opens over the dragged page; a yes animates
+            // out and pops, a no slides back where the finger left it
+            ask().then((ok) {
+              if (!mounted) return;
+              if (ok) {
+                _animate(w, w, pop: true);
+              } else {
+                _animate(0, w);
+              }
+            });
+          }
         } else {
           _animate(0, w);
         }

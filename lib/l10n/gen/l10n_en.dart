@@ -392,6 +392,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aiCapsVision => 'vision';
 
   @override
+  String get aiCapsVideo => 'video';
+
+  @override
   String get aiTokensUnknown => 'unknown';
 
   @override
@@ -611,7 +614,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aboutLinkFailed => 'Could not open the link';
 
   @override
-  String get settingsAboutSub => 'Version 1.0.2';
+  String get settingsAboutSub => 'Version 1.0.3';
 
   @override
   String get settingsAboutLicense =>
@@ -626,7 +629,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsAboutThanks =>
-      'Acknowledgements:\n\nKelivo - ToolCall reference\nhttps://github.com/Chevey339/kelivo\n\nSillyTavern - persona card reference\nhttps://github.com/SillyTavern/SillyTavern';
+      'Acknowledgements:\n\nKelivo - ToolCall reference\nhttps://github.com/Chevey339/kelivo\n\nSillyTavern - persona card reference\nhttps://github.com/SillyTavern/SillyTavern\n\nUser-6170 & Kimi work-K2.8 Preview - v1.0.3 features\nhttps://github.com/yzc12345779';
 
   @override
   String get settingsAboutDeps =>
@@ -1122,6 +1125,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get msgLeadMusic => 'Music';
+
+  @override
+  String get msgLeadVideo => 'Video';
 
   @override
   String get msgLeadContact => 'Contact';
@@ -2525,6 +2531,136 @@ class AppLocalizationsEn extends AppLocalizations {
   String get attachTabGallery => 'Gallery';
 
   @override
+  String get attachFilterAll => 'All';
+
+  @override
+  String get attachFilterImages => 'Photos';
+
+  @override
+  String get attachFilterVideos => 'Videos';
+
+  @override
+  String get attachFilterAllAlbums => 'All albums';
+
+  @override
+  String get attachAlbumFallback => 'Album';
+
+  @override
+  String get attachNoVision =>
+      'The current model does not accept images, so only plain text files can be sent';
+
+  @override
+  String get attachNoVideo =>
+      'The current model does not accept videos, so this clip cannot be sent to it';
+
+  @override
+  String get attachVideoFailed => 'This video cannot be played';
+
+  @override
+  String get personaClingyHeader => 'Clinginess';
+
+  @override
+  String get personaClingyFooter =>
+      'When on, this persona messages you on its own after you stay quiet for the chosen time.';
+
+  @override
+  String get personaClingyTitle => 'Proactive messages';
+
+  @override
+  String get personaClingySub =>
+      'Speaks up on its own when you have been quiet';
+
+  @override
+  String get personaClingyInterval => 'Message after quiet for';
+
+  @override
+  String get personaClingyCap => 'Limit proactive count';
+
+  @override
+  String get personaClingyCapSub =>
+      'Pauses after this many proactive messages in a row; your reply resets the count';
+
+  @override
+  String get personaClingyMax => 'Max proactive in a row';
+
+  @override
+  String personaClingyMinutes(int min) {
+    return '$min min';
+  }
+
+  @override
+  String personaClingyHours(int h) {
+    return '$h h';
+  }
+
+  @override
+  String get personaClingyNeedsProactive =>
+      'The global proactive messages switch is off, so this stays quiet until it is turned on.';
+
+  @override
+  String get shopTitle => 'Shop';
+
+  @override
+  String get shopEntry => 'Shop';
+
+  @override
+  String get shopEntrySub => 'Spend balance on boosts for your personas';
+
+  @override
+  String get shopBalance => 'Current balance';
+
+  @override
+  String get shopItemAffection => 'Affection boost';
+
+  @override
+  String get shopItemAffectionSub => '+10 affection for the persona you pick';
+
+  @override
+  String get shopItemEnergy => 'Energy refill';
+
+  @override
+  String get shopItemEnergySub => '+30 energy for the persona you pick';
+
+  @override
+  String get shopItemMood => 'Mood lift';
+
+  @override
+  String get shopItemMoodSub => '+20 mood for the persona you pick';
+
+  @override
+  String get shopChoose => 'Choose who it goes to';
+
+  @override
+  String get shopNoChat => 'No chats yet, create a persona first';
+
+  @override
+  String get shopNotEnough => 'Not enough balance';
+
+  @override
+  String get shopDone => 'Redeemed, it is already in effect';
+
+  @override
+  String shopDeduct(String price) {
+    return 'Deducts ¥$price from your balance';
+  }
+
+  @override
+  String get shopItemApology => 'Apology card';
+
+  @override
+  String get shopItemApologySub =>
+      'Drops the cold war dial to its minimum, nobody to pick';
+
+  @override
+  String whatsNewTitle(String version) {
+    return 'What\'s new in v$version';
+  }
+
+  @override
+  String get whatsNewBody =>
+      'v1.0.3 highlights:\n\n• Video messages: send videos from the gallery or as files, and the AI can actually watch them\n• Inline files: small files are injected into the context so the AI truly reads them\n• Stickers: the AI reads a sticker\'s meaning before sending it, with thumbnails\n• Clinginess: choose how often the AI speaks first, with an optional cap on proactive messages\n• Shop rework: gifts now land in the chat as a card the AI actually receives, and the shop sits one tap away\n• Auto backup: on by default, overwrite backups survive updates and reinstalls, restore offered on first launch\n• Model catalog: built-in offline snapshot as fallback, plus GLM-5.3-Flash video support flags\n• Editor guard: every way out of the persona editor now asks before discarding edits\n• Upstream v1.0.2 merged: onboarding, SKILLS, LaTeX canvas cards, update checks\n• UI and performance polish';
+
+  @override
   String get attachCamera => 'Camera';
 
   @override
@@ -3793,4 +3929,65 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get skillImporting => 'Importing…';
+
+  @override
+  String get autoBackupTitle => 'Auto backup';
+
+  @override
+  String get autoBackupSub =>
+      'Backups overwrite one file kept outside the app, so they survive updates and reinstalls.';
+
+  @override
+  String get autoBackupModeChange => 'On data change (recommended)';
+
+  @override
+  String autoBackupModeInterval(int n) {
+    return 'Every $n hours';
+  }
+
+  @override
+  String autoBackupModeWindow(String from, String to) {
+    return 'Daily $from – $to';
+  }
+
+  @override
+  String get autoBackupOff => 'Off';
+
+  @override
+  String autoBackupLast(String when) {
+    return 'Last: $when';
+  }
+
+  @override
+  String get autoBackupNever => 'Never backed up';
+
+  @override
+  String get autoBackupOffTitle => 'Turn off auto backup?';
+
+  @override
+  String get autoBackupOffMessage =>
+      'With auto backup off, updating or uninstalling the app can lose your chats, personas and settings.';
+
+  @override
+  String get autoBackupOffAction => 'Turn off';
+
+  @override
+  String get autoBackupRestoreTitle => 'Backup found';
+
+  @override
+  String autoBackupRestoreMessage(String when) {
+    return 'A backup from $when was found. Restore your chats, personas and settings?';
+  }
+
+  @override
+  String get autoBackupRestoreAction => 'Restore';
+
+  @override
+  String get autoBackupRestored => 'Backup restored';
+
+  @override
+  String get autoBackupRestoreFailed => 'The backup could not be read';
+
+  @override
+  String get whatsNewEntry => 'What\'s new';
 }

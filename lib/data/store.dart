@@ -25,8 +25,10 @@ import 'ai/adapter.dart';
 import 'ai_client.dart';
 import 'ai/tool_wire.dart';
 import 'ai_config.dart';
+import 'auto_backup.dart';
 import 'backup.dart';
 import 'db.dart';
+import 'file_text.dart';
 import 'human/br_parser.dart';
 import 'human/hub.dart';
 import 'human/human_models.dart';
@@ -70,7 +72,21 @@ class _Run {
   bool get cancelled => token.cancelled;
 }
 
-const _textExt = {'txt', 'md', 'json', 'csv', 'log', 'dart', 'js', 'ts', 'py', 'java', 'kt', 'c', 'h', 'cpp', 'go', 'rs', 'html', 'css', 'xml', 'yaml', 'yml', 'sh', 'sql'};
+// Inline file injection ceilings, in characters. A single file never exceeds
+// _inlineFileMaxChars (over-budget files still go in as a head+tail excerpt,
+// see sampleTextFile), and the whole request never carries more than
+// _inlineFilesTotalChars of file content on top of the transcript. The request
+// builder also truncates against the context window afterwards, so even a
+// worst-case CJK file lands in a window that was sized for it.
+const _inlineFileMaxChars = 40000;
+const _inlineFilesTotalChars = 120000;
+
+// Mutable allowance handed across the per-message describe calls inside one
+// history build, so the newest files win when everything does not fit.
+class _InlineBudget {
+  _InlineBudget(this.left);
+  int left;
+}
 
 // single source of truth for chats and settings
 class Store extends ChangeNotifier {
@@ -134,15 +150,20 @@ class Store extends ChangeNotifier {
 
   Timer? _humanTimer;
   Timer? _saveTimer;
+
+  /// Automatic backup policy and where it writes. Loaded at boot; the tick
+  /// rides the scheduler heartbeat in [startHuman].
+  AutoBackup autoBackup = AutoBackup();
+  BackupSink? _backupSink;
+  bool _backupDirty = false;
+  bool _backupRunning = false;
   int _seq = 0;
 
   /// Provider list, fallback chain and API keys. Set once at startup.
   AiConfig? _ai;
 
   /// The last node that actually answered, shown as a footer on the reply.
-  String? lastServedBy;
-
-  AiConfig get aiConfig => _ai!;
+  String? lastServedBy;  AiConfig get aiConfig => _ai!;
 
   /// The nodes a chat actually runs on. A persona model override goes in front
   /// of the global chain, or stands alone when the persona opted out of the
@@ -312,6 +333,8 @@ class Store extends ChangeNotifier {
     s.localeTag = lang == null || lang.isEmpty ? null : lang;
     s.skippedRelease = s._sp.getString('skippedRelease') ?? '';
     await s._loadChats(dbPath: dbPath);
+    s._loadAutoBackup();
+    s._backupSink = MediaStoreBackupSink();
     themeCtl.setDark(s.dark, animate: false);
     return s;
   }
@@ -426,7 +449,12 @@ class Store extends ChangeNotifier {
     hh.onNotify = (chatId, msgId, title, body) => unawaited(Notifier.instance.show(msgId, title, body));
     hh.onCancelNotify = (msgId) => unawaited(Notifier.instance.cancel(msgId));
     unawaited(hh.mcp.refresh(hh.mcpServers).then((_) => hh.changed()));
-    _humanTimer = Timer.periodic(const Duration(seconds: 15), (_) => humanTick());
+    _humanTimer = Timer.periodic(const Duration(seconds: 15), (_) {
+      humanTick();
+      // the auto backup shares the scheduler heartbeat: no second timer, and
+      // the tick itself decides per mode whether anything is due
+      unawaited(_autoBackupTick());
+    });
     unawaited(humanTick());
   }
 
@@ -460,7 +488,7 @@ class Store extends ChangeNotifier {
   // drop the local media refs but keep the messages
   void clearMedia() {
     for (final c in chats) {
-      c.msgs.removeWhere((m) => m.kind == MsgKind.photo || m.kind == MsgKind.file || m.kind == MsgKind.music);
+      c.msgs.removeWhere((m) => m.kind == MsgKind.photo || m.kind == MsgKind.video || m.kind == MsgKind.file || m.kind == MsgKind.music);
       c.touch();
     }
   }
@@ -512,8 +540,22 @@ class Store extends ChangeNotifier {
   /// chats wholesale, and each of them must be written back.
   void chatsChanged() {
     _dirtyIds.addAll(chats.map((e) => e.id));
+    _backupDirty = true;
     notifyListeners();
     _scheduleSave();
+  }
+
+  /// Rebuilds listeners without marking anything dirty. Public for the same
+  /// reason as chatsChanged: extensions in this library are not instance
+  /// members, so the protected notifyListeners is off limits to them.
+  void bump() => notifyListeners();
+
+  /// Stops the periodic timers. The app never calls this (the process owns
+  /// them); it exists so tests can shut a store down cleanly.
+  @visibleForTesting
+  void shutdown() {
+    _humanTimer?.cancel();
+    _humanTimer = null;
   }
 
   /// Persists what changed since the last flush: on SQLite the touched chats,
@@ -523,6 +565,7 @@ class Store extends ChangeNotifier {
   /// has to go. The blob path cannot lose a deletion because it rewrites the
   /// surviving list in full.
   void _save() {
+    _backupDirty = true;
     final db = _db;
     if (db == null) {
       _sp.setString('chats', jsonEncode(chats.map((e) => e.toJson()).toList()));
@@ -1011,8 +1054,8 @@ class Store extends ChangeNotifier {
     notifyListeners();
   }
 
-  Chat createChat(String name, String prompt, {String bio = '', String greeting = '', String emoji = '', String examples = '', String avatarPath = '', int? color, String modelProvider = '', String modelId = '', bool modelFallback = true, bool? thinking, bool? agent, List<String>? skillIds}) {
-    final c = Chat(id: _id(), persona: Persona(name: name, prompt: prompt, color: color ?? name.hashCode.abs() % avatarColorCount, bio: bio, greeting: greeting, emoji: emoji, examples: examples, avatarPath: avatarPath, modelProvider: modelProvider, modelId: modelId, modelFallback: modelFallback, thinking: thinking, agent: agent, skillIds: skillIds));
+  Chat createChat(String name, String prompt, {String bio = '', String greeting = '', String emoji = '', String examples = '', String avatarPath = '', int? color, String modelProvider = '', String modelId = '', bool modelFallback = true, bool? thinking, bool? agent, bool clingy = false, int clingySilentMin = 90, bool clingyCap = false, int clingyMax = 3, List<String>? skillIds}) {
+    final c = Chat(id: _id(), persona: Persona(name: name, prompt: prompt, color: color ?? name.hashCode.abs() % avatarColorCount, bio: bio, greeting: greeting, emoji: emoji, examples: examples, avatarPath: avatarPath, modelProvider: modelProvider, modelId: modelId, modelFallback: modelFallback, thinking: thinking, agent: agent, clingy: clingy, clingySilentMin: clingySilentMin, clingyCap: clingyCap, clingyMax: clingyMax, skillIds: skillIds));
     if (greeting.trim().isNotEmpty) c.msgs.add(Msg(id: _id(), out: false, text: greeting.trim(), time: DateTime.now().millisecondsSinceEpoch));
     _listen(c);
     chats.add(c);
@@ -1022,7 +1065,7 @@ class Store extends ChangeNotifier {
     return c;
   }
 
-  void editPersona(Chat c, String name, String prompt, {String? bio, String? greeting, String? emoji, String? examples, String? avatarPath, int? color, String? modelProvider, String? modelId, bool? modelFallback, bool? thinking, bool? agent, List<String>? skillIds, bool clearSkillIds = false}) {
+  void editPersona(Chat c, String name, String prompt, {String? bio, String? greeting, String? emoji, String? examples, String? avatarPath, int? color, String? modelProvider, String? modelId, bool? modelFallback, bool? thinking, bool? agent, bool? clingy, int? clingySilentMin, bool? clingyCap, int? clingyMax, List<String>? skillIds, bool clearSkillIds = false}) {
     c.persona
       ..name = name
       ..prompt = prompt;
@@ -1037,6 +1080,10 @@ class Store extends ChangeNotifier {
     if (modelFallback != null) c.persona.modelFallback = modelFallback;
     if (thinking != null) c.persona.thinking = thinking;
     if (agent != null) c.persona.agent = agent;
+    if (clingy != null) c.persona.clingy = clingy;
+    if (clingySilentMin != null) c.persona.clingySilentMin = clingySilentMin;
+    if (clingyCap != null) c.persona.clingyCap = clingyCap;
+    if (clingyMax != null) c.persona.clingyMax = clingyMax;
     if (clearSkillIds) {
       c.persona.skillIds = null;
     } else if (skillIds != null) {
@@ -1134,6 +1181,28 @@ class Store extends ChangeNotifier {
       humanOnUser(c, t);
     }
     addOut(c, text: t, kind: kind, data: data, reply: reply);
+    _reply(c);
+  }
+
+  // a shop purchase: the effect lands on the persona state first so it is
+  // genuinely in effect, then a gift card goes out as the user's message and
+  // the model is told through the gift describe what happened and to react
+  void sendGift(Chat c, {required String itemId, required String title, required String effect}) {
+    switch (itemId) {
+      case 'affection':
+        c.human.adjust(affection: 10, reason: 'shop');
+      case 'energy':
+        c.human.adjust(energy: 30, reason: 'shop');
+      case 'mood':
+        c.human.adjust(mood: 20, reason: 'shop');
+      case 'apology':
+        // annoyance is one global dial, the card cools it to the minimum
+        if (human != null) human!.settings.annoyScore = 1;
+    }
+    c.touch();
+    human?.changed();
+    if (humanOn) humanInterrupt(c);
+    addOut(c, kind: MsgKind.gift, data: {'item': itemId, 'title': title, 'effect': effect});
     _reply(c);
   }
 
@@ -1423,23 +1492,30 @@ class Store extends ChangeNotifier {
     if (any) c.touch();
   }
 
-  String _describe(Msg m) {
+  String _describe(Msg m, [_InlineBudget? budget]) {
     final cap = m.text.isEmpty ? '' : '\n${m.text}';
     switch (m.kind) {
       case MsgKind.text:
         return m.text;
       case MsgKind.photo:
         return '[Photo attached]$cap';
+      case MsgKind.video:
+        return '[Video: ${m.data['name'] ?? 'video'} (${fileSize((m.data['size'] as num?) ?? 0)})]$cap';
       case MsgKind.file:
         final name = '${m.data['name'] ?? 'file'}';
-        final ext = name.contains('.') ? name.split('.').last.toLowerCase() : '';
         final size = (m.data['size'] as num?) ?? 0;
         var body = '';
         final path = m.data['path'] as String?;
-        if (path != null && _textExt.contains(ext) && size <= 60 * 1024) {
-          try {
-            body = '\n```\n${File(path).readAsStringSync()}\n```';
-          } catch (_) {}
+        // anything that decodes as mostly-printable text goes in, not just a
+        // fixed extension whitelist: unknown log formats and subtitles reach
+        // the model, while archives and documents are skipped by the sampler
+        if (path != null && size <= sampleMaxBytes && (budget == null || budget.left > 0)) {
+          final room = budget == null ? _inlineFileMaxChars : (budget.left < _inlineFileMaxChars ? budget.left : _inlineFileMaxChars);
+          final s = sampleTextFile(path, room);
+          if (s != null) {
+            budget?.left -= s.usedChars;
+            body = '\n```\n${s.text}\n```';
+          }
         }
         return '[File: $name (${fileSize(size)})]$body$cap';
       case MsgKind.music:
@@ -1461,9 +1537,25 @@ class Store extends ChangeNotifier {
         return '[Poll: ${m.data['q']} options: $opts]$extra';
       case MsgKind.sticker:
         final emoji = '${m.data['emoji'] ?? ''}';
-        return '[Sticker${m.data['sid'] == null ? '' : ' ${m.data['sid']}'}: ${emoji.isEmpty ? 'image sticker' : emoji}]';
+        final sid = m.data['sid'] == null ? '' : ' ${m.data['sid']}';
+        // an image or gif sticker carries no glyph, so without its library
+        // metadata the model only sees an opaque id and cannot learn what it
+        // means or pick a fitting one later; the emotion word and tags are
+        // the meaning it was saved under
+        var meaning = '';
+        final s = human?.stickers.byId('${m.data['sid'] ?? ''}');
+        if (s != null && s.kind != StickerKind.emoji) {
+          final emo = s.emotion.isEmpty ? '?' : s.emotion;
+          meaning = ' means $emo${s.tags.isEmpty ? '' : ' (${s.tags.take(4).join('/')})'}';
+        }
+        return '[Sticker$sid: ${emoji.isEmpty ? 'image sticker' : emoji}$meaning]';
       case MsgKind.transfer:
         return '[${m.data['kind'] == 'redpacket' ? 'Red packet' : 'Transfer'} ${m.data['amount']} (${m.data['status']}): ${m.data['note'] ?? ''}]';
+      case MsgKind.gift:
+        // the shop purchase is real: the effect already landed on the persona
+        // state, so the message tells the model plainly what arrived and asks
+        // it to respond in character instead of guessing what happened
+        return "[Gift: ${m.data['title'] ?? 'a gift'} — ${m.data['effect'] ?? 'a gift effect'} (already in effect, this is not hypothetical). The user spent their balance on this for you. Respond in character: acknowledge the gift and let it genuinely move you.]";
       case MsgKind.trace:
         // a trace row is a service message and never reaches this, the case
         // exists so the switch stays total
@@ -1496,12 +1588,45 @@ class Store extends ChangeNotifier {
     }
   }
 
+  /// Gemini takes inline video but caps the whole request near 20 MB, and
+  /// base64 inflates by 4/3, so phone clips above 15 MB stay text-only rather
+  /// than failing the request
+  Future<String?> _videoDataUrl(String? path) async {
+    if (path == null) return null;
+    const mimes = {
+      'mp4': 'video/mp4',
+      'webm': 'video/webm',
+      'mov': 'video/quicktime',
+      'mkv': 'video/x-matroska',
+      'avi': 'video/x-msvideo',
+      '3gp': 'video/3gpp',
+      'm4v': 'video/mp4',
+      'mpeg': 'video/mpeg',
+      'mpg': 'video/mpeg',
+    };
+    try {
+      final f = File(path);
+      if (await f.length() > 15 * 1024 * 1024) return null;
+      final ext = path.split('.').last.toLowerCase();
+      final mime = mimes[ext];
+      if (mime == null) return null;
+      return 'data:$mime;base64,${base64Encode(await f.readAsBytes())}';
+    } catch (_) {
+      return null;
+    }
+  }
+
   /// Flat transcript used for token estimation and compaction.
   List<HistoryItem> _historyItems(Chat c) {
     final real = c.msgs.where((m) => !m.service && (m.text.isNotEmpty || m.kind != MsgKind.text || m.recalled)).toList();
-    return [
-      for (final m in real) HistoryItem(id: m.id, role: m.out ? 'user' : 'assistant', content: humanOn ? humanDescribe(m) : _describe(m)),
+    final budget = _InlineBudget(_inlineFilesTotalChars);
+    // spend the allowance newest first: a file in the current turn matters
+    // more than one fifty messages back, and the oldest ones drop to their
+    // placeholder line without it
+    final items = <HistoryItem>[
+      for (final m in real.reversed) HistoryItem(id: m.id, role: m.out ? 'user' : 'assistant', content: humanOn ? humanDescribe(m) : _describe(m, budget)),
     ];
+    return items.reversed.toList();
   }
 
   String _systemPrompt(Chat c) {
@@ -1611,6 +1736,13 @@ class Store extends ChangeNotifier {
 
     // rebuild the tail with real attachments, the summary head stays text only
     final rebuilt = <ChatTurn>[];
+    // sticker images ride the same path as photos but only into a chain that
+    // can see: handing an image part to a text model fails the whole request,
+    // and the same gate covers photos and videos or a fallback that answers
+    // blind brings the whole run down with a 400
+    final caps = cfg == null ? const ModelCaps() : chainCaps(cfg.settings, chainFor(c));
+    final vision = caps.vision;
+    final videoOk = caps.video;
     for (final turn in turns) {
       final source = turn.sourceId == null ? null : items.where((h) => h.id == turn.sourceId).firstOrNull;
       if (source == null) {
@@ -1618,7 +1750,51 @@ class Store extends ChangeNotifier {
         continue;
       }
       final msg = c.msgs.where((m) => m.id == source.id).firstOrNull;
-      if (msg == null || msg.kind != MsgKind.photo || !msg.out) {
+      if (msg == null || !msg.out) {
+        rebuilt.add(turn);
+        continue;
+      }
+      if (msg.kind == MsgKind.sticker) {
+        // emoji stickers are already glyphs in the text; image and gif ones
+        // only add bytes when a local file exists and the model has vision
+        final isGlyph = '${msg.data['emoji'] ?? ''}'.isNotEmpty;
+        if (isGlyph || !vision) {
+          rebuilt.add(turn);
+          continue;
+        }
+        final loaded = await _dataUrl(msg.data['path'] as String?);
+        if (loaded == null) {
+          rebuilt.add(turn);
+          continue;
+        }
+        final comma = loaded.indexOf(',');
+        final mime = comma > 0 ? loaded.substring(5, comma) : 'image/jpeg';
+        rebuilt.add(ChatTurn(turn.role, [TextPart(source.content), ImagePart(loaded.substring(comma + 1), mime)], sourceId: turn.sourceId));
+        continue;
+      }
+      if (msg.kind != MsgKind.photo && msg.kind != MsgKind.video) {
+        rebuilt.add(turn);
+        continue;
+      }
+      if (msg.kind == MsgKind.video) {
+        if (!videoOk) {
+          // the chain cannot watch: keep the text placeholder, drop the bytes
+          rebuilt.add(turn);
+          continue;
+        }
+        final loaded = await _videoDataUrl(msg.data['path'] as String?);
+        if (loaded == null) {
+          rebuilt.add(turn);
+          continue;
+        }
+        final comma = loaded.indexOf(',');
+        final mime = comma > 0 ? loaded.substring(5, comma) : 'video/mp4';
+        rebuilt.add(ChatTurn(turn.role, [TextPart(source.content), VideoPart(loaded.substring(comma + 1), mime)], sourceId: turn.sourceId));
+        continue;
+      }
+      if (!vision) {
+        // same blind-chain guard for photos: the placeholder line already
+        // tells the model a picture was here, the bytes would only 400
         rebuilt.add(turn);
         continue;
       }

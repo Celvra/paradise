@@ -783,6 +783,12 @@ abstract class AppLocalizations {
   /// **'vision'**
   String get aiCapsVision;
 
+  /// Capability tag on a chain node
+  ///
+  /// In en, this message translates to:
+  /// **'video'**
+  String get aiCapsVideo;
+
   /// Shown for a context window the catalog does not know
   ///
   /// In en, this message translates to:
@@ -1194,7 +1200,7 @@ abstract class AppLocalizations {
   /// Settings row subtitle of the about entry
   ///
   /// In en, this message translates to:
-  /// **'Version 1.0.2'**
+  /// **'Version 1.0.3'**
   String get settingsAboutSub;
 
   /// Licence and ownership notice in the about dialog
@@ -1218,7 +1224,7 @@ abstract class AppLocalizations {
   /// Acknowledgements to the projects this one was modelled on
   ///
   /// In en, this message translates to:
-  /// **'Acknowledgements:\n\nKelivo - ToolCall reference\nhttps://github.com/Chevey339/kelivo\n\nSillyTavern - persona card reference\nhttps://github.com/SillyTavern/SillyTavern'**
+  /// **'Acknowledgements:\n\nKelivo - ToolCall reference\nhttps://github.com/Chevey339/kelivo\n\nSillyTavern - persona card reference\nhttps://github.com/SillyTavern/SillyTavern\n\nUser-6170 & Kimi work-K2.8 Preview - v1.0.3 features\nhttps://github.com/yzc12345779'**
   String get settingsAboutThanks;
 
   /// Direct dependencies with their licence, the transitive tree is in the lockfile
@@ -2120,6 +2126,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Music'**
   String get msgLeadMusic;
+
+  /// Preview lead for a video message
+  ///
+  /// In en, this message translates to:
+  /// **'Video'**
+  String get msgLeadVideo;
 
   /// Preview lead for a contact message
   ///
@@ -4605,6 +4617,234 @@ abstract class AppLocalizations {
   /// **'Gallery'**
   String get attachTabGallery;
 
+  /// Gallery filter chip showing photos and videos together
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get attachFilterAll;
+
+  /// Gallery filter chip limiting the grid to photos
+  ///
+  /// In en, this message translates to:
+  /// **'Photos'**
+  String get attachFilterImages;
+
+  /// Gallery filter chip limiting the grid to videos
+  ///
+  /// In en, this message translates to:
+  /// **'Videos'**
+  String get attachFilterVideos;
+
+  /// Album chip that merges every album back together
+  ///
+  /// In en, this message translates to:
+  /// **'All albums'**
+  String get attachFilterAllAlbums;
+
+  /// Name shown for an unnamed album
+  ///
+  /// In en, this message translates to:
+  /// **'Album'**
+  String get attachAlbumFallback;
+
+  /// Hint when the user tries to attach an image to a model without image input
+  ///
+  /// In en, this message translates to:
+  /// **'The current model does not accept images, so only plain text files can be sent'**
+  String get attachNoVision;
+
+  /// Hint when the user tries to attach a video to a model without video input
+  ///
+  /// In en, this message translates to:
+  /// **'The current model does not accept videos, so this clip cannot be sent to it'**
+  String get attachNoVideo;
+
+  /// Message in the fullscreen video player when the file fails to decode
+  ///
+  /// In en, this message translates to:
+  /// **'This video cannot be played'**
+  String get attachVideoFailed;
+
+  /// Section header of the clinginess settings on the persona editor
+  ///
+  /// In en, this message translates to:
+  /// **'Clinginess'**
+  String get personaClingyHeader;
+
+  /// Note under the clinginess section
+  ///
+  /// In en, this message translates to:
+  /// **'When on, this persona messages you on its own after you stay quiet for the chosen time.'**
+  String get personaClingyFooter;
+
+  /// Switch that lets the persona speak up on its own
+  ///
+  /// In en, this message translates to:
+  /// **'Proactive messages'**
+  String get personaClingyTitle;
+
+  /// Subtitle of the proactive messages switch
+  ///
+  /// In en, this message translates to:
+  /// **'Speaks up on its own when you have been quiet'**
+  String get personaClingySub;
+
+  /// Row that picks how long the user has to stay quiet before the persona writes first
+  ///
+  /// In en, this message translates to:
+  /// **'Message after quiet for'**
+  String get personaClingyInterval;
+
+  /// Switch that caps consecutive proactive messages
+  ///
+  /// In en, this message translates to:
+  /// **'Limit proactive count'**
+  String get personaClingyCap;
+
+  /// Subtitle of the proactive count limit switch
+  ///
+  /// In en, this message translates to:
+  /// **'Pauses after this many proactive messages in a row; your reply resets the count'**
+  String get personaClingyCapSub;
+
+  /// Row that picks the cap on consecutive proactive messages
+  ///
+  /// In en, this message translates to:
+  /// **'Max proactive in a row'**
+  String get personaClingyMax;
+
+  /// Minutes label for the clinginess interval picker
+  ///
+  /// In en, this message translates to:
+  /// **'{min} min'**
+  String personaClingyMinutes(int min);
+
+  /// Hours label for the clinginess interval picker
+  ///
+  /// In en, this message translates to:
+  /// **'{h} h'**
+  String personaClingyHours(int h);
+
+  /// Warning under the clinginess section while the global proactive switch is off
+  ///
+  /// In en, this message translates to:
+  /// **'The global proactive messages switch is off, so this stays quiet until it is turned on.'**
+  String get personaClingyNeedsProactive;
+
+  /// Title of the shop page
+  ///
+  /// In en, this message translates to:
+  /// **'Shop'**
+  String get shopTitle;
+
+  /// Row in the wallet page that opens the shop
+  ///
+  /// In en, this message translates to:
+  /// **'Shop'**
+  String get shopEntry;
+
+  /// Subtitle of the shop row in the wallet page
+  ///
+  /// In en, this message translates to:
+  /// **'Spend balance on boosts for your personas'**
+  String get shopEntrySub;
+
+  /// Balance line at the top of the shop page
+  ///
+  /// In en, this message translates to:
+  /// **'Current balance'**
+  String get shopBalance;
+
+  /// Shop item: +10 affection
+  ///
+  /// In en, this message translates to:
+  /// **'Affection boost'**
+  String get shopItemAffection;
+
+  /// Subtitle of the affection boost item
+  ///
+  /// In en, this message translates to:
+  /// **'+10 affection for the persona you pick'**
+  String get shopItemAffectionSub;
+
+  /// Shop item: +30 energy
+  ///
+  /// In en, this message translates to:
+  /// **'Energy refill'**
+  String get shopItemEnergy;
+
+  /// Subtitle of the energy refill item
+  ///
+  /// In en, this message translates to:
+  /// **'+30 energy for the persona you pick'**
+  String get shopItemEnergySub;
+
+  /// Shop item: +20 mood
+  ///
+  /// In en, this message translates to:
+  /// **'Mood lift'**
+  String get shopItemMood;
+
+  /// Subtitle of the mood lift item
+  ///
+  /// In en, this message translates to:
+  /// **'+20 mood for the persona you pick'**
+  String get shopItemMoodSub;
+
+  /// Title of the target picker in the shop
+  ///
+  /// In en, this message translates to:
+  /// **'Choose who it goes to'**
+  String get shopChoose;
+
+  /// Message when the shop has nobody to boost
+  ///
+  /// In en, this message translates to:
+  /// **'No chats yet, create a persona first'**
+  String get shopNoChat;
+
+  /// Message when a purchase exceeds the balance
+  ///
+  /// In en, this message translates to:
+  /// **'Not enough balance'**
+  String get shopNotEnough;
+
+  /// Confirmation after a shop purchase
+  ///
+  /// In en, this message translates to:
+  /// **'Redeemed, it is already in effect'**
+  String get shopDone;
+
+  /// Confirm dialog message naming the price
+  ///
+  /// In en, this message translates to:
+  /// **'Deducts ¥{price} from your balance'**
+  String shopDeduct(String price);
+
+  /// Shop item: cools the global annoyance to the minimum
+  ///
+  /// In en, this message translates to:
+  /// **'Apology card'**
+  String get shopItemApology;
+
+  /// Subtitle of the apology card
+  ///
+  /// In en, this message translates to:
+  /// **'Drops the cold war dial to its minimum, nobody to pick'**
+  String get shopItemApologySub;
+
+  /// Title of the one-time whats-new dialog
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s new in v{version}'**
+  String whatsNewTitle(String version);
+
+  /// Body of the one-time whats-new dialog, one bullet per line
+  ///
+  /// In en, this message translates to:
+  /// **'v1.0.3 highlights:\n\n• Video messages: send videos from the gallery or as files, and the AI can actually watch them\n• Inline files: small files are injected into the context so the AI truly reads them\n• Stickers: the AI reads a sticker\'s meaning before sending it, with thumbnails\n• Clinginess: choose how often the AI speaks first, with an optional cap on proactive messages\n• Shop rework: gifts now land in the chat as a card the AI actually receives, and the shop sits one tap away\n• Auto backup: on by default, overwrite backups survive updates and reinstalls, restore offered on first launch\n• Model catalog: built-in offline snapshot as fallback, plus GLM-5.3-Flash video support flags\n• Editor guard: every way out of the persona editor now asks before discarding edits\n• Upstream v1.0.2 merged: onboarding, SKILLS, LaTeX canvas cards, update checks\n• UI and performance polish'**
+  String get whatsNewBody;
+
   /// Label of the camera tile at the top of the gallery grid
   ///
   /// In en, this message translates to:
@@ -6872,6 +7112,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Importing…'**
   String get skillImporting;
+
+  /// No description provided for @autoBackupTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto backup'**
+  String get autoBackupTitle;
+
+  /// No description provided for @autoBackupSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Backups overwrite one file kept outside the app, so they survive updates and reinstalls.'**
+  String get autoBackupSub;
+
+  /// No description provided for @autoBackupModeChange.
+  ///
+  /// In en, this message translates to:
+  /// **'On data change (recommended)'**
+  String get autoBackupModeChange;
+
+  /// auto backup
+  ///
+  /// In en, this message translates to:
+  /// **'Every {n} hours'**
+  String autoBackupModeInterval(int n);
+
+  /// auto backup
+  ///
+  /// In en, this message translates to:
+  /// **'Daily {from} – {to}'**
+  String autoBackupModeWindow(String from, String to);
+
+  /// No description provided for @autoBackupOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get autoBackupOff;
+
+  /// auto backup
+  ///
+  /// In en, this message translates to:
+  /// **'Last: {when}'**
+  String autoBackupLast(String when);
+
+  /// No description provided for @autoBackupNever.
+  ///
+  /// In en, this message translates to:
+  /// **'Never backed up'**
+  String get autoBackupNever;
+
+  /// No description provided for @autoBackupOffTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn off auto backup?'**
+  String get autoBackupOffTitle;
+
+  /// No description provided for @autoBackupOffMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'With auto backup off, updating or uninstalling the app can lose your chats, personas and settings.'**
+  String get autoBackupOffMessage;
+
+  /// No description provided for @autoBackupOffAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn off'**
+  String get autoBackupOffAction;
+
+  /// No description provided for @autoBackupRestoreTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup found'**
+  String get autoBackupRestoreTitle;
+
+  /// auto backup
+  ///
+  /// In en, this message translates to:
+  /// **'A backup from {when} was found. Restore your chats, personas and settings?'**
+  String autoBackupRestoreMessage(String when);
+
+  /// No description provided for @autoBackupRestoreAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore'**
+  String get autoBackupRestoreAction;
+
+  /// No description provided for @autoBackupRestored.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup restored'**
+  String get autoBackupRestored;
+
+  /// No description provided for @autoBackupRestoreFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The backup could not be read'**
+  String get autoBackupRestoreFailed;
+
+  /// Settings row that reopens the current version highlights
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s new'**
+  String get whatsNewEntry;
 }
 
 class _AppLocalizationsDelegate

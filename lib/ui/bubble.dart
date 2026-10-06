@@ -194,7 +194,7 @@ class _BubbleViewState extends State<BubbleView> {
             },
           )));
     }
-    final overlay = m.kind == MsgKind.photo && m.text.isEmpty;
+    final overlay = m.isMedia && m.text.isEmpty;
     Widget status(Color c) {
       final s = MsgStatus(state: m.state, color: c, danger: p.danger);
       return m.state == St.failed && widget.onRetry != null ? Tap(onTap: widget.onRetry, child: s) : s;

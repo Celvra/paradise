@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import '../models.dart';
 import 'human_models.dart';
 
 // The queue behind schedule_message. The assistant decides when it wants to
@@ -64,6 +65,7 @@ class ScheduledTask {
     this.urgent = false,
     this.note = '',
     this.firedAt = 0,
+    this.tag = '',
   });
 
   final String id;
@@ -81,6 +83,10 @@ class ScheduledTask {
   String note;
   int firedAt;
 
+  /// Deduplication bucket, empty for tasks that never need one. The clingy
+  /// check-in writes 'clingy:<chatId>' here so at most one is ever open.
+  String tag;
+
   bool get open => status == TaskStatus.pending || status == TaskStatus.suspended;
 
   Map<String, dynamic> toJson() => {
@@ -96,6 +102,7 @@ class ScheduledTask {
         'urgent': urgent,
         'note': note,
         'firedAt': firedAt,
+        if (tag.isNotEmpty) 'tag': tag,
       };
 
   factory ScheduledTask.fromJson(Map<String, dynamic> j) => ScheduledTask(
@@ -111,6 +118,7 @@ class ScheduledTask {
         urgent: j['urgent'] as bool? ?? false,
         note: j['note'] as String? ?? '',
         firedAt: (j['firedAt'] as num?)?.toInt() ?? 0,
+        tag: j['tag'] as String? ?? '',
       );
 }
 
@@ -226,25 +234,33 @@ class Scheduler {
   }
 
   /// Decides what happens to a due task. Order: hard blocks first, then quiet
-  /// hours and busy time (deferred, not lost), then the dice.
-  Gate gate(ScheduledTask t, HumanState s, HumanSettings cfg, int now, HumanRandom rng) {
+  /// hours and busy time (deferred, not lost), then the dice. [maxConsecutive]
+  /// overrides the settings chain cap, a persona can tighten it for itself.
+  Gate gate(ScheduledTask t, HumanState s, HumanSettings cfg, int now, HumanRandom rng, {int? maxConsecutive}) {
     if (!cfg.proactive) return const Gate(Verdict.skip, 'proactive messages are switched off');
     if (!conditionHolds(t, s, now)) return const Gate(Verdict.skip, 'condition no longer holds');
-    if (s.consecutiveProactive >= cfg.maxConsecutive && !t.urgent) {
-      return Gate(Verdict.skip, 'reached ${cfg.maxConsecutive} proactive messages in a row, waiting for the user');
+    final cap = maxConsecutive ?? cfg.maxConsecutive;
+    if (s.consecutiveProactive >= cap && !t.urgent) {
+      return Gate(Verdict.skip, 'reached $cap proactive messages in a row, waiting for the user');
     }
     if (cfg.dnd) return const Gate(Verdict.skip, 'do not disturb is on');
     if (cfg.inQuietHours(now)) {
       if (!(t.urgent && cfg.allowUrgent)) return Gate(Verdict.defer, 'quiet hours', until: _quietEnd(now, cfg));
     }
-    if (t.type == ProactiveType.checkin && s.stage == Stage.stranger) return const Gate(Verdict.skip, 'no check-ins at the stranger stage');
+    // a clingy check-in is a switch the user set on purpose: it fires when the
+    // silence is long enough, not when the mood dice feel like it, and a young
+    // chat is exactly where a clingy persona is supposed to nag
+    final isClingy = t.tag.startsWith('clingy:');
+    if (t.type == ProactiveType.checkin && s.stage == Stage.stranger && !isClingy) {
+      return const Gate(Verdict.skip, 'no check-ins at the stranger stage');
+    }
     final life = s.activeLife(now);
     if (life != null) {
       if (t.type != ProactiveType.afterSchedule) return Gate(Verdict.defer, 'busy: ${life.title}', until: life.end + 30000);
     }
     final eff = s.effective(now);
     if (eff == StatusKind.dnd) return Gate(Verdict.defer, 'status is dnd', until: now + 30 * 60000);
-    if (_optional.contains(t.type)) {
+    if (_optional.contains(t.type) && !isClingy) {
       var will = s.proactiveWill(cfg, now);
       // away keeps the frequency at the minimum, already folded into will
       will = (will * 1.6).clamp(0, 1);
@@ -263,8 +279,10 @@ class Scheduler {
 
   /// Queues the system generated triggers: greetings, ice-breakers and the
   /// "done" message after a life entry. These only create tasks, the model
-  /// writes what is said.
-  List<ScheduledTask> autoTasks({required String chatId, required HumanState s, required HumanSettings cfg, required int now}) {
+  /// writes what is said. With [persona] the clingy switch joins the list: a
+  /// persona that misses the user queues one check-in after the configured
+  /// silence, at most one at a time.
+  List<ScheduledTask> autoTasks({required String chatId, required HumanState s, required HumanSettings cfg, required int now, Persona? persona}) {
     final out = <ScheduledTask>[];
     final d = DateTime.fromMillisecondsSinceEpoch(now);
     final day = '${d.year}-${d.month}-${d.day}';
@@ -291,6 +309,22 @@ class Scheduler {
         schedule(chatId: chatId, delayMs: 0, prompt: 'You were busy with "${e.title}" and it is over now.', type: ProactiveType.afterSchedule, now: now);
       }
     }
+    // no stage gate here: clingy is a switch the user set on purpose, and a
+    // young chat stuck at the stranger stage is exactly where a clingy
+    // persona is supposed to reach out; the gate already exempts the tag
+    if (persona != null && persona.clingy && s.lastUserAt > 0) {
+      final intervalMs = persona.clingySilentMin * 60000;
+      // silence counts from the newest message on either side, so a check-in
+      // that just went out restarts the wait instead of chaining into more
+      final silentFor = now - max(s.lastUserAt, s.lastAiAt);
+      final underCap = !persona.clingyCap || s.consecutiveProactive < persona.clingyMax;
+      final tag = 'clingy:$chatId';
+      if (intervalMs > 0 && silentFor >= intervalMs && underCap && !tasks.any((t) => t.open && t.tag == tag)) {
+        final t = schedule(chatId: chatId, delayMs: 0, prompt: 'The user has been quiet for a while. Check in on them, in your own tone, do not nag.', condition: 'user_silent', type: ProactiveType.checkin, now: now);
+        t.tag = tag;
+        out.add(t);
+      }
+    }
     s.autoKeys.removeWhere((k) => !k.startsWith(day) && !k.startsWith('ice:'));
     return out;
   }
@@ -315,10 +349,10 @@ class Scheduler {
   /// picked from how the conversation actually went. A task the user asked
   /// to be left alone is never queued; the gate still vets the task at fire
   /// time, so mood and quiet hours are honoured twice.
-  ScheduledTask? rollProactive({required String chatId, required HumanState s, required HumanSettings cfg, required int now, required HumanRandom rng, required bool userAnnoyed}) {
+  ScheduledTask? rollProactive({required String chatId, required HumanState s, required HumanSettings cfg, required int now, required HumanRandom rng, required bool userAnnoyed, int? maxConsecutive}) {
     if (!cfg.proactive) return null;
     if (userAnnoyed) return null;
-    if (s.consecutiveProactive >= cfg.maxConsecutive) return null;
+    if (s.consecutiveProactive >= (maxConsecutive ?? cfg.maxConsecutive)) return null;
     if (s.stage == Stage.stranger) return null;
     final will = s.proactiveWill(cfg, now);
     if (!rng.chance(will * 0.45)) return null;

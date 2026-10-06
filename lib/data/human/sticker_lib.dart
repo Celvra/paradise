@@ -1,4 +1,7 @@
+import 'dart:io';
 import 'dart:math';
+import 'dart:typed_data';
+import 'dart:ui';
 
 import 'human_models.dart';
 
@@ -22,6 +25,7 @@ class UserSticker {
     this.lastUsed = 0,
     int? createdAt,
     this.source = 'user',
+    this.thumb = '',
   })  : tags = tags ?? [],
         createdAt = createdAt ?? DateTime.now().millisecondsSinceEpoch;
 
@@ -43,6 +47,11 @@ class UserSticker {
 
   /// 'seed', 'user' or 'ai'
   String source;
+
+  /// Small still preview of a local image sticker, written next to the
+  /// library copy. Empty for emoji, remote urls and anything saved before
+  /// thumbs existed, all of which simply render from [value] like before.
+  String thumb;
 
   bool get isRemote => value.startsWith('http');
 
@@ -67,6 +76,7 @@ class UserSticker {
         'lastUsed': lastUsed,
         'createdAt': createdAt,
         'source': source,
+        if (thumb.isNotEmpty) 'thumb': thumb,
       };
 
   factory UserSticker.fromJson(Map<String, dynamic> j) => UserSticker(
@@ -82,6 +92,7 @@ class UserSticker {
         lastUsed: (j['lastUsed'] as num?)?.toInt() ?? 0,
         createdAt: (j['createdAt'] as num?)?.toInt(),
         source: j['source'] as String? ?? 'user',
+        thumb: j['thumb'] as String? ?? '',
       );
 }
 
@@ -125,7 +136,7 @@ class StickerLib {
 
   UserSticker? byId(String id) => items.where((s) => s.id == id).firstOrNull;
 
-  UserSticker add({required StickerKind kind, required String value, String name = '', List<String>? tags, String emotion = '', String category = 'General', String source = 'user'}) {
+  UserSticker add({required StickerKind kind, required String value, String name = '', List<String>? tags, String emotion = '', String category = 'General', String source = 'user', String thumb = ''}) {
     // the same image saved twice only merges the tags
     final dup = items.where((s) => s.value == value).firstOrNull;
     if (dup != null) {
@@ -135,7 +146,7 @@ class StickerLib {
       if (emotion.isNotEmpty) dup.emotion = emotion;
       return dup;
     }
-    final s = UserSticker(id: newId(), kind: kind, value: value, name: name, tags: tags, emotion: emotion, category: category, source: source);
+    final s = UserSticker(id: newId(), kind: kind, value: value, name: name, tags: tags, emotion: emotion, category: category, source: source, thumb: thumb);
     items.add(s);
     return s;
   }
@@ -160,9 +171,12 @@ class StickerLib {
   }
 
   /// The catalogue shown to the model, id plus emotion plus tags, favourites
-  /// and often used first so the list stays short.
-  String catalogue({int limit = 40}) {
-    final l = [...items]..sort((a, b) => ((b.favorite ? 5 : 0) + b.uses).compareTo((a.favorite ? 5 : 0) + a.uses));
+  /// and often used first so the list stays short. [prio] ids are the
+  /// stickers this conversation actually used recently: they win the cut so
+  /// a sticker the model sees in the history keeps its meaning available
+  /// instead of falling off a long library
+  String catalogue({int limit = 40, Set<String>? prio}) {
+    final l = [...items]..sort((a, b) => ((prio?.contains(b.id) ?? false ? 1000 : 0) + (b.favorite ? 5 : 0) + b.uses).compareTo((prio?.contains(a.id) ?? false ? 1000 : 0) + (a.favorite ? 5 : 0) + a.uses));
     return l.take(limit).map((s) => '${s.id} [${s.emotion.isEmpty ? '-' : s.emotion}] ${s.tags.take(4).join('/')}${s.kind == StickerKind.emoji ? ' ${s.value}' : ' (${s.kind.name})'}').join('\n');
   }
 
@@ -209,5 +223,43 @@ class StickerLib {
       final s = UserSticker.fromJson(Map<String, dynamic>.from(e as Map));
       if (!have.contains(s.id)) items.add(s);
     }
+  }
+}
+
+/// Writes a small still preview of a local image file to [outPath]. Animated
+/// gifs freeze on their first frame. Returns null when the codec cannot read
+/// the file (HEIC on some devices): callers then keep the sticker without a
+/// thumb, which every render path already falls back for.
+Future<String?> makeStickerThumb(String srcPath, String outPath, {int maxSide = 320}) async {
+  try {
+    final bytes = await File(srcPath).readAsBytes();
+    final codec = await instantiateImageCodec(Uint8List.fromList(bytes));
+    final frame = await codec.getNextFrame();
+    final img = frame.image;
+    final longest = max(img.width, img.height);
+    ByteData? data;
+    if (longest <= maxSide) {
+      data = await img.toByteData(format: ImageByteFormat.png);
+    } else {
+      final scale = maxSide / longest;
+      final w = max(1, (img.width * scale).round());
+      final h = max(1, (img.height * scale).round());
+      final rec = PictureRecorder();
+      final cv = Canvas(rec);
+      cv.drawImageRect(
+        img,
+        Rect.fromLTWH(0, 0, img.width.toDouble(), img.height.toDouble()),
+        Rect.fromLTWH(0, 0, w.toDouble(), h.toDouble()),
+        Paint()..filterQuality = FilterQuality.medium,
+      );
+      final pic = rec.endRecording();
+      data = await (await pic.toImage(w, h)).toByteData(format: ImageByteFormat.png);
+    }
+    if (data == null) return null;
+    final f = File(outPath);
+    await f.writeAsBytes(data.buffer.asUint8List(), flush: true);
+    return f.path;
+  } catch (_) {
+    return null;
   }
 }

@@ -14,6 +14,22 @@ An immersive AI chat app in the style of Telegram.
 
 ---
 
+## Changelog
+
+### v1.0.3
+
+- Video messages: send videos from the gallery or as files, gated on whether the model supports video input — the AI can actually watch them.
+- Inline files: small files that won't blow up the context are injected directly, so the AI truly reads them.
+- Sticker upgrades: the AI reads a sticker's meaning before sending one proactively, in context; stickers render with thumbnails.
+- Clinginess: new settings for proactive-message frequency (interval) and a max proactive count, available when creating or editing a persona, both optional; the count refreshes when you reply.
+- Shop: spend your balance on affection boosts for a chosen AI, apology cards and more — the wallet finally does something.
+- Merged upstream v1.0.2: new onboarding, SKILLS, LaTeX canvas cards, update checks, model metadata rewrite, free relay and more.
+- UI and performance polish, closer to Telegram in look and feel.
+
+### v1.0.2
+
+- Upstream release, see https://github.com/Celvra/paradise/releases/tag/v1.0.2
+
 ## Development status
 
 We have essentially finished the main requirements of this project and it has been tested on Android. Since I have no other devices to test on, community support is needed.
@@ -56,6 +72,7 @@ Please see [CONTRIBUTING.md](CONTRIBUTING.md).
 - [Kelivo](https://github.com/Chevey339/kelivo) — reference for ToolCall and MCP, the PRoot container and the sandbox
 - [SillyTavern](https://github.com/SillyTavern/SillyTavern) — reference for persona cards
 - [Telegram Android](https://github.com/DrKLO/Telegram) — reference for the UI and UX, ported to Flutter
+- [User-6170](https://github.com/yzc12345779) & Kimi work-K2.8 Preview — v1.0.3 features
 
 ### Translation
 

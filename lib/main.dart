@@ -16,6 +16,7 @@ import 'l10n/x.dart';
 import 'ui/ai_model_picker.dart' show AiScope;
 import 'ui/dialogs_page.dart';
 import 'ui/onboarding/onboarding_page.dart';
+import 'ui/whats_new.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -64,6 +65,7 @@ Future<void> main() async {
     final ctx = appNav.currentState?.overlay?.context;
     if (ctx == null) return;
     unawaited(checkAndShowUpdate(ctx));
+    maybeShowWhatsNew(ctx);
   });
 }
 

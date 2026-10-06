@@ -62,7 +62,7 @@ Future<AppRelease?> fetchLatestRelease({http.Client? client}) async {
 /// True when [tag] is strictly newer than [current].
 ///
 /// A leading `v` and trailing build metadata (`+3`) or pre-release suffix
-/// (`-beta.1`) are ignored: tags say `v1.0.3`, the app says `1.0.2`.
+/// (`-beta.1`) are ignored: tags say `v1.0.4`, the app says `1.0.3`.
 bool isNewerVersion(String current, String tag) => _compare(_parts(tag), _parts(current)) > 0;
 
 List<int> _parts(String v) {

@@ -20,6 +20,10 @@ class Persona {
     this.modelFallback = true,
     this.thinking,
     this.agent,
+    this.clingy = false,
+    this.clingySilentMin = 90,
+    this.clingyCap = false,
+    this.clingyMax = 3,
     this.skillIds,
   });
   String name;
@@ -69,6 +73,22 @@ class Persona {
   bool? thinking;
   bool? agent;
 
+  /// "Clingy" proactive chatter. When on and the user has been silent for
+  /// [clingySilentMin] minutes the scheduler queues a check-in so the persona
+  /// speaks up on its own. The silence is measured from the last message of
+  /// either side, so one check-in never chains straight into the next one.
+  bool clingy;
+
+  /// Minutes of user silence that triggers a proactive check-in.
+  int clingySilentMin;
+
+  /// Cap on consecutive proactive messages. Off means the feature imposes no
+  /// limit of its own and the global proactive chain setting keeps applying.
+  bool clingyCap;
+
+  /// The cap value, in consecutive proactive messages. The counter refreshes
+  /// every time the user sends a message.
+  int clingyMax;
   /// Skills this role may use. Null follows the global set (every enabled
   /// skill), an explicit list names exactly the skills in the prompt. Empty
   /// means this role uses none.
@@ -88,6 +108,10 @@ class Persona {
         'modelFallback': modelFallback,
         if (thinking != null) 'thinking': thinking,
         if (agent != null) 'agent': agent,
+        'clingy': clingy,
+        'clingySilentMin': clingySilentMin,
+        'clingyCap': clingyCap,
+        'clingyMax': clingyMax,
         if (skillIds != null) 'skillIds': skillIds,
       };
   factory Persona.fromJson(Map<String, dynamic> j) => Persona(
@@ -107,6 +131,11 @@ class Persona {
         modelFallback: j['modelFallback'] as bool? ?? true,
         thinking: j['thinking'] as bool?,
         agent: j['agent'] as bool?,
+        // personas saved before clingy existed stay quiet until switched on
+        clingy: j['clingy'] as bool? ?? false,
+        clingySilentMin: (j['clingySilentMin'] as num?)?.toInt() ?? 90,
+        clingyCap: j['clingyCap'] as bool? ?? false,
+        clingyMax: (j['clingyMax'] as num?)?.toInt() ?? 3,
         skillIds: j['skillIds'] is List ? [for (final e in j['skillIds'] as List) '$e'] : null,
       );
 }
@@ -219,7 +248,7 @@ class St {
 /// stretch of reasoning, or a tool call with its result. Trace rows are always
 /// service rows, so they stay out of the model history and out of search while
 /// still living in the chat json where the user can scroll back and open them.
-enum MsgKind { text, photo, file, music, location, contact, poll, sticker, transfer, html, latex, trace }
+enum MsgKind { text, photo, video, file, music, location, contact, poll, sticker, transfer, gift, html, latex, trace }
 
 class Msg {
   Msg({
@@ -359,7 +388,7 @@ class Msg {
   bool get read => state == St.read;
   set read(bool v) => state = v ? St.read : St.sent;
 
-  bool get isMedia => kind == MsgKind.photo;
+  bool get isMedia => kind == MsgKind.photo || kind == MsgKind.video;
   bool get isSticker => kind == MsgKind.sticker;
 
   // one line summary used by dialog rows reply quotes and search. The lead is
@@ -376,6 +405,8 @@ class Msg {
         return t;
       case MsgKind.photo:
         lead = l.msgLeadPhoto;
+      case MsgKind.video:
+        lead = l.msgLeadVideo;
       case MsgKind.file:
         lead = '${data['name'] ?? l.attachFileFallback}';
       case MsgKind.music:
@@ -392,6 +423,11 @@ class Msg {
         // plain text, this one feeds search and list previews where a painted
         // glyph would not fit, so it leads with a word instead of an emoji
         return '${data['kind'] == 'redpacket' ? l.walletRedPacket : l.walletTransfer} ¥${data['amount'] ?? ''} ${data['note'] ?? ''}'.trim();
+      case MsgKind.gift:
+        // a shop purchase lands as a card from the user; the list row only
+        // needs the item name, which sits in data so the model-facing describe
+        // can build its instruction around it
+        return '${data['title'] ?? ''}';
       case MsgKind.trace:
         // never shown, it is a service row, but the switch has to be total
         return '${data['tool'] ?? l.traceThinking}';
@@ -432,7 +468,8 @@ class Msg {
   factory Msg.fromJson(Map<String, dynamic> j) {
     final kind = switch (j['kind'] as String?) {
       'photo' => MsgKind.photo,
-      'file' || 'video' => MsgKind.file,
+      'video' => MsgKind.video,
+      'file' => MsgKind.file,
       'music' || 'audio' => MsgKind.music,
       'location' => MsgKind.location,
       'contact' => MsgKind.contact,

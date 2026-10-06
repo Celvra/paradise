@@ -4,6 +4,7 @@ import '../../core/anim.dart';
 import '../../core/overlays.dart';
 import '../../core/theme.dart';
 import '../../core/ui_kit.dart';
+import '../../data/backup.dart' show parseBackup;
 import '../../data/store.dart';
 import '../../l10n/x.dart';
 import '../dialogs_page.dart';
@@ -59,6 +60,58 @@ class _OnboardingPageState extends State<OnboardingPage> implements OnboardingFl
   int _index = 0;
   late final List<OnboardingStep> _steps = buildSteps();
   final Set<String> _pickedPersonas = {};
+
+  @override
+  void initState() {
+    super.initState();
+    // Fresh install (or wiped data) with a backup on the device: offer the
+    // restore before the wizard starts instead of letting the user rebuild
+    // everything by hand. Runs after first frame so the page is up behind
+    // the dialog.
+    WidgetsBinding.instance.addPostFrameCallback((_) => _offerRestore());
+  }
+
+  /// Reads the auto backup and offers a merge-import. Declining just starts
+  /// the wizard; the backup file is left alone either way.
+  Future<void> _offerRestore() async {
+    final store = context.store;
+    if (store.chats.isNotEmpty || store.personas.isNotEmpty || !mounted) return;
+    final raw = await store.readAutoBackup();
+    if (raw == null || !mounted) return;
+    final l = context.l;
+    var when = '';
+    try {
+      final doc = parseBackup(raw);
+      final at = doc.exportedAt;
+      if (at != null) {
+        String p(int v) => v.toString().padLeft(2, '0');
+        when = '${at.year}-${p(at.month)}-${p(at.day)} ${p(at.hour)}:${p(at.minute)}';
+      }
+    } catch (_) {
+      // unreadable doc: still offer it, the import dialog says what failed
+    }
+    final ok = await showTgDialog<bool>(
+      context,
+      title: l.autoBackupRestoreTitle,
+      message: l.autoBackupRestoreMessage(when),
+      actions: [
+        DialogAction(l.actionCancel, false),
+        DialogAction(l.autoBackupRestoreAction, true),
+      ],
+    );
+    if (ok != true || !mounted) return;
+    try {
+      store.importBackupString(raw, overwrite: false);
+      store.setOnboarded(true);
+      Navigator.of(context).pushAndRemoveUntil(
+        TgRoute(builder: (_) => const DialogsPage()),
+        (route) => false,
+      );
+      if (context.mounted) showBulletin(context, l.autoBackupRestored);
+    } catch (_) {
+      if (context.mounted) showBulletin(context, l.autoBackupRestoreFailed);
+    }
+  }
 
   @override
   void dispose() {

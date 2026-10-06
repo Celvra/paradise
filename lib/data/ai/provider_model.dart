@@ -77,6 +77,7 @@ class ModelMeta {
     required this.textToImage,
     required this.reasoning,
     required this.source,
+    this.video = false,
   });
 
   final String id;
@@ -86,9 +87,14 @@ class ModelMeta {
   final bool vision;
   final bool textToImage;
   final bool reasoning;
+
+  /// video input is tracked separately from [vision]: several vision models
+  /// accept images only, and guessing video support from image support would
+  /// hand the adapter a part the endpoint rejects
+  final bool video;
   final ModelSource source;
 
-  ModelMeta copyWith({String? name, int? contextWindow, int? maxOutput, bool? vision, bool? textToImage, bool? reasoning, ModelSource? source}) => ModelMeta(
+  ModelMeta copyWith({String? name, int? contextWindow, int? maxOutput, bool? vision, bool? textToImage, bool? reasoning, ModelSource? source, bool? video}) => ModelMeta(
         id: id,
         name: name ?? this.name,
         contextWindow: contextWindow ?? this.contextWindow,
@@ -97,6 +103,7 @@ class ModelMeta {
         textToImage: textToImage ?? this.textToImage,
         reasoning: reasoning ?? this.reasoning,
         source: source ?? this.source,
+        video: video ?? this.video,
       );
 
   Map<String, dynamic> toJson() => {
@@ -108,6 +115,7 @@ class ModelMeta {
         't2i': textToImage,
         'r': reasoning,
         'source': sourceWire(source),
+        if (video) 'video': true,
       };
 
   static ModelMeta fromJson(Map<String, dynamic> j) => ModelMeta(
@@ -119,6 +127,7 @@ class ModelMeta {
         textToImage: j['t2i'] as bool? ?? false,
         reasoning: j['r'] as bool? ?? false,
         source: modelSourceOf(j['source'] as String? ?? 'manual'),
+        video: j['video'] as bool? ?? false,
       );
 }
 
@@ -132,6 +141,38 @@ ModelMeta emptyModel(String id, [String? name]) => ModelMeta(
       reasoning: false,
       source: ModelSource.manual,
     );
+
+/// Input modalities the model in front of a chain accepts. A chain can mix
+/// models with different abilities, so the picker asks for the union across
+/// its enabled nodes rather than trusting one entry.
+class ModelCaps {
+  const ModelCaps({this.vision = false, this.video = false});
+  final bool vision;
+  final bool video;
+
+  bool get any => vision || video;
+
+  ModelCaps operator |(ModelCaps other) => ModelCaps(
+        vision: vision || other.vision,
+        video: video || other.video,
+      );
+}
+
+ModelCaps capsOf(AiSettings settings, ChainNode node) {
+  final m = findModel(settings, node.providerId, node.modelId);
+  return ModelCaps(vision: m?.vision ?? false, video: m?.video ?? false);
+}
+
+/// The union over the enabled nodes. The primary node serves most turns but
+/// the whole point of the fallback chain is that any node can answer, so
+/// attachment gating has to allow everything at least one fallback can take.
+ModelCaps chainCaps(AiSettings settings, List<ChainNode> chain) {
+  var caps = const ModelCaps();
+  for (final n in chain) {
+    if (n.enabled) caps = caps | capsOf(settings, n);
+  }
+  return caps;
+}
 
 class Provider {
   Provider({

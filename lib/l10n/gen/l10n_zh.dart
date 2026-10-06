@@ -378,6 +378,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get aiCapsVision => '视觉';
 
   @override
+  String get aiCapsVideo => '视频';
+
+  @override
   String get aiTokensUnknown => '未知';
 
   @override
@@ -596,7 +599,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get aboutLinkFailed => '无法打开链接';
 
   @override
-  String get settingsAboutSub => '版本 1.0.2';
+  String get settingsAboutSub => '版本 1.0.3';
 
   @override
   String get settingsAboutLicense =>
@@ -610,7 +613,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get settingsAboutThanks =>
-      '鸣谢:\n\nKelivo - ToolCall 参考\nhttps://github.com/Chevey339/kelivo\n\nSillyTavern - 人设卡参考\nhttps://github.com/SillyTavern/SillyTavern';
+      '鸣谢:\n\nKelivo - ToolCall 参考\nhttps://github.com/Chevey339/kelivo\n\nSillyTavern - 人设卡参考\nhttps://github.com/SillyTavern/SillyTavern\n\nUser-6170 & Kimi work-K2.8 Preview - v1.0.3 功能开发\nhttps://github.com/yzc12345779';
 
   @override
   String get settingsAboutDeps =>
@@ -1085,6 +1088,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get msgLeadMusic => '音乐';
+
+  @override
+  String get msgLeadVideo => '视频';
 
   @override
   String get msgLeadContact => '联系人';
@@ -2462,6 +2468,129 @@ class AppLocalizationsZh extends AppLocalizations {
   String get attachTabGallery => '相册';
 
   @override
+  String get attachFilterAll => '全部';
+
+  @override
+  String get attachFilterImages => '图片';
+
+  @override
+  String get attachFilterVideos => '视频';
+
+  @override
+  String get attachFilterAllAlbums => '全部相簿';
+
+  @override
+  String get attachAlbumFallback => '相簿';
+
+  @override
+  String get attachNoVision => '当前模型不支持图片输入，只能发送普通文字文件';
+
+  @override
+  String get attachNoVideo => '当前模型不支持视频输入，无法发送此视频';
+
+  @override
+  String get attachVideoFailed => '无法播放此视频';
+
+  @override
+  String get personaClingyHeader => '粘人度';
+
+  @override
+  String get personaClingyFooter => '开启后，你长时间没回复时，这个人设会主动给你发消息。';
+
+  @override
+  String get personaClingyTitle => '主动发消息';
+
+  @override
+  String get personaClingySub => '你长时间没回复时主动找话';
+
+  @override
+  String get personaClingyInterval => '多久没回复后发';
+
+  @override
+  String get personaClingyCap => '限制主动次数';
+
+  @override
+  String get personaClingyCapSub => '连续主动发言达到这个数后暂停，你回复后计数重置';
+
+  @override
+  String get personaClingyMax => '最多连续主动';
+
+  @override
+  String personaClingyMinutes(int min) {
+    return '$min 分钟';
+  }
+
+  @override
+  String personaClingyHours(int h) {
+    return '$h 小时';
+  }
+
+  @override
+  String get personaClingyNeedsProactive => '全局主动消息开关处于关闭状态，打开前粘人设置不会生效。';
+
+  @override
+  String get shopTitle => '商城';
+
+  @override
+  String get shopEntry => '商城';
+
+  @override
+  String get shopEntrySub => '用余额给 AI 兑换好感、体力';
+
+  @override
+  String get shopBalance => '当前余额';
+
+  @override
+  String get shopItemAffection => '好感度提升';
+
+  @override
+  String get shopItemAffectionSub => '指定一位 AI，好感度 +10';
+
+  @override
+  String get shopItemEnergy => '体力补充';
+
+  @override
+  String get shopItemEnergySub => '指定一位 AI，体力 +30';
+
+  @override
+  String get shopItemMood => '心情提振';
+
+  @override
+  String get shopItemMoodSub => '指定一位 AI，心情 +20';
+
+  @override
+  String get shopChoose => '选择送给哪位 AI';
+
+  @override
+  String get shopNoChat => '还没有会话，先创建一个人设';
+
+  @override
+  String get shopNotEnough => '余额不足';
+
+  @override
+  String get shopDone => '兑换成功，已生效';
+
+  @override
+  String shopDeduct(String price) {
+    return '将从余额中扣除 ¥$price';
+  }
+
+  @override
+  String get shopItemApology => '道歉卡';
+
+  @override
+  String get shopItemApologySub => '立刻平息 AI 的赌气情绪，无需选择对象';
+
+  @override
+  String whatsNewTitle(String version) {
+    return '更新内容（v$version）';
+  }
+
+  @override
+  String get whatsNewBody =>
+      'v1.0.3 更新内容：\n\n• 视频消息：相册与文件均可发送视频，AI 能看懂视频内容\n• 文件直读：小文件直接注入上下文，AI 真正读到内容\n• 贴纸三件套：AI 先读懂表情包含义再主动发送，并显示缩略图\n• 粘人度：可配置 AI 主动发话的频率与次数上限\n• 商城改版：购买后跳转聊天，礼物以卡片送达且 AI 真正收到；商城入口更明显\n• 自动备份：默认开启，覆盖式备份可随更新与重装存活，首次启动检测到备份可一键恢复\n• 模型目录：内置离线快照兜底，补上 GLM-5.3-Flash 系列视频支持标记\n• 编辑器保护：人设编辑器所有退出方式都会先确认再丢弃修改\n• 同步上游 v1.0.2：向导、SKILLS、LaTeX 绘图卡片、检查更新\n• 界面与性能优化';
+
+  @override
   String get attachCamera => '相机';
 
   @override
@@ -3639,6 +3768,65 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get skillImporting => '导入中…';
+
+  @override
+  String get autoBackupTitle => '自动备份';
+
+  @override
+  String get autoBackupSub => '备份以覆盖方式写入应用外部的一个文件，更新或重装后仍可找回。';
+
+  @override
+  String get autoBackupModeChange => '数据变化时自动备份（推荐）';
+
+  @override
+  String autoBackupModeInterval(int n) {
+    return '每隔 $n 小时';
+  }
+
+  @override
+  String autoBackupModeWindow(String from, String to) {
+    return '每天 $from – $to';
+  }
+
+  @override
+  String get autoBackupOff => '关闭';
+
+  @override
+  String autoBackupLast(String when) {
+    return '上次：$when';
+  }
+
+  @override
+  String get autoBackupNever => '尚未备份';
+
+  @override
+  String get autoBackupOffTitle => '关闭自动备份？';
+
+  @override
+  String get autoBackupOffMessage => '关闭后，更新或卸载应用可能会导致聊天、人设和设置丢失。';
+
+  @override
+  String get autoBackupOffAction => '关闭';
+
+  @override
+  String get autoBackupRestoreTitle => '发现备份';
+
+  @override
+  String autoBackupRestoreMessage(String when) {
+    return '检测到 $when 的备份，要恢复聊天、人设和设置吗？';
+  }
+
+  @override
+  String get autoBackupRestoreAction => '恢复';
+
+  @override
+  String get autoBackupRestored => '备份已恢复';
+
+  @override
+  String get autoBackupRestoreFailed => '备份读取失败';
+
+  @override
+  String get whatsNewEntry => '更新说明';
 }
 
 /// The translations for Chinese, using the Han script (`zh_Hant`).
@@ -4015,6 +4203,9 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get aiCapsVision => '視覺';
 
   @override
+  String get aiCapsVideo => '影片';
+
+  @override
   String get aiTokensUnknown => '未知';
 
   @override
@@ -4233,7 +4424,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get aboutLinkFailed => '無法開啟連結';
 
   @override
-  String get settingsAboutSub => '版本 1.0.2';
+  String get settingsAboutSub => '版本 1.0.3';
 
   @override
   String get settingsAboutLicense =>
@@ -4247,7 +4438,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get settingsAboutThanks =>
-      '鳴謝:\n\nKelivo - ToolCall 參考\nhttps://github.com/Chevey339/kelivo\n\nSillyTavern - 人設卡參考\nhttps://github.com/SillyTavern/SillyTavern';
+      '鳴謝:\n\nKelivo - ToolCall 參考\nhttps://github.com/Chevey339/kelivo\n\nSillyTavern - 人設卡參考\nhttps://github.com/SillyTavern/SillyTavern\n\nUser-6170 & Kimi work-K2.8 Preview - v1.0.3 功能開發\nhttps://github.com/yzc12345779';
 
   @override
   String get settingsAboutDeps =>
@@ -4722,6 +4913,9 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get msgLeadMusic => '音樂';
+
+  @override
+  String get msgLeadVideo => '影片';
 
   @override
   String get msgLeadContact => '聯絡人';
@@ -6099,6 +6293,129 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get attachTabGallery => '相簿';
 
   @override
+  String get attachFilterAll => '全部';
+
+  @override
+  String get attachFilterImages => '圖片';
+
+  @override
+  String get attachFilterVideos => '影片';
+
+  @override
+  String get attachFilterAllAlbums => '全部相簿';
+
+  @override
+  String get attachAlbumFallback => '相簿';
+
+  @override
+  String get attachNoVision => '目前模型不支援圖片輸入，只能傳送普通文字檔案';
+
+  @override
+  String get attachNoVideo => '目前模型不支援影片輸入，無法傳送此影片';
+
+  @override
+  String get attachVideoFailed => '無法播放此影片';
+
+  @override
+  String get personaClingyHeader => '黏人度';
+
+  @override
+  String get personaClingyFooter => '開啟後，你長時間沒回覆時，這個人設會主動傳訊息給你。';
+
+  @override
+  String get personaClingyTitle => '主動傳訊息';
+
+  @override
+  String get personaClingySub => '你長時間沒回覆時主動找話';
+
+  @override
+  String get personaClingyInterval => '多久沒回覆後發';
+
+  @override
+  String get personaClingyCap => '限制主動次數';
+
+  @override
+  String get personaClingyCapSub => '連續主動發言達到這個數後暫停，你回覆後計數重置';
+
+  @override
+  String get personaClingyMax => '最多連續主動';
+
+  @override
+  String personaClingyMinutes(int min) {
+    return '$min 分鐘';
+  }
+
+  @override
+  String personaClingyHours(int h) {
+    return '$h 小時';
+  }
+
+  @override
+  String get personaClingyNeedsProactive => '全域主動訊息開關處於關閉狀態，打開前黏人設定不會生效。';
+
+  @override
+  String get shopTitle => '商城';
+
+  @override
+  String get shopEntry => '商城';
+
+  @override
+  String get shopEntrySub => '用餘額給 AI 兌換好感、體力';
+
+  @override
+  String get shopBalance => '目前餘額';
+
+  @override
+  String get shopItemAffection => '好感度提升';
+
+  @override
+  String get shopItemAffectionSub => '指定一位 AI，好感度 +10';
+
+  @override
+  String get shopItemEnergy => '體力補充';
+
+  @override
+  String get shopItemEnergySub => '指定一位 AI，體力 +30';
+
+  @override
+  String get shopItemMood => '心情提振';
+
+  @override
+  String get shopItemMoodSub => '指定一位 AI，心情 +20';
+
+  @override
+  String get shopChoose => '選擇送給哪位 AI';
+
+  @override
+  String get shopNoChat => '還沒有會話，先建立一個人設';
+
+  @override
+  String get shopNotEnough => '餘額不足';
+
+  @override
+  String get shopDone => '兌換成功，已生效';
+
+  @override
+  String shopDeduct(String price) {
+    return '將從餘額中扣除 ¥$price';
+  }
+
+  @override
+  String get shopItemApology => '道歉卡';
+
+  @override
+  String get shopItemApologySub => '立刻平息 AI 的賭氣情緒，無需選擇對象';
+
+  @override
+  String whatsNewTitle(String version) {
+    return '更新內容（v$version）';
+  }
+
+  @override
+  String get whatsNewBody =>
+      'v1.0.3 更新內容：\n\n• 視訊訊息：相簿與檔案均可傳送視訊，AI 能看懂視訊內容\n• 檔案直讀：小檔案直接注入上下文，AI 真正讀到內容\n• 貼紙三件套：AI 先讀懂表情包含義再主動傳送，並顯示縮圖\n• 黏人度：可配置 AI 主動發話的頻率與次數上限\n• 商城改版：購買後跳轉聊天，禮物以卡片送達且 AI 真正收到；商城入口更明顯\n• 自動備份：預設開啟，覆蓋式備份可隨更新與重裝存活，首次啟動偵測到備份可一鍵恢復\n• 模型目錄：內建離線快照兜底，補上 GLM-5.3-Flash 系列視訊支援標記\n• 編輯器保護：人設編輯器所有退出方式都會先確認再丟棄修改\n• 同步上游 v1.0.2：嚮導、SKILLS、LaTeX 繪圖卡片、檢查更新\n• 介面與效能優化';
+
+  @override
   String get attachCamera => '相機';
 
   @override
@@ -7276,4 +7593,63 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get skillImporting => '匯入中…';
+
+  @override
+  String get autoBackupTitle => '自動備份';
+
+  @override
+  String get autoBackupSub => '備份以覆蓋方式寫入應用外部的一個檔案，更新或重裝後仍可找回。';
+
+  @override
+  String get autoBackupModeChange => '資料變更時自動備份（推薦）';
+
+  @override
+  String autoBackupModeInterval(int n) {
+    return '每隔 $n 小時';
+  }
+
+  @override
+  String autoBackupModeWindow(String from, String to) {
+    return '每天 $from – $to';
+  }
+
+  @override
+  String get autoBackupOff => '關閉';
+
+  @override
+  String autoBackupLast(String when) {
+    return '上次：$when';
+  }
+
+  @override
+  String get autoBackupNever => '尚未備份';
+
+  @override
+  String get autoBackupOffTitle => '關閉自動備份？';
+
+  @override
+  String get autoBackupOffMessage => '關閉後，更新或解除安裝應用可能會導致聊天、人設和設定遺失。';
+
+  @override
+  String get autoBackupOffAction => '關閉';
+
+  @override
+  String get autoBackupRestoreTitle => '發現備份';
+
+  @override
+  String autoBackupRestoreMessage(String when) {
+    return '偵測到 $when 的備份，要恢復聊天、人設和設定嗎？';
+  }
+
+  @override
+  String get autoBackupRestoreAction => '恢復';
+
+  @override
+  String get autoBackupRestored => '備份已恢復';
+
+  @override
+  String get autoBackupRestoreFailed => '備份讀取失敗';
+
+  @override
+  String get whatsNewEntry => '更新說明';
 }

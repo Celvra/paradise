@@ -4,7 +4,7 @@
 const _vendorVision = {'claude', 'gemini', 'grok'};
 
 final _visionRe = RegExp(
-  r'\b(gpt-4o|gpt-4\.1|gpt-4-turbo|gpt-5|o1|o3|o4|llama-3\.[89]|llama-4|llava|qwen-vl|qwen2\.5-vl|qwen3-vl|step-1v|kimi-vl|glm-4v|mistral-small|nova-(lite|pro|premier)|command-r|phi-[34](\.5)?|phi-4|aya|gemma-3|internlm|ernie-4\.5|hunyuan-vision|minicpm-v|internvl|pixtral)',
+  r'\b(gpt-4o|gpt-4\.1|gpt-4-turbo|gpt-5|o1|o3|o4|llama-3\.[89]|llama-4|llava|qwen-vl|qwen2\.5-vl|qwen3-vl|deepseek-v4|step-1v|kimi-vl|glm-4v|mistral-small|nova-(lite|pro|premier)|command-r|phi-[34](\.5)?|phi-4|aya|gemma-3|internlm|ernie-4\.5|hunyuan-vision|minicpm-v|internvl|pixtral)',
 );
 
 final _reasoningRe = RegExp(
@@ -43,15 +43,17 @@ double _generationOf(List<String> tokens) {
 }
 
 class IdGuess {
-  const IdGuess({this.vision, this.reasoning, this.textToImage});
+  const IdGuess({this.vision, this.reasoning, this.textToImage, this.video});
   final bool? vision;
   final bool? reasoning;
   final bool? textToImage;
+  final bool? video;
 
   IdGuess merge(IdGuess other) => IdGuess(
         vision: vision == true || other.vision == true,
         reasoning: reasoning == true || other.reasoning == true,
         textToImage: textToImage == true || other.textToImage == true,
+        video: video == true || other.video == true,
       );
 }
 
@@ -66,5 +68,13 @@ IdGuess guessFromModelId(String id) {
   final floor = _thinkingFloor[family];
   if (_reasoningRe.hasMatch(n) || (floor != null && _generationOf(tokens) >= floor)) reasoning = true;
   if (_t2iRe.hasMatch(n)) t2i = true;
-  return IdGuess(vision: vision, reasoning: reasoning, textToImage: t2i);
+  // gemini is the one family that reliably takes native video input; its
+  // image-generation variants are the exception, so require vision too
+  var video = family == 'gemini' && vision && !n.contains('image');
+  // qwen vl/omni generations understand video; deepseek v4.1 flash is
+  // image-vision only (verified against the official API: no video input);
+  // the id arrives normalized (dashes, lowercased)
+  final videoRe = RegExp(r'qwen(-vl|2-5-vl|3-vl|3-omni)');
+  if (videoRe.hasMatch(n)) video = true;
+  return IdGuess(vision: vision, reasoning: reasoning, textToImage: t2i, video: video);
 }

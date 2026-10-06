@@ -148,6 +148,7 @@ List<ChatTurn> makeTurns(List<ChatTurn> messages) => messages
     .where((m) => m.content.any((part) => switch (part) {
           TextPart(:final text) => text.trim().isNotEmpty,
           ImagePart(:final data) => data.isNotEmpty,
+          VideoPart(:final data) => data.isNotEmpty,
           ToolCallPart() => true,
           ToolResultPart() => true,
         }))

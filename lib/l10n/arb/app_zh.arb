@@ -484,6 +484,10 @@
   "@aiCapsVision": {
     "description": "Capability tag on a chain node"
   },
+  "aiCapsVideo": "视频",
+  "@aiCapsVideo": {
+    "description": "Capability tag on a chain node"
+  },
   "aiTokensUnknown": "未知",
   "@aiTokensUnknown": {
     "description": "Shown for a context window the catalog does not know"
@@ -756,7 +760,7 @@
   "@aboutLinkFailed": {
     "description": "Bulletin when the community link cannot be opened"
   },
-  "settingsAboutSub": "版本 1.0.2",
+  "settingsAboutSub": "版本 1.0.3",
   "@settingsAboutSub": {
     "description": "Settings row subtitle of the about entry"
   },
@@ -772,7 +776,7 @@
   "@settingsAboutRepo": {
     "description": "Repository link in the about dialog"
   },
-  "settingsAboutThanks": "鸣谢:\n\nKelivo - ToolCall 参考\nhttps://github.com/Chevey339/kelivo\n\nSillyTavern - 人设卡参考\nhttps://github.com/SillyTavern/SillyTavern",
+  "settingsAboutThanks": "鸣谢:\n\nKelivo - ToolCall 参考\nhttps://github.com/Chevey339/kelivo\n\nSillyTavern - 人设卡参考\nhttps://github.com/SillyTavern/SillyTavern\n\nUser-6170 & Kimi work-K2.8 Preview - v1.0.3 功能开发\nhttps://github.com/yzc12345779",
   "@settingsAboutThanks": {
     "description": "Acknowledgements to the projects this one was modelled on"
   },
@@ -1381,6 +1385,10 @@
     "description": "Preview lead for a photo message"
   },
   "msgLeadMusic": "音乐",
+  "msgLeadVideo": "视频",
+  "@msgLeadVideo": {
+    "description": "视频消息的预览前缀"
+  },
   "@msgLeadMusic": {
     "description": "Preview lead for a music message"
   },
@@ -3158,6 +3166,178 @@
   "@attachTabGallery": {
     "description": ""
   },
+  "attachFilterAll": "全部",
+  "@attachFilterAll": {
+    "description": "相册筛选：图片和视频一起显示"
+  },
+  "attachFilterImages": "图片",
+  "@attachFilterImages": {
+    "description": "相册筛选：只看图片"
+  },
+  "attachFilterVideos": "视频",
+  "@attachFilterVideos": {
+    "description": "相册筛选：只看视频"
+  },
+  "attachFilterAllAlbums": "全部相簿",
+  "@attachFilterAllAlbums": {
+    "description": "相簿筛选：合并显示所有相簿"
+  },
+  "attachAlbumFallback": "相簿",
+  "@attachAlbumFallback": {
+    "description": "未命名相簿的默认名称"
+  },
+  "attachNoVision": "当前模型不支持图片输入，只能发送普通文字文件",
+  "@attachNoVision": {
+    "description": "用户给不支持图片的模型选择图片时的提示"
+  },
+  "attachNoVideo": "当前模型不支持视频输入，无法发送此视频",
+  "@attachNoVideo": {
+    "description": "用户给不支持视频的模型选择视频时的提示"
+  },
+  "attachVideoFailed": "无法播放此视频",
+  "@attachVideoFailed": {
+    "description": "全屏视频播放器解码失败时的文案"
+  },
+  "personaClingyHeader": "粘人度",
+  "@personaClingyHeader": {
+    "description": "Section header of the clinginess settings on the persona editor"
+  },
+  "personaClingyFooter": "开启后，你长时间没回复时，这个人设会主动给你发消息。",
+  "@personaClingyFooter": {
+    "description": "Note under the clinginess section"
+  },
+  "personaClingyTitle": "主动发消息",
+  "@personaClingyTitle": {
+    "description": "Switch that lets the persona speak up on its own"
+  },
+  "personaClingySub": "你长时间没回复时主动找话",
+  "@personaClingySub": {
+    "description": "Subtitle of the proactive messages switch"
+  },
+  "personaClingyInterval": "多久没回复后发",
+  "@personaClingyInterval": {
+    "description": "Row that picks how long the user has to stay quiet before the persona writes first"
+  },
+  "personaClingyCap": "限制主动次数",
+  "@personaClingyCap": {
+    "description": "Switch that caps consecutive proactive messages"
+  },
+  "personaClingyCapSub": "连续主动发言达到这个数后暂停，你回复后计数重置",
+  "@personaClingyCapSub": {
+    "description": "Subtitle of the proactive count limit switch"
+  },
+  "personaClingyMax": "最多连续主动",
+  "@personaClingyMax": {
+    "description": "Row that picks the cap on consecutive proactive messages"
+  },
+  "personaClingyMinutes": "{min} 分钟",
+  "@personaClingyMinutes": {
+    "description": "Minutes label for the clinginess interval picker",
+    "placeholders": {
+      "min": {
+        "type": "int"
+      }
+    }
+  },
+  "personaClingyHours": "{h} 小时",
+  "@personaClingyHours": {
+    "description": "Hours label for the clinginess interval picker",
+    "placeholders": {
+      "h": {
+        "type": "int"
+      }
+    }
+  },
+  "personaClingyNeedsProactive": "全局主动消息开关处于关闭状态，打开前粘人设置不会生效。",
+  "@personaClingyNeedsProactive": {
+    "description": "Warning under the clinginess section while the global proactive switch is off"
+  },
+  "shopTitle": "商城",
+  "@shopTitle": {
+    "description": "Title of the shop page"
+  },
+  "shopEntry": "商城",
+  "@shopEntry": {
+    "description": "Row in the wallet page that opens the shop"
+  },
+  "shopEntrySub": "用余额给 AI 兑换好感、体力",
+  "@shopEntrySub": {
+    "description": "Subtitle of the shop row in the wallet page"
+  },
+  "shopBalance": "当前余额",
+  "@shopBalance": {
+    "description": "Balance line at the top of the shop page"
+  },
+  "shopItemAffection": "好感度提升",
+  "@shopItemAffection": {
+    "description": "Shop item: +10 affection"
+  },
+  "shopItemAffectionSub": "指定一位 AI，好感度 +10",
+  "@shopItemAffectionSub": {
+    "description": "Subtitle of the affection boost item"
+  },
+  "shopItemEnergy": "体力补充",
+  "@shopItemEnergy": {
+    "description": "Shop item: +30 energy"
+  },
+  "shopItemEnergySub": "指定一位 AI，体力 +30",
+  "@shopItemEnergySub": {
+    "description": "Subtitle of the energy refill item"
+  },
+  "shopItemMood": "心情提振",
+  "@shopItemMood": {
+    "description": "Shop item: +20 mood"
+  },
+  "shopItemMoodSub": "指定一位 AI，心情 +20",
+  "@shopItemMoodSub": {
+    "description": "Subtitle of the mood lift item"
+  },
+  "shopChoose": "选择送给哪位 AI",
+  "@shopChoose": {
+    "description": "Title of the target picker in the shop"
+  },
+  "shopNoChat": "还没有会话，先创建一个人设",
+  "@shopNoChat": {
+    "description": "Message when the shop has nobody to boost"
+  },
+  "shopNotEnough": "余额不足",
+  "@shopNotEnough": {
+    "description": "Message when a purchase exceeds the balance"
+  },
+  "shopDone": "兑换成功，已生效",
+  "@shopDone": {
+    "description": "Confirmation after a shop purchase"
+  },
+  "shopDeduct": "将从余额中扣除 ¥{price}",
+  "@shopDeduct": {
+    "description": "Confirm dialog message naming the price",
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "shopItemApology": "道歉卡",
+  "@shopItemApology": {
+    "description": "Shop item: cools the global annoyance to the minimum"
+  },
+  "shopItemApologySub": "立刻平息 AI 的赌气情绪，无需选择对象",
+  "@shopItemApologySub": {
+    "description": "Subtitle of the apology card"
+  },
+  "whatsNewTitle": "更新内容（v{version}）",
+  "@whatsNewTitle": {
+    "description": "Title of the one-time whats-new dialog",
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "whatsNewBody": "v1.0.3 更新内容：\n\n• 视频消息：相册与文件均可发送视频，AI 能看懂视频内容\n• 文件直读：小文件直接注入上下文，AI 真正读到内容\n• 贴纸三件套：AI 先读懂表情包含义再主动发送，并显示缩略图\n• 粘人度：可配置 AI 主动发话的频率与次数上限\n• 商城改版：购买后跳转聊天，礼物以卡片送达且 AI 真正收到；商城入口更明显\n• 自动备份：默认开启，覆盖式备份可随更新与重装存活，首次启动检测到备份可一键恢复\n• 模型目录：内置离线快照兜底，补上 GLM-5.3-Flash 系列视频支持标记\n• 编辑器保护：人设编辑器所有退出方式都会先确认再丢弃修改\n• 同步上游 v1.0.2：向导、SKILLS、LaTeX 绘图卡片、检查更新\n• 界面与性能优化",
+  "@whatsNewBody": {
+    "description": "Body of the one-time whats-new dialog, one bullet per line"
+  },
   "attachCamera": "相机",
   "@attachCamera": {
     "description": "相册网格顶部相机入口的文案"
@@ -3696,5 +3876,60 @@
   "skillImporting": "导入中…",
   "@skillImporting": {
     "description": "技能下载时的提示"
+  },
+  "autoBackupTitle": "自动备份",
+  "autoBackupSub": "备份以覆盖方式写入应用外部的一个文件，更新或重装后仍可找回。",
+  "autoBackupModeChange": "数据变化时自动备份（推荐）",
+  "autoBackupModeInterval": "每隔 {n} 小时",
+  "@autoBackupModeInterval": {
+    "description": "auto backup",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "autoBackupModeWindow": "每天 {from} – {to}",
+  "@autoBackupModeWindow": {
+    "description": "auto backup",
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "autoBackupOff": "关闭",
+  "autoBackupLast": "上次：{when}",
+  "@autoBackupLast": {
+    "description": "auto backup",
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "autoBackupNever": "尚未备份",
+  "autoBackupOffTitle": "关闭自动备份？",
+  "autoBackupOffMessage": "关闭后，更新或卸载应用可能会导致聊天、人设和设置丢失。",
+  "autoBackupOffAction": "关闭",
+  "autoBackupRestoreTitle": "发现备份",
+  "autoBackupRestoreMessage": "检测到 {when} 的备份，要恢复聊天、人设和设置吗？",
+  "@autoBackupRestoreMessage": {
+    "description": "auto backup",
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "autoBackupRestoreAction": "恢复",
+  "autoBackupRestored": "备份已恢复",
+  "autoBackupRestoreFailed": "备份读取失败",
+  "whatsNewEntry": "更新说明",
+  "@whatsNewEntry": {
+    "description": "Settings row that reopens the current version highlights"
   }
 }

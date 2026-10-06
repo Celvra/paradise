@@ -154,6 +154,12 @@ List<Map<String, dynamic>> geminiContents(List<ChatTurnLike> turns) {
         parts.add({
           'inlineData': {'mimeType': p.mime, 'data': p.data}
         });
+      } else if (p is VideoPart) {
+        // only gemini takes inline video today; the request is gated by the
+        // model's video flag long before it reaches this converter
+        parts.add({
+          'inlineData': {'mimeType': p.mime, 'data': p.data}
+        });
       } else if (p is ToolCallPart) {
         parts.add({
           'functionCall': {'name': p.name, 'args': p.args},

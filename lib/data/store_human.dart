@@ -319,13 +319,16 @@ extension StoreHuman on Store {
 
     // stickers
     final stickerLine = hs.stickerFreq <= 0.02 ? 'The user asked you not to send stickers on your own.' : 'Use a sticker in roughly ${(hs.stickerFreq * 100).round()}% of your turns when it fits the emotion.';
+    // keep the stickers this conversation actually used inside the catalogue
+    // cut, so an id mentioned in the history below keeps its meaning here
+    final recentStickerIds = {for (final m in c.msgs.reversed.take(80)) if (m.kind == MsgKind.sticker && m.data['sid'] != null) '${m.data['sid']}'};
     b.add([
       '# Stickers',
       stickerLine,
       hs.stickerOnly ? 'You may answer with only a sticker and no text when a human would (e.g. a lazy reply to "在吗").' : 'Never reply with only a sticker, write text as well.',
-      hs.aiSaveSticker ? 'If the user sends a meme or sticker you like, call save_sticker with the message id, an emotion word and tags.' : 'You may not save new stickers.',
+      hs.aiSaveSticker ? 'If the user sends a meme or sticker you like, call save_sticker: first say in desc what the image actually shows, then give an emotion word and tags. Skip images that only make sense in this one conversation. You can see image stickers directly when your model has vision; if it does not, do not save pictures blind.' : 'You may not save new stickers.',
       'Pick by the current emotion and context, call send_sticker with an id from this library or with an emotion word:',
-      if (hh.stickers.items.isEmpty) kStickerLibEmptyNote else hh.stickers.catalogue(limit: 30),
+      if (hh.stickers.items.isEmpty) kStickerLibEmptyNote else hh.stickers.catalogue(limit: 30, prio: recentStickerIds),
     ].join('\n'));
 
     // drawn once and reused: the rng is seeded per turn, so asking twice would
@@ -756,7 +759,7 @@ extension StoreHuman on Store {
           // proactive message, that chain is capped elsewhere.
           if (!proactive && failure == null) {
             final annoyed = hs.annoyScore >= 4.5;
-            final t2 = hh.scheduler.rollProactive(chatId: c.id, s: st, cfg: hs, now: _nowMs, rng: rng, userAnnoyed: annoyed);
+            final t2 = hh.scheduler.rollProactive(chatId: c.id, s: st, cfg: hs, now: _nowMs, rng: rng, userAnnoyed: annoyed, maxConsecutive: c.persona.clingyCap ? c.persona.clingyMax : null);
             if (t2 != null) hh.logGate('${c.persona.name} ${t2.id} [${proactiveWire(t2.type)}] queued by the post reply dice, fires in ${_ago(t2.fireAt - _nowMs)}');
           }
         }
@@ -820,7 +823,17 @@ _runs[c.id]?.row = row;
   /// gate to the due ones and lets the assistant write the messages.
   Future<void> humanTick() async {
     final hh = human;
-    if (hh == null || !hh.settings.enabled || hh.ticking) return;
+    if (hh == null) {
+      _clingyTick();
+      return;
+    }
+    if (hh.ticking) return;
+    if (!hh.settings.enabled) {
+      // the humanize pipeline is off, but persona clinginess is a standalone
+      // switch and still owes the chat its check-ins
+      _clingyTick();
+      return;
+    }
     hh.ticking = true;
     try {
       final hs = hh.settings;
@@ -828,7 +841,7 @@ _runs[c.id]?.row = row;
       hh.memory.decay(now: now);
       for (final c in chats) {
         c.human.tick(now);
-        hh.scheduler.autoTasks(chatId: c.id, s: c.human, cfg: hs, now: now);
+        hh.scheduler.autoTasks(chatId: c.id, s: c.human, cfg: hs, now: now, persona: c.persona);
       }
       // todos that came due become reminder tasks on the most recent chat
       final due = hh.memory.dueReminders(now);
@@ -849,7 +862,7 @@ _runs[c.id]?.row = row;
         }
         now = _nowMs;
         final rng = HumanRandom.forTurn(hs, c.id, c.human.turn + 31);
-        final g = hh.scheduler.gate(task, c.human, hs, now, rng);
+        final g = hh.scheduler.gate(task, c.human, hs, now, rng, maxConsecutive: c.persona.clingyCap ? c.persona.clingyMax : null);
         hh.logGate('${c.persona.name} ${task.id} [${proactiveWire(task.type)}] -> ${g.verdict.name}: ${g.reason}');
         if (g.verdict == Verdict.skip) {
           task.status = TaskStatus.skipped;
@@ -889,9 +902,96 @@ _runs[c.id]?.row = row;
     hh.changed();
   }
 
+  // ------------------------------------------------------- standalone clingy
+
+  /// Persona clinginess without the humanize pipeline: the 15 second heartbeat
+  /// reaches here whenever the global humanize switch is off, and a chat whose
+  /// persona misses the user gets at most one check-in per silence period.
+  /// When humanize is on, its own scheduler keeps owning the clingy switch.
+  void _clingyTick() {
+    if (humanOn) return;
+    final now = _nowMs;
+    for (final c in chats) {
+      final p = c.persona;
+      if (!p.clingy || p.clingySilentMin <= 0) continue;
+      if (c.muted || _runs.containsKey(c.id)) continue;
+      if (c.msgs.isEmpty) continue;
+      // silence counts from the newest message on either side, so a check-in
+      // that just went out restarts the wait instead of chaining forever
+      final newest = c.msgs.last.time;
+      final silentFor = now - (newest > c.human.lastAiAt ? newest : c.human.lastAiAt);
+      if (silentFor < p.clingySilentMin * 60000) continue;
+      if (p.clingyCap) {
+        // trailing incoming bubbles since the user's last message; the user
+        // sending again breaks the run, which is the refresh the cap promises
+        var proactive = 0;
+        for (final m in c.msgs.reversed) {
+          if (m.service) continue;
+          if (m.out) break;
+          proactive++;
+        }
+        if (proactive >= p.clingyMax) continue;
+      }
+      unawaited(_clingyFire(c, p));
+    }
+  }
+
+  Future<void> _clingyFire(Chat c, Persona p) async {
+    // the config check comes first: marking the chat as spoken before knowing
+    // we can actually speak would silently swallow a whole silence period
+    final cfg = _ai;
+    final nodes = chainFor(c);
+    if (cfg == null || nodes.isEmpty || !nodes.every((n) => cfg.keyOf(n.providerId).trim().isNotEmpty)) return;
+    // mark before the request so a slow model cannot retrigger on the next tick
+    c.human.noteAi(_nowMs, proactive: true);
+    c.touch();
+    final run = _Run();
+    _runs[c.id] = run;
+    c.typing = true;
+    c.touch();
+    final buf = StringBuffer();
+    try {
+      final turns = <ChatTurn>[
+        ...await _history(c),
+        ChatTurn('user', [
+          TextPart('[The user has been quiet for about ${p.clingySilentMin} minutes. You miss them. Send one short, natural message to check in, in your own tone. Do not nag and do not mention this note.]'),
+        ]),
+      ];
+      await runChain(
+        settings: cfg.settings,
+        apiKeys: cfg.apiKeys,
+        system: _systemPrompt(c),
+        messages: turns,
+        nodes: nodes,
+        tools: const [],
+        options: ChainOptions(
+          cancel: run.token,
+          sessionId: c.id,
+          onChunk: (chunk) {
+            if (chunk.isText) buf.write(chunk.delta);
+          },
+        ),
+      );
+      if (run.cancelled) return;
+      final text = buf.toString().trim();
+      if (text.isNotEmpty) {
+        c.msgs.add(Msg(id: _id(), out: false, text: text, time: _nowMs));
+        if (openId != c.id) c.unread++;
+      }
+      // an empty or failed check-in stays silent: it retries on a later
+      // silence and never surfaces a service row that would read like a crash
+    } catch (_) {
+      // same reasoning: silence is the right failure mode for a nudge
+    } finally {
+      _runs.remove(c.id);
+      c.typing = false;
+      c.touch();
+      _save();
+    }
+  }
+
   /// Debug panel button: run a task right now, ignoring time and gate.
-  Future<void> triggerTaskNow(String id) async {
-    final hh = human;
+  Future<void> triggerTaskNow(String id) async {    final hh = human;
     final task = hh?.scheduler.byId(id);
     if (hh == null || task == null || !task.open) return;
     final c = chats.where((e) => e.id == task.chatId).firstOrNull;
@@ -1137,7 +1237,7 @@ _runs[c.id]?.row = row;
 
     // ---- stickers
     tools.addAll([
-      HTool('send_sticker', 'Send a sticker from the library. Give an id, or an emotion/context word and one is chosen for you.', {
+      HTool('send_sticker', 'Send a sticker from the library. Give an id, or an emotion/context word and one is chosen for you. Only send one that genuinely fits this exact moment; when in doubt, send text instead of forcing a sticker. You can see image stickers the user sends, so you know what the library ones look like once they have appeared in the chat.', {
         'id': _p('string', 'sticker id from the catalogue'),
         'emotion': _p('string', 'emotion or context words, e.g. 无语, 笑死, 敷衍'),
       }, (a) async {
@@ -1145,43 +1245,59 @@ _runs[c.id]?.row = row;
         var s = hh.stickers.byId(_str(a, 'id'));
         s ??= hh.stickers.pick(_str(a, 'emotion'), mood: st.mood, rng: env.rng);
         if (s == null) return 'Error: no sticker matches.';
-        final m = await sendNow('', kind: MsgKind.sticker, data: {'emoji': s.kind == StickerKind.emoji ? s.value : '', 'sid': s.id, 'path': s.kind == StickerKind.emoji ? '' : s.value, 'gif': s.kind == StickerKind.gif});
+        final m = await sendNow('', kind: MsgKind.sticker, data: {'emoji': s.kind == StickerKind.emoji ? s.value : '', 'sid': s.id, 'path': s.kind == StickerKind.emoji ? '' : s.value, 'gif': s.kind == StickerKind.gif, 'thumb': s.thumb});
         if (m == null) return 'Interrupted.';
         hh.stickers.markUsed(s.id);
         hh.changed();
         return 'Sent sticker ${s.id} (${s.emotion}).';
       }),
       if (hs.aiSaveSticker)
-        HTool('save_sticker', 'Save a sticker or meme image the user sent into your library, with an emotion and tags.', {
+        HTool('save_sticker', 'Save a sticker or meme image the user sent into your library, with an emotion and tags. Only save ones a human would actually reuse; skip bland or context-bound images. You must have SEEN the image (vision) to save it: say in desc what it actually depicts.', {
           'message_id': _p('string', 'id of the message carrying the sticker or image'),
           'emotion': _p('string', 'one word such as 笑死, 无语, 敷衍'),
           'tags': _arr('search tags'),
-          'name': _p('string', 'optional name'),
+          'desc': _p('string', 'one sentence: what the image actually shows and why it is funny or fitting'),
+          'name': _p('string', 'optional short name'),
         }, (a) async {
           final m = findMsg(c, _str(a, 'message_id'));
           if (m == null) return 'Error: message not found.';
           final tags = [for (final t in (a['tags'] as List? ?? const [])) '$t'];
+          final isEmoji = m.kind == MsgKind.sticker && '${m.data['emoji'] ?? ''}'.isNotEmpty;
+          if (!isEmoji) {
+            // an image the model cannot see can only be saved blind, and blind
+            // saves are how junk piles up in the library
+            final settings = _ai?.settings;
+            final canSee = settings != null && chainCaps(settings, chainFor(c)).vision;
+            if (!canSee) return 'Error: your current model cannot see images, so you would be saving something you do not understand. Ask the user what it means, or save it once a vision model is on the chain.';
+            if (hh.stickers.items.length >= 150) return 'Error: the sticker library is full (150). Do not save more until the user removes some.';
+          }
+          final desc = _str(a, 'desc');
+          if (!isEmoji && desc.isEmpty) return 'Error: describe what the image shows in desc first, so future you knows why it is saved.';
+          final name = _str(a, 'name').isNotEmpty ? _str(a, 'name') : desc;
           if (m.kind == MsgKind.sticker) {
             final emoji = '${m.data['emoji'] ?? ''}';
             final path = '${m.data['path'] ?? ''}';
-            final s = hh.stickers.add(kind: emoji.isNotEmpty ? StickerKind.emoji : (m.data['gif'] == true ? StickerKind.gif : StickerKind.image), value: emoji.isNotEmpty ? emoji : path, name: _str(a, 'name'), tags: tags, emotion: _str(a, 'emotion'), source: 'ai');
+            final s = hh.stickers.add(kind: emoji.isNotEmpty ? StickerKind.emoji : (m.data['gif'] == true ? StickerKind.gif : StickerKind.image), value: emoji.isNotEmpty ? emoji : path, name: name, tags: tags, emotion: _str(a, 'emotion'), source: 'ai', thumb: '${m.data['thumb'] ?? ''}');
             hh.changed();
             return 'Saved as ${s.id}.';
           }
           final path = m.data['path'] as String?;
           if (m.kind == MsgKind.photo && path != null && path.isNotEmpty) {
             var keep = path;
+            var thumb = '';
             try {
               final f = await _docFile('stickers', 'meme.jpg');
               await File(path).copy(f.path);
               keep = f.path;
+              final t = await _docFile('stickers_thumbs', 'thumb.png');
+              thumb = await makeStickerThumb(f.path, t.path) ?? '';
             } catch (_) {}
-            final s = hh.stickers.add(kind: StickerKind.image, value: keep, name: _str(a, 'name'), tags: tags, emotion: _str(a, 'emotion'), source: 'ai');
+            final s = hh.stickers.add(kind: StickerKind.image, value: keep, name: name, tags: tags, emotion: _str(a, 'emotion'), source: 'ai', thumb: thumb);
             hh.changed();
             return 'Saved as ${s.id}.';
           }
           return 'Error: that message has no image or sticker.';
-        }, required: ['message_id', 'emotion']),
+        }, required: ['message_id', 'emotion', 'desc']),
     ]);
 
     // ---- recall and typo
@@ -1218,6 +1334,16 @@ _runs[c.id]?.row = row;
         await f.writeAsBytes(res.bodyBytes);
         final m = await sendNow(_str(a, 'caption'), kind: MsgKind.photo, data: {'path': f.path, 'name': 'image.jpg', 'size': res.bodyBytes.length});
         return m == null ? 'Interrupted.' : 'Image sent.';
+      }, required: ['url']),
+      HTool('send_video', 'Send a video clip from an https url with an optional caption. Keep it short; clips up to 15 MB play inline, larger ones still send but the user has to download them.', {'url': _p('string', 'video url, mp4 or webm'), 'caption': _p('string', 'caption')}, (a) async {
+        final res = await http.get(Uri.parse(_str(a, 'url'))).timeout(const Duration(seconds: 60));
+        if (res.statusCode != 200 || res.bodyBytes.isEmpty) return 'Error: could not download the video (${res.statusCode}).';
+        if (res.bodyBytes.length > 64 * 1024 * 1024) return 'Error: the clip is over 64 MB, too large to send.';
+        final name = _str(a, 'url').split('?').first.split('/').last;
+        final f = await _docFile('ai_videos', name.isEmpty ? 'clip.mp4' : name);
+        await f.writeAsBytes(res.bodyBytes);
+        final m = await sendNow(_str(a, 'caption'), kind: MsgKind.video, data: {'path': f.path, 'name': f.path.split('/').last, 'size': res.bodyBytes.length, 'duration': 0});
+        return m == null ? 'Interrupted.' : 'Video sent.';
       }, required: ['url']),
       HTool('send_file', 'Create a text file with the given content and send it to the user as a file card they can tap to preview. Use this to share code, a note, or a standalone .html / .svg document, which the user can render directly.', {'name': _p('string', 'file name with extension, e.g. sketch.html or plot.svg'), 'content': _p('string', 'file content'), 'caption': _p('string', 'caption')}, (a) async {
         final f = await _docFile('ai_files', _str(a, 'name', 'note.txt'));

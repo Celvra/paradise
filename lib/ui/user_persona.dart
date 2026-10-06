@@ -672,6 +672,7 @@ class AnimatedAvatar extends StatelessWidget {
                         decoration: TextDecoration.none)))
             : Image.file(File(path),
                 fit: BoxFit.cover,
+                cacheWidth: (size * 3).round(),
                 errorBuilder: (_, __, ___) => Center(
                     child: Text(ch,
                         style: TextStyle(

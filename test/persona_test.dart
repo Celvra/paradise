@@ -638,9 +638,20 @@ group('card persistence shape', () {    test('an unknown position or role falls 
     await settle(t, 900);
 
     // the profile underneath keeps its own Global cell, so scope to the editor.
-    // the Model section sits below the fold, the list has to reach it first
+    // the Model section sits below the fold, the list has to reach it first.
+    // scroll to the Global chain row itself, not the section label: another
+    // section (clinginess) now sits between and the row can stay just below
+    // the viewport when only the label is scrolled into view
     Finder inEditor(String text) => find.descendant(of: find.byType(PersonaCardPage), matching: find.text(text));
-    await t.scrollUntilVisible(inEditor(AppLocalizationsEn().profileLabelModel), 300, scrollable: find.descendant(of: find.byType(PersonaCardPage), matching: find.byType(Scrollable)).first);
+    final editorScroll = find.descendant(of: find.byType(PersonaCardPage), matching: find.byType(Scrollable)).first;
+    // scrollUntilVisible doubles as the wait: the Global chain row only builds
+    // once the model catalog is ready, and the dragging pumps long enough
+    // for that async load to land
+    await t.scrollUntilVisible(inEditor(AppLocalizationsEn().personaModelGlobalChain), 300, scrollable: editorScroll);
+    // a row merely intersecting the viewport (all scrollUntilVisible
+    // guarantees) can sit under the floating header bar or the save bar,
+    // where its center does not hit-test. center it instead
+    Scrollable.ensureVisible(inEditor(AppLocalizationsEn().personaModelGlobalChain).evaluate().single, alignment: .5);
     await settle(t, 600);
 
     // the section starts on Global and the fallback switch stays hidden

@@ -13,6 +13,99 @@ part of 'store.dart';
 /// A part rather than a plain import because the extension only sees the store's
 /// privates from inside the same library, the same trick store_human.dart uses.
 extension BackupStore on Store {
+  // ---------------------------------------------------------- auto backup
+
+  void _loadAutoBackup() {
+    final sp = _sp;
+    autoBackup
+      ..mode = sp.getString('autoBackup.mode') ?? 'change'
+      ..intervalMin = sp.getInt('autoBackup.intervalMin') ?? 720
+      ..windowStart = sp.getInt('autoBackup.windowStart') ?? 180
+      ..windowEnd = sp.getInt('autoBackup.windowEnd') ?? 300
+      ..lastAt = sp.getInt('autoBackup.lastAt') ?? 0
+      ..lastHash = sp.getInt('autoBackup.lastHash') ?? 0;
+  }
+
+  /// Persists the policy; turning a mode on kicks an immediate write so the
+  /// switch never sits on an empty promise.
+  Future<void> setAutoBackup({String? mode, int? intervalMin, int? windowStart, int? windowEnd}) async {
+    final ab = autoBackup;
+    if (mode != null) ab.mode = mode;
+    if (intervalMin != null) ab.intervalMin = intervalMin;
+    if (windowStart != null) ab.windowStart = windowStart;
+    if (windowEnd != null) ab.windowEnd = windowEnd;
+    final sp = _sp;
+    await sp.setString('autoBackup.mode', ab.mode);
+    await sp.setInt('autoBackup.intervalMin', ab.intervalMin);
+    await sp.setInt('autoBackup.windowStart', ab.windowStart);
+    await sp.setInt('autoBackup.windowEnd', ab.windowEnd);
+    if (ab.enabled) await backupNow();
+    bump();
+  }
+
+  /// A cheap content fingerprint: ids, message counts and last message times
+  /// catch new and edited messages without paying for a full export first.
+  int _backupFingerprint() {
+    var h = 17;
+    for (final c in chats) {
+      h = (h * 31 + c.id.hashCode) & 0x7fffffff;
+      h = (h * 31 + c.msgs.length) & 0x7fffffff;
+      h = (h * 31 + (c.msgs.isEmpty ? 0 : c.msgs.last.time)) & 0x7fffffff;
+    }
+    h = (h * 31 + personas.length) & 0x7fffffff;
+    return h;
+  }
+
+  Future<void> _autoBackupTick() async {
+    if (_backupRunning) return;
+    final ab = autoBackup;
+    final sink = _backupSink;
+    if (!ab.enabled || sink == null) return;
+    final now = DateTime.now();
+    final fp = _backupFingerprint();
+    final changed = _backupDirty || fp != ab.lastHash;
+    if (!ab.shouldRun(now, dataChanged: changed)) return;
+    _backupRunning = true;
+    _backupDirty = false;
+    try {
+      final json = exportBackupString();
+      await sink.write(json);
+      ab.noteSuccess(now, fp);
+      await _sp.setInt('autoBackup.lastAt', ab.lastAt);
+      await _sp.setInt('autoBackup.lastHash', ab.lastHash);
+      bump();
+    } catch (_) {
+      // a failed backup must never surface as an app error; the next tick
+      // retries, and the change mode keeps the dirty mark via the fingerprint
+    } finally {
+      _backupRunning = false;
+    }
+  }
+
+  /// Forces a write immediately, whatever the schedule says.
+  Future<void> backupNow() async {
+    _backupDirty = true;
+    autoBackup.lastAt = 0;
+    await _autoBackupTick();
+  }
+
+  /// The backup an onboarding restore can offer. Null when none exists.
+  Future<String?> readAutoBackup() async {
+    final sink = _backupSink;
+    if (sink == null) return null;
+    try {
+      final raw = await sink.read();
+      return raw == null || raw.isEmpty ? null : raw;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Test seam: point the auto backup at a directory sink so a tick can be
+  /// verified end to end without the MediaStore channel.
+  @visibleForTesting
+  set debugBackupSink(BackupSink? sink) => _backupSink = sink;
+
   /// The document to hand the user. Never contains an API key.
   String exportBackupString() => buildBackup(
         chats: chats.map((c) => c.toJson()).toList(),

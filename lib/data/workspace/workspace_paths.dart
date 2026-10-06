@@ -105,7 +105,11 @@ class WorkspacePaths {
 
   final List<ExternalMount> externalMounts;
 
-  static String _canon(String path) => p.normalize(p.canonicalize(path));
+  // normalize only, not p.canonicalize: canonicalize lowercases on Windows,
+  // and the lowercase leaks into every hostPath the tools print or write.
+  // containment checks go through p.equals / p.isWithin, which are already
+  // case-insensitive on Windows, so nothing here needs the lowercase form
+  static String _canon(String path) => p.normalize(path);
 
   /// A binding that never picked a directory sends '', and a caller that saved
   /// a relative one sends that. Both mean "somewhere under /workspace" once
@@ -183,13 +187,17 @@ class WorkspacePaths {
   /// is how an `outside` path stays a host path in metadata and ends up with no
   /// link behind it.
   String toModelPath(String hostPath) {
+    // the model vocabulary is posix everywhere; p.split here so a host
+    // relative built with the Windows context ('a\b.txt') never leaks a
+    // backslash into what the model is handed
+    String under(String guestRoot, String rel) => rel.isEmpty ? guestRoot : p.posix.joinAll([guestRoot, ...p.split(rel)]);
     for (final m in externalMounts) {
       final rel = _relativeTo(m.hostPath, hostPath);
-      if (rel != null) return rel.isEmpty ? m.guestRoot : p.posix.join(m.guestRoot, rel);
+      if (rel != null) return under(m.guestRoot, rel);
     }
     for (final e in [(guestWorkspace, _workspaceRoot), (guestChat, _chatRoot), (guestSkills, _skillsRoot), (guestTmp, _tmpRoot)]) {
       final rel = _relativeTo(e.$2, hostPath);
-      if (rel != null) return rel.isEmpty ? e.$1 : p.posix.join(e.$1, rel);
+      if (rel != null) return under(e.$1, rel);
     }
     return _canon(hostPath);
   }
