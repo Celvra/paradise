@@ -130,6 +130,61 @@ class BubbleView extends StatefulWidget {
 class _BubbleViewState extends State<BubbleView> {
   final GlobalKey _gk = GlobalKey();
 
+  /// This bubble's own revision counter, while it is the one being streamed.
+  ///
+  /// Streamed text used to arrive through `Chat.touch()`, which notifies the
+  /// store and rebuilds the entire `ChatPage` — every bubble of the history —
+  /// once per chunk. The store now bumps a per-message revision instead, and the
+  /// one bubble listening to it is the only thing that repaints. This is
+  /// kelivo's `StreamingContentNotifier` pattern: a notifier per message id so
+  /// the page is never in the path of a character.
+  ///
+  /// Only a streaming message subscribes. A finished bubble has no revision to
+  /// watch, and kelivo is explicit about the same distinction: inactive rows are
+  /// handed an immutable listenable so they neither subscribe to a stream nor
+  /// retain a completed payload.
+  ValueNotifier<int>? _rev;
+
+  void _onRev() {
+    if (mounted) setState(() {});
+  }
+
+  /// Subscribes while this bubble is the live one, releases once it is not.
+  ///
+  /// The final chunk arrives before the message stops being a streaming one, so
+  /// the transition frame is already carrying the finished text: there is
+  /// nothing to catch after the flag clears.
+  void _syncRev() {
+    if (!widget.msg.streaming) {
+      _rev?.removeListener(_onRev);
+      _rev = null;
+      return;
+    }
+    final next = context.store.streams.revisionOf(widget.msg.id);
+    if (identical(next, _rev)) return;
+    _rev?.removeListener(_onRev);
+    _rev = next;
+    next.addListener(_onRev);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _syncRev();
+  }
+
+  @override
+  void didUpdateWidget(covariant BubbleView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _syncRev();
+  }
+
+  @override
+  void dispose() {
+    _rev?.removeListener(_onRev);
+    super.dispose();
+  }
+
   Rect _rect() {
     final box = _gk.currentContext!.findRenderObject() as RenderBox;
     final o = box.localToGlobal(Offset.zero);

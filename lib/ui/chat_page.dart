@@ -723,7 +723,14 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
         child: col,
       );
     }
-    return KeyedSubtree(key: _keyFor(m.id), child: col);
+    // A repaint boundary per row, which kelivo puts around every timeline item.
+    // The transcript is one big scrollable; without a boundary a repaint of the
+    // streaming bubble (or the flash highlight, or a card finishing its size
+    // animation) walks the paint for the whole viewport. With one, the changed
+    // row re-records its own layer and its neighbours reuse theirs. The keyed
+    // subtree above keeps the element identity that the reveal and the flash
+    // both rely on.
+    return KeyedSubtree(key: _keyFor(m.id), child: RepaintBoundary(child: col));
   }
 
   // search header close pill and the field pill

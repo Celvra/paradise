@@ -1,6 +1,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:highlight/highlight.dart' show highlight, Node;
 
+import '../../core/perf.dart';
+
 /// How a file is previewed, chosen from the extension and then from the first
 /// few KiB of the content.
 ///
@@ -95,6 +97,30 @@ String previewLanguageLabel(String path) {
   return l;
 }
 
+/// Global LRU of parsed highlight node trees, keyed by grammar + source.
+///
+/// Ported from kelivo's `_highlightNodeCache`. `highlight.parse` builds a full
+/// grammar tree and is by far the most expensive thing a code block does, and it
+/// used to run on every build of every fence: scrolling a long transcript back
+/// over the same code block re-parsed it each time it re-entered the viewport,
+/// and a streaming reply re-parsed the growing block on every frame.
+///
+/// The trees are theme independent — the theme is applied while converting nodes
+/// to spans — so an entry survives a light/dark switch and stays valid after the
+/// widget that created it is gone. 8 MiB matches kelivo's budget; the sizing
+/// function charges the source twice (UTF-16 code units) and each node a flat
+/// 64 bytes, which is the right order of magnitude for a node's object header
+/// plus its fields.
+final ByteLruCache<String, List<Node>> _highlightNodeCache = ByteLruCache<String, List<Node>>(
+  maxBytes: 8 << 20,
+  sizeOf: (key, value) => key.length * 2 + value.length * 64,
+);
+
+/// Counts real `highlight.parse` calls, so a test can prove the cache is hit
+/// rather than assume it. Kelivo asserts the same counter
+/// (`debugHighlightParseCount`).
+int debugHighlightParseCount = 0;
+
 /// Turns a highlighted tree into spans over [base].
 ///
 /// Any exception is swallowed and the whole thing falls back to one plain span:
@@ -103,12 +129,22 @@ List<TextSpan> previewSpans(String source, String? language, Map<String, TextSty
   if (language == null || language.isEmpty || language == 'plaintext' || source.isEmpty) {
     return [TextSpan(text: source, style: base)];
   }
+  final key = '$language\u0000$source';
+  final cached = _highlightNodeCache.get(key);
+  final nodes = cached ?? _parseCached(source, language, key);
+  if (nodes == null || nodes.isEmpty) return [TextSpan(text: source, style: base)];
+  return _convert(nodes, theme, base);
+}
+
+/// Parses [source] once and stores the tree, or returns null on a bad grammar.
+List<Node>? _parseCached(String source, String language, String key) {
   try {
+    debugHighlightParseCount++;
     final nodes = highlight.parse(source, language: language).nodes;
-    if (nodes == null || nodes.isEmpty) return [TextSpan(text: source, style: base)];
-    return _convert(nodes, theme, base);
+    if (nodes != null && nodes.isNotEmpty) _highlightNodeCache.put(key, nodes);
+    return nodes;
   } catch (_) {
-    return [TextSpan(text: source, style: base)];
+    return null;
   }
 }
 
