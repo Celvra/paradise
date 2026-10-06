@@ -10,6 +10,7 @@ import '../core/theme.dart';
 import '../core/ui_kit.dart';
 import '../data/ai/provider_model.dart';
 import '../data/models.dart';
+import '../data/speech_config.dart';
 import '../data/store.dart';
 import '../l10n/x.dart';
 import 'ai_model_picker.dart';
@@ -99,6 +100,21 @@ class _PersonaCardPageState extends State<PersonaCardPage> {
   late bool? _agent = widget.chat?.persona.agent;
   // skills this role may use, null follows the global set
   late List<String>? _skillIds = widget.chat?.persona.skillIds == null ? null : [...widget.chat!.persona.skillIds!];
+  // drawing and speaking, per role. The switches are plain bools (off
+  // unless turned on); the endpoint strings are empty when the role follows
+  // the global default, the same rule the model override already follows.
+  late bool _imageOn = widget.chat?.persona.imageEnabled ?? false;
+  late String _imageProvider = widget.chat?.persona.imageProvider ?? '';
+  late String _imageModel = widget.chat?.persona.imageModel ?? '';
+  late String _imageSize = widget.chat?.persona.imageSize ?? '';
+  late bool _ttsOn = widget.chat?.persona.ttsEnabled ?? false;
+  late TtsEngine? _ttsEngine = widget.chat?.persona.ttsEngine;
+  // endpoint and model overrides: empty follows the voice module, which is the
+  // common case; a role that must use a different server can name its own.
+  late String _ttsBaseUrl = widget.chat?.persona.ttsBaseUrl ?? '';
+  late String _ttsModel = widget.chat?.persona.ttsModel ?? '';
+  late String _ttsVoice = widget.chat?.persona.ttsVoice ?? '';
+  late bool _ttsAutoSpeak = widget.chat?.persona.ttsAutoSpeak ?? false;
   int _preset = -1;
 
   bool get _editing => widget.chat != null;
@@ -179,6 +195,17 @@ class _PersonaCardPageState extends State<PersonaCardPage> {
           agent: _agent,
           skillIds: _skillIds == null ? null : [..._skillIds!],
           clearSkillIds: _skillIds == null);
+      st.setPersonaGen(widget.chat!,
+          imageEnabled: _imageOn,
+          imageProvider: _imageProvider,
+          imageModel: _imageModel,
+          imageSize: _imageSize,
+          ttsEnabled: _ttsOn,
+          ttsEngine: _ttsEngine,
+          ttsBaseUrl: _ttsBaseUrl,
+          ttsModel: _ttsModel,
+          ttsVoice: _ttsVoice,
+          ttsAutoSpeak: _ttsAutoSpeak);
       Navigator.of(context).pop(widget.chat);
     } else {
       Navigator.of(context).pop(st.createChat(name, prompt,
@@ -192,7 +219,17 @@ class _PersonaCardPageState extends State<PersonaCardPage> {
           modelFallback: _modelFallback,
           thinking: _thinking,
           agent: _agent,
-          skillIds: _skillIds == null ? null : [..._skillIds!]));
+          skillIds: _skillIds == null ? null : [..._skillIds!],
+          imageEnabled: _imageOn,
+          imageProvider: _imageProvider,
+          imageModel: _imageModel,
+          imageSize: _imageSize,
+          ttsEnabled: _ttsOn,
+          ttsEngine: _ttsEngine,
+          ttsBaseUrl: _ttsBaseUrl,
+          ttsModel: _ttsModel,
+          ttsVoice: _ttsVoice,
+          ttsAutoSpeak: _ttsAutoSpeak));
     }
   }
 
@@ -246,7 +283,17 @@ class _PersonaCardPageState extends State<PersonaCardPage> {
         _modelFallback != c.modelFallback ||
         _thinking != c.thinking ||
         _agent != c.agent ||
-        !_sameSkills(_skillIds, c.skillIds);
+        !_sameSkills(_skillIds, c.skillIds) ||
+        _imageOn != c.imageEnabled ||
+        _imageProvider != c.imageProvider ||
+        _imageModel != c.imageModel ||
+        _imageSize != c.imageSize ||
+        _ttsOn != c.ttsEnabled ||
+        _ttsEngine != c.ttsEngine ||
+        _ttsBaseUrl != c.ttsBaseUrl ||
+        _ttsModel != c.ttsModel ||
+        _ttsVoice != c.ttsVoice ||
+        _ttsAutoSpeak != c.ttsAutoSpeak;
   }
 
   static bool _sameSkills(List<String>? a, List<String>? b) {
@@ -343,6 +390,7 @@ class _PersonaCardPageState extends State<PersonaCardPage> {
                   ),
                   _modelSection(p),
                   _replySection(),
+                  _voiceImageSection(p),
                   _skillsSection(),
                 ],
               ),
@@ -691,6 +739,223 @@ class _PersonaCardPageState extends State<PersonaCardPage> {
         ),
       ],
     );
+  }
+
+  // Drawing and speaking for this role alone.
+  //
+  // The two channels share a section because they are the same kind of
+  // decision: a tool the model gains, backed by an endpoint. The endpoint rows
+  // only appear once the channel is on, so a role that asked for neither keeps
+  // a short card, and a half configured pair cannot be saved by accident:
+  // leaving the endpoint empty means "use the global default", which is a
+  // working state rather than a broken one.
+  Widget _voiceImageSection(Pal p) {
+    final l = context.l;
+    final cfg = AiScope.read(context);
+    final settings = cfg.settings;
+    final speech = SpeechScope.read(context);
+
+    final globalImage = settings.imageProviderId.isNotEmpty && settings.imageModelId.isNotEmpty;
+
+    String pair(String id, String model, String fallbackLabel) {
+      if (id.trim().isEmpty && model.trim().isEmpty) return fallbackLabel;
+      final pv = findProvider(settings, id);
+      final name = pv?.name ?? id;
+      return model.trim().isEmpty ? name : '$name · ${model.trim()}';
+    }
+
+    final imageReady = _imageOn &&
+        (globalImage || (_imageProvider.trim().isNotEmpty && _imageModel.trim().isNotEmpty));
+    final engine = _ttsEngine ?? speech.engine;
+    final ttsReady = _ttsOn &&
+        (engine == TtsEngine.system ||
+            (speech.baseUrl.isNotEmpty && speech.apiKey.isNotEmpty) ||
+            (_ttsBaseUrl.trim().isNotEmpty && _ttsModel.trim().isNotEmpty));
+
+    return TgSection(
+      header: l.voiceImageHeader,
+      footer: l.voiceImageFooter,
+      children: [
+        TgCheckCell(
+          icon: Ic.image,
+          title: l.voiceImageDraw,
+          subtitle: l.voiceImageDrawSub,
+          value: _imageOn,
+          divider: _imageOn,
+          onChanged: (v) => setState(() => _imageOn = v),
+        ),
+        if (_imageOn) ...[
+          TgTextCell(
+            icon: Ic.ai,
+            title: l.voiceImageDrawModel,
+            subtitle: pair(_imageProvider, _imageModel,
+                globalImage ? l.voiceImageFollowGlobal : l.voiceImageNotConfigured),
+            value: l.personaModelChange,
+            onTap: () => _pickGenModel(forImage: true),
+          ),
+          TgTextCell(
+            icon: Ic.image,
+            title: l.voiceImageDrawSize,
+            subtitle: _imageSize.trim().isEmpty ? settings.imageSize : _imageSize.trim(),
+            value: l.personaModelChange,
+            divider: false,
+            onTap: _pickImageSize,
+          ),
+          if (!imageReady)
+            TgTextCell(
+              icon: Ic.info,
+              title: l.voiceImageNotConfigured,
+              color: p.danger,
+              divider: false,
+            ),
+        ],
+        TgCheckCell(
+          icon: Ic.unmute,
+          title: l.voiceImageSpeak,
+          subtitle: l.voiceImageSpeakSub,
+          value: _ttsOn,
+          divider: _ttsOn,
+          onChanged: (v) => setState(() => _ttsOn = v),
+        ),
+        if (_ttsOn) ...[
+          TgTextCell(
+            icon: Ic.gear,
+            title: l.voiceImageEngine,
+            subtitle: engine == TtsEngine.system ? l.voiceImageEngineSystemSub : l.voiceImageEngineApiSub,
+            value: engine == TtsEngine.system ? l.voiceImageEngineSystem : l.voiceImageEngineApi,
+            onTap: _pickTtsEngine,
+          ),
+          if (engine == TtsEngine.api) ...[
+            TgTextCell(
+              icon: Ic.globe,
+              title: l.speechBaseUrl,
+              subtitle: _ttsBaseUrl.trim().isEmpty
+                  ? (speech.baseUrl.isEmpty ? l.voiceImageNotConfigured : speech.baseUrl)
+                  : _ttsBaseUrl.trim(),
+              value: l.personaModelChange,
+              onTap: _pickTtsEndpoint,
+            ),
+            TgTextCell(
+              icon: Ic.unmute,
+              title: l.voiceImageVoice,
+              subtitle: _ttsVoice.trim().isEmpty
+                  ? (speech.voice.trim().isEmpty ? l.voiceImageFollowGlobal : speech.voice.trim())
+                  : _ttsVoice.trim(),
+              value: l.personaModelChange,
+              onTap: _pickVoice,
+            ),
+          ],
+          TgCheckCell(
+            icon: Ic.music,
+            title: l.voiceImageAutoSpeak,
+            subtitle: l.voiceImageAutoSpeakSub,
+            value: _ttsAutoSpeak,
+            divider: false,
+            onChanged: (v) => setState(() => _ttsAutoSpeak = v),
+          ),
+          if (!ttsReady)
+            TgTextCell(
+              icon: Ic.info,
+              title: l.voiceImageNotConfigured,
+              color: p.danger,
+              divider: false,
+            ),
+        ],
+      ],
+    );
+  }
+
+  /// Picks the image endpoint. The picker's follow row clears both halves
+  /// back to the global default, which is the empty string.
+  Future<void> _pickGenModel({required bool forImage}) async {
+    final cfg = AiScope.read(context);
+    final l = context.l;
+    final picked = await showAiModelPicker(
+      context,
+      cfg: cfg,
+      title: l.voiceImageDrawModel,
+      allowFollowChain: true,
+      followTitle: l.voiceImageFollowGlobal,
+      followSubtitle: l.personaModelFollowsSettings,
+    );
+    if (picked == null || !mounted) return;
+    setState(() {
+      _imageProvider = picked.providerId;
+      _imageModel = picked.modelId;
+    });
+  }
+
+  /// The voice endpoint override is free text: a role that must use a different
+  /// server names its base url here. Empty follows the voice module's own.
+  Future<void> _pickTtsEndpoint() async {
+    final l = context.l;
+    final speech = SpeechScope.read(context);
+    final v = await showTgInput(
+      context,
+      title: l.speechBaseUrl,
+      initial: _ttsBaseUrl,
+      hint: speech.baseUrl.isEmpty ? 'https://api.openai.com/v1' : speech.baseUrl,
+    );
+    if (v == null || !mounted) return;
+    setState(() => _ttsBaseUrl = v.trim());
+  }
+
+  /// Which engine speaks for this role: the device, an endpoint, or the voice
+  /// module's own setting. The sheet takes a non nullable value, so "follow"
+  /// is a sentinel string rather than null.
+  Future<void> _pickTtsEngine() async {
+    final l = context.l;
+    final speech = SpeechScope.read(context);
+    const follow = '__follow__';
+    final current = _ttsEngine == null
+        ? follow
+        : (_ttsEngine == TtsEngine.system ? 'system' : 'api');
+    final v = await showAiSelect<String>(
+      context,
+      title: l.voiceImageEngine,
+      value: current,
+      options: [
+        (
+          value: follow,
+          label: l.voiceImageFollowGlobal,
+          sub: speech.engine == TtsEngine.system
+              ? l.voiceImageEngineSystem
+              : l.voiceImageEngineApi,
+        ),
+        (value: 'system', label: l.voiceImageEngineSystem, sub: l.voiceImageEngineSystemSub),
+        (value: 'api', label: l.voiceImageEngineApi, sub: l.voiceImageEngineApiSub),
+      ],
+    );
+    if (v == null || !mounted) return;
+    setState(() => _ttsEngine = v == follow ? null : ttsEngineOf(v));
+  }
+
+  Future<void> _pickImageSize() async {
+    final l = context.l;
+    const sizes = ['1024x1024', '1536x1024', '1024x1536', '1792x1024', '1024x1792', '512x512'];
+    final v = await showAiSelect<String>(
+      context,
+      title: l.voiceImageDrawSize,
+      value: _imageSize.trim().isEmpty ? '1024x1024' : _imageSize.trim(),
+      options: [for (final s in sizes) (value: s, label: s, sub: null)],
+    );
+    if (v == null || !mounted) return;
+    setState(() => _imageSize = v);
+  }
+
+  /// The voice id is free text: a gateway with cloned voices takes ids no fixed
+  /// list could carry, so the documented set is only a hint in the field.
+  Future<void> _pickVoice() async {
+    final l = context.l;
+    final speech = SpeechScope.read(context);
+    final v = await showTgInput(
+      context,
+      title: l.voiceImageVoice,
+      initial: _ttsVoice,
+      hint: speech.voice.trim().isEmpty ? 'alloy' : speech.voice,
+    );
+    if (v == null || !mounted) return;
+    setState(() => _ttsVoice = v.trim());
   }
 
   Future<void> _pickSkills() async {

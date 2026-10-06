@@ -6872,6 +6872,390 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Importing…'**
   String get skillImporting;
+
+  /// Section header of the per persona voice and drawing section
+  ///
+  /// In en, this message translates to:
+  /// **'Voice and drawing'**
+  String get voiceImageHeader;
+
+  /// Section footer of the per persona voice and drawing section
+  ///
+  /// In en, this message translates to:
+  /// **'Each role decides for itself. Turning a channel on gives the model a tool it can call: it draws when it wants to show something, and speaks when a line is worth hearing. The endpoint comes from the global default unless this role overrides it.'**
+  String get voiceImageFooter;
+
+  /// Row title enabling image generation for this role
+  ///
+  /// In en, this message translates to:
+  /// **'Drawing'**
+  String get voiceImageDraw;
+
+  /// Row subtitle explaining image generation
+  ///
+  /// In en, this message translates to:
+  /// **'Let this role generate pictures with an OpenAI compatible image endpoint'**
+  String get voiceImageDrawSub;
+
+  /// Row title of the image model override
+  ///
+  /// In en, this message translates to:
+  /// **'Image model'**
+  String get voiceImageDrawModel;
+
+  /// Row title of the image size override
+  ///
+  /// In en, this message translates to:
+  /// **'Image size'**
+  String get voiceImageDrawSize;
+
+  /// Row title enabling speech for this role
+  ///
+  /// In en, this message translates to:
+  /// **'Voice'**
+  String get voiceImageSpeak;
+
+  /// Row subtitle explaining speech
+  ///
+  /// In en, this message translates to:
+  /// **'Let this role read lines out loud'**
+  String get voiceImageSpeakSub;
+
+  /// Row title of the speech engine picker
+  ///
+  /// In en, this message translates to:
+  /// **'Engine'**
+  String get voiceImageEngine;
+
+  /// Speech engine option: the device voice
+  ///
+  /// In en, this message translates to:
+  /// **'Device voice'**
+  String get voiceImageEngineSystem;
+
+  /// Speech engine option subtitle for the device voice
+  ///
+  /// In en, this message translates to:
+  /// **'The phone\'s own text to speech. Works offline and costs nothing.'**
+  String get voiceImageEngineSystemSub;
+
+  /// Speech engine option: an OpenAI compatible endpoint
+  ///
+  /// In en, this message translates to:
+  /// **'Speech endpoint'**
+  String get voiceImageEngineApi;
+
+  /// Speech engine option subtitle for the endpoint
+  ///
+  /// In en, this message translates to:
+  /// **'Any OpenAI compatible audio/speech endpoint. Can carry a cloned voice.'**
+  String get voiceImageEngineApiSub;
+
+  /// Row title of the voice id override
+  ///
+  /// In en, this message translates to:
+  /// **'Voice id'**
+  String get voiceImageVoice;
+
+  /// Row subtitle for the voice id override
+  ///
+  /// In en, this message translates to:
+  /// **'Empty uses the global default'**
+  String get voiceImageVoiceSub;
+
+  /// Row title of the automatic read aloud switch
+  ///
+  /// In en, this message translates to:
+  /// **'Read replies aloud'**
+  String get voiceImageAutoSpeak;
+
+  /// Row subtitle of the automatic read aloud switch
+  ///
+  /// In en, this message translates to:
+  /// **'Speak every finished reply without being asked'**
+  String get voiceImageAutoSpeakSub;
+
+  /// Hint shown when no default endpoint exists yet
+  ///
+  /// In en, this message translates to:
+  /// **'Set a default image and speech endpoint in Settings > AI replies first.'**
+  String get voiceImageNotConfigured;
+
+  /// Settings row title for the default voice and drawing endpoints
+  ///
+  /// In en, this message translates to:
+  /// **'Voice and drawing'**
+  String get aiSettingsVoiceImage;
+
+  /// Settings row subtitle for the default voice and drawing endpoints
+  ///
+  /// In en, this message translates to:
+  /// **'Default endpoints for the roles that ask for them'**
+  String get aiSettingsVoiceImageSub;
+
+  /// Row title of the default image provider
+  ///
+  /// In en, this message translates to:
+  /// **'Image endpoint'**
+  String get aiSettingsImageProvider;
+
+  /// Row title of the default image model
+  ///
+  /// In en, this message translates to:
+  /// **'Image model'**
+  String get aiSettingsImageModel;
+
+  /// Row title of the default image size
+  ///
+  /// In en, this message translates to:
+  /// **'Image size'**
+  String get aiSettingsImageSize;
+
+  /// Row title of the default speech engine
+  ///
+  /// In en, this message translates to:
+  /// **'Speech engine'**
+  String get aiSettingsTtsEngine;
+
+  /// Row title of the default speech provider
+  ///
+  /// In en, this message translates to:
+  /// **'Speech endpoint'**
+  String get aiSettingsTtsProvider;
+
+  /// Row title of the default speech model
+  ///
+  /// In en, this message translates to:
+  /// **'Speech model'**
+  String get aiSettingsTtsModel;
+
+  /// Row title of the default voice
+  ///
+  /// In en, this message translates to:
+  /// **'Default voice'**
+  String get aiSettingsTtsVoice;
+
+  /// Row title of the default speech speed
+  ///
+  /// In en, this message translates to:
+  /// **'Speed'**
+  String get aiSettingsTtsSpeed;
+
+  /// Row subtitle of the default speech speed
+  ///
+  /// In en, this message translates to:
+  /// **'Playback rate for synthesized speech, 1.00x is the endpoint default'**
+  String get aiSettingsTtsSpeedSub;
+
+  /// Menu action that clears a choice
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get actionNone;
+
+  /// Value shown when a setting follows the global default
+  ///
+  /// In en, this message translates to:
+  /// **'Follow global'**
+  String get voiceImageFollowGlobal;
+
+  /// Settings row and page title for the voice module
+  ///
+  /// In en, this message translates to:
+  /// **'Voice'**
+  String get speechTitle;
+
+  /// Summary of the voice module when the device engine is selected
+  ///
+  /// In en, this message translates to:
+  /// **'Device voice'**
+  String get speechSummarySystem;
+
+  /// Header of the voice engine section
+  ///
+  /// In en, this message translates to:
+  /// **'Engine'**
+  String get speechEngineHeader;
+
+  /// Footer of the voice engine section
+  ///
+  /// In en, this message translates to:
+  /// **'The device voice works offline and costs nothing; an endpoint can carry a cloned voice at the price of a request per line.'**
+  String get speechEngineFooter;
+
+  /// Voice engine option: the phone's own text to speech
+  ///
+  /// In en, this message translates to:
+  /// **'Device voice'**
+  String get speechEngineSystem;
+
+  /// Voice engine option: an OpenAI compatible audio/speech endpoint
+  ///
+  /// In en, this message translates to:
+  /// **'Speech endpoint'**
+  String get speechEngineApi;
+
+  /// Header of the voice endpoint section
+  ///
+  /// In en, this message translates to:
+  /// **'Endpoint'**
+  String get speechEndpointHeader;
+
+  /// Footer of the voice endpoint section
+  ///
+  /// In en, this message translates to:
+  /// **'This is the one server the voice module talks to. It is separate from the AI providers on purpose: a speech endpoint is not a chat model.'**
+  String get speechEndpointFooter;
+
+  /// Row title of the speech endpoint base url
+  ///
+  /// In en, this message translates to:
+  /// **'Base url'**
+  String get speechBaseUrl;
+
+  /// Hint for the speech base url field
+  ///
+  /// In en, this message translates to:
+  /// **'https://api.openai.com/v1'**
+  String get speechBaseUrlHint;
+
+  /// Row title of the speech endpoint API key
+  ///
+  /// In en, this message translates to:
+  /// **'API key'**
+  String get speechApiKey;
+
+  /// Hint for the speech API key field
+  ///
+  /// In en, this message translates to:
+  /// **'Paste the key'**
+  String get speechApiKeyHint;
+
+  /// Row title of the speech auth style
+  ///
+  /// In en, this message translates to:
+  /// **'Auth'**
+  String get speechAuthStyle;
+
+  /// Auth style option
+  ///
+  /// In en, this message translates to:
+  /// **'Bearer'**
+  String get speechAuthBearer;
+
+  /// Auth style option
+  ///
+  /// In en, this message translates to:
+  /// **'x-api-key'**
+  String get speechAuthXApiKey;
+
+  /// Auth style option
+  ///
+  /// In en, this message translates to:
+  /// **'Query key'**
+  String get speechAuthQuery;
+
+  /// Row title of the speech model
+  ///
+  /// In en, this message translates to:
+  /// **'Model'**
+  String get speechModel;
+
+  /// Header of the speech voice section
+  ///
+  /// In en, this message translates to:
+  /// **'Voice'**
+  String get speechVoiceHeader;
+
+  /// Footer of the speech voice section
+  ///
+  /// In en, this message translates to:
+  /// **'The voice id is free text: a gateway with cloned voices accepts ids no fixed list could carry.'**
+  String get speechVoiceFooter;
+
+  /// Row title of the speech voice id
+  ///
+  /// In en, this message translates to:
+  /// **'Voice id'**
+  String get speechVoice;
+
+  /// Subtitle of the speech voice picker
+  ///
+  /// In en, this message translates to:
+  /// **'Type a voice id the endpoint accepts. The configured voice is shown as the hint.'**
+  String get speechVoicePickSub;
+
+  /// Row title of the speech speed
+  ///
+  /// In en, this message translates to:
+  /// **'Speed'**
+  String get speechSpeed;
+
+  /// Row title of the speech instructions
+  ///
+  /// In en, this message translates to:
+  /// **'Instructions'**
+  String get speechInstructions;
+
+  /// Hint for the speech instructions field
+  ///
+  /// In en, this message translates to:
+  /// **'Optional: how the voice should read. Only gpt-4o-mini-tts reads this.'**
+  String get speechInstructionsHint;
+
+  /// Notice shown when the speech endpoint is incomplete
+  ///
+  /// In en, this message translates to:
+  /// **'Fill in the base url to use the endpoint'**
+  String get speechNotReady;
+
+  /// Row title to clear the speech endpoint
+  ///
+  /// In en, this message translates to:
+  /// **'Clear endpoint'**
+  String get speechClear;
+
+  /// Confirm message for clearing the speech endpoint
+  ///
+  /// In en, this message translates to:
+  /// **'Remove the endpoint and the key? The device voice stays selected.'**
+  String get speechClearMessage;
+
+  /// Header of the device voice section
+  ///
+  /// In en, this message translates to:
+  /// **'Device voice'**
+  String get speechDeviceHeader;
+
+  /// Footer of the device voice section
+  ///
+  /// In en, this message translates to:
+  /// **'The phone\'s own text to speech is already configured: nothing to fill in.'**
+  String get speechDeviceFooter;
+
+  /// Row title to test the voice module
+  ///
+  /// In en, this message translates to:
+  /// **'Test voice'**
+  String get speechTest;
+
+  /// Subtitle of the voice test
+  ///
+  /// In en, this message translates to:
+  /// **'Speak a line through the selected engine'**
+  String get speechTestSub;
+
+  /// Default text for the voice test
+  ///
+  /// In en, this message translates to:
+  /// **'Hello, this is a test of the voice.'**
+  String get speechTestLine;
+
+  /// Error prefix for a failed voice test
+  ///
+  /// In en, this message translates to:
+  /// **'Could not speak: '**
+  String get speechTestFailed;
 }
 
 class _AppLocalizationsDelegate

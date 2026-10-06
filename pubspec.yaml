@@ -54,6 +54,14 @@ dependencies:
   # send the user to the system settings when a permission was denied for good
   permission_handler: ^13.0.2
 
+  # text to speech. Two engines, chosen per role: the offline system engine
+  # (flutter_tts) and any OpenAI compatible /audio/speech endpoint, whose mp3
+  # just_audio plays back. The engine choice lives on the persona, next to the
+  # model override, so one character can speak through the phone while another
+  # speaks through a cloned voice on a server.
+  flutter_tts: ^4.2.3
+  just_audio: ^0.10.5
+
 dev_dependencies:
   file_picker_platform_interface: ^4.0.0
   flutter_test:

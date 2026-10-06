@@ -3639,6 +3639,201 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get skillImporting => '导入中…';
+
+  @override
+  String get voiceImageHeader => '语音与画图';
+
+  @override
+  String get voiceImageFooter =>
+      '每个角色单独决定。开启后模型会多一个可调用的工具：想展示什么时会画图，遇到值得听的话时会说话。接口默认跟随全局设置，也可以给这个角色单独指定。';
+
+  @override
+  String get voiceImageDraw => '画图';
+
+  @override
+  String get voiceImageDrawSub => '允许这个角色用 OpenAI 兼容的画图接口生成图片';
+
+  @override
+  String get voiceImageDrawModel => '画图模型';
+
+  @override
+  String get voiceImageDrawSize => '图片尺寸';
+
+  @override
+  String get voiceImageSpeak => '语音';
+
+  @override
+  String get voiceImageSpeakSub => '允许这个角色朗读台词';
+
+  @override
+  String get voiceImageEngine => '引擎';
+
+  @override
+  String get voiceImageEngineSystem => '设备语音';
+
+  @override
+  String get voiceImageEngineSystemSub => '手机自带的语音合成，离线可用、不消耗额度。';
+
+  @override
+  String get voiceImageEngineApi => '语音接口';
+
+  @override
+  String get voiceImageEngineApiSub =>
+      '任意 OpenAI 兼容的 audio/speech 接口，可以使用克隆音色。';
+
+  @override
+  String get voiceImageVoice => '音色';
+
+  @override
+  String get voiceImageVoiceSub => '留空则使用全局默认';
+
+  @override
+  String get voiceImageAutoSpeak => '自动朗读回复';
+
+  @override
+  String get voiceImageAutoSpeakSub => '每条回复完成后自动朗读，无需模型调用工具';
+
+  @override
+  String get voiceImageNotConfigured => '请先在 设置 > AI 回复 里配置默认的画图和语音接口。';
+
+  @override
+  String get aiSettingsVoiceImage => '语音与画图';
+
+  @override
+  String get aiSettingsVoiceImageSub => '需要这些能力的角色使用的默认接口';
+
+  @override
+  String get aiSettingsImageProvider => '画图接口';
+
+  @override
+  String get aiSettingsImageModel => '画图模型';
+
+  @override
+  String get aiSettingsImageSize => '图片尺寸';
+
+  @override
+  String get aiSettingsTtsEngine => '语音引擎';
+
+  @override
+  String get aiSettingsTtsProvider => '语音接口';
+
+  @override
+  String get aiSettingsTtsModel => '语音模型';
+
+  @override
+  String get aiSettingsTtsVoice => '默认音色';
+
+  @override
+  String get aiSettingsTtsSpeed => '语速';
+
+  @override
+  String get aiSettingsTtsSpeedSub =>
+      'Playback rate for synthesized speech, 1.00x is the endpoint default';
+
+  @override
+  String get actionNone => 'None';
+
+  @override
+  String get voiceImageFollowGlobal => '跟随全局';
+
+  @override
+  String get speechTitle => '语音';
+
+  @override
+  String get speechSummarySystem => '设备语音';
+
+  @override
+  String get speechEngineHeader => '引擎';
+
+  @override
+  String get speechEngineFooter => '设备语音离线可用、不消耗额度；语音接口可以使用克隆音色，但每行要消耗一次请求。';
+
+  @override
+  String get speechEngineSystem => '设备语音';
+
+  @override
+  String get speechEngineApi => '语音接口';
+
+  @override
+  String get speechEndpointHeader => '接口';
+
+  @override
+  String get speechEndpointFooter => '这是语音模块连接的服务器。它刻意与 AI 供应商分开：语音接口不是聊天模型。';
+
+  @override
+  String get speechBaseUrl => '接口地址';
+
+  @override
+  String get speechBaseUrlHint => 'https://api.openai.com/v1';
+
+  @override
+  String get speechApiKey => 'API 密钥';
+
+  @override
+  String get speechApiKeyHint => '粘贴密钥';
+
+  @override
+  String get speechAuthStyle => '认证';
+
+  @override
+  String get speechAuthBearer => 'Bearer';
+
+  @override
+  String get speechAuthXApiKey => 'x-api-key';
+
+  @override
+  String get speechAuthQuery => 'Query key';
+
+  @override
+  String get speechModel => '模型';
+
+  @override
+  String get speechVoiceHeader => '音色';
+
+  @override
+  String get speechVoiceFooter => '音色是自由文本：支持克隆音色的接口可以接受任何 id，固定列表装不下。';
+
+  @override
+  String get speechVoice => '音色';
+
+  @override
+  String get speechVoicePickSub => '输入接口接受的音色 id。已配置的音色会显示为提示。';
+
+  @override
+  String get speechSpeed => '语速';
+
+  @override
+  String get speechInstructions => '指令';
+
+  @override
+  String get speechInstructionsHint => '可选：语音如何朗读。只有 gpt-4o-mini-tts 会读取。';
+
+  @override
+  String get speechNotReady => '填写接口地址后才能使用语音接口';
+
+  @override
+  String get speechClear => '清除接口';
+
+  @override
+  String get speechClearMessage => '要清除接口和密钥吗？设备语音会保留。';
+
+  @override
+  String get speechDeviceHeader => '设备语音';
+
+  @override
+  String get speechDeviceFooter => '手机自带的语音合成已可用，无需配置。';
+
+  @override
+  String get speechTest => '试听语音';
+
+  @override
+  String get speechTestSub => '用当前引擎朗读一行';
+
+  @override
+  String get speechTestLine => '你好，这是语音测试。';
+
+  @override
+  String get speechTestFailed => '无法朗读：';
 }
 
 /// The translations for Chinese, using the Han script (`zh_Hant`).
@@ -7276,4 +7471,192 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get skillImporting => '匯入中…';
+
+  @override
+  String get voiceImageHeader => '語音與畫圖';
+
+  @override
+  String get voiceImageFooter =>
+      '每個角色單獨決定。開啟後模型會多一個可呼叫的工具：想展示什麼時會畫圖，遇到值得聽的話時會說話。介面預設跟隨全域設定，也可以給這個角色單獨指定。';
+
+  @override
+  String get voiceImageDraw => '畫圖';
+
+  @override
+  String get voiceImageDrawSub => '允許這個角色用 OpenAI 相容的畫圖介面生成圖片';
+
+  @override
+  String get voiceImageDrawModel => '畫圖模型';
+
+  @override
+  String get voiceImageDrawSize => '圖片尺寸';
+
+  @override
+  String get voiceImageSpeak => '語音';
+
+  @override
+  String get voiceImageSpeakSub => '允許這個角色朗讀台詞';
+
+  @override
+  String get voiceImageEngine => '引擎';
+
+  @override
+  String get voiceImageEngineSystem => '裝置語音';
+
+  @override
+  String get voiceImageEngineSystemSub => '手機內建的語音合成，離線可用、不消耗額度。';
+
+  @override
+  String get voiceImageEngineApi => '語音介面';
+
+  @override
+  String get voiceImageEngineApiSub =>
+      '任意 OpenAI 相容的 audio/speech 介面，可以使用克隆音色。';
+
+  @override
+  String get voiceImageVoice => '音色';
+
+  @override
+  String get voiceImageVoiceSub => '留空則使用全域預設';
+
+  @override
+  String get voiceImageAutoSpeak => '自動朗讀回覆';
+
+  @override
+  String get voiceImageAutoSpeakSub => '每條回覆完成後自動朗讀，無需模型呼叫工具';
+
+  @override
+  String get voiceImageNotConfigured => '請先在 設定 > AI 回覆 裡設定預設的畫圖和語音介面。';
+
+  @override
+  String get aiSettingsVoiceImage => '語音與畫圖';
+
+  @override
+  String get aiSettingsVoiceImageSub => '需要這些能力的角色使用的預設介面';
+
+  @override
+  String get aiSettingsImageProvider => '畫圖介面';
+
+  @override
+  String get aiSettingsImageModel => '畫圖模型';
+
+  @override
+  String get aiSettingsImageSize => '圖片尺寸';
+
+  @override
+  String get aiSettingsTtsEngine => '語音引擎';
+
+  @override
+  String get aiSettingsTtsProvider => '語音介面';
+
+  @override
+  String get aiSettingsTtsModel => '語音模型';
+
+  @override
+  String get aiSettingsTtsVoice => '預設音色';
+
+  @override
+  String get aiSettingsTtsSpeed => '語速';
+
+  @override
+  String get voiceImageFollowGlobal => '跟隨全域';
+
+  @override
+  String get speechTitle => '語音';
+
+  @override
+  String get speechSummarySystem => '裝置語音';
+
+  @override
+  String get speechEngineHeader => '引擎';
+
+  @override
+  String get speechEngineFooter => '裝置語音離線可用、不消耗額度；語音介面可以使用克隆音色，但每行要消耗一次請求。';
+
+  @override
+  String get speechEngineSystem => '裝置語音';
+
+  @override
+  String get speechEngineApi => '語音介面';
+
+  @override
+  String get speechEndpointHeader => '介面';
+
+  @override
+  String get speechEndpointFooter => '這是語音模組連接的伺服器。它刻意與 AI 供應商分開：語音介面不是聊天模型。';
+
+  @override
+  String get speechBaseUrl => '介面位址';
+
+  @override
+  String get speechBaseUrlHint => 'https://api.openai.com/v1';
+
+  @override
+  String get speechApiKey => 'API 金鑰';
+
+  @override
+  String get speechApiKeyHint => '貼上金鑰';
+
+  @override
+  String get speechAuthStyle => '認證';
+
+  @override
+  String get speechAuthBearer => 'Bearer';
+
+  @override
+  String get speechAuthXApiKey => 'x-api-key';
+
+  @override
+  String get speechAuthQuery => 'Query key';
+
+  @override
+  String get speechModel => '模型';
+
+  @override
+  String get speechVoiceHeader => '音色';
+
+  @override
+  String get speechVoiceFooter => '音色是自由文本：支援克隆音色的介面可以接受任何 id，固定列表裝不下。';
+
+  @override
+  String get speechVoice => '音色';
+
+  @override
+  String get speechVoicePickSub => '輸入介面接受的音色 id。已配置的音色會顯示為提示。';
+
+  @override
+  String get speechSpeed => '語速';
+
+  @override
+  String get speechInstructions => '指令';
+
+  @override
+  String get speechInstructionsHint => '可選：語音如何朗讀。只有 gpt-4o-mini-tts 會讀取。';
+
+  @override
+  String get speechNotReady => '填寫介面位址後才能使用語音介面';
+
+  @override
+  String get speechClear => '清除介面';
+
+  @override
+  String get speechClearMessage => '要清除介面和金鑰嗎？裝置語音會保留。';
+
+  @override
+  String get speechDeviceHeader => '裝置語音';
+
+  @override
+  String get speechDeviceFooter => '手機內建的語音合成已可用，無需配置。';
+
+  @override
+  String get speechTest => '試聽語音';
+
+  @override
+  String get speechTestSub => '用目前引擎朗讀一行';
+
+  @override
+  String get speechTestLine => '你好，這是語音測試。';
+
+  @override
+  String get speechTestFailed => '無法朗讀：';
 }

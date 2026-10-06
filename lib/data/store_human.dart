@@ -1346,6 +1346,14 @@ _runs[c.id]?.row = row;
       tools.add(HTool(t.key, '[${t.serverName}] ${t.description}', Map<String, dynamic>.from((t.schema['properties'] as Map?) ?? const {}), (a) => hh.mcp.call(t, a),
           required: [for (final r in (t.schema['required'] as List? ?? const [])) '$r'], external: true));
     }
+
+    // ---- the drawing and speaking channels, when this role has one on.
+    // They go through sendNow so a card obeys the same pacing as a bubble.
+    tools.addAll(genTools(
+      c,
+      send: (text, {kind = MsgKind.text, data}) => sendNow(text, kind: kind, data: data),
+      cancel: env.run.token,
+    ));
     return tools;
   }
 

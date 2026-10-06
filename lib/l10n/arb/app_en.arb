@@ -4655,5 +4655,261 @@
   "skillImporting": "Importing…",
   "@skillImporting": {
     "description": "Bulletin while a skill archive downloads"
+  },
+  "voiceImageHeader": "Voice and drawing",
+  "@voiceImageHeader": {
+    "description": "Section header of the per persona voice and drawing section"
+  },
+  "voiceImageFooter": "Each role decides for itself. Turning a channel on gives the model a tool it can call: it draws when it wants to show something, and speaks when a line is worth hearing. The endpoint comes from the global default unless this role overrides it.",
+  "@voiceImageFooter": {
+    "description": "Section footer of the per persona voice and drawing section"
+  },
+  "voiceImageDraw": "Drawing",
+  "@voiceImageDraw": {
+    "description": "Row title enabling image generation for this role"
+  },
+  "voiceImageDrawSub": "Let this role generate pictures with an OpenAI compatible image endpoint",
+  "@voiceImageDrawSub": {
+    "description": "Row subtitle explaining image generation"
+  },
+  "voiceImageDrawModel": "Image model",
+  "@voiceImageDrawModel": {
+    "description": "Row title of the image model override"
+  },
+  "voiceImageDrawSize": "Image size",
+  "@voiceImageDrawSize": {
+    "description": "Row title of the image size override"
+  },
+  "voiceImageSpeak": "Voice",
+  "@voiceImageSpeak": {
+    "description": "Row title enabling speech for this role"
+  },
+  "voiceImageSpeakSub": "Let this role read lines out loud",
+  "@voiceImageSpeakSub": {
+    "description": "Row subtitle explaining speech"
+  },
+  "voiceImageEngine": "Engine",
+  "@voiceImageEngine": {
+    "description": "Row title of the speech engine picker"
+  },
+  "voiceImageEngineSystem": "Device voice",
+  "@voiceImageEngineSystem": {
+    "description": "Speech engine option: the device voice"
+  },
+  "voiceImageEngineSystemSub": "The phone's own text to speech. Works offline and costs nothing.",
+  "@voiceImageEngineSystemSub": {
+    "description": "Speech engine option subtitle for the device voice"
+  },
+  "voiceImageEngineApi": "Speech endpoint",
+  "@voiceImageEngineApi": {
+    "description": "Speech engine option: an OpenAI compatible endpoint"
+  },
+  "voiceImageEngineApiSub": "Any OpenAI compatible audio/speech endpoint. Can carry a cloned voice.",
+  "@voiceImageEngineApiSub": {
+    "description": "Speech engine option subtitle for the endpoint"
+  },
+  "voiceImageVoice": "Voice id",
+  "@voiceImageVoice": {
+    "description": "Row title of the voice id override"
+  },
+  "voiceImageVoiceSub": "Empty uses the global default",
+  "@voiceImageVoiceSub": {
+    "description": "Row subtitle for the voice id override"
+  },
+  "voiceImageAutoSpeak": "Read replies aloud",
+  "@voiceImageAutoSpeak": {
+    "description": "Row title of the automatic read aloud switch"
+  },
+  "voiceImageAutoSpeakSub": "Speak every finished reply without being asked",
+  "@voiceImageAutoSpeakSub": {
+    "description": "Row subtitle of the automatic read aloud switch"
+  },
+  "voiceImageNotConfigured": "Set a default image and speech endpoint in Settings > AI replies first.",
+  "@voiceImageNotConfigured": {
+    "description": "Hint shown when no default endpoint exists yet"
+  },
+  "aiSettingsVoiceImage": "Voice and drawing",
+  "@aiSettingsVoiceImage": {
+    "description": "Settings row title for the default voice and drawing endpoints"
+  },
+  "aiSettingsVoiceImageSub": "Default endpoints for the roles that ask for them",
+  "@aiSettingsVoiceImageSub": {
+    "description": "Settings row subtitle for the default voice and drawing endpoints"
+  },
+  "aiSettingsImageProvider": "Image endpoint",
+  "@aiSettingsImageProvider": {
+    "description": "Row title of the default image provider"
+  },
+  "aiSettingsImageModel": "Image model",
+  "@aiSettingsImageModel": {
+    "description": "Row title of the default image model"
+  },
+  "aiSettingsImageSize": "Image size",
+  "@aiSettingsImageSize": {
+    "description": "Row title of the default image size"
+  },
+  "aiSettingsTtsEngine": "Speech engine",
+  "@aiSettingsTtsEngine": {
+    "description": "Row title of the default speech engine"
+  },
+  "aiSettingsTtsProvider": "Speech endpoint",
+  "@aiSettingsTtsProvider": {
+    "description": "Row title of the default speech provider"
+  },
+  "aiSettingsTtsModel": "Speech model",
+  "@aiSettingsTtsModel": {
+    "description": "Row title of the default speech model"
+  },
+  "aiSettingsTtsVoice": "Default voice",
+  "@aiSettingsTtsVoice": {
+    "description": "Row title of the default voice"
+  },
+  "aiSettingsTtsSpeed": "Speed",
+  "@aiSettingsTtsSpeed": {
+    "description": "Row title of the default speech speed"
+  },
+  "aiSettingsTtsSpeedSub": "Playback rate for synthesized speech, 1.00x is the endpoint default",
+  "@aiSettingsTtsSpeedSub": {
+    "description": "Row subtitle of the default speech speed"
+  },
+  "actionNone": "None",
+  "@actionNone": {
+    "description": "Menu action that clears a choice"
+  },
+  "voiceImageFollowGlobal": "Follow global",
+  "@voiceImageFollowGlobal": {
+    "description": "Value shown when a setting follows the global default"
+  },
+  "speechTitle": "Voice",
+  "@speechTitle": {
+    "description": "Settings row and page title for the voice module"
+  },
+  "speechSummarySystem": "Device voice",
+  "@speechSummarySystem": {
+    "description": "Summary of the voice module when the device engine is selected"
+  },
+  "speechEngineHeader": "Engine",
+  "@speechEngineHeader": {
+    "description": "Header of the voice engine section"
+  },
+  "speechEngineFooter": "The device voice works offline and costs nothing; an endpoint can carry a cloned voice at the price of a request per line.",
+  "@speechEngineFooter": {
+    "description": "Footer of the voice engine section"
+  },
+  "speechEngineSystem": "Device voice",
+  "@speechEngineSystem": {
+    "description": "Voice engine option: the phone's own text to speech"
+  },
+  "speechEngineApi": "Speech endpoint",
+  "@speechEngineApi": {
+    "description": "Voice engine option: an OpenAI compatible audio/speech endpoint"
+  },
+  "speechEndpointHeader": "Endpoint",
+  "@speechEndpointHeader": {
+    "description": "Header of the voice endpoint section"
+  },
+  "speechEndpointFooter": "This is the one server the voice module talks to. It is separate from the AI providers on purpose: a speech endpoint is not a chat model.",
+  "@speechEndpointFooter": {
+    "description": "Footer of the voice endpoint section"
+  },
+  "speechBaseUrl": "Base url",
+  "@speechBaseUrl": {
+    "description": "Row title of the speech endpoint base url"
+  },
+  "speechBaseUrlHint": "https://api.openai.com/v1",
+  "@speechBaseUrlHint": {
+    "description": "Hint for the speech base url field"
+  },
+  "speechApiKey": "API key",
+  "@speechApiKey": {
+    "description": "Row title of the speech endpoint API key"
+  },
+  "speechApiKeyHint": "Paste the key",
+  "@speechApiKeyHint": {
+    "description": "Hint for the speech API key field"
+  },
+  "speechAuthStyle": "Auth",
+  "@speechAuthStyle": {
+    "description": "Row title of the speech auth style"
+  },
+  "speechAuthBearer": "Bearer",
+  "@speechAuthBearer": {
+    "description": "Auth style option"
+  },
+  "speechAuthXApiKey": "x-api-key",
+  "@speechAuthXApiKey": {
+    "description": "Auth style option"
+  },
+  "speechAuthQuery": "Query key",
+  "@speechAuthQuery": {
+    "description": "Auth style option"
+  },
+  "speechModel": "Model",
+  "@speechModel": {
+    "description": "Row title of the speech model"
+  },
+  "speechVoiceHeader": "Voice",
+  "@speechVoiceHeader": {
+    "description": "Header of the speech voice section"
+  },
+  "speechVoiceFooter": "The voice id is free text: a gateway with cloned voices accepts ids no fixed list could carry.",
+  "@speechVoiceFooter": {
+    "description": "Footer of the speech voice section"
+  },
+  "speechVoice": "Voice id",
+  "@speechVoice": {
+    "description": "Row title of the speech voice id"
+  },
+  "speechVoicePickSub": "Type a voice id the endpoint accepts. The configured voice is shown as the hint.",
+  "@speechVoicePickSub": {
+    "description": "Subtitle of the speech voice picker"
+  },
+  "speechSpeed": "Speed",
+  "@speechSpeed": {
+    "description": "Row title of the speech speed"
+  },
+  "speechInstructions": "Instructions",
+  "@speechInstructions": {
+    "description": "Row title of the speech instructions"
+  },
+  "speechInstructionsHint": "Optional: how the voice should read. Only gpt-4o-mini-tts reads this.",
+  "@speechInstructionsHint": {
+    "description": "Hint for the speech instructions field"
+  },
+  "speechNotReady": "Fill in the base url to use the endpoint",
+  "@speechNotReady": {
+    "description": "Notice shown when the speech endpoint is incomplete"
+  },
+  "speechClear": "Clear endpoint",
+  "@speechClear": {
+    "description": "Row title to clear the speech endpoint"
+  },
+  "speechClearMessage": "Remove the endpoint and the key? The device voice stays selected.",
+  "@speechClearMessage": {
+    "description": "Confirm message for clearing the speech endpoint"
+  },
+  "speechDeviceHeader": "Device voice",
+  "@speechDeviceHeader": {
+    "description": "Header of the device voice section"
+  },
+  "speechDeviceFooter": "The phone's own text to speech is already configured: nothing to fill in.",
+  "@speechDeviceFooter": {
+    "description": "Footer of the device voice section"
+  },
+  "speechTest": "Test voice",
+  "@speechTest": {
+    "description": "Row title to test the voice module"
+  },
+  "speechTestSub": "Speak a line through the selected engine",
+  "@speechTestSub": {
+    "description": "Subtitle of the voice test"
+  },
+  "speechTestLine": "Hello, this is a test of the voice.",
+  "@speechTestLine": {
+    "description": "Default text for the voice test"
+  },
+  "speechTestFailed": "Could not speak: ",
+  "@speechTestFailed": {
+    "description": "Error prefix for a failed voice test"
   }
 }

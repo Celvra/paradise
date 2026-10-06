@@ -14,6 +14,8 @@ import '../core/theme.dart';
 import '../core/ui_kit.dart';
 import '../app_info.dart' show appVersion;
 import '../data/models.dart';
+import '../data/speech_config.dart';
+import '../data/ai/provider_model.dart';
 import '../data/store.dart';
 import '../l10n/x.dart';
 import 'bubble.dart';
@@ -26,6 +28,7 @@ import 'skills_page.dart';
 import 'ai_model_picker.dart';
 import 'ai_reply_page.dart';
 import 'ai_settings_page.dart';
+import 'speech_page.dart';
 import 'human_pages.dart';
 
 // IconBackgroundColors pairs top and bottom
@@ -78,6 +81,7 @@ class SettingsTab extends StatelessWidget {
                 ),
                 _Cell(icon: Ic.smile, colors: _cyan, title: l.humanTitle, sub: l.humanSubtitle, onTap: () => openHumanSettings(context)),
                 _Cell(icon: Ic.chats, colors: _teal, title: l.aiReplyTitle, sub: aiReplySummary(st), onTap: () => openAiReplySettings(context)),
+                _Cell(icon: Ic.unmute, colors: _cyan, title: l.speechTitle, sub: speechSummary(context, l), onTap: () => openSpeechSettings(context)),
                 _Cell(icon: Ic.folder, colors: _gray, title: l.wsTitle, sub: st.workspace.all.isEmpty ? l.wsSub : wsSettingsSummary(st), onTap: () => openWorkspaceSettings(context)),
                 ListenableBuilder(
                   listenable: st.skills,
@@ -372,6 +376,15 @@ class SettingsTab extends StatelessWidget {
 
 /// Every entry names itself in its own language, so the list is readable
 /// whichever one the reader already knows.
+/// One line for the voice row: which engine is live, and whether the
+/// endpoint it needs has been filled in.
+String speechSummary(BuildContext context, AppLocalizations l) {
+  final cfg = SpeechScope.of(context);
+  if (cfg.engine == TtsEngine.system) return l.speechSummarySystem;
+  if (!cfg.apiReady) return l.speechNotReady;
+  return '${l.speechEngineApi} · ${cfg.model} · ${cfg.voice}';
+}
+
 String languageLabel(String? tag, AppLocalizations l) => switch (tag) {
       'en' => l.languageEnglish,
       'zh' => l.languageChineseSimplified,

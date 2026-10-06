@@ -39,6 +39,24 @@ String authWire(AuthStyle a) => switch (a) {
       AuthStyle.queryKey => 'query-key',
     };
 
+/// Which engine speaks a reply out loud.
+///
+/// [system] is the phone's own text to speech, which works offline, costs
+/// nothing and needs no key, but can only use the voices the device ships.
+/// [api] is any OpenAI compatible `/audio/speech` endpoint, which is the one
+/// that can carry a cloned or character voice, at the price of a request per
+/// line and a key on the provider.
+enum TtsEngine { system, api }
+
+TtsEngine ttsEngineOf(String raw) => switch (raw) {
+      'api' => TtsEngine.api,
+      _ => TtsEngine.system,
+    };
+
+String ttsEngineWire(TtsEngine e) => switch (e) {
+      TtsEngine.system => 'system',
+      TtsEngine.api => 'api',
+    };
 enum ModelSource { api, catalog, manual, none }
 
 ModelSource modelSourceOf(String raw) => switch (raw) {
@@ -142,6 +160,8 @@ class Provider {
     required this.apiKeyRef,
     required this.modelsPath,
     required this.chatPath,
+    required this.imagesPath,
+    required this.speechPath,
     required this.authStyle,
     required this.extraHeaders,
     required this.extraBody,
@@ -162,6 +182,8 @@ class Provider {
     String? apiKeyRef,
     String? modelsPath,
     String? chatPath,
+    String? imagesPath,
+    String? speechPath,
     AuthStyle authStyle = AuthStyle.bearer,
     String sessionHeader = '',
     String userAgent = '',
@@ -177,6 +199,8 @@ class Provider {
         apiKeyRef: apiKeyRef ?? id,
         modelsPath: modelsPath ?? '/models',
         chatPath: chatPath ?? '/chat/completions',
+        imagesPath: imagesPath ?? '/images/generations',
+        speechPath: speechPath ?? '/audio/speech',
         authStyle: authStyle,
         sessionHeader: sessionHeader,
         userAgent: userAgent,
@@ -197,6 +221,13 @@ class Provider {
   final String apiKeyRef;
   String modelsPath;
   String chatPath;
+  /// Where an OpenAI compatible image request goes. Defaults to
+  /// `/images/generations`; a gateway that re-homes the path overrides it
+  /// per provider rather than making every caller carry a url.
+  String imagesPath;
+  /// Where an OpenAI compatible speech request goes. Defaults to
+  /// `/audio/speech`, same override rule as the image path.
+  String speechPath;
   AuthStyle authStyle;
 
   /// Header some gateways use to pin a conversation to one backend. The app
@@ -227,6 +258,8 @@ class Provider {
         apiKeyRef: apiKeyRef,
         modelsPath: modelsPath,
         chatPath: chatPath,
+        imagesPath: imagesPath,
+        speechPath: speechPath,
         authStyle: authStyle,
         sessionHeader: sessionHeader,
         userAgent: userAgent,
@@ -247,6 +280,8 @@ class Provider {
         'apiKeyRef': apiKeyRef,
         'modelsPath': modelsPath,
         'chatPath': chatPath,
+        'imagesPath': imagesPath,
+        'speechPath': speechPath,
         'authStyle': authWire(authStyle),
         'sessionHeader': sessionHeader,
         'userAgent': userAgent,
@@ -267,6 +302,10 @@ class Provider {
         apiKeyRef: j['apiKeyRef'] as String? ?? j['id'] as String,
         modelsPath: j['modelsPath'] as String? ?? '/models',
         chatPath: j['chatPath'] as String? ?? '/chat/completions',
+        // providers stored before the image and speech paths existed keep
+        // the documented defaults, which is what those gateways already were
+        imagesPath: j['imagesPath'] as String? ?? '/images/generations',
+        speechPath: j['speechPath'] as String? ?? '/audio/speech',
         authStyle: authStyleOf(j['authStyle'] as String? ?? 'bearer'),
         sessionHeader: j['sessionHeader'] as String? ?? '',
         userAgent: j['userAgent'] as String? ?? '',
@@ -349,6 +388,9 @@ class AiSettings {
     required this.compaction,
     this.userAgent = '',
     this.globalHeaders = const [],
+    this.imageProviderId = '',
+    this.imageModelId = '',
+    this.imageSize = '1024x1024',
   });
 
   final List<Provider> providers;
@@ -376,6 +418,19 @@ class AiSettings {
   /// per provider ones so a provider can override a key.
   final List<KeyValue> globalHeaders;
 
+  /// Defaults for image generation. A persona may override every one of them;
+  /// empty means "use this". They live here rather than on the chain because an
+  /// image endpoint is not a chat model: it takes a prompt and returns pixels,
+  /// and it has no business in the fallback chain that answers messages.
+  ///
+  /// Speech is deliberately not here. It has its own module (SpeechConfig),
+  /// because a voice endpoint is not a chat provider either and folding it into
+  /// this list made a user add a fake provider just to hear a character talk.
+  final String imageProviderId;
+  final String imageModelId;
+  final String imageSize;
+
+
   AiSettings copyWith({
     List<Provider>? providers,
     List<ChainNode>? chain,
@@ -389,6 +444,9 @@ class AiSettings {
     CompactionSettings? compaction,
     String? userAgent,
     List<KeyValue>? globalHeaders,
+    String? imageProviderId,
+    String? imageModelId,
+    String? imageSize,
   }) =>
       AiSettings(
         providers: providers ?? this.providers,
@@ -403,6 +461,9 @@ class AiSettings {
         compaction: compaction ?? this.compaction,
         userAgent: userAgent ?? this.userAgent,
         globalHeaders: globalHeaders ?? this.globalHeaders,
+        imageProviderId: imageProviderId ?? this.imageProviderId,
+        imageModelId: imageModelId ?? this.imageModelId,
+        imageSize: imageSize ?? this.imageSize,
       );
 
   Map<String, dynamic> toJson() => {
@@ -418,6 +479,9 @@ class AiSettings {
         'compaction': compaction.toJson(),
         'userAgent': userAgent,
         'globalHeaders': globalHeaders.map((e) => e.toJson()).toList(),
+        'imageProviderId': imageProviderId,
+        'imageModelId': imageModelId,
+        'imageSize': imageSize,
       };
 
   static AiSettings fromJson(Map<String, dynamic> j) => AiSettings(
@@ -433,6 +497,9 @@ class AiSettings {
         compaction: j['compaction'] is Map ? CompactionSettings.fromJson(j['compaction'] as Map<String, dynamic>) : const CompactionSettings(),
         userAgent: j['userAgent'] as String? ?? '',
         globalHeaders: ((j['globalHeaders'] as List?) ?? const []).map((e) => KeyValue.fromJson(e as Map<String, dynamic>)).toList(),
+        imageProviderId: j['imageProviderId'] as String? ?? '',
+        imageModelId: j['imageModelId'] as String? ?? '',
+        imageSize: j['imageSize'] as String? ?? '1024x1024',
       );
 }
 
