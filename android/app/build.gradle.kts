@@ -163,20 +163,7 @@ val fetchWorkspaceLibs = tasks.register<Exec>("fetchWorkspaceLibs") {
     // absolute: the repo root is one above the Gradle root, and a relative
     // path would resolve against workingDir, which is how a fresh checkout
     // (CI) died with 127 while a tree that already had the .so files built fine
-    // Forward slashes: Git Bash on Windows swallows backslashes from native
-    // callers (D:\a\b turns into D:ab), which kills the script path there.
-    // Resolve bash from PATH ourselves: when WSL is enabled, Windows places a
-    // bash.exe stub in System32 that CreateProcess prefers over every real
-    // shell on PATH, and that stub cannot see host paths at all.
-    val pathExt = if (org.gradle.internal.os.OperatingSystem.current().isWindows) ".exe" else ""
-    val bash = System.getenv("PATH").orEmpty().split(File.pathSeparatorChar)
-        .asSequence()
-        .map { File(it, "bash$pathExt") }
-        .firstOrNull { it.isFile }
-        ?.absolutePath
-        ?.replace('\\', '/')
-        ?: "bash"
-    commandLine(bash, file("../../tool/fetch_proot.sh").absolutePath.replace('\\', '/'))
+    commandLine("bash", file("../../tool/fetch_proot.sh").absolutePath)
     // only when something is actually missing. The script itself is a network
     // round trip and a build should not need one.
     onlyIf {
