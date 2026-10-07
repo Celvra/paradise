@@ -20,8 +20,8 @@ void main(List<String> args) async {
           'oii_bridge: no cargo target for ${code.targetOS} ${code.targetArchitecture}');
     }
 
-    final cc = _ccFor(target, code);
-    final ar = _arFor(code);
+    final cc = _ccFor(target, code, input.packageRoot);
+    final ar = _arFor(code, input.packageRoot);
     final tripleVar = target.replaceAll('-', '_');
     // On an ARM64 Linux host the NDK r28 x86_64 lld runs under emulation and
     // crashes while linking this cdylib (free(): invalid next size). The native
@@ -29,11 +29,21 @@ void main(List<String> args) async {
     // supplies its sysroot, only the final linker is replaced. Keep the
     // regular NDK linker on x86_64 builders.
     final hostLld = code.targetOS == OS.android ? _nativeLldForArmHost() : null;
+    final tripleU = tripleVar.toUpperCase();
+    final clangFlag = _clangTargetFlag(target, code);
     final env = <String, String>{
       ...Platform.environment,
+      // cc-rs looks the compiler up under the underscored triple; the dashed
+      // form survives on POSIX shells but never reaches build scripts on
+      // Windows, where the environment block is rebuilt per process.
       if (cc != null) 'CC_$target': cc,
+      if (cc != null) 'CC_$tripleVar': cc,
+      if (clangFlag != null) 'CFLAGS_$tripleVar': clangFlag,
       if (ar != null) 'AR_$target': ar,
-      if (cc != null) 'CARGO_TARGET_${tripleVar.toUpperCase()}_LINKER': cc,
+      if (ar != null) 'AR_$tripleVar': ar,
+      if (cc != null) 'CARGO_TARGET_${tripleU}_LINKER': cc,
+      if (clangFlag != null)
+        'CARGO_TARGET_${tripleU}_RUSTFLAGS': '-Clink-arg=$clangFlag',
       if (hostLld != null)
         'RUSTFLAGS': '${Platform.environment['RUSTFLAGS'] ?? ''} -C link-arg=-fuse-ld=$hostLld'.trim(),
     };
@@ -63,6 +73,12 @@ void main(List<String> args) async {
     final env2 = {
       ...env,
       'CARGO_TARGET_DIR': cargoDir,
+      // Windows hosts without Visual Studio have no MSVC link.exe; the one
+      // that resolves from a stripped PATH is GNU coreutils link. Host build
+      // scripts still need to link for x86_64-pc-windows-msvc, so point cargo
+      // at a rust-lld copy named lld-link (the name rustc maps to the msvc
+      // flavor) and hand it the Windows SDK library search paths.
+      if (Platform.isWindows) ...?_windowsHostLinkEnv(),
     };
     final result = await Process.run(
       _cargo(),
@@ -112,6 +128,74 @@ void main(List<String> args) async {
   });
 }
 
+Map<String, String>? _windowsHostLinkEnv() {
+  final home = Platform.environment['HOME'] ?? Platform.environment['USERPROFILE'];
+  if (home == null) return null;
+  final toolchains = Directory('$home/.rustup/toolchains');
+  if (!toolchains.existsSync()) return null;
+  String? rustLld;
+  for (final tc in toolchains.listSync().whereType<Directory>()) {
+    final candidate = File(
+        '${tc.path}/lib/rustlib/x86_64-pc-windows-msvc/bin/rust-lld.exe');
+    if (candidate.existsSync()) {
+      rustLld = candidate.path;
+      break;
+    }
+  }
+  if (rustLld == null) return null;
+  // rustc picks the msvc flavor from the 'lld-link' file name and adds no
+  // further flags, so ship the copy under that name.
+  final cacheDir = Directory(
+      '${Platform.environment['TEMP'] ?? toolchains.parent.path}/oii_bridge_link');
+  if (!cacheDir.existsSync()) cacheDir.createSync(recursive: true);
+  final lldLink = File('${cacheDir.path}/lld-link.exe');
+  if (!lldLink.existsSync()) File(rustLld).copySync(lldLink.path);
+
+  String? sdkLib;
+  final kits = Directory(r'C:\Program Files (x86)\Windows Kits\10\Lib');
+  if (kits.existsSync()) {
+    final versions = kits.listSync().whereType<Directory>().toList()
+      ..sort((a, b) => b.path.compareTo(a.path));
+    for (final v in versions) {
+      final um = Directory('${v.path}/um/x64');
+      final ucrt = Directory('${v.path}/ucrt/x64');
+      if (um.existsSync() && ucrt.existsSync()) {
+        sdkLib = '${um.path};${ucrt.path}';
+        break;
+      }
+    }
+  }
+  // msvcrt.lib and the compiler runtime live with the VC toolset, not the
+  // Windows SDK. Any installed year/edition copy works.
+  String? vcLib;
+  final vsRoot = Directory(r'C:\Program Files (x86)\Microsoft Visual Studio');
+  if (vsRoot.existsSync()) {
+    outer:
+    for (final year in vsRoot.listSync().whereType<Directory>()) {
+      for (final edition in year.listSync().whereType<Directory>()) {
+        final root = Directory(
+            '${edition.path}/VC/Tools/MSVC');
+        if (!root.existsSync()) continue;
+        final versions = root.listSync().whereType<Directory>().toList()
+          ..sort((a, b) => b.path.compareTo(a.path));
+        for (final v in versions) {
+          final lib = Directory('${v.path}/lib/x64');
+          if (lib.existsSync()) {
+            vcLib = lib.path;
+            break outer;
+          }
+        }
+      }
+    }
+  }
+  final lib = [if (vcLib != null) vcLib!, if (sdkLib != null) sdkLib!].join(';');
+  final env = <String, String>{
+    'CARGO_TARGET_X86_64_PC_WINDOWS_MSVC_LINKER': lldLink.path,
+    if (sdkLib != null) 'LIB': sdkLib,
+  };
+  return env;
+}
+
 String? _nativeLldForArmHost() {
   if (!Platform.isLinux) return null;
   final arch = Process.runSync('uname', ['-m']);
@@ -140,9 +224,9 @@ String? _target(CodeConfig code) {
   return null;
 }
 
-String? _ccFor(String target, CodeConfig code) {
+String? _ccFor(String target, CodeConfig code, Uri packageRoot) {
   if (code.targetOS == OS.android) {
-    final ndk = _ndkRoot();
+    final ndk = _ndkRoot(packageRoot);
     if (ndk == null) return null;
     // api matches what the app declares; the NDK ships a wrapper per api
     final api = code.android.targetNdkApi;
@@ -155,15 +239,34 @@ String? _ccFor(String target, CodeConfig code) {
     final hostTag = Platform.isWindows
         ? 'windows-x86_64'
         : (Platform.isMacOS ? 'darwin-x86_64' : 'linux-x86_64');
-    return '$ndk/toolchains/llvm/prebuilt/$hostTag/bin/$triple-clang';
+    final bin = '$ndk/toolchains/llvm/prebuilt/$hostTag/bin';
+    // The NDK clang wrappers are .cmd batch files: cc-rs can shell out to
+    // them, but rustc invokes the linker with CreateProcess and cannot.
+    // Use clang.exe directly and hand every consumer its --target flag.
+    if (Platform.isWindows) return '$bin/clang.exe';
+    return '$bin/$triple-clang';
   }
   // host toolchain: cargo picks up the system cc on its own
   return null;
 }
 
-String? _arFor(CodeConfig code) {
+/// `--target=<ndk triple>` for direct clang.exe use; null where the NDK
+/// wrapper script already carries the triple.
+String? _clangTargetFlag(String target, CodeConfig code) {
+  if (code.targetOS != OS.android || !Platform.isWindows) return null;
+  final api = code.android.targetNdkApi;
+  final triple = switch (target) {
+    'aarch64-linux-android' => 'aarch64-linux-android$api',
+    'armv7-linux-androideabi' => 'armv7a-linux-androideabi$api',
+    'x86_64-linux-android' => 'x86_64-linux-android$api',
+    _ => target,
+  };
+  return '--target=$triple';
+}
+
+String? _arFor(CodeConfig code, Uri packageRoot) {
   if (code.targetOS != OS.android) return null;
-  final ndk = _ndkRoot();
+  final ndk = _ndkRoot(packageRoot);
   if (ndk == null) return null;
   final hostTag = Platform.isWindows
       ? 'windows-x86_64'
@@ -171,12 +274,40 @@ String? _arFor(CodeConfig code) {
   return '$ndk/toolchains/llvm/prebuilt/$hostTag/bin/llvm-ar';
 }
 
-String? _ndkRoot() {
+String? _ndkRoot(Uri packageRoot) {
   final env = Platform.environment['ANDROID_NDK_HOME'] ??
       Platform.environment['ANDROID_NDK_ROOT'];
   if (env != null && Directory(env).existsSync()) return env;
-  final home = Platform.environment['ANDROID_HOME'] ??
-      '${Platform.environment['HOME']}/Android/Sdk';
+  var home = Platform.environment['ANDROID_HOME'];
+  // Hook runners hand hooks a stripped environment where ANDROID_HOME is
+  // gone; the Flutter Gradle build already resolved the SDK, so read it back
+  // from the checked-in local.properties next to the app module.
+  if (home == null || !Directory('$home/ndk').existsSync()) {
+    // input.packageRoot is the oii_bridge package itself; the app module
+    // (and its local.properties) lives at the repo root one level up. URI
+    // resolution treats a trailing-slash-less base as a file, so walk the
+    // filesystem instead of resolving '../' by string.
+    final pkgDir = Directory(packageRoot.toFilePath());
+    var base = pkgDir;
+    for (var i = 0; i < 6; i++) {
+      final props = File('${base.path}/android/local.properties');
+      if (props.existsSync()) {
+        for (final line in props.readAsStringSync().split('\n')) {
+          if (line.startsWith('sdk.dir=')) {
+            home = line.substring('sdk.dir='.length).trim();
+            break;
+          }
+        }
+        if (home != null && Directory('$home/ndk').existsSync()) break;
+      }
+      final parent = base.parent;
+      if (parent.path == base.path) break;
+      base = parent;
+    }
+  }
+  if (home == null) {
+    home = '${Platform.environment['HOME']}/Android/Sdk';
+  }
   final ndkDir = Directory('$home/ndk');
   if (!ndkDir.existsSync()) return null;
   final versions = ndkDir.listSync().whereType<Directory>().toList()
@@ -194,10 +325,14 @@ String _cargo() {
   if (fromEnv != null && fromEnv.isNotEmpty) return fromEnv;
   final home = Platform.environment['HOME'];
   if (home != null) {
-    final rustupCargo = File('$home/.cargo/bin/cargo');
-    try {
-      if (rustupCargo.existsSync()) return rustupCargo.path;
-    } catch (_) {}
+    // Windows installs cargo.exe; File.existsSync does no PATHEXT lookup, so
+    // a bare 'cargo' check misses it and the fallback below silently degrades.
+    for (final name in ['cargo', 'cargo.exe']) {
+      final rustupCargo = File('$home/.cargo/bin/$name');
+      try {
+        if (rustupCargo.existsSync()) return rustupCargo.path;
+      } catch (_) {}
+    }
   }
   return 'cargo';
 }
