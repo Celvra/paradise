@@ -41,6 +41,7 @@ class BackupReport {
   bool ai = false;
   bool wallet = false;
   int tasks = 0;
+  int files = 0;
 
   /// Records that were present in the file but could not be used. A backup that
   /// quietly drops half a conversation is worse than one that says which half.
@@ -51,7 +52,8 @@ class BackupReport {
   @override
   String toString() => 'chats=$chats messages=$messages personas=$personas '
       'stickers=$stickers memories=$memories settings=$settings images=$images '
-      'human=$human secrets=$secrets ai=$ai warnings=${warnings.length}';
+      'human=$human secrets=$secrets ai=$ai files=$files '
+      'warnings=${warnings.length}';
 }
 
 /// A parsed file, held as plain maps so it can be inspected without a Store.

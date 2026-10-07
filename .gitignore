@@ -71,6 +71,11 @@ google-services.json
 tmp/
 *.zip
 
+# The OII bridge build hook regenerates these outputs.
+packages/oii_bridge/native/target/
+packages/oii_bridge/build/
+packages/oii_bridge/.dart_tool/
+
 # Widget Preview related
 .widget_preview/
 

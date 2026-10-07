@@ -87,6 +87,38 @@ void main() {
     );
     expect(m.preview, '能量饮料');
   });
+
+  test('gift survives a json round trip, so a restart keeps the card', () {
+    final m = Msg(
+      id: 'g1',
+      out: true,
+      text: '',
+      time: 123,
+      kind: MsgKind.gift,
+      data: {'item': 'energy', 'title': '能量饮料', 'effect': '+30 energy'},
+    );
+    final back = Msg.fromJson(Map<String, dynamic>.from(m.toJson()));
+    expect(back.kind, MsgKind.gift, reason: 'fromJson must not downgrade gift to text');
+    expect(back.preview, '能量饮料');
+    expect(back.data['effect'], '+30 energy');
+  });
+
+  test('gift survives a store reload from the same database', () async {
+    final dbPath = p.join(device.path, 'paradise.db');
+    final s = await boot();
+    final chat = Chat(id: 'c1', persona: Persona(name: 'Her', prompt: 'x', color: 0));
+    s.chats.add(chat);
+    s.sendGift(chat, itemId: 'energy', title: '能量饮料', effect: '+30 energy');
+    await rec.done.future;
+    // let the debounced save land, then boot again from the same file
+    await Future<void>.delayed(const Duration(milliseconds: 800));
+    final s2 = await Store.load(dbPath: dbPath);
+    final reloaded = s2.chats.where((c) => c.id == 'c1').toList();
+    expect(reloaded, hasLength(1));
+    final gifts = reloaded.single.msgs.where((m) => m.kind == MsgKind.gift).toList();
+    expect(gifts, hasLength(1), reason: 'the gift card must still be a gift after restart');
+    expect(gifts.single.preview, '能量饮料');
+  });
 }
 
 class _RecorderAdapter implements ProviderAdapter {

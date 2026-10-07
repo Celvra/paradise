@@ -29,7 +29,8 @@ class AutoBackup {
 
   bool get enabled => mode != 'off';
 
-  bool shouldRun(DateTime now, {required bool dataChanged, int minGapMs = 45000}) {
+  bool shouldRun(DateTime now,
+      {required bool dataChanged, int minGapMs = 45000}) {
     switch (mode) {
       case 'change':
         // the store debounces dirty marks; this gap keeps one editing burst
@@ -43,7 +44,8 @@ class AutoBackup {
         if (mins < windowStart || mins >= windowEnd) return false;
         // once per day: inside the window, only run if we have not written
         // since the window opened today
-        final open = DateTime(now.year, now.month, now.day, windowStart ~/ 60, windowStart % 60);
+        final open = DateTime(
+            now.year, now.month, now.day, windowStart ~/ 60, windowStart % 60);
         return lastAt < open.millisecondsSinceEpoch;
       default:
         return false;
@@ -61,62 +63,104 @@ class AutoBackup {
 /// collection, and a plain directory one, which is the fallback on platforms
 /// without that channel and in tests.
 ///
-/// A sink moves opaque archive bytes to one fixed address. Every write replaces
-/// what is there, so the copy on disk is always the newest one and a restore
-/// never has to choose between near-identical archives.
+/// A sink moves opaque archive bytes. Each successful write replaces the
+/// fixed-name backup, staging the new bytes first so a failed write cannot
+/// truncate the previous copy.
 abstract class BackupSink {
   Future<void> write(List<int> bytes);
   Future<List<int>?> read();
   Future<bool> exists();
 }
 
-/// The single file an automatic backup overwrites. The name is stable on
-/// purpose: it is what makes the local copy the latest one rather than the first
-/// of a pile.
 const autoBackupFileName = 'paradise_autobackup.zip';
 
-const autoBackupExt = 'zip';
-const autoBackupMime = 'application/zip';
+/// Backward compatible alias for the staged MediaStore/directory writer.
+const autoBackupName = autoBackupFileName;
 
-/// The name a remote copy is stored under, one per day. A date rather than a
-/// timestamp because the remote is written at most once a day: two runs on the
-/// same date describe the same day and replace each other, and the folder reads
-/// as a calendar instead of a log.
+/// Dated remote copies (PR #15) have independent retention from the local
+/// fixed-name automatic backup.
 String remoteBackupFileName(DateTime at) {
   String p(int v) => v.toString().padLeft(2, '0');
   return 'paradise-${at.year}${p(at.month)}${p(at.day)}.$autoBackupExt';
 }
+const autoBackupLegacyJson = 'paradise_autobackup.json';
+const autoBackupPrefix = 'paradise_autobackup-';
+const autoBackupExt = 'zip';
+const autoBackupMime = 'application/zip';
 
-/// The fallback sink: a plain directory the app can always write. It holds one
-/// archive at a fixed name and replaces it on every write, so the newest backup
-/// is always the one a restore reads.
+/// Name produced by older builds; still accepted when reading old backups.
+String legacyAutoBackupFileName(DateTime at) {
+  String p(int v) => v.toString().padLeft(2, '0');
+  final s =
+      '${at.year}${p(at.month)}${p(at.day)}-${p(at.hour)}${p(at.minute)}${p(at.second)}';
+  return '$autoBackupPrefix$s.$autoBackupExt';
+}
+
+final _legacyZipName = RegExp(r'^paradise_autobackup-\d{8}-\d{6}\.zip$');
+
 class DirBackupSink implements BackupSink {
   DirBackupSink(this.dir);
 
   final Directory dir;
 
-  File get _file => File('${dir.path}/$autoBackupFileName');
+  List<File> _oldArchives() {
+    if (!dir.existsSync()) return const [];
+    final out = dir
+        .listSync()
+        .whereType<File>()
+        .where((f) => _legacyZipName.hasMatch(f.uri.pathSegments.last))
+        .toList()
+      ..sort((a, b) => b.path.compareTo(a.path));
+    return out;
+  }
 
   @override
   Future<void> write(List<int> bytes) async {
     if (!await dir.exists()) await dir.create(recursive: true);
-    // writeAsBytes truncates first, so a shorter archive cannot leave the tail
-    // of a longer one behind
-    await _file.writeAsBytes(bytes, flush: true);
-  }
-
-  @override
-  Future<List<int>?> read() async {
+    // A temporary directory guarantees a unique staging path on the same file
+    // system. Never open the only good backup for writing; rename over it only
+    // after the new file has been flushed and closed.
+    final staging = await dir.createTemp('.paradise_autobackup-');
     try {
-      if (!await _file.exists()) return null;
-      return await _file.readAsBytes();
-    } catch (_) {
-      return null;
+      final temp = File('${staging.path}/$autoBackupName');
+      await temp.writeAsBytes(bytes, flush: true);
+      await temp.rename('${dir.path}/$autoBackupName');
+    } finally {
+      try {
+        await staging.delete(recursive: true);
+      } catch (_) {
+        // The staging directory is ours, but cleanup must not mask a write.
+      }
+    }
+    // Migration cleanup is best effort and must never touch other directories,
+    // fixed-name JSON, or unrelated files with a similar prefix.
+    for (final old in _oldArchives()) {
+      try {
+        await old.delete();
+      } catch (_) {
+        // The new fixed-name archive is already safe.
+      }
     }
   }
 
   @override
-  Future<bool> exists() => _file.exists();
+  Future<List<int>?> read() async {
+    for (final file in [
+      File('${dir.path}/$autoBackupName'),
+      ..._oldArchives(),
+      File('${dir.path}/$autoBackupLegacyJson')
+    ]) {
+      try {
+        if (await file.exists()) return await file.readAsBytes();
+      } catch (_) {
+        // A missing or unreadable file must not hide older readable backups.
+      }
+    }
+    return null;
+  }
+
+  @override
+  Future<bool> exists() => File('${dir.path}/$autoBackupName').exists();
 }
 
 /// MediaStore-backed sink (Android). A backup that only lives in app-private
@@ -132,14 +176,16 @@ class MediaStoreBackupSink implements BackupSink {
   bool _broken = false;
 
   Future<BackupSink> _fb() async {
-    return _fallback ??= DirBackupSink(Directory('${(await getApplicationDocumentsDirectory()).path}/backup'));
+    return _fallback ??= DirBackupSink(
+        Directory('${(await getApplicationDocumentsDirectory()).path}/backup'));
   }
 
   @override
   Future<void> write(List<int> bytes) async {
     if (_broken) return (await _fb()).write(bytes);
     try {
-      await _ch.invokeMethod<int>('write', bytes is Uint8List ? bytes : Uint8List.fromList(bytes));
+      await _ch.invokeMethod<int>(
+          'write', bytes is Uint8List ? bytes : Uint8List.fromList(bytes));
     } on MissingPluginException {
       _broken = true;
       return (await _fb()).write(bytes);

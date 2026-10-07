@@ -11,6 +11,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../app_info.dart' show appVersion;
 import '../core/perf.dart';
 import '../core/speech.dart';
 import '../core/theme.dart';
@@ -47,6 +48,7 @@ import 'human/notifications.dart';
 import 'human/scheduler.dart';
 import 'human/sticker_lib.dart';
 import 'models.dart';
+import 'oii/backup_archive.dart' show buildBackupArchive, hasOiiBackupManifest, parseBackupArchive, safeChatFileName, shaHex;
 import 'skills/skill.dart';
 import 'skills/skill_prompt.dart';
 import 'skills/skill_store.dart';
@@ -63,6 +65,7 @@ part 'store_agent.dart';
 part 'store_gen.dart';
 part 'store_workspace.dart';
 part 'backup_store.dart';
+part 'backup_store_oii.dart';
 
 class _Run {
   final AiCancel token = AiCancel();
@@ -203,6 +206,7 @@ class Store extends ChangeNotifier {
   FullBackupSink? _fullSink;
   bool _backupDirty = false;
   bool _backupRunning = false;
+  Directory? _debugBackupDocsDir;
   int _seq = 0;
 
   /// Provider list, fallback chain and API keys. Set once at startup.

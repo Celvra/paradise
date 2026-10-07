@@ -55,6 +55,10 @@ dependencies:
   # send the user to the system settings when a permission was denied for good
   permission_handler: ^13.0.2
 
+  # Local Rust OII bridge only; the plugin system is deliberately not included.
+  oii_bridge:
+    path: packages/oii_bridge
+
   # text to speech. Two engines, chosen per role: the offline system engine
   # (flutter_tts) and any OpenAI compatible /audio/speech endpoint, whose mp3
   # just_audio plays back. The engine choice lives on the persona, next to the
@@ -163,3 +167,10 @@ hooks:
   user_defines:
     sqlite3:
       source: system
+    # The oii bridge builds with cargo's release profile everywhere, so a
+    # release APK always ships the optimised library. That is affordable
+    # because the crate only needs oii's interpreter core (~40s a target).
+    # Flip this to `profile: debug` for a faster local build loop; nothing else
+    # has to change, and CI does not depend on it.
+    #   oii_bridge:
+    #     profile: debug

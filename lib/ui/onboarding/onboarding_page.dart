@@ -13,6 +13,7 @@ import '../../data/ai_config.dart';
 import '../../data/backup.dart' show parseBackup;
 import '../../data/backup_archive.dart' show looksLikeZip, readBackupZip;
 import '../../data/full_backup.dart';
+import '../../data/oii/backup_archive.dart' show hasOiiBackupManifest, parseBackupArchive;
 import '../../data/store.dart';
 import '../../l10n/x.dart';
 import '../../main.dart' show TgApp, bootStore;
@@ -169,9 +170,9 @@ class _OnboardingPageState extends State<OnboardingPage> implements OnboardingFl
     final l = context.l;
     var when = '';
     try {
-      final json = looksLikeZip(bytes) ? readBackupZip(bytes).json : utf8.decode(bytes, allowMalformed: true);
-      final doc = parseBackup(json);
-      final at = doc.exportedAt;
+      final at = looksLikeZip(bytes) && hasOiiBackupManifest(bytes)
+          ? parseBackupArchive(bytes).exportedAt
+          : parseBackup(looksLikeZip(bytes) ? readBackupZip(bytes).json : utf8.decode(bytes, allowMalformed: true)).exportedAt;
       if (at != null) {
         String p(int v) => v.toString().padLeft(2, '0');
         when = '${at.year}-${p(at.month)}-${p(at.day)} ${p(at.hour)}:${p(at.minute)}';
