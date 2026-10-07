@@ -62,7 +62,7 @@ extension BackupStore on Store {
     final sink = _backupSink;
     if (!ab.enabled || sink == null) return;
     final now = DateTime.now();
-    final fp = _backupFingerprint();
+    final fp = await _oiiBackupFingerprint();
     final changed = _backupDirty || fp != ab.lastHash;
     if (!ab.shouldRun(now, dataChanged: changed)) return;
     _backupRunning = true;
@@ -78,8 +78,9 @@ extension BackupStore on Store {
       // recorded, so a dead server can never make a saved backup look failed
       unawaited(_uploadRemote(bytes));
     } catch (_) {
-      // a failed backup must never surface as an app error; the next tick
-      // retries, and the change mode keeps the dirty mark via the fingerprint
+      // Keep a failed change-mode backup eligible for the next tick, even
+      // when only settings or other singleton state changed.
+      _backupDirty = true;
     } finally {
       _backupRunning = false;
     }
@@ -112,44 +113,9 @@ extension BackupStore on Store {
 
   // ----------------------------------------------------------------- archive
 
-  /// The files worth carrying: every avatar, every saved sticker and its
-  /// thumbnail, and the wallpaper. Missing files are skipped rather than
-  /// failing the export, because a path that already points at nothing should
-  /// not cost the user the rest of the backup.
-  Future<List<BackupAsset>> _collectAssets() async {
-    final paths = <String>{};
-    for (final c in chats) {
-      if (c.persona.avatarPath.isNotEmpty) paths.add(c.persona.avatarPath);
-    }
-    for (final p in personas) {
-      if (p.avatarPath.isNotEmpty) paths.add(p.avatarPath);
-    }
-    final h = human;
-    if (h != null) {
-      for (final s in h.stickers.items) {
-        if (!s.isRemote && s.value.isNotEmpty) paths.add(s.value);
-        if (s.thumb.isNotEmpty) paths.add(s.thumb);
-      }
-    }
-    if (wallpaperPath.isNotEmpty) paths.add(wallpaperPath);
-
-    final out = <BackupAsset>[];
-    for (final path in paths) {
-      try {
-        final f = File(path);
-        if (!await f.exists()) continue;
-        out.add(BackupAsset(orig: path, data: await f.readAsBytes()));
-      } catch (_) {
-        // an unreadable file costs that picture, never the whole backup
-      }
-    }
-    return out;
-  }
-
-  /// The archive a manual export and an automatic backup both write: the
-  /// document plus every picture it names.
-  Future<Uint8List> exportBackupArchive() async =>
-      buildBackupZip(json: exportBackupString(), assets: await _collectAssets());
+  /// The archive shared by manual, automatic, WebDAV and S3 exports.
+  /// Existing JSON and backup.json ZIP archives remain readable on import.
+  Future<Uint8List> exportBackupArchive() => exportOiiBackupArchive();
 
   /// Restores an archive, or an old plain-json backup.
   ///
@@ -161,6 +127,10 @@ extension BackupStore on Store {
     if (!looksLikeZip(bytes)) {
       return importBackupString(utf8.decode(bytes, allowMalformed: true), overwrite: overwrite);
     }
+    if (hasOiiBackupManifest(bytes)) {
+      return importOiiBackupArchive(bytes is Uint8List ? bytes : Uint8List.fromList(bytes), overwrite: overwrite);
+    }
+    // The original backup.json + assets.json ZIP remains readable forever.
     final archive = readBackupZip(bytes);
     final moved = await _restoreAssets(archive.assets);
     return importBackupString(_rewritePaths(archive.json, moved), overwrite: overwrite);
@@ -279,7 +249,9 @@ extension BackupStore on Store {
     final cfg = remoteBackup;
     if (!cfg.enabled || !cfg.isConfigured) return;
     try {
-      await cfg.build().upload(bytes is Uint8List ? bytes : Uint8List.fromList(bytes), _remoteName());
+      // Automatic remote copies follow the same single-slot overwrite policy
+      // as Downloads; a manual remote export can still keep a dated snapshot.
+      await cfg.build().upload(bytes is Uint8List ? bytes : Uint8List.fromList(bytes), autoBackupName);
     } catch (_) {
       // remote is best effort; the local copy already succeeded
     }

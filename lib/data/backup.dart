@@ -28,6 +28,7 @@ class BackupReport {
   int memories = 0;
   int settings = 0;
   bool ai = false;
+  int files = 0;
 
   /// Records that were present in the file but could not be used. A backup that
   /// quietly drops half a conversation is worse than one that says which half.
@@ -37,7 +38,7 @@ class BackupReport {
 
   @override
   String toString() => 'chats=$chats messages=$messages personas=$personas '
-      'stickers=$stickers memories=$memories settings=$settings ai=$ai '
+      'stickers=$stickers memories=$memories settings=$settings ai=$ai files=$files '
       'warnings=${warnings.length}';
 }
 

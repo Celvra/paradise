@@ -1,0 +1,17 @@
+name: oii_bridge
+description: FFI bridge to the oii interpreter with host function callbacks
+version: 0.1.0
+publish_to: none
+
+environment:
+  sdk: ">=3.6.0 <4.0.0"
+
+dependencies:
+  ffi: ^2.2.0
+  hooks: ^2.2.0
+  code_assets: ^2.1.0
+  meta: ^1.11.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter

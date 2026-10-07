@@ -5,8 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:paradise/core/ui_kit.dart';
 import 'package:paradise/data/ai_config.dart';
-import 'package:paradise/data/backup.dart';
-import 'package:paradise/data/backup_archive.dart';
+import 'package:paradise/data/oii/backup_archive.dart';
 import 'package:paradise/data/models.dart';
 import 'package:paradise/data/store.dart';
 import 'package:paradise/main.dart';
@@ -82,11 +81,10 @@ void main() {
     expect(picker.fileName, matches(RegExp(r'^paradise-[0-9]{8}-[0-9]{4}[.]zip$')));
     expect(picker.mimeType, 'application/zip');
 
-    final archive = readBackupZip(picker.bytes!);
-    final doc = parseBackup(archive.json);
-    expect(doc.chats.length, 1);
-    expect(doc.messageCount, 1);
-    expect(archive.json, contains('"kind"'), reason: 'indented, readable without the app');
+    final archive = parseBackupArchive(picker.bytes!);
+    expect(archive.docs.keys.where((k) => k.startsWith('chats/')), hasLength(1));
+    final chat = archive.docs.values.firstWhere((v) => v['id'] is String);
+    expect(chat['msgs'], hasLength(1));
   });
 
   testWidgets('export with nothing to export still hands over a valid file', (t) async {
@@ -96,7 +94,7 @@ void main() {
     await settleBulletin(t);
 
     expect(picker.calls, 1);
-    expect(parseBackup(readBackupZip(picker.bytes!).json).chats, isEmpty);
+    expect(parseBackupArchive(picker.bytes!).docs.keys.where((k) => k.startsWith('chats/')), isEmpty);
   });
 
   testWidgets('backing out of the save dialog is not an error', (t) async {
