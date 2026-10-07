@@ -188,10 +188,12 @@ Map<String, String>? _windowsHostLinkEnv() {
       }
     }
   }
-  final lib = [if (vcLib != null) vcLib!, if (sdkLib != null) sdkLib!].join(';');
+  final libPaths = [if (vcLib != null) vcLib, if (sdkLib != null) sdkLib]
+      .whereType<String>()
+      .join(';');
   final env = <String, String>{
     'CARGO_TARGET_X86_64_PC_WINDOWS_MSVC_LINKER': lldLink.path,
-    if (sdkLib != null) 'LIB': sdkLib,
+    if (libPaths.isNotEmpty) 'LIB': libPaths,
   };
   return env;
 }
