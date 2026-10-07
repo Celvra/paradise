@@ -34,6 +34,12 @@ void main() {
     await settle(t);
     await t.tap(find.text('Settings').last);
     await settle(t, 800);
+    // The settings list is taller than the fold, so the About row may not have
+    // been built yet and ensureVisible cannot find it. Drag the settings list
+    // itself, located through a row that is on screen, until About is in view.
+    final list = find.ancestor(of: find.text('Data and Storage'), matching: find.byType(ListView));
+    await t.dragUntilVisible(find.text('About'), list, const Offset(0, -220));
+    await settle(t, 400);
     final row = find.text('About').last;
     await t.ensureVisible(row);
     await settle(t, 400);
