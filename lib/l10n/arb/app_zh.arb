@@ -3383,6 +3383,42 @@
   "@personaClingyMax": {
     "description": "Row that picks the cap on consecutive proactive messages"
   },
+  "personaClingyQuietTitle": "安静时段",
+  "@personaClingyQuietTitle": {
+    "description": "Switch for the time window with no proactive messages"
+  },
+  "personaClingyQuietSub": "这个时段内不主动发消息，模拟睡觉",
+  "@personaClingyQuietSub": {
+    "description": "Subtitle of the quiet hours switch"
+  },
+  "personaClingyQuietStart": "开始时间",
+  "@personaClingyQuietStart": {
+    "description": "Row that picks when the quiet hours begin"
+  },
+  "personaClingyQuietEnd": "结束时间",
+  "@personaClingyQuietEnd": {
+    "description": "Row that picks when the quiet hours end"
+  },
+  "personaClingyUrgentTitle": "允许紧急发话",
+  "@personaClingyUrgentTitle": {
+    "description": "Switch that lets the model speak up inside quiet hours when it truly has to"
+  },
+  "personaClingyUrgentSub": "时段内真有睡不着的理由时仍可能发消息，由 AI 自行判断；它选择沉默时不会发送任何内容",
+  "@personaClingyUrgentSub": {
+    "description": "Subtitle of the urgent messages switch"
+  },
+  "personaClingyUrgentCap": "限制紧急次数",
+  "@personaClingyUrgentCap": {
+    "description": "Switch that caps urgent messages per quiet window"
+  },
+  "personaClingyUrgentCapSub": "每个安静时段最多紧急发话的次数，防止刷 token",
+  "@personaClingyUrgentCapSub": {
+    "description": "Subtitle of the urgent count limit switch"
+  },
+  "personaClingyUrgentMax": "每时段最多紧急",
+  "@personaClingyUrgentMax": {
+    "description": "Row that picks the cap on urgent messages in one quiet window"
+  },
   "personaClingyMinutes": "{min} 分钟",
   "@personaClingyMinutes": {
     "description": "Minutes label for the clinginess interval picker",
@@ -3766,7 +3802,7 @@
   "onboardPermDenied": "已被拒绝。可以到系统设置里打开。",
   "onboardPermNotifName": "通知",
   "onboardPermNotifWhy": "主动发信和定时回复要靠通知才能及时提醒你。",
-  "onboardPermPhotosName": "照片",
+  "onboardPermPhotosName": "访问媒体",
   "onboardPermPhotosWhy": "发送图片、保存表情包。",
   "onboardPrivacyTitle": "隐私协议",
   "onboardPrivacyIntro": "开始前请读一遍。我们故意写得很短。",
@@ -4062,6 +4098,7 @@
   "remoteBackupNotConfigured": "请先填写并保存配置",
   "remoteBackupSaved": "远端设置已保存",
 
+
   "autoBackupModeChange": "数据变化时自动备份（推荐）",
   "autoBackupModeInterval": "每隔 {n} 小时",
   "@autoBackupModeInterval": {
@@ -4109,8 +4146,17 @@
     }
   },
   "autoBackupRestoreAction": "恢复",
+  "autoBackupPickMessage": "在 下载/Paradise 文件夹找到了备份，但新安装的应用无法直接读取——系统会保护旧安装留下的文件。点下方按钮手动选择 paradise_autobackup.json 即可恢复全部数据。",
+  "autoBackupPickAction": "选择备份文件",
   "autoBackupRestored": "备份已恢复",
   "autoBackupRestoreFailed": "备份读取失败",
+  "fullBackupRestoreTitle": "发现完整备份",
+  "fullBackupRestoreMessage": "发现一份全部数据的完整快照（聊天记录、人设、图片、设置和 API KEY）。恢复全部内容并重启吗？取消则保留备份文件。",
+  "@fullBackupRestoreMessage": {
+    "description": "full zip backup restore offer on a fresh install"
+  },
+  "fullBackupRestoreAction": "全部恢复",
+  "fullBackupRestoreFailed": "完整备份恢复失败",
   "whatsNewEntry": "更新说明",
   "@whatsNewEntry": {
     "description": "Settings row that reopens the current version highlights"

@@ -1,7 +1,7 @@
 import 'dart:io';
-import 'dart:typed_data' show Uint8List;
 
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 import '../core/anim.dart';
@@ -19,6 +19,7 @@ import 'bubble.dart';
 import 'account_page.dart';
 import 'about_page.dart';
 import 'storage_page.dart';
+import 'backup_remote_page.dart';
 import 'update_sheet.dart';
 import 'wallpaper.dart';
 import 'wallpaper_page.dart';
@@ -31,7 +32,6 @@ import 'ai_settings_page.dart';
 import 'speech_page.dart';
 import 'human_pages.dart';
 import 'shop_page.dart';
-import 'backup_remote_page.dart';
 
 // IconBackgroundColors pairs top and bottom
 const _blue = [Color(0xFF1CA5ED), Color(0xFF1488E1)];
@@ -382,13 +382,16 @@ class SettingsTab extends StatelessWidget {
     }
   }
 
-  /// Hands the whole account to the system save dialog as one zip: the document
-  /// plus every avatar, sticker and the wallpaper it names.
+  /// Hands the whole account to the system save dialog.
   ///
   /// Not the app's own exports directory: that is private storage, so a backup
   /// written there is a file the user cannot reach, cannot attach to a message
   /// and cannot put in a cloud drive. The save dialog puts it wherever they
   /// choose, which is the only place a backup is actually a backup.
+  ///
+  /// The clipboard is only the fallback for when that dialog cannot be used at
+  /// all. It is not the primary route: a large history will not fit in a
+  /// clipboard, and the string has to be in memory twice to get there.
   Future<void> _exportBackup(BuildContext context) async {
     final st = context.store;
     final l = context.l;

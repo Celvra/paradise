@@ -69,6 +69,7 @@ class AutoBackup {
 abstract class BackupSink {
   Future<void> write(List<int> bytes);
   Future<List<int>?> read();
+  Future<bool> exists();
 }
 
 const autoBackupFileName = 'paradise_autobackup.zip';
@@ -157,6 +158,9 @@ class DirBackupSink implements BackupSink {
     }
     return null;
   }
+
+  @override
+  Future<bool> exists() => File('${dir.path}/$autoBackupName').exists();
 }
 
 /// MediaStore-backed sink (Android). A backup that only lives in app-private
@@ -202,6 +206,106 @@ class MediaStoreBackupSink implements BackupSink {
       return (await _fb()).read();
     } on PlatformException {
       return (await _fb()).read();
+    }
+  }
+
+  @override
+  Future<bool> exists() async {
+    if (_broken) return (await _fb()).exists();
+    try {
+      return await _ch.invokeMethod<bool>('exists') ?? false;
+    } on MissingPluginException {
+      _broken = true;
+      return (await _fb()).exists();
+    } on PlatformException {
+      return (await _fb()).exists();
+    }
+  }
+}
+
+/// Where the full zip backup lands. Same two shapes as [BackupSink]: the
+/// MediaStore one survives an uninstall, the directory one is the fallback
+/// and the test seam.
+abstract class FullBackupSink {
+  Future<void> write(Uint8List bytes);
+  Future<Uint8List?> read();
+  Future<bool> exists();
+}
+
+class DirFullBackupSink implements FullBackupSink {
+  DirFullBackupSink(this.dir);
+
+  final Directory dir;
+
+  File get _file => File('${dir.path}/paradise_full.zip');
+
+  @override
+  Future<void> write(Uint8List bytes) async {
+    if (!await dir.exists()) await dir.create(recursive: true);
+    await _file.writeAsBytes(bytes, flush: true);
+  }
+
+  @override
+  Future<Uint8List?> read() async {
+    final f = _file;
+    if (!await f.exists()) return null;
+    try {
+      return await f.readAsBytes();
+    } catch (_) {
+      return null;
+    }
+  }
+
+  @override
+  Future<bool> exists() => _file.exists();
+}
+
+class MediaStoreFullBackupSink implements FullBackupSink {
+  static const _ch = MethodChannel('paradise/backup');
+
+  FullBackupSink? _fallback;
+  bool _broken = false;
+
+  Future<FullBackupSink> _fb() async {
+    return _fallback ??= DirFullBackupSink(Directory('${(await getApplicationDocumentsDirectory()).path}/backup'));
+  }
+
+  @override
+  Future<void> write(Uint8List bytes) async {
+    if (_broken) return (await _fb()).write(bytes);
+    try {
+      await _ch.invokeMethod<int>('writeFull', bytes);
+    } on MissingPluginException {
+      _broken = true;
+      return (await _fb()).write(bytes);
+    } on PlatformException {
+      return (await _fb()).write(bytes);
+    }
+  }
+
+  @override
+  Future<Uint8List?> read() async {
+    if (_broken) return (await _fb()).read();
+    try {
+      return await _ch.invokeMethod<Uint8List>('readFull');
+    } on MissingPluginException {
+      _broken = true;
+      return (await _fb()).read();
+    } on PlatformException {
+      return (await _fb()).read();
+    }
+  }
+
+  @override
+  Future<bool> exists() async {
+    if (_broken) return (await _fb()).exists();
+    try {
+      return await _ch.invokeMethod<bool>('existsFull') ?? false;
+    } on MissingPluginException {
+      _broken = true;
+      return (await _fb()).exists();
+    } on PlatformException {
+      return (await _fb()).exists();
     }
   }
 }

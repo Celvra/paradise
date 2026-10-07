@@ -77,6 +77,12 @@ extension BackupStore on Store {
       // the remote copy is best effort and runs after the local success is
       // recorded, so a dead server can never make a saved backup look failed
       unawaited(_uploadRemote(bytes));
+      // the curated archive and the full snapshot share one schedule: same
+      // policy, same overwrite rule, one dirty mark. the full zip gets its
+      // own guard so a failure there never rewrites the archive's bookkeeping
+      try {
+        await _writeFullBackup();
+      } catch (_) {}
     } catch (_) {
       // Keep a failed change-mode backup eligible for the next tick, even
       // when only settings or other singleton state changed.
@@ -106,10 +112,59 @@ extension BackupStore on Store {
     }
   }
 
+  /// Rebuilds the whole data directory snapshot and overwrites the shared
+  /// copy. Runs right after the archive write inside the same guard so the
+  /// two artifacts can never disagree about which schedule they follow.
+  Future<void> _writeFullBackup() async {
+    final sink = _fullSink;
+    if (sink == null) return;
+    final bytes = await FullBackup.build();
+    await sink.write(bytes);
+  }
+
+  /// The full zip backup a reinstall can offer. Null when none exists.
+  Future<Uint8List?> readFullBackup() async {
+    final sink = _fullSink;
+    if (sink == null) return null;
+    try {
+      final raw = await sink.read();
+      return raw == null || raw.isEmpty ? null : raw;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Whether a full zip backup file exists at all, readable or not.
+  Future<bool> hasFullBackupFile() async {
+    final sink = _fullSink;
+    if (sink == null) return false;
+    try {
+      return await sink.exists();
+    } catch (_) {
+      return false;
+    }
+  }
+
+  /// Whether a backup file exists at all, even one this fresh install cannot
+  /// read directly. Drives the manual-pick offer in onboarding.
+  Future<bool> hasAutoBackupFile() async {
+    final sink = _backupSink;
+    if (sink == null) return false;
+    try {
+      return await sink.exists();
+    } catch (_) {
+      return false;
+    }
+  }
+
   /// Test seam: point the auto backup at a directory sink so a tick can be
   /// verified end to end without the MediaStore channel.
   @visibleForTesting
   set debugBackupSink(BackupSink? sink) => _backupSink = sink;
+
+  /// Test seam for the full zip backup, same idea as [debugBackupSink].
+  @visibleForTesting
+  set debugFullBackupSink(FullBackupSink? sink) => _fullSink = sink;
 
   // ----------------------------------------------------------------- archive
 
@@ -276,7 +331,8 @@ extension BackupStore on Store {
     return '${at.year}-${p(at.month)}-${p(at.day)}';
   }
 
-  /// The document to hand the user. Never contains an API key.
+  /// The document to hand the user. Carries the provider keys in `secrets`:
+  /// a backup whose restore leaves every provider unconfigured is no backup.
   String exportBackupString() => buildBackup(
         chats: chats.map((c) => c.toJson()).toList(),
         personas: personas.map((p) => p.toJson()).toList(),
@@ -288,6 +344,7 @@ extension BackupStore on Store {
         tasks: human?.scheduler.toJson(),
         settings: exportSettings(),
         ai: _ai?.settings.toJson(),
+        secrets: _ai?.apiKeys.isEmpty == false ? Map<String, dynamic>.of(_ai!.apiKeys) : null,
       );
 
   /// The preferences worth carrying to another phone.
@@ -421,12 +478,22 @@ extension BackupStore on Store {
     final ai = _ai;
     if (ai != null && doc.ai != null) {
       try {
-        // providers and the chain come back; their secrets do not, so a restored
-        // provider is present but unconfigured until a key is entered
+        // providers and the chain come back together with the secrets below,
+        // so a restored provider is working, not just present
         ai.update((_) => sanitizeAiSettings(doc.ai!));
         report.ai = true;
       } catch (_) {
         report.warnings.add('the model configuration, could not be read');
+      }
+    }
+    final secrets = doc.secrets;
+    if (secrets != null) {
+      for (final e in secrets.entries) {
+        final v = e.value;
+        if (v is String && v.isNotEmpty) {
+          ai?.saveApiKey(e.key, v);
+          report.secrets++;
+        }
       }
     }
 

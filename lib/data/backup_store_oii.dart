@@ -36,7 +36,11 @@ extension OiiBackupStore on Store {
   void _visitAssetFields(Map<String, dynamic> doc, String Function(String) replace) {
     void field(Map map, String key) {
       final v = map[key];
-      if (v is String && v.startsWith('/')) map[key] = replace(v);
+      // Rooted on posix *and* Windows (D:\...) so asset collection works on
+      // either host; bare file names and archive-relative paths are skipped.
+      if (v is String && (v.startsWith('/') || RegExp(r'^[A-Za-z]:[\\/]').hasMatch(v))) {
+        map[key] = replace(v);
+      }
     }
 
     final settings = doc['settings'];

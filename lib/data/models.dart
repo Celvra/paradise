@@ -25,6 +25,12 @@ class Persona {
     this.clingySilentMin = 90,
     this.clingyCap = false,
     this.clingyMax = 3,
+    this.clingyQuietOn = false,
+    this.clingyQuietStart = 1320,
+    this.clingyQuietEnd = 480,
+    this.clingyUrgent = false,
+    this.clingyUrgentCap = true,
+    this.clingyUrgentMax = 1,
     this.skillIds,
     this.imageEnabled = false,
     this.imageProvider = '',
@@ -100,6 +106,25 @@ class Persona {
   /// The cap value, in consecutive proactive messages. The counter refreshes
   /// every time the user sends a message.
   int clingyMax;
+
+  /// Quiet hours for the clingy check-in: inside the window no ordinary
+  /// check-in fires, simulating the persona being asleep. Minutes of day,
+  /// start may be after end for an overnight window.
+  bool clingyQuietOn;
+  int clingyQuietStart;
+  int clingyQuietEnd;
+
+  /// Whether an urgent message may still break the quiet hours: the model is
+  /// asked whether anything genuinely cannot wait (cannot sleep, big news,
+  /// real worry) and stays silent when nothing qualifies.
+  bool clingyUrgent;
+
+  /// Cap on urgent messages per quiet stretch, same pattern as [clingyCap].
+  bool clingyUrgentCap;
+
+  /// The urgent cap value. The counter refreshes each time a new quiet
+  /// stretch starts, not on every user message.
+  int clingyUrgentMax;
   /// Skills this role may use. Null follows the global set (every enabled
   /// skill), an explicit list names exactly the skills in the prompt. Empty
   /// means this role uses none.
@@ -162,6 +187,12 @@ class Persona {
         'clingySilentMin': clingySilentMin,
         'clingyCap': clingyCap,
         'clingyMax': clingyMax,
+        if (clingyQuietOn) 'clingyQuietOn': true,
+        if (clingyQuietOn) 'clingyQuietStart': clingyQuietStart,
+        if (clingyQuietOn) 'clingyQuietEnd': clingyQuietEnd,
+        if (clingyUrgent) 'clingyUrgent': true,
+        if (clingyUrgent) 'clingyUrgentCap': clingyUrgentCap,
+        if (clingyUrgent && clingyUrgentCap) 'clingyUrgentMax': clingyUrgentMax,
         if (skillIds != null) 'skillIds': skillIds,
         if (imageEnabled) 'imageEnabled': true,
         if (imageProvider.isNotEmpty) 'imageProvider': imageProvider,
@@ -196,6 +227,12 @@ class Persona {
         clingySilentMin: (j['clingySilentMin'] as num?)?.toInt() ?? 90,
         clingyCap: j['clingyCap'] as bool? ?? false,
         clingyMax: (j['clingyMax'] as num?)?.toInt() ?? 3,
+        clingyQuietOn: j['clingyQuietOn'] as bool? ?? false,
+        clingyQuietStart: (j['clingyQuietStart'] as num?)?.toInt() ?? 1320,
+        clingyQuietEnd: (j['clingyQuietEnd'] as num?)?.toInt() ?? 480,
+        clingyUrgent: j['clingyUrgent'] as bool? ?? false,
+        clingyUrgentCap: j['clingyUrgentCap'] as bool? ?? true,
+        clingyUrgentMax: (j['clingyUrgentMax'] as num?)?.toInt() ?? 1,
         skillIds: j['skillIds'] is List ? [for (final e in j['skillIds'] as List) '$e'] : null,
         // every one of these is optional: a persona saved before the
         // field existed has no key and follows the global setting, the

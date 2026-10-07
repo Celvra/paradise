@@ -36,6 +36,25 @@ Future<void> main() async {
   // to cost nothing.
   themeCtl.setAccent(store.wallpaperColor, BubbleGrad.values[store.wallpaperBubbleGrad]);
   store.addListener(() => themeCtl.setAccent(store.wallpaperColor, BubbleGrad.values[store.wallpaperBubbleGrad]));
+  await bootStore(store);
+  runApp(TgApp(store: store, ai: ai));
+  // one automatic update check per launch, a couple of seconds after the
+  // first frame so it never covers the launch paint. Lives here rather than
+  // in a widget initState so widget tests pumping TgApp directly never see
+  // the timer or the network call.
+  Future.delayed(const Duration(seconds: 2), () {
+    final ctx = appNav.currentState?.overlay?.context;
+    if (ctx == null) return;
+    unawaited(checkAndShowUpdate(ctx));
+    maybeShowWhatsNew(ctx);
+  });
+}
+
+/// Everything that gets wired onto a freshly loaded store: notifications, the
+/// tool permission dialog, the workspace runtime, the scheduler heartbeat and
+/// the periodic background job. main() calls it once; the full zip restore
+/// calls it again on the rebuilt store before re-running the app on top of it.
+Future<void> bootStore(Store store) async {
   // humanized layer: notifications, the tool permission dialog, the scheduler
   // heartbeat and the periodic background job for killed-app delivery
   await Notifier.instance.init();
@@ -57,17 +76,6 @@ Future<void> main() async {
   // bound to a workspace can reach shell on its very first pass
   store.startHuman();
   unawaited(registerBackground());
-  runApp(TgApp(store: store, ai: ai));
-  // one automatic update check per launch, a couple of seconds after the
-  // first frame so it never covers the launch paint. Lives here rather than
-  // in a widget initState so widget tests pumping TgApp directly never see
-  // the timer or the network call.
-  Future.delayed(const Duration(seconds: 2), () {
-    final ctx = appNav.currentState?.overlay?.context;
-    if (ctx == null) return;
-    unawaited(checkAndShowUpdate(ctx));
-    maybeShowWhatsNew(ctx);
-  });
 }
 
 // android reports zh_TW and zh_HK without a script tag often enough that the

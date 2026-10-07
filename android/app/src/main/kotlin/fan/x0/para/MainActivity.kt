@@ -34,6 +34,15 @@ class MainActivity : FlutterActivity() {
             when (call.method) {
                 "write" -> backupWrite((call.arguments as? ByteArray) ?: ByteArray(0), result)
                 "read" -> backupRead(result)
+                // whether the auto backup file is visible at all, readable or
+                // not: the Dart side offers a manual pick on a fresh install
+                // when Android guards the old install's file
+                "exists" -> backupExists(result)
+                // the full zip snapshot rides the same channel: one directory,
+                // one overwrite policy, two logical files
+                "writeFull" -> backupWriteFull(call.arguments as? ByteArray ?: ByteArray(0), result)
+                "readFull" -> backupReadFull(result)
+                "existsFull" -> backupExistsFull(result)
                 else -> result.notImplemented()
             }
         }
@@ -141,7 +150,7 @@ class MainActivity : FlutterActivity() {
         contentResolver.query(MediaStore.Downloads.EXTERNAL_CONTENT_URI, cols, sel, arrayOf(BACKUP_PATH, "Download/"), null)?.use { c ->
             while (c.moveToNext()) {
                 val name = c.getString(1) ?: continue
-                if (name != BACKUP_NAME && name != BACKUP_JSON && !name.matches(LEGACY_ZIP) && !name.matches(PREVIOUS_ZIP)) continue
+                if (name != BACKUP_NAME && name != BACKUP_JSON && name != FULL_BACKUP_NAME && !name.matches(LEGACY_ZIP) && !name.matches(PREVIOUS_ZIP)) continue
                 rows.add(BackupRow(
                     android.net.Uri.withAppendedPath(MediaStore.Downloads.EXTERNAL_CONTENT_URI, c.getLong(0).toString()),
                     name,
@@ -181,6 +190,77 @@ class MainActivity : FlutterActivity() {
         }
     }
 
+    /// Whether the auto backup file is visible at all, readable or not.
+    private fun backupExists(result: MethodChannel.Result) {
+        if (Build.VERSION.SDK_INT < 29) {
+            result.error("api", "MediaStore.Downloads needs api 29+", null)
+            return
+        }
+        result.success(backupRows().any { it.name == BACKUP_NAME })
+    }
+
+    /// The full snapshot is written with the simple replace: it is the second
+    /// logical file in the same folder, deleted and re-inserted under its own
+    /// fixed name, and never touches the staged auto-backup dance above.
+    private fun backupWriteFull(content: ByteArray, result: MethodChannel.Result) {
+        if (Build.VERSION.SDK_INT < 29) {
+            result.error("api", "MediaStore.Downloads needs api 29+", null)
+            return
+        }
+        try {
+            for (old in backupRows()) {
+                if (old.path != BACKUP_PATH || old.name != FULL_BACKUP_NAME) continue
+                try {
+                    contentResolver.delete(old.uri, null, null)
+                } catch (_: Exception) {
+                    // an undeletable old row is harmless; the insert below still runs
+                }
+            }
+            val values = ContentValues().apply {
+                put(MediaStore.Downloads.DISPLAY_NAME, FULL_BACKUP_NAME)
+                put(MediaStore.Downloads.MIME_TYPE, "application/zip")
+                put(MediaStore.Downloads.RELATIVE_PATH, BACKUP_PATH)
+            }
+            val uri = contentResolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values)
+                ?: throw IOException("insert failed")
+            try {
+                contentResolver.openOutputStream(uri, "wt")?.use { it.write(content) }
+                    ?: throw IOException("no stream")
+                result.success(System.currentTimeMillis())
+            } catch (e: Exception) {
+                contentResolver.delete(uri, null, null)
+                throw e
+            }
+        } catch (e: Exception) {
+            result.error("io", e.message, null)
+        }
+    }
+
+    private fun backupReadFull(result: MethodChannel.Result) {
+        if (Build.VERSION.SDK_INT < 29) {
+            result.error("api", "MediaStore.Downloads needs api 29+", null)
+            return
+        }
+        val row = backupRows().firstOrNull { it.name == FULL_BACKUP_NAME && it.path == BACKUP_PATH }
+        if (row == null) {
+            result.success(null)
+            return
+        }
+        try {
+            result.success(contentResolver.openInputStream(row.uri)?.use { it.readBytes() })
+        } catch (e: Exception) {
+            result.error("io", e.message, null)
+        }
+    }
+
+    private fun backupExistsFull(result: MethodChannel.Result) {
+        if (Build.VERSION.SDK_INT < 29) {
+            result.error("api", "MediaStore.Downloads needs api 29+", null)
+            return
+        }
+        result.success(backupRows().any { it.name == FULL_BACKUP_NAME && it.path == BACKUP_PATH })
+    }
+
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         workspacePlugin?.attachActivity(this)
@@ -196,6 +276,7 @@ class MainActivity : FlutterActivity() {
     companion object {
         const val BACKUP_NAME = "paradise_autobackup.zip"
         const val BACKUP_JSON = "paradise_autobackup.json"
+        const val FULL_BACKUP_NAME = "paradise_full.zip"
         const val BACKUP_PATH = "Download/Paradise/"
         val LEGACY_ZIP = Regex("paradise_autobackup-[0-9]{8}-[0-9]{6}\\.zip")
         val PREVIOUS_ZIP = Regex("paradise_autobackup-previous-[0-9a-f-]{36}\\.zip")

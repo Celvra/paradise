@@ -156,7 +156,10 @@ class BrParser {
     if (s.length < from) return 0;
     for (final re in [_stopSentence, _stopClause, _stopSpace]) {
       for (final m in re.allMatches(s)) {
-        if (m.end > from) return m.end;
+        // a boundary at the very end is no cut at all: _cutAt refuses it, and
+        // returning it again would spin _autoSplit forever, which is the
+        // reply-time freeze a long single sentence ending in 。 tripped
+        if (m.end > from && m.end < s.length) return m.end;
       }
     }
     // No punctuation and no space at all, one enormous run of characters. Cut it
