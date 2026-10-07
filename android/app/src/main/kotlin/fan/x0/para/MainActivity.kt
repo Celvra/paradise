@@ -8,9 +8,6 @@ import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 import java.io.IOException
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 class MainActivity : FlutterActivity() {
     /// Registered here rather than in an application class because the plugin
@@ -34,25 +31,24 @@ class MainActivity : FlutterActivity() {
         backupChannel = ch
         ch.setMethodCallHandler { call, result ->
             when (call.method) {
-                "write" -> backupWrite((call.arguments as? ByteArray) ?: ByteArray(0), result)
+                "write" -> backupWrite(call.arguments as? String ?: "", result)
                 "read" -> backupRead(result)
                 else -> result.notImplemented()
             }
         }
     }
 
-    private fun backupWrite(content: ByteArray, result: MethodChannel.Result) {
+    private fun backupWrite(content: String, result: MethodChannel.Result) {
         if (Build.VERSION.SDK_INT < 29) {
             result.error("api", "MediaStore.Downloads needs api 29+", null)
             return
         }
-        // A new file per write: the change mode fires after every editing burst,
-        // and erasing the one name each time would throw away the copy taken
-        // before a bad edit. Older copies are pruned so Downloads cannot grow
-        // without bound.
+        // one logical backup: drop older copies with the same name first
+        val keep = queryBackupUri()
+        if (keep != null) contentResolver.delete(keep, null, null)
         val values = ContentValues().apply {
-            put(MediaStore.Downloads.DISPLAY_NAME, backupName())
-            put(MediaStore.Downloads.MIME_TYPE, "application/zip")
+            put(MediaStore.Downloads.DISPLAY_NAME, BACKUP_NAME)
+            put(MediaStore.Downloads.MIME_TYPE, "application/json")
             put(MediaStore.Downloads.RELATIVE_PATH, "Download/Paradise")
         }
         val uri = contentResolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values)
@@ -61,9 +57,8 @@ class MainActivity : FlutterActivity() {
             return
         }
         try {
-            contentResolver.openOutputStream(uri, "wt")?.use { it.write(content) }
+            contentResolver.openOutputStream(uri, "wt")?.use { it.write(content.toByteArray()) }
                 ?: throw IOException("no stream")
-            pruneBackups()
             result.success(System.currentTimeMillis())
         } catch (e: Exception) {
             contentResolver.delete(uri, null, null)
@@ -76,25 +71,25 @@ class MainActivity : FlutterActivity() {
             result.error("api", "MediaStore.Downloads needs api 29+", null)
             return
         }
-        val uri = queryNewestBackup()
+        val uri = queryBackupUri()
         if (uri == null) {
             result.success(null)
             return
         }
         try {
             val raw = contentResolver.openInputStream(uri)?.use { it.readBytes() }
-            result.success(raw)
+            result.success(raw?.let { String(it) })
         } catch (e: Exception) {
             result.error("io", e.message, null)
         }
     }
 
-    /// Newest archive this install wrote, so a restore after reinstall reads the
-    /// freshest copy.
-    private fun queryNewestBackup(): android.net.Uri? {
+    /// Newest file with the backup name, so a restore after reinstall reads
+    /// the copy this install actually wrote last.
+    private fun queryBackupUri(): android.net.Uri? {
         val cols = arrayOf(MediaStore.Downloads._ID)
-        val sel = "${MediaStore.Downloads.DISPLAY_NAME} LIKE ?"
-        val args = arrayOf("$BACKUP_PREFIX%")
+        val sel = "${MediaStore.Downloads.DISPLAY_NAME} = ?"
+        val args = arrayOf(BACKUP_NAME)
         val sort = "${MediaStore.Downloads.DATE_ADDED} DESC"
         contentResolver.query(MediaStore.Downloads.EXTERNAL_CONTENT_URI, cols, sel, args, sort)?.use { c ->
             if (c.moveToFirst()) {
@@ -105,40 +100,6 @@ class MainActivity : FlutterActivity() {
             }
         }
         return null
-    }
-
-    /// Keeps the newest BACKUP_KEEP archives and drops the rest. Best effort: a
-    /// delete that fails leaves the file behind, which is better than failing
-    /// the write that just succeeded because a stale row could not be removed.
-    private fun pruneBackups() {
-        val cols = arrayOf(MediaStore.Downloads._ID)
-        val sel = "${MediaStore.Downloads.DISPLAY_NAME} LIKE ?"
-        val args = arrayOf("$BACKUP_PREFIX%")
-        val sort = "${MediaStore.Downloads.DATE_ADDED} DESC"
-        contentResolver.query(MediaStore.Downloads.EXTERNAL_CONTENT_URI, cols, sel, args, sort)?.use { c ->
-            var i = 0
-            while (c.moveToNext()) {
-                i++
-                if (i <= BACKUP_KEEP) continue
-                val uri = android.net.Uri.withAppendedPath(
-                    MediaStore.Downloads.EXTERNAL_CONTENT_URI,
-                    c.getLong(0).toString(),
-                )
-                try {
-                    contentResolver.delete(uri, null, null)
-                } catch (_: Exception) {
-                    // ignored on purpose, see the method comment
-                }
-            }
-        }
-    }
-
-    /// A sortable name: the prefix, a timestamp and the extension. String order
-    /// on this name matches time order, which is what queryNewestBackup and
-    /// pruneBackups both lean on.
-    private fun backupName(): String {
-        val f = SimpleDateFormat("yyyyMMdd-HHmmss", Locale.US)
-        return "$BACKUP_PREFIX${f.format(Date())}.zip"
     }
 
     override fun onAttachedToWindow() {
@@ -154,7 +115,6 @@ class MainActivity : FlutterActivity() {
     }
 
     companion object {
-        const val BACKUP_PREFIX = "paradise_autobackup-"
-        const val BACKUP_KEEP = 20
+        const val BACKUP_NAME = "paradise_autobackup.json"
     }
 }

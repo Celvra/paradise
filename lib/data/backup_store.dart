@@ -68,15 +68,12 @@ extension BackupStore on Store {
     _backupRunning = true;
     _backupDirty = false;
     try {
-      final bytes = await exportBackupArchive();
-      await sink.write(bytes);
+      final json = exportBackupString();
+      await sink.write(json);
       ab.noteSuccess(now, fp);
       await _sp.setInt('autoBackup.lastAt', ab.lastAt);
       await _sp.setInt('autoBackup.lastHash', ab.lastHash);
       bump();
-      // the remote copy is best effort and runs after the local success is
-      // recorded, so a dead server can never make a saved backup look failed
-      unawaited(_uploadRemote(bytes));
     } catch (_) {
       // a failed backup must never surface as an app error; the next tick
       // retries, and the change mode keeps the dirty mark via the fingerprint
@@ -93,13 +90,12 @@ extension BackupStore on Store {
   }
 
   /// The backup an onboarding restore can offer. Null when none exists.
-  Future<Uint8List?> readAutoBackup() async {
+  Future<String?> readAutoBackup() async {
     final sink = _backupSink;
     if (sink == null) return null;
     try {
       final raw = await sink.read();
-      if (raw == null || raw.isEmpty) return null;
-      return raw is Uint8List ? raw : Uint8List.fromList(raw);
+      return raw == null || raw.isEmpty ? null : raw;
     } catch (_) {
       return null;
     }
@@ -109,187 +105,6 @@ extension BackupStore on Store {
   /// verified end to end without the MediaStore channel.
   @visibleForTesting
   set debugBackupSink(BackupSink? sink) => _backupSink = sink;
-
-  // ----------------------------------------------------------------- archive
-
-  /// The files worth carrying: every avatar, every saved sticker and its
-  /// thumbnail, and the wallpaper. Missing files are skipped rather than
-  /// failing the export, because a path that already points at nothing should
-  /// not cost the user the rest of the backup.
-  Future<List<BackupAsset>> _collectAssets() async {
-    final paths = <String>{};
-    for (final c in chats) {
-      if (c.persona.avatarPath.isNotEmpty) paths.add(c.persona.avatarPath);
-    }
-    for (final p in personas) {
-      if (p.avatarPath.isNotEmpty) paths.add(p.avatarPath);
-    }
-    final h = human;
-    if (h != null) {
-      for (final s in h.stickers.items) {
-        if (!s.isRemote && s.value.isNotEmpty) paths.add(s.value);
-        if (s.thumb.isNotEmpty) paths.add(s.thumb);
-      }
-    }
-    if (wallpaperPath.isNotEmpty) paths.add(wallpaperPath);
-
-    final out = <BackupAsset>[];
-    for (final path in paths) {
-      try {
-        final f = File(path);
-        if (!await f.exists()) continue;
-        out.add(BackupAsset(orig: path, data: await f.readAsBytes()));
-      } catch (_) {
-        // an unreadable file costs that picture, never the whole backup
-      }
-    }
-    return out;
-  }
-
-  /// The archive a manual export and an automatic backup both write: the
-  /// document plus every picture it names.
-  Future<Uint8List> exportBackupArchive() async =>
-      buildBackupZip(json: exportBackupString(), assets: await _collectAssets());
-
-  /// Restores an archive, or an old plain-json backup.
-  ///
-  /// The assets are unpacked into app storage first, then every path in the
-  /// document that pointed at one of them is rewritten to its new home before
-  /// the document is applied. Doing it in that order is what makes avatars,
-  /// stickers and the wallpaper come back on a device that never had the files.
-  Future<BackupReport> importBackupArchive(List<int> bytes, {required bool overwrite}) async {
-    if (!looksLikeZip(bytes)) {
-      return importBackupString(utf8.decode(bytes, allowMalformed: true), overwrite: overwrite);
-    }
-    final archive = readBackupZip(bytes);
-    final moved = await _restoreAssets(archive.assets);
-    return importBackupString(_rewritePaths(archive.json, moved), overwrite: overwrite);
-  }
-
-  /// Writes every carried file into a fresh directory under app storage and
-  /// returns a map from the exporting device's path to the new one.
-  Future<Map<String, String>> _restoreAssets(List<BackupAssetFile> assets) async {
-    final moved = <String, String>{};
-    if (assets.isEmpty) return moved;
-    try {
-      final base = await getApplicationDocumentsDirectory();
-      final dir = Directory('${base.path}/restored_assets');
-      if (!await dir.exists()) await dir.create(recursive: true);
-      var n = 0;
-      for (final a in assets) {
-        try {
-          final name = '${DateTime.now().microsecondsSinceEpoch}_${n++}_${_assetName(a.orig)}';
-          final f = File('${dir.path}/$name');
-          await f.writeAsBytes(a.data, flush: true);
-          moved[a.orig] = f.path;
-        } catch (_) {
-          // one file that cannot be written costs that picture, not the restore
-        }
-      }
-    } catch (_) {
-      return moved;
-    }
-    return moved;
-  }
-
-  /// Rewrites every string equal to a moved path, anywhere in the document.
-  /// Walking the decoded tree beats a text replace: a path could contain
-  /// characters a regex would misread, and this only touches whole values.
-  String _rewritePaths(String json, Map<String, String> moved) {
-    if (moved.isEmpty) return json;
-    Object? walk(Object? v) {
-      if (v is String) return moved[v] ?? v;
-      if (v is List) return [for (final e in v) walk(e)];
-      if (v is Map) return {for (final e in v.entries) e.key: walk(e.value)};
-      return v;
-    }
-    try {
-      return jsonEncode(walk(jsonDecode(json)));
-    } catch (_) {
-      return json;
-    }
-  }
-
-  String _assetName(String path) {
-    final i = path.lastIndexOf('/');
-    final raw = i < 0 ? path : path.substring(i + 1);
-    final clean = raw.replaceAll(RegExp(r'[^\w.\-]'), '_');
-    return clean.isEmpty ? 'file' : clean;
-  }
-
-  // ------------------------------------------------------------------ remote
-
-  void _loadRemoteBackup() {
-    final raw = _sp.getString('backup.remote');
-    if (raw == null || raw.isEmpty) return;
-    try {
-      remoteBackup = RemoteConfig.fromJson(jsonDecode(raw) as Map<String, dynamic>);
-    } catch (_) {
-      // a damaged blob reads as unset; never let it stop the app
-    }
-  }
-
-  /// Persists a remote target. Kept out of the exported document on purpose:
-  /// the archive is a thing people hand around, and this holds credentials.
-  Future<void> setRemoteBackup(RemoteConfig config) async {
-    remoteBackup = config;
-    await _sp.setString('backup.remote', jsonEncode(config.toJson()));
-    bump();
-  }
-
-  /// Probes the configured target. Never throws: the answer is the message.
-  Future<RemoteResult> testRemoteBackup() async {
-    final cfg = remoteBackup;
-    if (!cfg.isConfigured) return const RemoteResult(false, 'Not configured.');
-    try {
-      return await cfg.build().test();
-    } catch (e) {
-      return RemoteResult(false, '$e');
-    }
-  }
-
-  /// Uploads the current archive right now. Throws so the UI can report a
-  /// failure the user just asked for.
-  Future<void> backupToRemoteNow() async {
-    final cfg = remoteBackup;
-    if (!cfg.isConfigured) throw StateError('Remote backup is not configured.');
-    await cfg.build().upload(await exportBackupArchive(), _remoteName());
-  }
-
-  /// The archives already on the remote, newest first. Only names this app
-  /// understands are returned, so a folder shared with other files stays clean.
-  Future<List<RemoteEntry>> listRemoteBackups() async {
-    final cfg = remoteBackup;
-    if (!cfg.isConfigured) return const [];
-    final entries = await cfg.build().list();
-    return (entries.where((e) => e.name.endsWith('.$autoBackupExt') || e.name.endsWith('.json')).toList()
-      ..sort((a, b) => b.name.compareTo(a.name)));
-  }
-
-  /// Downloads one remote archive and restores it. [name] comes from
-  /// [listRemoteBackups].
-  Future<BackupReport> restoreFromRemote(String name, {required bool overwrite}) async {
-    final cfg = remoteBackup;
-    if (!cfg.isConfigured) throw StateError('Remote backup is not configured.');
-    final bytes = await cfg.build().download(name);
-    return importBackupArchive(bytes, overwrite: overwrite);
-  }
-
-  Future<void> _uploadRemote(List<int> bytes) async {
-    final cfg = remoteBackup;
-    if (!cfg.enabled || !cfg.isConfigured) return;
-    try {
-      await cfg.build().upload(bytes is Uint8List ? bytes : Uint8List.fromList(bytes), _remoteName());
-    } catch (_) {
-      // remote is best effort; the local copy already succeeded
-    }
-  }
-
-  String _remoteName() {
-    String p(int v) => v.toString().padLeft(2, '0');
-    final n = DateTime.now();
-    return 'paradise-${n.year}${p(n.month)}${p(n.day)}-${p(n.hour)}${p(n.minute)}${p(n.second)}.$autoBackupExt';
-  }
 
   /// The document to hand the user. Never contains an API key.
   String exportBackupString() => buildBackup(
