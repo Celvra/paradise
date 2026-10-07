@@ -38,10 +38,18 @@ void main(List<String> args) async {
         'RUSTFLAGS': '${Platform.environment['RUSTFLAGS'] ?? ''} -C link-arg=-fuse-ld=$hostLld'.trim(),
     };
 
-    // CodeConfig has no Flutter build-mode field. Default to fast debug builds;
-    // release (with LTO from Cargo.toml) must be explicitly requested with
-    // hooks.user_defines.oii_bridge.profile: release.
-    final profile = input.userDefines['profile']?.toString() ?? 'debug';
+    // CodeConfig carries no Flutter build mode, and hooks run with almost the
+    // whole environment stripped, so nothing at build time can tell a debug
+    // build from a release one. The only channel is this user-define, which
+    // means the default has to be the safe choice for a shipped library: cargo
+    // release, which is what Cargo.toml optimises hardest for.
+    //
+    // That used to be unaffordable -- oii's default features drag in lsp-server
+    // and clap, and linking those for three ABIs took the better part of an
+    // hour. With default-features = false it is about forty seconds a target,
+    // so `hooks.user_defines.oii_bridge.profile: debug` is the opt-in fast
+    // path rather than the default.
+    final profile = input.userDefines['profile']?.toString() ?? 'release';
     if (profile != 'debug' && profile != 'release') {
       throw ArgumentError.value(
           profile, 'profile', 'expected debug or release');
