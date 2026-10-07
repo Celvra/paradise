@@ -19,10 +19,17 @@
 /// * one `.oii` file holds one top level node: `<name> [\n  key: value,\n]`
 ///   with identifier keys. Duplicate map keys are last-wins, like oii.
 ///
-/// The constructs above were verified against oii 1.1.1 (`parse_with` accepts
-/// them, `format_doc` re-emits them), so a backup file is also readable by
-/// real oii tooling. Non-finite doubles are the one known divergence: rust's
-/// `to_json` folds them to null, this decoder restores them.
+/// The constructs above are not merely believed to be oii, they are checked.
+/// `packages/oii_bridge/testdata/backup_doc.oii` is a document this encoder
+/// produced; the dart half of the contract is `test/oii_contract_test.dart`,
+/// and the rust half is `oii_bridge_backup_validate` in the vendored crate,
+/// which parses that same file with the real oii engine and folds it to the
+/// same data. Both halves run in CI, so a codec change that stops emitting
+/// valid oii fails the build instead of quietly writing files only this
+/// decoder can read.
+///
+/// Non-finite doubles are the one known divergence: serde_json has no nan or
+/// infinity, so the rust reader folds them to null while this one keeps them.
 library;
 
 /// Encodes a JSON-like value (null, bool, int, double, String, List, Map with

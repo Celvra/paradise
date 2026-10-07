@@ -1,0 +1,46 @@
+{
+  "id": "c1",
+  "title": "a {b} c \"q\" d # e \"# f\ng",
+  "muted": false,
+  "unread": 3,
+  "ratio": 1.5,
+  "pinned": null,
+  "tags": [
+    "a",
+    "b",
+    ""
+  ],
+  "empty_list": [],
+  "settings": {
+    "theme": "dark",
+    "font": 12,
+    "nested": {
+      "a": 1,
+      "b": [
+        true,
+        null
+      ]
+    },
+    "deep": {
+      "one": {
+        "two": {
+          "three": 4
+        },
+        "after": 5
+      },
+      "tail": 6
+    }
+  },
+  "empty_map": {},
+  "messages": [
+    {
+      "role": "user",
+      "text": "hi"
+    },
+    {
+      "role": "bot",
+      "text": "yo"
+    }
+  ],
+  "unicode": "中文 🎉"
+}

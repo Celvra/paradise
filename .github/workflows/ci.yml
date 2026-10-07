@@ -36,6 +36,32 @@ jobs:
       - name: Test
         run: flutter test
 
+      # The other half of the oii contract. `flutter test` cannot load a code
+      # asset, so the dart side only proves it agrees with itself; this is the
+      # half that parses the shared fixture with the real oii engine and checks
+      # the two agree. Host target only, so no android rustup targets needed.
+      - name: Test the oii bridge
+        run: cargo test --manifest-path packages/oii_bridge/native/Cargo.toml
+
+      # And the same fixture read back across the real FFI boundary, which is
+      # the only place the two readers actually meet.
+      - name: Test the oii bridge over ffi
+        working-directory: packages/oii_bridge
+        run: |
+          flutter pub get
+          LD_LIBRARY_PATH=$PWD/build/native_assets/linux flutter test
+
+      # A fixture that drifts is a silent lie: dart would keep passing its own
+      # half while the files stopped being oii. Fail loudly instead.
+      - name: Check the shared oii fixture is up to date
+        run: |
+          dart run tool/regen_oii_fixture.dart
+          if ! git diff --quiet -- packages/oii_bridge/testdata; then
+            echo "::error::the shared oii fixture is stale. Run 'dart run tool/regen_oii_fixture.dart' and commit the result."
+            git diff --stat -- packages/oii_bridge/testdata
+            exit 1
+          fi
+
       # the generated localisations are committed, so a change that forgets to
       # re-run gen-l10n would otherwise only fail on a contributor's machine
       - name: Check the generated localizations are up to date

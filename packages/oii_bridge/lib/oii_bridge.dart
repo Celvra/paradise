@@ -134,6 +134,58 @@ OiiDescribeResult oiiDescribe(String source) {
   }
 }
 
+/// Result of validating one backup document.
+///
+/// [data] is the folded document: the same value the app's own decoder
+/// produces, so the two can be compared field by field. A failure in [error]
+/// is meant to be shown to a person, so it carries oii's own rendered
+/// diagnostics with the offending line quoted.
+class OiiBackupValidation {
+  const OiiBackupValidation({required this.ok, this.name = '', this.data = const {}, this.error = ''});
+
+  final bool ok;
+
+  /// The document's node name, e.g. `chat` or `manifest`'s `backup`.
+  final String name;
+
+  /// Fields of the top level node, with `(map)` tags folded to objects.
+  final Map<String, Object?> data;
+  final String error;
+
+  factory OiiBackupValidation.fromJson(Map<String, dynamic> j) => OiiBackupValidation(
+        ok: j['ok'] == true,
+        name: '${j['name'] ?? ''}',
+        data: j['data'] is Map ? Map<String, Object?>.from(j['data'] as Map) : const {},
+        error: '${j['error'] ?? ''}',
+      );
+
+  @override
+  String toString() => ok ? 'OiiBackupValidation($name, ${data.length} fields)' : 'OiiBackupValidation(error: $error)';
+}
+
+final _validateBackup = _lib.lookupFunction<_DescribeC, _DescribeD>('oii_bridge_backup_validate');
+
+/// Checks that [source] is real oii and folds it to data.
+///
+/// This is the independent reader for backup files the app writes. The app's
+/// own decoder is deliberately pure dart, so on its own it can only prove it
+/// agrees with itself; this one goes through the oii parser, which is what
+/// makes "these files are oii" a fact rather than a claim.
+///
+/// Stateless like [oiiDescribe], so it runs inline on the calling isolate.
+OiiBackupValidation oiiValidateBackupDoc(String source) {
+  final sp = _toUtf8(source);
+  final out = _validateBackup(sp);
+  final text = _fromUtf8(out);
+  _freeUtf8(out);
+  _freeUtf8(sp);
+  try {
+    return OiiBackupValidation.fromJson(Map<String, dynamic>.from(jsonDecode(text.isEmpty ? '{}' : text) as Map));
+  } catch (_) {
+    return const OiiBackupValidation(ok: false, error: 'the bridge returned something unreadable');
+  }
+}
+
 /// A host function a script may call. Runs on the isolate the engine was
 /// created on; the return value must be json encodable. May be async: the
 /// rust eval parks on its reply channel until the future completes, so a
