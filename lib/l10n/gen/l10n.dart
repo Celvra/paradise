@@ -2073,6 +2073,24 @@ abstract class AppLocalizations {
   /// **'Use the current main model for summaries'**
   String get aiFollowChainSub;
 
+  /// Model picker tab limiting the list to chat models
+  ///
+  /// In en, this message translates to:
+  /// **'Chat'**
+  String get aiModelTabChat;
+
+  /// Model picker tab limiting the list to image models
+  ///
+  /// In en, this message translates to:
+  /// **'Image'**
+  String get aiModelTabImage;
+
+  /// Model picker tab showing every model
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get aiModelTabAll;
+
   /// Search field placeholder in the model picker
   ///
   /// In en, this message translates to:

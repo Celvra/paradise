@@ -1383,6 +1383,18 @@
   "@aiFollowChainSub": {
     "description": "Default subtitle of the follow chain row in the model picker"
   },
+  "aiModelTabChat": "Chat",
+  "@aiModelTabChat": {
+    "description": "Model picker tab limiting the list to chat models"
+  },
+  "aiModelTabImage": "Image",
+  "@aiModelTabImage": {
+    "description": "Model picker tab limiting the list to image models"
+  },
+  "aiModelTabAll": "All",
+  "@aiModelTabAll": {
+    "description": "Model picker tab showing every model"
+  },
   "aiSearchModels": "Search models",
   "@aiSearchModels": {
     "description": "Search field placeholder in the model picker"

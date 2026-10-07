@@ -1044,6 +1044,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get aiFollowChainSub => '总结时使用当前的主模型';
 
   @override
+  String get aiModelTabChat => '对话';
+
+  @override
+  String get aiModelTabImage => '生图';
+
+  @override
+  String get aiModelTabAll => '全部';
+
+  @override
   String get aiSearchModels => '搜索模型';
 
   @override
@@ -5158,6 +5167,15 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get aiFollowChainSub => '總結時使用目前的主模型';
+
+  @override
+  String get aiModelTabChat => '對話';
+
+  @override
+  String get aiModelTabImage => '生圖';
+
+  @override
+  String get aiModelTabAll => '全部';
 
   @override
   String get aiSearchModels => '搜尋模型';

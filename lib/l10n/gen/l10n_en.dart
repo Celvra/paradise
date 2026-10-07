@@ -1092,6 +1092,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aiFollowChainSub => 'Use the current main model for summaries';
 
   @override
+  String get aiModelTabChat => 'Chat';
+
+  @override
+  String get aiModelTabImage => 'Image';
+
+  @override
+  String get aiModelTabAll => 'All';
+
+  @override
   String get aiSearchModels => 'Search models';
 
   @override
