@@ -1,5 +1,3 @@
-import 'dart:async' show unawaited;
-import 'dart:convert' show utf8;
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
@@ -11,6 +9,7 @@ import '../core/overlays.dart';
 import '../core/theme.dart';
 import '../core/ui_kit.dart';
 import '../app_info.dart' show appVersion;
+import '../data/backup_remote.dart';
 import '../data/models.dart';
 import '../data/speech_config.dart';
 import '../data/ai/provider_model.dart';
@@ -20,6 +19,7 @@ import 'bubble.dart';
 import 'account_page.dart';
 import 'about_page.dart';
 import 'storage_page.dart';
+import 'backup_remote_page.dart';
 import 'update_sheet.dart';
 import 'wallpaper.dart';
 import 'wallpaper_page.dart';
@@ -295,7 +295,26 @@ class SettingsTab extends StatelessWidget {
           onTap: () => _autoBackupPick(context),
         ),
       ]),
+      _Head(l.remoteBackupTitle),
+      _Group(children: [
+        _Cell(
+          icon: Ic.storage,
+          colors: _blueDeep,
+          title: l.remoteBackupTitle,
+          sub: _remoteSummary(st, l),
+          last: true,
+          onTap: () => Navigator.of(context).push(TgRoute(builder: (_) => const RemoteBackupPage())),
+        ),
+      ]),
     ];
+  }
+
+  /// One line for the remote row: which protocol, and whether auto upload is on.
+  static String _remoteSummary(Store st, AppLocalizations l) {
+    final cfg = st.remoteBackup;
+    if (!cfg.isConfigured) return l.remoteBackupSub;
+    final kind = cfg.kind == RemoteKind.s3 ? l.remoteBackupKindS3 : l.remoteBackupKindWebdav;
+    return '$kind · ${cfg.enabled ? l.remoteBackupOn : l.remoteBackupOff}';
   }
 
   static String _clockMin(int m) => '${(m ~/ 60).toString().padLeft(2, '0')}:${(m % 60).toString().padLeft(2, '0')}';
@@ -376,9 +395,9 @@ class SettingsTab extends StatelessWidget {
   Future<void> _exportBackup(BuildContext context) async {
     final st = context.store;
     final l = context.l;
-    String json;
+    Uint8List bytes;
     try {
-      json = await st.exportBackupString();
+      bytes = await st.exportBackupArchive();
     } catch (_) {
       if (context.mounted) showBulletin(context, l.dataBackupSaveFailed);
       return;
@@ -386,22 +405,17 @@ class SettingsTab extends StatelessWidget {
 
     try {
       final saved = await FilePicker.saveFile(
-        fileName: 'paradise-${_stamp()}.json',
-        bytes: utf8.encode(json),
-        mimeType: 'application/json',
-        allowedExtensions: const ['json'],
+        fileName: 'paradise-${_stamp()}.zip',
+        bytes: bytes,
+        mimeType: 'application/zip',
+        allowedExtensions: const ['zip'],
         dialogTitle: l.humanExport,
       );
       // null means the user backed out of the dialog, which is not a failure
       if (saved == null) return;
       if (context.mounted) showBulletin(context, l.dataBackupSaved);
     } catch (_) {
-      try {
-        unawaited(Clipboard.setData(ClipboardData(text: json)));
-        if (context.mounted) showBulletin(context, l.humanCopiedClipboard);
-      } catch (_) {
-        if (context.mounted) showBulletin(context, l.dataBackupSaveFailed);
-      }
+      if (context.mounted) showBulletin(context, l.dataBackupSaveFailed);
     }
   }
 
@@ -415,7 +429,7 @@ class SettingsTab extends StatelessWidget {
   Future<void> _importBackup(BuildContext context) async {
     final st = context.store;
     final l = context.l;
-    final picked = await FilePicker.pickFiles(type: FileType.custom, allowedExtensions: ['json']);
+    final picked = await FilePicker.pickFiles(type: FileType.custom, allowedExtensions: ['json', 'zip']);
     final path = picked.firstOrNull?.path;
     if (path == null || !context.mounted) return;
 
@@ -434,7 +448,7 @@ class SettingsTab extends StatelessWidget {
     if (overwrite == null || !context.mounted) return;
 
     try {
-      final report = await st.importBackupString(await File(path).readAsString(), overwrite: overwrite);
+      final report = await st.importBackupArchive(await File(path).readAsBytes(), overwrite: overwrite);
       if (!context.mounted) return;
       // a file that parsed but held nothing this build can use is its own case,
       // distinct from a failure and from a restore that did something
