@@ -4050,10 +4050,39 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get autoBackupTitle => 'Auto backup';
+  String get remoteBackupTitle => "Remote backup";
+  String get remoteBackupSub => "Push every automatic backup to WebDAV or S3, so a copy survives even if the phone is lost.";
+  String get remoteBackupOn => "On";
+  String get remoteBackupOff => "Off";
+  String get remoteBackupKind => "Protocol";
+  String get remoteBackupKindWebdav => "WebDAV";
+  String get remoteBackupKindS3 => "S3";
+  String get remoteBackupUrl => "WebDAV URL";
+  String get remoteBackupUser => "Username";
+  String get remoteBackupPass => "Password";
+  String get remoteBackupEndpoint => "Endpoint";
+  String get remoteBackupRegion => "Region";
+  String get remoteBackupBucket => "Bucket";
+  String get remoteBackupAccessKey => "Access key";
+  String get remoteBackupSecretKey => "Secret key";
+  String get remoteBackupPrefix => "Path prefix";
+  String get remoteBackupPathStyle => "Force path-style addressing";
+  String get remoteBackupEnable => "Auto upload";
+  String get remoteBackupTest => "Test connection";
+  String get remoteBackupTestOk => "Connected";
+  String get remoteBackupTestFail => "Connection failed";
+  String get remoteBackupUpload => "Upload backup now";
+  String get remoteBackupUploaded => "Backup uploaded";
+  String get remoteBackupUploadFail => "Upload failed";
+  String get remoteBackupRestore => "Restore from remote";
+  String get remoteBackupRestorePick => "Choose a backup to restore";
+  String get remoteBackupNone => "No backup found on the remote";
+  String get remoteBackupNotConfigured => "Fill in and save the settings first";
+  String get remoteBackupSaved => "Remote settings saved";
 
   @override
   String get autoBackupSub =>
-      'Backups overwrite one file kept outside the app, so they survive updates and reinstalls.';
+      'Each backup is a zip kept outside the app and never overwritten, so an update or reinstall cannot lose your data.';
 
   @override
   String get autoBackupModeChange => 'On data change (recommended)';

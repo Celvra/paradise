@@ -1,9 +1,7 @@
-import 'dart:async' show unawaited;
-import 'dart:convert' show utf8;
 import 'dart:io';
+import 'dart:typed_data' show Uint8List;
 
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 import '../core/anim.dart';
@@ -31,6 +29,7 @@ import 'ai_settings_page.dart';
 import 'speech_page.dart';
 import 'human_pages.dart';
 import 'shop_page.dart';
+import 'backup_remote_page.dart';
 
 // IconBackgroundColors pairs top and bottom
 const _blue = [Color(0xFF1CA5ED), Color(0xFF1488E1)];
@@ -71,7 +70,7 @@ class SettingsTab extends StatelessWidget {
             padding: EdgeInsets.only(top: top + 56 + 12, bottom: mq.padding.bottom + 56 + 8 + 24),
             children: [
               // the profile already has its own tab, so nothing here repeats it
-              _Group(children: [
+         ,    _Group(children: [
                 _Cell(icon: Ic.user, colors: _blue, title: l.settingsAccount, sub: l.settingsAccountSub, onTap: () => openAccount(context)),
                 _Cell(
                   icon: Ic.ai,
@@ -293,7 +292,26 @@ class SettingsTab extends StatelessWidget {
           onTap: () => _autoBackupPick(context),
         ),
       ]),
+      _Head(l.remoteBackupTitle),
+      _Group(children: [
+        _Cell(
+          icon: Ic.storage,
+          colors: _blueDeep,
+          title: l.remoteBackupTitle,
+          sub: _remoteSummary(st, l),
+          last: true,
+          onTap: () => Navigator.of(context).push(TgRoute(builder: (_) => const RemoteBackupPage())),
+        ),
+      ]),
     ];
+  }
+
+  /// One line for the remote row: which protocol, and whether auto upload is on.
+  static String _remoteSummary(Store st, AppLocalizations l) {
+    final cfg = st.remoteBackup;
+    if (!cfg.isConfigured) return l.remoteBackupSub;
+    final kind = cfg.kind == RemoteKind.s3 ? l.remoteBackupKindS3 : l.remoteBackupKindWebdav;
+    return '$kind · ${cfg.enabled ? l.remoteBackupOn : l.remoteBackupOff}';
   }
 
   static String _clockMin(int m) => '${(m ~/ 60).toString().padLeft(2, '0')}:${(m % 60).toString().padLeft(2, '0')}';
@@ -361,22 +379,19 @@ class SettingsTab extends StatelessWidget {
     }
   }
 
-  /// Hands the whole account to the system save dialog.
+  /// Hands the whole account to the system save dialog as one zip: the document
+  /// plus every avatar, sticker and the wallpaper it names.
   ///
   /// Not the app's own exports directory: that is private storage, so a backup
   /// written there is a file the user cannot reach, cannot attach to a message
   /// and cannot put in a cloud drive. The save dialog puts it wherever they
   /// choose, which is the only place a backup is actually a backup.
-  ///
-  /// The clipboard is only the fallback for when that dialog cannot be used at
-  /// all. It is not the primary route: a large history will not fit in a
-  /// clipboard, and the string has to be in memory twice to get there.
   Future<void> _exportBackup(BuildContext context) async {
     final st = context.store;
     final l = context.l;
-    String json;
+    Uint8List bytes;
     try {
-      json = st.exportBackupString();
+      bytes = await st.exportBackupArchive();
     } catch (_) {
       if (context.mounted) showBulletin(context, l.dataBackupSaveFailed);
       return;
@@ -384,22 +399,17 @@ class SettingsTab extends StatelessWidget {
 
     try {
       final saved = await FilePicker.saveFile(
-        fileName: 'paradise-${_stamp()}.json',
-        bytes: utf8.encode(json),
-        mimeType: 'application/json',
-        allowedExtensions: const ['json'],
+        fileName: 'paradise-${_stamp()}.zip',
+        bytes: bytes,
+        mimeType: 'application/zip',
+        allowedExtensions: const ['zip'],
         dialogTitle: l.humanExport,
       );
       // null means the user backed out of the dialog, which is not a failure
       if (saved == null) return;
       if (context.mounted) showBulletin(context, l.dataBackupSaved);
     } catch (_) {
-      try {
-        unawaited(Clipboard.setData(ClipboardData(text: json)));
-        if (context.mounted) showBulletin(context, l.humanCopiedClipboard);
-      } catch (_) {
-        if (context.mounted) showBulletin(context, l.dataBackupSaveFailed);
-      }
+      if (context.mounted) showBulletin(context, l.dataBackupSaveFailed);
     }
   }
 
@@ -413,7 +423,7 @@ class SettingsTab extends StatelessWidget {
   Future<void> _importBackup(BuildContext context) async {
     final st = context.store;
     final l = context.l;
-    final picked = await FilePicker.pickFiles(type: FileType.custom, allowedExtensions: ['json']);
+    final picked = await FilePicker.pickFiles(type: FileType.custom, allowedExtensions: ['json', 'zip']);
     final path = picked.firstOrNull?.path;
     if (path == null || !context.mounted) return;
 
@@ -432,7 +442,7 @@ class SettingsTab extends StatelessWidget {
     if (overwrite == null || !context.mounted) return;
 
     try {
-      final report = st.importBackupString(await File(path).readAsString(), overwrite: overwrite);
+      final report = await st.importBackupArchive(await File(path).readAsBytes(), overwrite: overwrite);
       if (!context.mounted) return;
       // a file that parsed but held nothing this build can use is its own case,
       // distinct from a failure and from a restore that did something
@@ -594,7 +604,7 @@ class _Cell extends StatelessWidget {
             child: Row(children: [
               Expanded(
                 child: Column(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text(title, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(color: danger ? p.danger : p.title, fontSize: 16, height: 1.2, decoration: TextDecoration.none, fontWeight: FontWeight.w400)),
+                  Text(title, maxL p.danger : p.title, fontSize: 16, height: 1.2, decoration: TextDecoration.none, fontWeight: FontWeight.w400)),
                   if (sub != null) Text(sub!, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(color: p.subtitle, fontSize: 13, height: 1.3, decoration: TextDecoration.none, fontWeight: FontWeight.w400)),
                 ]),
               ),
@@ -667,6 +677,10 @@ String wsSettingsSummary(Store st) {
 String skillSettingsSummary(Store st, AppLocalizations l) {
   final n = st.skills.skills.length;
   return n == 0 ? l.skillSubEmpty : l.skillSubCount(n);
+}
+
+String wsTitles(int n) => L10n.number('#,##0').format(n);
+SubCount(n);
 }
 
 String wsTitles(int n) => L10n.number('#,##0').format(n);

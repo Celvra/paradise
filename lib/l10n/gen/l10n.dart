@@ -7328,6 +7328,35 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Auto backup'**
   String get autoBackupTitle;
+  String get remoteBackupTitle;
+  String get remoteBackupSub;
+  String get remoteBackupOn;
+  String get remoteBackupOff;
+  String get remoteBackupKind;
+  String get remoteBackupKindWebdav;
+  String get remoteBackupKindS3;
+  String get remoteBackupUrl;
+  String get remoteBackupUser;
+  String get remoteBackupPass;
+  String get remoteBackupEndpoint;
+  String get remoteBackupRegion;
+  String get remoteBackupBucket;
+  String get remoteBackupAccessKey;
+  String get remoteBackupSecretKey;
+  String get remoteBackupPrefix;
+  String get remoteBackupPathStyle;
+  String get remoteBackupEnable;
+  String get remoteBackupTest;
+  String get remoteBackupTestOk;
+  String get remoteBackupTestFail;
+  String get remoteBackupUpload;
+  String get remoteBackupUploaded;
+  String get remoteBackupUploadFail;
+  String get remoteBackupRestore;
+  String get remoteBackupRestorePick;
+  String get remoteBackupNone;
+  String get remoteBackupNotConfigured;
+  String get remoteBackupSaved;
 
   /// No description provided for @autoBackupSub.
   ///
