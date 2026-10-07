@@ -173,4 +173,21 @@ void main() {
     final raw = prefs.getString('chats') ?? '';
     expect(raw, contains('after restore'));
   });
+
+  test('the wallet and the assistant settings ride along', () async {
+    final (s, _) = await boot();
+    s.human!.wallet.balance = 4321;
+    s.human!.settings.enabled = false;
+    s.human!.changed();
+    final raw = s.exportBackupString();
+
+    final (fresh, _) = await boot();
+    expect(fresh.human!.wallet.balance, 1000, reason: 'a fresh install starts at its own default');
+
+    final report = fresh.importBackupString(raw, overwrite: true);
+    expect(report.wallet, isTrue);
+    expect(report.human, isTrue);
+    expect(fresh.human!.wallet.balance, 4321);
+    expect(fresh.human!.settings.enabled, isFalse, reason: 'the assistant settings came back too');
+  });
 }

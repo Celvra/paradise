@@ -18,6 +18,7 @@ import '../l10n/x.dart';
 import 'bubble.dart';
 import 'account_page.dart';
 import 'about_page.dart';
+import 'storage_page.dart';
 import 'update_sheet.dart';
 import 'wallpaper.dart';
 import 'wallpaper_page.dart';
@@ -91,7 +92,8 @@ class SettingsTab extends StatelessWidget {
                 _Cell(icon: Ic.palette, colors: _orange, title: l.settingsAppearance, sub: l.settingsAppearanceSub, onTap: () => _open(context, l.settingsAppearance, _appearance)),
                 _Cell(icon: Ic.bell, colors: _red, title: l.settingsNotifications, sub: st.haptics ? l.settingsVibrationOn : l.settingsVibrationOff, onTap: () => _open(context, l.settingsNotifications, _notifications)),
                 _Cell(icon: Ic.globe, colors: _green, title: l.settingsLanguage, sub: languageLabel(st.localeTag, l), onTap: () => _openLanguage(context)),
-                _Cell(icon: Ic.storage, colors: _blueDeep, title: l.settingsData, sub: l.settingsDataSub(st.chats.length, fileSize(st.attachBytes)), last: true, onTap: () => _open(context, l.settingsData, _data)),
+                _Cell(icon: Ic.storage, colors: _blueDeep, title: l.settingsData, sub: l.settingsDataSub(st.chats.length, fileSize(st.attachBytes)), onTap: () => _open(context, l.settingsData, _data)),
+                _Cell(icon: Ic.storage, colors: _gray, title: l.storageTitle, sub: l.storageSub, last: true, onTap: () => Navigator.of(context).push(TgRoute(builder: (_) => const StoragePage()))),
               ]),
               const SizedBox(height: 12),
               _Group(children: [

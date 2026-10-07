@@ -60,29 +60,27 @@ void main() {
   });
 
   group('DirBackupSink', () {
-    test('write then read roundtrips the newest archive', () async {
+    test('write then read roundtrips the archive', () async {
       final dir = await Directory.systemTemp.createTemp('autobackup_sink');
       final sink = DirBackupSink(dir);
       expect(await sink.read(), isNull);
       await sink.write([1, 2, 3]);
       expect(await sink.read(), [1, 2, 3]);
       await sink.write([9, 8, 7]);
-      expect(await sink.read(), [9, 8, 7], reason: 'the newest archive wins');
+      expect(await sink.read(), [9, 8, 7], reason: 'the newer archive replaces the old one');
       expect((await sink.read())!.length, 3);
       await dir.delete(recursive: true);
     });
 
-    test('keeps only the newest archives', () async {
-      final dir = await Directory.systemTemp.createTemp('autobackup_keep');
-      final sink = DirBackupSink(dir, keep: 2);
-      // seeding the directory directly is the only way to get distinct second
-      // stamps without waiting; the naming is what the sink lists on
-      for (var i = 0; i < 5; i++) {
-        File(p.join(dir.path, autoBackupFileName(DateTime(2026, 10, 6, 12, 0, i)))).writeAsBytesSync([i]);
-      }
+    test('a write replaces the archive rather than piling up new ones', () async {
+      final dir = await Directory.systemTemp.createTemp('autobackup_overwrite');
+      final sink = DirBackupSink(dir);
+      await sink.write([1, 2, 3]);
       await sink.write([42]);
-      final left = dir.listSync().whereType<File>().where((f) => f.path.endsWith('.$autoBackupExt')).length;
-      expect(left, lessThanOrEqualTo(3), reason: 'the window rolls, it does not grow without bound');
+      final files = dir.listSync().whereType<File>().toList();
+      expect(files, hasLength(1), reason: 'one fixed file, not a growing pile');
+      expect(files.single.path, endsWith(autoBackupFileName));
+      expect(await files.single.readAsBytes(), [42]);
       await dir.delete(recursive: true);
     });
   });

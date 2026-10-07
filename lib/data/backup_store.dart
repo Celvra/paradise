@@ -253,7 +253,9 @@ extension BackupStore on Store {
   Future<void> backupToRemoteNow() async {
     final cfg = remoteBackup;
     if (!cfg.isConfigured) throw StateError('Remote backup is not configured.');
-    await cfg.build().upload(await exportBackupArchive(), _remoteName());
+    final at = DateTime.now();
+    await cfg.build().upload(await exportBackupArchive(), remoteBackupFileName(at));
+    await _sp.setString('backup.remoteDate', _remoteDay(at));
   }
 
   /// The archives already on the remote, newest first. Only names this app
@@ -275,20 +277,31 @@ extension BackupStore on Store {
     return importBackupArchive(bytes, overwrite: overwrite);
   }
 
+  /// The automatic remote copy: at most once a day, named by that day.
+  ///
+  /// The local sink runs after every editing burst; the remote must not, or a
+  /// few minutes of typing would push a dozen near-identical uploads. One dated
+  /// file per day keeps the folder readable and the traffic bounded, and a run
+  /// later the same day finds the marker set and does nothing.
   Future<void> _uploadRemote(List<int> bytes) async {
     final cfg = remoteBackup;
     if (!cfg.enabled || !cfg.isConfigured) return;
+    final at = DateTime.now();
+    final day = _remoteDay(at);
+    if ((_sp.getString('backup.remoteDate') ?? '') == day) return;
     try {
-      await cfg.build().upload(bytes is Uint8List ? bytes : Uint8List.fromList(bytes), _remoteName());
+      await cfg.build().upload(bytes is Uint8List ? bytes : Uint8List.fromList(bytes), remoteBackupFileName(at));
+      await _sp.setString('backup.remoteDate', day);
+      bump();
     } catch (_) {
-      // remote is best effort; the local copy already succeeded
+      // remote is best effort; the local copy already succeeded, and a failure
+      // leaves the date unset so the next tick tries again the same day
     }
   }
 
-  String _remoteName() {
+  static String _remoteDay(DateTime at) {
     String p(int v) => v.toString().padLeft(2, '0');
-    final n = DateTime.now();
-    return 'paradise-${n.year}${p(n.month)}${p(n.day)}-${p(n.hour)}${p(n.minute)}${p(n.second)}.$autoBackupExt';
+    return '${at.year}-${p(at.month)}-${p(at.day)}';
   }
 
   /// The document to hand the user. Never contains an API key.
@@ -297,6 +310,9 @@ extension BackupStore on Store {
         personas: personas.map((p) => p.toJson()).toList(),
         stickers: human == null ? null : jsonDecode(human!.exportStickers()) as Map<String, dynamic>,
         memory: human == null ? null : jsonDecode(human!.exportMemory()) as Map<String, dynamic>,
+        wallet: human?.wallet.toJson(),
+        humanSettings: human?.settings.toJson(),
+        tasks: human?.scheduler.toJson(),
         settings: exportSettings(),
         ai: _ai?.settings.toJson(),
       );
@@ -393,6 +409,39 @@ extension BackupStore on Store {
           report.warnings.add(e.message);
         }
       }
+      // The wallet, the assistant settings and the scheduled messages are plain
+      // preference blobs, so they go back through their own loaders. None of them
+      // holds a credential; the API keys stay out of the document on purpose,
+      // which is why a restored provider arrives without one.
+      var humanTouched = false;
+      if (doc.wallet != null) {
+        try {
+          h.wallet.loadJson(doc.wallet!);
+          report.wallet = true;
+          humanTouched = true;
+        } catch (_) {
+          report.warnings.add('the wallet, could not be read');
+        }
+      }
+      if (doc.human != null) {
+        try {
+          h.settings = HumanSettings.fromJson(doc.human!);
+          report.human = true;
+          humanTouched = true;
+        } catch (_) {
+          report.warnings.add('the assistant settings, could not be read');
+        }
+      }
+      if (doc.tasks != null) {
+        try {
+          h.scheduler.loadJson(doc.tasks!);
+          report.tasks = doc.tasks!.length;
+          humanTouched = true;
+        } catch (_) {
+          report.warnings.add('the scheduled messages, could not be read');
+        }
+      }
+      if (humanTouched) h.changed();
     }
 
     report.settings = _applySettings(doc.settings);

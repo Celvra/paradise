@@ -61,77 +61,54 @@ class AutoBackup {
 /// collection, and a plain directory one, which is the fallback on platforms
 /// without that channel and in tests.
 ///
-/// A sink moves opaque archive bytes. It never overwrites: every write is a new
-/// file, so the copy taken before a bad edit is still there after it. The
-/// address used to be a fixed name that each write erased first, which turned a
-/// single mistyped import into an unrecoverable one because the only good copy
-/// had already been replaced.
+/// A sink moves opaque archive bytes to one fixed address. Every write replaces
+/// what is there, so the copy on disk is always the newest one and a restore
+/// never has to choose between near-identical archives.
 abstract class BackupSink {
   Future<void> write(List<int> bytes);
   Future<List<int>?> read();
 }
 
-/// Shared naming for a sink: a sortable timestamp between a stable prefix and
-/// extension, so "the newest file" is also the lexicographically greatest one.
-String autoBackupFileName(DateTime at) {
-  String p(int v) => v.toString().padLeft(2, '0');
-  final s = '${at.year}${p(at.month)}${p(at.day)}-${p(at.hour)}${p(at.minute)}${p(at.second)}';
-  return '$autoBackupPrefix$s.$autoBackupExt';
-}
+/// The single file an automatic backup overwrites. The name is stable on
+/// purpose: it is what makes the local copy the latest one rather than the first
+/// of a pile.
+const autoBackupFileName = 'paradise_autobackup.zip';
 
-const autoBackupPrefix = 'paradise_autobackup-';
 const autoBackupExt = 'zip';
 const autoBackupMime = 'application/zip';
 
-/// How many archives a directory sink keeps. The change mode fires after every
-/// editing burst, so an unbounded history is a disk leak dressed up as safety;
-/// a rolling window keeps the last few restores and drops the rest.
-const autoBackupKeep = 20;
+/// The name a remote copy is stored under, one per day. A date rather than a
+/// timestamp because the remote is written at most once a day: two runs on the
+/// same date describe the same day and replace each other, and the folder reads
+/// as a calendar instead of a log.
+String remoteBackupFileName(DateTime at) {
+  String p(int v) => v.toString().padLeft(2, '0');
+  return 'paradise-${at.year}${p(at.month)}${p(at.day)}.$autoBackupExt';
+}
 
+/// The fallback sink: a plain directory the app can always write. It holds one
+/// archive at a fixed name and replaces it on every write, so the newest backup
+/// is always the one a restore reads.
 class DirBackupSink implements BackupSink {
-  DirBackupSink(this.dir, {this.keep = autoBackupKeep});
+  DirBackupSink(this.dir);
 
   final Directory dir;
 
-  /// Newest archives retained. Zero keeps every one.
-  final int keep;
-
-  /// Every archive in the directory, newest first. Sorted by name because the
-  /// timestamp is the name, so the order survives a clock that jumps rather
-  /// than trusting each file's mtime.
-  List<File> _archives() {
-    if (!dir.existsSync()) return const [];
-    final out = dir
-        .listSync()
-        .whereType<File>()
-        .where((f) => f.uri.pathSegments.last.startsWith(autoBackupPrefix) && f.path.endsWith('.$autoBackupExt'))
-        .toList()
-      ..sort((a, b) => b.path.compareTo(a.path));
-    return out;
-  }
+  File get _file => File('${dir.path}/$autoBackupFileName');
 
   @override
   Future<void> write(List<int> bytes) async {
     if (!await dir.exists()) await dir.create(recursive: true);
-    final file = File('${dir.path}/${autoBackupFileName(DateTime.now())}');
-    await file.writeAsBytes(bytes, flush: true);
-    if (keep <= 0) return;
-    final all = _archives();
-    for (final old in all.skip(keep)) {
-      try {
-        await old.delete();
-      } catch (_) {
-        // a file we cannot delete is harmless; never let it fail the write
-      }
-    }
+    // writeAsBytes truncates first, so a shorter archive cannot leave the tail
+    // of a longer one behind
+    await _file.writeAsBytes(bytes, flush: true);
   }
 
   @override
   Future<List<int>?> read() async {
-    final all = _archives();
-    if (all.isEmpty) return null;
     try {
-      return await all.first.readAsBytes();
+      if (!await _file.exists()) return null;
+      return await _file.readAsBytes();
     } catch (_) {
       return null;
     }

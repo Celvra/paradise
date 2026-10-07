@@ -28,6 +28,9 @@ class BackupReport {
   int memories = 0;
   int settings = 0;
   bool ai = false;
+  bool wallet = false;
+  bool human = false;
+  int tasks = 0;
 
   /// Records that were present in the file but could not be used. A backup that
   /// quietly drops half a conversation is worse than one that says which half.
@@ -51,6 +54,9 @@ class BackupDoc {
     required this.personas,
     required this.stickers,
     required this.memory,
+    required this.wallet,
+    required this.human,
+    required this.tasks,
     required this.settings,
     required this.ai,
   });
@@ -66,6 +72,13 @@ class BackupDoc {
   final Map<String, dynamic>? stickers;
   final Map<String, dynamic>? memory;
 
+  /// The wallet ledger, the assistant settings and the scheduled messages, each
+  /// in the shape the humanize layer already persists. They ride along so a
+  /// restore brings the whole account back rather than only the chat half.
+  final Map<String, dynamic>? wallet;
+  final Map<String, dynamic>? human;
+  final List<dynamic>? tasks;
+
   final Map<String, dynamic> settings;
   final Map<String, dynamic>? ai;
 
@@ -80,6 +93,9 @@ String buildBackup({
   required List<Map<String, dynamic>> personas,
   Map<String, dynamic>? stickers,
   Map<String, dynamic>? memory,
+  Map<String, dynamic>? wallet,
+  Map<String, dynamic>? humanSettings,
+  List<dynamic>? tasks,
   Map<String, dynamic> settings = const {},
   Map<String, dynamic>? ai,
   String appVersion = '',
@@ -95,6 +111,9 @@ String buildBackup({
         'personas': personas,
         if (stickers != null) 'stickers': stickers,
         if (memory != null) 'memory': memory,
+        if (wallet != null) 'wallet': wallet,
+        if (humanSettings != null) 'human': humanSettings,
+        if (tasks != null) 'tasks': tasks,
         if (settings.isNotEmpty) 'settings': settings,
         if (ai != null) 'ai': ai,
       },
@@ -140,6 +159,9 @@ BackupDoc parseBackup(String raw) {
     personas: objects('personas'),
     stickers: sections['stickers'] is Map ? (sections['stickers'] as Map).cast<String, dynamic>() : null,
     memory: sections['memory'] is Map ? (sections['memory'] as Map).cast<String, dynamic>() : null,
+    wallet: sections['wallet'] is Map ? (sections['wallet'] as Map).cast<String, dynamic>() : null,
+    human: sections['human'] is Map ? (sections['human'] as Map).cast<String, dynamic>() : null,
+    tasks: sections['tasks'] is List ? sections['tasks'] as List : null,
     settings: sections['settings'] is Map ? (sections['settings'] as Map).cast<String, dynamic>() : const {},
     ai: sections['ai'] is Map ? (sections['ai'] as Map).cast<String, dynamic>() : null,
   );
