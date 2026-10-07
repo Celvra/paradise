@@ -7332,7 +7332,7 @@ abstract class AppLocalizations {
   /// No description provided for @autoBackupSub.
   ///
   /// In en, this message translates to:
-  /// **'Each backup is a zip kept outside the app and never overwritten, so an update or reinstall cannot lose your data.'**
+  /// **'The latest backup is kept as a single zip outside the app and replaced on every run, so an update or reinstall cannot lose your data.'**
   String get autoBackupSub;
 
   /// No description provided for @remoteBackupTitle.
@@ -7344,7 +7344,7 @@ abstract class AppLocalizations {
   /// No description provided for @remoteBackupSub.
   ///
   /// In en, this message translates to:
-  /// **'Push every automatic backup to WebDAV or S3, so a copy survives even if the phone is lost.'**
+  /// **'A dated copy of the backup is uploaded once a day to WebDAV or S3, so a copy survives even if the phone is lost.'**
   String get remoteBackupSub;
 
   /// No description provided for @remoteBackupOn.
@@ -7982,6 +7982,114 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Could not speak: '**
   String get speechTestFailed;
+
+  /// No description provided for @storageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Storage'**
+  String get storageTitle;
+
+  /// No description provided for @storageSub.
+  ///
+  /// In en, this message translates to:
+  /// **'See what each kind of data uses and clear the cache'**
+  String get storageSub;
+
+  /// No description provided for @storageUsage.
+  ///
+  /// In en, this message translates to:
+  /// **'Usage'**
+  String get storageUsage;
+
+  /// No description provided for @storageTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get storageTotal;
+
+  /// No description provided for @storageChats.
+  ///
+  /// In en, this message translates to:
+  /// **'Chat records'**
+  String get storageChats;
+
+  /// No description provided for @storageMedia.
+  ///
+  /// In en, this message translates to:
+  /// **'Media and files'**
+  String get storageMedia;
+
+  /// No description provided for @storageStickers.
+  ///
+  /// In en, this message translates to:
+  /// **'Stickers'**
+  String get storageStickers;
+
+  /// No description provided for @storageWallpaper.
+  ///
+  /// In en, this message translates to:
+  /// **'Wallpaper'**
+  String get storageWallpaper;
+
+  /// No description provided for @storageBackups.
+  ///
+  /// In en, this message translates to:
+  /// **'Local backups'**
+  String get storageBackups;
+
+  /// No description provided for @storageWorkspace.
+  ///
+  /// In en, this message translates to:
+  /// **'Workspace and environment'**
+  String get storageWorkspace;
+
+  /// No description provided for @storageDatabase.
+  ///
+  /// In en, this message translates to:
+  /// **'Database'**
+  String get storageDatabase;
+
+  /// No description provided for @storageCache.
+  ///
+  /// In en, this message translates to:
+  /// **'Cache'**
+  String get storageCache;
+
+  /// No description provided for @storageOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get storageOther;
+
+  /// No description provided for @storagePerAgent.
+  ///
+  /// In en, this message translates to:
+  /// **'Chat records by assistant'**
+  String get storagePerAgent;
+
+  /// No description provided for @storageClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear cache'**
+  String get storageClear;
+
+  /// No description provided for @storageClearTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear cache?'**
+  String get storageClearTitle;
+
+  /// No description provided for @storageClearMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Temporary files are removed. Chats, personas, stickers and settings are kept.'**
+  String get storageClearMessage;
+
+  /// No description provided for @storageClearDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Cache cleared'**
+  String get storageClearDone;
 }
 
 class _AppLocalizationsDelegate

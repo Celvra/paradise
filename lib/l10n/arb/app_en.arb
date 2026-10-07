@@ -4995,9 +4995,9 @@
     "description": "Bulletin while a skill archive downloads"
   },
   "autoBackupTitle": "Auto backup",
-  "autoBackupSub": "Each backup is a zip kept outside the app and never overwritten, so an update or reinstall cannot lose your data.",
+  "autoBackupSub": "The latest backup is kept as a single zip outside the app and replaced on every run, so an update or reinstall cannot lose your data.",
   "remoteBackupTitle": "Remote backup",
-  "remoteBackupSub": "Push every automatic backup to WebDAV or S3, so a copy survives even if the phone is lost.",
+  "remoteBackupSub": "A dated copy of the backup is uploaded once a day to WebDAV or S3, so a copy survives even if the phone is lost.",
   "remoteBackupOn": "On",
   "remoteBackupOff": "Off",
   "remoteBackupKind": "Protocol",
@@ -5334,5 +5334,23 @@
   "speechTestFailed": "Could not speak: ",
   "@speechTestFailed": {
     "description": "Error prefix for a failed voice test"
-  }
+  },
+  "storageTitle": "Storage",
+  "storageSub": "See what each kind of data uses and clear the cache",
+  "storageUsage": "Usage",
+  "storageTotal": "Total",
+  "storageChats": "Chat records",
+  "storageMedia": "Media and files",
+  "storageStickers": "Stickers",
+  "storageWallpaper": "Wallpaper",
+  "storageBackups": "Local backups",
+  "storageWorkspace": "Workspace and environment",
+  "storageDatabase": "Database",
+  "storageCache": "Cache",
+  "storageOther": "Other",
+  "storagePerAgent": "Chat records by assistant",
+  "storageClear": "Clear cache",
+  "storageClearTitle": "Clear cache?",
+  "storageClearMessage": "Temporary files are removed. Chats, personas, stickers and settings are kept.",
+  "storageClearDone": "Cache cleared"
 }

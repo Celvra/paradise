@@ -4053,14 +4053,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get autoBackupSub =>
-      'Each backup is a zip kept outside the app and never overwritten, so an update or reinstall cannot lose your data.';
+      'The latest backup is kept as a single zip outside the app and replaced on every run, so an update or reinstall cannot lose your data.';
 
   @override
   String get remoteBackupTitle => 'Remote backup';
 
   @override
   String get remoteBackupSub =>
-      'Push every automatic backup to WebDAV or S3, so a copy survives even if the phone is lost.';
+      'A dated copy of the backup is uploaded once a day to WebDAV or S3, so a copy survives even if the phone is lost.';
 
   @override
   String get remoteBackupOn => 'On';
@@ -4403,4 +4403,60 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get speechTestFailed => 'Could not speak: ';
+
+  @override
+  String get storageTitle => 'Storage';
+
+  @override
+  String get storageSub =>
+      'See what each kind of data uses and clear the cache';
+
+  @override
+  String get storageUsage => 'Usage';
+
+  @override
+  String get storageTotal => 'Total';
+
+  @override
+  String get storageChats => 'Chat records';
+
+  @override
+  String get storageMedia => 'Media and files';
+
+  @override
+  String get storageStickers => 'Stickers';
+
+  @override
+  String get storageWallpaper => 'Wallpaper';
+
+  @override
+  String get storageBackups => 'Local backups';
+
+  @override
+  String get storageWorkspace => 'Workspace and environment';
+
+  @override
+  String get storageDatabase => 'Database';
+
+  @override
+  String get storageCache => 'Cache';
+
+  @override
+  String get storageOther => 'Other';
+
+  @override
+  String get storagePerAgent => 'Chat records by assistant';
+
+  @override
+  String get storageClear => 'Clear cache';
+
+  @override
+  String get storageClearTitle => 'Clear cache?';
+
+  @override
+  String get storageClearMessage =>
+      'Temporary files are removed. Chats, personas, stickers and settings are kept.';
+
+  @override
+  String get storageClearDone => 'Cache cleared';
 }
