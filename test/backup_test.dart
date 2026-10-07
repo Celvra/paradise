@@ -158,6 +158,30 @@ void main() {
       expect(r.skipped, isEmpty);
     });
 
+    test('images, human and secrets sections survive the round trip', () {
+      // the v1 additions are additive: a reader that predates them ignores
+      // them, so they must parse back exactly as written
+      final raw = buildBackup(
+        chats: const [],
+        personas: const [],
+        images: const {'/old/avatar.png': {'b64': 'AAAA', 'name': 'avatar.png'}},
+        human: const {'wallet': {'balance': 42.0, 'txs': []}},
+        secrets: const {'prov_1': 'sk-xyz'},
+      );
+      final doc = parseBackup(raw);
+      expect(doc.images, hasLength(1));
+      expect((doc.images!['/old/avatar.png'] as Map)['b64'], 'AAAA');
+      expect((doc.human!['wallet'] as Map)['balance'], 42.0);
+      expect(doc.secrets!['prov_1'], 'sk-xyz');
+    });
+
+    test('sections written as absent parse back as null', () {
+      final doc = parseBackup(buildBackup(chats: const [], personas: const []));
+      expect(doc.images, isNull);
+      expect(doc.human, isNull);
+      expect(doc.secrets, isNull);
+    });
+
     test('a chat with no id is reported rather than silently dropped', () {
       final doc = parseBackup(buildBackup(chats: [chat('a'), {'persona': {}}], personas: const []));
       final r = selectChats(doc, const [], overwrite: false);

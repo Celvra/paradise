@@ -4923,6 +4923,60 @@ abstract class AppLocalizations {
   /// **'Max proactive in a row'**
   String get personaClingyMax;
 
+  /// Switch for the time window with no proactive messages
+  ///
+  /// In en, this message translates to:
+  /// **'Quiet hours'**
+  String get personaClingyQuietTitle;
+
+  /// Subtitle of the quiet hours switch
+  ///
+  /// In en, this message translates to:
+  /// **'No proactive messages inside this window, simulating sleep'**
+  String get personaClingyQuietSub;
+
+  /// Row that picks when the quiet hours begin
+  ///
+  /// In en, this message translates to:
+  /// **'Starts at'**
+  String get personaClingyQuietStart;
+
+  /// Row that picks when the quiet hours end
+  ///
+  /// In en, this message translates to:
+  /// **'Ends at'**
+  String get personaClingyQuietEnd;
+
+  /// Switch that lets the model speak up inside quiet hours when it truly has to
+  ///
+  /// In en, this message translates to:
+  /// **'Allow urgent messages'**
+  String get personaClingyUrgentTitle;
+
+  /// Subtitle of the urgent messages switch
+  ///
+  /// In en, this message translates to:
+  /// **'Inside quiet hours the model may still speak up for a genuinely restless reason, deciding on its own; nothing is sent when it stays silent'**
+  String get personaClingyUrgentSub;
+
+  /// Switch that caps urgent messages per quiet window
+  ///
+  /// In en, this message translates to:
+  /// **'Limit urgent count'**
+  String get personaClingyUrgentCap;
+
+  /// Subtitle of the urgent count limit switch
+  ///
+  /// In en, this message translates to:
+  /// **'Max urgent messages per quiet window, so tokens are not burned through'**
+  String get personaClingyUrgentCapSub;
+
+  /// Row that picks the cap on urgent messages in one quiet window
+  ///
+  /// In en, this message translates to:
+  /// **'Max urgent per window'**
+  String get personaClingyUrgentMax;
+
   /// Minutes label for the clinginess interval picker
   ///
   /// In en, this message translates to:
@@ -6564,7 +6618,7 @@ abstract class AppLocalizations {
   /// Permission row name
   ///
   /// In en, this message translates to:
-  /// **'Photos'**
+  /// **'Media access'**
   String get onboardPermPhotosName;
 
   /// Permission row reason
@@ -7407,6 +7461,18 @@ abstract class AppLocalizations {
   /// **'Restore'**
   String get autoBackupRestoreAction;
 
+  /// No description provided for @autoBackupPickMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'A backup was found in Download/Paradise, but a fresh install cannot read it directly — Android protects files left by the old install. Tap below and pick paradise_autobackup.json to restore everything.'**
+  String get autoBackupPickMessage;
+
+  /// No description provided for @autoBackupPickAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose backup file'**
+  String get autoBackupPickAction;
+
   /// No description provided for @autoBackupRestored.
   ///
   /// In en, this message translates to:
@@ -7418,6 +7484,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The backup could not be read'**
   String get autoBackupRestoreFailed;
+
+  /// No description provided for @fullBackupRestoreTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Full backup found'**
+  String get fullBackupRestoreTitle;
+
+  /// full zip backup restore offer on a fresh install
+  ///
+  /// In en, this message translates to:
+  /// **'A complete snapshot of all data was found (chats, personas, images, settings and API keys). Restore everything and restart? Declining leaves the backup on the device.'**
+  String get fullBackupRestoreMessage;
+
+  /// No description provided for @fullBackupRestoreAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore all'**
+  String get fullBackupRestoreAction;
+
+  /// No description provided for @fullBackupRestoreFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The full backup could not be restored'**
+  String get fullBackupRestoreFailed;
 
   /// Settings row that reopens the current version highlights
   ///

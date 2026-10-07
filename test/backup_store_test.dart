@@ -44,13 +44,13 @@ void main() {
     c.pinned = true;
     c.draft = 'unsent';
 
-    final raw = s.exportBackupString();
+    final raw = await s.exportBackupString();
 
     // a second install, nothing carried over
     final (fresh, _) = await boot({'dark': true, 'textSize': 22.0, 'chats': '[]'});
     expect(fresh.chats, isEmpty);
 
-    final report = fresh.importBackupString(raw, overwrite: true);
+    final report = await fresh.importBackupString(raw, overwrite: true);
     expect(report.chats, 1);
     expect(report.messages, 2);
     expect(fresh.chats.single.persona.name, 'Her');
@@ -68,12 +68,12 @@ void main() {
     s.setWallpaper('/docs/wallpapers/1_photo.jpg');
     s.setWallpaperColor(0xFFE91E63);
     s.setWallpaperBubbleGrad(2);
-    final raw = s.exportBackupString();
+    final raw = await s.exportBackupString();
 
     final (fresh, _) = await boot();
     expect(fresh.textSize, 16, reason: 'a fresh install is at its own defaults');
 
-    fresh.importBackupString(raw, overwrite: true);
+    await fresh.importBackupString(raw, overwrite: true);
     expect(fresh.textSize, 21);
     expect(fresh.bubbleRadius, 24);
     expect(fresh.haptics, isFalse);
@@ -86,46 +86,46 @@ void main() {
     // the store treats 0 as absent on the way in, so a file written by a build
     // that stored it that way must not turn the accent black
     final (s, _) = await boot();
-    final raw = s.exportBackupString().replaceFirst('"wallpaperColor": null', '"wallpaperColor": 0');
-    s.importBackupString(raw, overwrite: true);
+    final raw = (await s.exportBackupString()).replaceFirst('"wallpaperColor": null', '"wallpaperColor": 0');
+    await s.importBackupString(raw, overwrite: true);
     expect(s.wallpaperColor, isNull);
   });
 
-  test('an api key never reaches the file', () async {
+  test('an api key travels in the secrets section and comes back', () async {
     final (s, ai) = await boot();
     final provider = ai.settings.providers.first;
     ai.saveApiKey(provider.id, 'sk-secret-value-1234');
     s.setSetting(key: 'sk-secret-value-1234');
 
-    final raw = s.exportBackupString();
-    expect(raw, isNot(contains('sk-secret-value-1234')));
-    // the provider itself does come back, so the chain is not lost, it is just
-    // unconfigured until a key is entered again
+    final raw = await s.exportBackupString();
+    expect(raw, contains('sk-secret-value-1234'));
+    expect(raw, contains('"secrets"'));
+    // the provider itself does come back too
     expect(raw, contains('apiKeyRef'));
   });
 
-  test('the model configuration comes back without its keys', () async {
+  test('the model configuration comes back with its keys', () async {
     final (s, ai) = await boot();
     ai.saveApiKey(ai.settings.providers.first.id, 'sk-abc');
-    final raw = s.exportBackupString();
+    final raw = await s.exportBackupString();
 
     final (fresh, freshAi) = await boot();
-    final report = fresh.importBackupString(raw, overwrite: true);
+    final report = await fresh.importBackupString(raw, overwrite: true);
     expect(report.ai, isTrue);
     expect(freshAi.settings.providers.map((p) => p.id), ai.settings.providers.map((p) => p.id));
     expect(freshAi.settings.chain.length, ai.settings.chain.length);
-    expect(freshAi.apiKeys.values.where((k) => k == 'sk-abc'), isEmpty);
+    expect(freshAi.apiKeys.values.where((k) => k == 'sk-abc'), isNotEmpty);
   });
 
   test('without overwrite an existing chat is not replaced', () async {
     final (s, _) = await boot();
     final c = s.createChat('Her', 'p');
     c.msgs.add(Msg(id: 'm1', out: false, text: 'original', time: 1));
-    final raw = s.exportBackupString();
+    final raw = await s.exportBackupString();
 
     // the same conversation has moved on since the backup was taken
     c.msgs.add(Msg(id: 'm2', out: false, text: 'newer', time: 2));
-    final report = s.importBackupString(raw, overwrite: false);
+    final report = await s.importBackupString(raw, overwrite: false);
 
     expect(report.chats, 0);
     expect(report.warnings.single, contains('already here'));
@@ -140,7 +140,7 @@ void main() {
 
     // valid json throughout, and a persona that is a string where an object
     // belongs, so the record only fails when it is turned back into a Chat
-    final doc = jsonDecode(s.exportBackupString()) as Map<String, dynamic>;
+    final doc = jsonDecode(await s.exportBackupString()) as Map<String, dynamic>;
     final sections = doc['sections'] as Map<String, dynamic>;
     sections['chats'] = [
       ...(sections['chats'] as List),
@@ -148,7 +148,7 @@ void main() {
     ];
 
     final (fresh, _) = await boot();
-    final report = fresh.importBackupString(jsonEncode(doc), overwrite: true);
+    final report = await fresh.importBackupString(jsonEncode(doc), overwrite: true);
 
     expect(report.chats, 1, reason: 'the good conversation still arrived');
     expect(report.warnings.single, contains('broken'));
@@ -162,7 +162,7 @@ void main() {
     final (s, _) = await boot();
     s.createChat('Her', 'p');
     final (fresh, _) = await boot();
-    fresh.importBackupString(s.exportBackupString(), overwrite: true);
+    await fresh.importBackupString(await s.exportBackupString(), overwrite: true);
 
     final restored = fresh.chats.single;
     restored.msgs.add(Msg(id: 'm9', out: false, text: 'after restore', time: 9));

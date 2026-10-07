@@ -3410,6 +3410,42 @@
   "@personaClingyMax": {
     "description": "Row that picks the cap on consecutive proactive messages"
   },
+  "personaClingyQuietTitle": "Quiet hours",
+  "@personaClingyQuietTitle": {
+    "description": "Switch for the time window with no proactive messages"
+  },
+  "personaClingyQuietSub": "No proactive messages inside this window, simulating sleep",
+  "@personaClingyQuietSub": {
+    "description": "Subtitle of the quiet hours switch"
+  },
+  "personaClingyQuietStart": "Starts at",
+  "@personaClingyQuietStart": {
+    "description": "Row that picks when the quiet hours begin"
+  },
+  "personaClingyQuietEnd": "Ends at",
+  "@personaClingyQuietEnd": {
+    "description": "Row that picks when the quiet hours end"
+  },
+  "personaClingyUrgentTitle": "Allow urgent messages",
+  "@personaClingyUrgentTitle": {
+    "description": "Switch that lets the model speak up inside quiet hours when it truly has to"
+  },
+  "personaClingyUrgentSub": "Inside quiet hours the model may still speak up for a genuinely restless reason, deciding on its own; nothing is sent when it stays silent",
+  "@personaClingyUrgentSub": {
+    "description": "Subtitle of the urgent messages switch"
+  },
+  "personaClingyUrgentCap": "Limit urgent count",
+  "@personaClingyUrgentCap": {
+    "description": "Switch that caps urgent messages per quiet window"
+  },
+  "personaClingyUrgentCapSub": "Max urgent messages per quiet window, so tokens are not burned through",
+  "@personaClingyUrgentCapSub": {
+    "description": "Subtitle of the urgent count limit switch"
+  },
+  "personaClingyUrgentMax": "Max urgent per window",
+  "@personaClingyUrgentMax": {
+    "description": "Row that picks the cap on urgent messages in one quiet window"
+  },
   "personaClingyMinutes": "{min} min",
   "@personaClingyMinutes": {
     "description": "Minutes label for the clinginess interval picker",
@@ -4466,7 +4502,7 @@
   "@onboardPermNotifWhy": {
     "description": "Permission row reason"
   },
-  "onboardPermPhotosName": "Photos",
+  "onboardPermPhotosName": "Media access",
   "@onboardPermPhotosName": {
     "description": "Permission row name"
   },
@@ -5043,8 +5079,17 @@
     }
   },
   "autoBackupRestoreAction": "Restore",
+  "autoBackupPickMessage": "A backup was found in Download/Paradise, but a fresh install cannot read it directly — Android protects files left by the old install. Tap below and pick paradise_autobackup.json to restore everything.",
+  "autoBackupPickAction": "Choose backup file",
   "autoBackupRestored": "Backup restored",
   "autoBackupRestoreFailed": "The backup could not be read",
+  "fullBackupRestoreTitle": "Full backup found",
+  "fullBackupRestoreMessage": "A complete snapshot of all data was found (chats, personas, images, settings and API keys). Restore everything and restart? Declining leaves the backup on the device.",
+  "@fullBackupRestoreMessage": {
+    "description": "full zip backup restore offer on a fresh install"
+  },
+  "fullBackupRestoreAction": "Restore all",
+  "fullBackupRestoreFailed": "The full backup could not be restored",
   "whatsNewEntry": "What's new",
   "@whatsNewEntry": {
     "description": "Settings row that reopens the current version highlights"

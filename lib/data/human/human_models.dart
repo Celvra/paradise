@@ -462,6 +462,11 @@ class HumanState {
   int lastAiAt = 0;
   int lastTickAt = 0;
   int lastReadAt = 0;
+
+  /// Urgent speaks used in the current clingy quiet stretch, and when that
+  /// stretch started. The counter is per quiet window, not per user reply.
+  int clingyUrgentStamp = 0;
+  int clingyUrgentCount = 0;
   int consecutiveProactive = 0;
   int turn = 0;
   final List<int> recallStamps = [];
@@ -602,6 +607,8 @@ class HumanState {
         'lastAiAt': lastAiAt,
         'lastTickAt': lastTickAt,
         'lastReadAt': lastReadAt,
+        if (clingyUrgentStamp > 0) 'clingyUrgentStamp': clingyUrgentStamp,
+        if (clingyUrgentCount > 0) 'clingyUrgentCount': clingyUrgentCount,
         'consecutiveProactive': consecutiveProactive,
         'turn': turn,
         'recallStamps': recallStamps,
@@ -626,6 +633,8 @@ class HumanState {
     s.lastAiAt = _i(j['lastAiAt'], 0);
     s.lastTickAt = _i(j['lastTickAt'], 0);
     s.lastReadAt = _i(j['lastReadAt'], 0);
+    s.clingyUrgentStamp = _i(j['clingyUrgentStamp'], 0);
+    s.clingyUrgentCount = _i(j['clingyUrgentCount'], 0);
     s.consecutiveProactive = _i(j['consecutiveProactive'], 0);
     s.turn = _i(j['turn'], 0);
     s.recallStamps.addAll([for (final e in (j['recallStamps'] as List? ?? const [])) (e as num).toInt()]);

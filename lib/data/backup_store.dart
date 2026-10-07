@@ -68,17 +68,56 @@ extension BackupStore on Store {
     _backupRunning = true;
     _backupDirty = false;
     try {
-      final json = exportBackupString();
+      final json = await exportBackupString();
       await sink.write(json);
       ab.noteSuccess(now, fp);
       await _sp.setInt('autoBackup.lastAt', ab.lastAt);
       await _sp.setInt('autoBackup.lastHash', ab.lastHash);
       bump();
+      // the curated document and the full snapshot share one schedule: same
+      // policy, same overwrite rule, one dirty mark. the zip gets its own
+      // guard so a failure there never rewrites the json backup's bookkeeping
+      try {
+        await _writeFullBackup();
+      } catch (_) {}
     } catch (_) {
       // a failed backup must never surface as an app error; the next tick
       // retries, and the change mode keeps the dirty mark via the fingerprint
     } finally {
       _backupRunning = false;
+    }
+  }
+
+  /// Rebuilds the whole data directory snapshot and overwrites the shared
+  /// copy. Runs right after the JSON write inside the same guard so the two
+  /// artifacts can never disagree about which schedule they follow.
+  Future<void> _writeFullBackup() async {
+    final sink = _fullSink;
+    if (sink == null) return;
+    final bytes = await FullBackup.build();
+    await sink.write(bytes);
+  }
+
+  /// The full zip backup a reinstall can offer. Null when none exists.
+  Future<Uint8List?> readFullBackup() async {
+    final sink = _fullSink;
+    if (sink == null) return null;
+    try {
+      final raw = await sink.read();
+      return raw == null || raw.isEmpty ? null : raw;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Whether a full zip backup file exists at all, readable or not.
+  Future<bool> hasFullBackupFile() async {
+    final sink = _fullSink;
+    if (sink == null) return false;
+    try {
+      return await sink.exists();
+    } catch (_) {
+      return false;
     }
   }
 
@@ -101,20 +140,78 @@ extension BackupStore on Store {
     }
   }
 
+  /// Whether a backup file exists at all, even one this fresh install cannot
+  /// read directly. Drives the manual-pick offer in onboarding.
+  Future<bool> hasAutoBackupFile() async {
+    final sink = _backupSink;
+    if (sink == null) return false;
+    try {
+      return await sink.exists();
+    } catch (_) {
+      return false;
+    }
+  }
+
   /// Test seam: point the auto backup at a directory sink so a tick can be
   /// verified end to end without the MediaStore channel.
   @visibleForTesting
   set debugBackupSink(BackupSink? sink) => _backupSink = sink;
 
-  /// The document to hand the user. Never contains an API key.
-  String exportBackupString() => buildBackup(
+  /// Test seam for the full zip backup, same idea as [debugBackupSink].
+  @visibleForTesting
+  set debugFullBackupSink(FullBackupSink? sink) => _fullSink = sink;
+
+  /// The document to hand the user. Carries the provider keys in `secrets`:
+  /// a backup whose restore leaves every provider unconfigured is no backup.
+  Future<String> exportBackupString() async => buildBackup(
         chats: chats.map((c) => c.toJson()).toList(),
         personas: personas.map((p) => p.toJson()).toList(),
         stickers: human == null ? null : jsonDecode(human!.exportStickers()) as Map<String, dynamic>,
         memory: human == null ? null : jsonDecode(human!.exportMemory()) as Map<String, dynamic>,
         settings: exportSettings(),
         ai: _ai?.settings.toJson(),
+        images: await _backupImages(),
+        human: human == null
+            ? null
+            : {
+                'settings': human!.settings.toJson(),
+                'wallet': human!.wallet.toJson(),
+                'tasks': human!.scheduler.toJson(),
+              },
+        secrets: _ai?.apiKeys.isEmpty == false ? Map<String, dynamic>.of(_ai!.apiKeys) : null,
       );
+
+  /// One entry per local image a persona avatar or a sticker points at.
+  /// Anything unreadable or unreasonably large is skipped rather than failing
+  /// the whole backup: a restore without one avatar still beats no backup.
+  Future<Map<String, dynamic>> _backupImages() async {
+    final paths = <String>{};
+    for (final p in personas) {
+      if (p.avatarPath.isNotEmpty && !p.avatarPath.startsWith('http')) paths.add(p.avatarPath);
+    }
+    final h = human;
+    if (h != null) {
+      for (final s in h.stickers.items) {
+        if (!s.isRemote) {
+          if (s.value.isNotEmpty) paths.add(s.value);
+          if (s.thumb.isNotEmpty) paths.add(s.thumb);
+        }
+      }
+    }
+    final out = <String, dynamic>{};
+    for (final path in paths) {
+      try {
+        final f = File(path);
+        if (!await f.exists()) continue;
+        final len = await f.length();
+        if (len > 4 * 1024 * 1024) continue;
+        out[path] = {'b64': base64Encode(await f.readAsBytes()), 'name': p.basename(path)};
+      } catch (_) {
+        // one bad file must not cost the rest of the backup
+      }
+    }
+    return out;
+  }
 
   /// The preferences worth carrying to another phone.
   ///
@@ -144,9 +241,16 @@ extension BackupStore on Store {
   /// unreadable conversation cannot cost the rest of the backup. That is the
   /// failure this whole change exists to remove: the loader this replaces
   /// wrapped the entire chat list in one try and cleared it on any error.
-  BackupReport importBackupString(String raw, {required bool overwrite}) {
+  ///
+  /// Local images come back first: every reference in the document points at
+  /// the path the old install used, so the bytes land under the same relative
+  /// spot of this install's documents directory and the maps are rewritten
+  /// before a single object is built.
+  Future<BackupReport> importBackupString(String raw, {required bool overwrite}) async {
     final doc = parseBackup(raw);
     final report = BackupReport();
+
+    final remap = await _restoreImages(doc.images, report);
 
     final picked = selectChats(doc, chats.map((c) => c.id), overwrite: overwrite);
     report.warnings.addAll(picked.skipped);
@@ -174,6 +278,7 @@ extension BackupStore on Store {
 
     for (final j in doc.personas) {
       try {
+        _remapRef(j, 'avatarPath', remap);
         final p = UserPersona.fromJson(j);
         if (p.id.isEmpty) continue;
         final at = personas.indexWhere((e) => e.id == p.id);
@@ -196,7 +301,14 @@ extension BackupStore on Store {
     if (h != null) {
       if (doc.stickers != null) {
         try {
-          report.stickers = h.importStickers(jsonEncode(doc.stickers), overwrite: overwrite);
+          final env = jsonDecode(jsonEncode(doc.stickers)) as Map<String, dynamic>;
+          final items = (env['items'] as List?) ?? const [];
+          for (final e in items) {
+            if (e is! Map) continue;
+            _remapRef(e, 'value', remap);
+            _remapRef(e, 'thumb', remap);
+          }
+          report.stickers = h.importStickers(jsonEncode(env), overwrite: overwrite);
         } on FormatException catch (e) {
           report.warnings.add(e.message);
         }
@@ -208,24 +320,90 @@ extension BackupStore on Store {
           report.warnings.add(e.message);
         }
       }
+
+      final hm = doc.human;
+      if (hm != null) {
+        try {
+          final sj = hm['settings'];
+          if (sj is Map) h.settings = HumanSettings.fromJson(Map<String, dynamic>.from(sj));
+          final wj = hm['wallet'];
+          if (wj is Map) h.wallet.loadJson(Map<String, dynamic>.from(wj));
+          final tj = hm['tasks'];
+          if (tj is List) h.scheduler.loadJson(tj);
+          h.changed();
+          report.human = true;
+        } catch (_) {
+          report.warnings.add('the humanize settings, could not be read');
+        }
+      }
     }
 
     report.settings = _applySettings(doc.settings);
 
     final ai = _ai;
-    if (ai != null && doc.ai != null) {
-      try {
-        // providers and the chain come back; their secrets do not, so a restored
-        // provider is present but unconfigured until a key is entered
-        ai.update((_) => sanitizeAiSettings(doc.ai!));
-        report.ai = true;
-      } catch (_) {
-        report.warnings.add('the model configuration, could not be read');
+    if (ai != null) {
+      if (doc.ai != null) {
+        try {
+          // providers and the chain come back together with the secrets below,
+          // so a restored provider is working, not just present
+          ai.update((_) => sanitizeAiSettings(doc.ai!));
+          report.ai = true;
+        } catch (_) {
+          report.warnings.add('the model configuration, could not be read');
+        }
+      }
+      final secrets = doc.secrets;
+      if (secrets != null) {
+        for (final e in secrets.entries) {
+          final v = e.value;
+          if (v is String && v.isNotEmpty) {
+            ai.saveApiKey(e.key, v);
+            report.secrets++;
+          }
+        }
       }
     }
 
     chatsChanged();
     return report;
+  }
+
+  /// Writes every embedded image into this install's documents directory and
+  /// returns the old path -> new path map. Entries that fail to write keep
+  /// their old path in the map untouched, which leaves the reference broken
+  /// the way it already was, not half rewritten.
+  Future<Map<String, String>> _restoreImages(Map<String, dynamic>? images, BackupReport report) async {
+    if (images == null || images.isEmpty) return const {};
+    final base = await getApplicationDocumentsDirectory();
+    final remap = <String, String>{};
+    for (final e in images.entries) {
+      try {
+        final v = e.value;
+        if (v is! Map) continue;
+        final b64 = v['b64'];
+        if (b64 is! String || b64.isEmpty) continue;
+        final name = (v['name'] as String?)?.isNotEmpty == true ? v['name'] as String : 'img_${remap.length}.bin';
+        // keep the old subdir (avatars/, stickers/...) when it is visible in
+        // the path, so restored files sit where the app expects its own art
+        final old = e.key.replaceAll('\\', '/');
+        final marker = '/documents/';
+        final rel = old.contains(marker) ? old.substring(old.indexOf(marker) + marker.length) : 'restored/$name';
+        final f = File('${base.path}/$rel');
+        final d = f.parent;
+        if (!await d.exists()) await d.create(recursive: true);
+        await f.writeAsBytes(base64Decode(b64), flush: true);
+        remap[e.key] = f.path;
+        report.images++;
+      } catch (_) {
+        report.warnings.add('an embedded image, could not be written');
+      }
+    }
+    return remap;
+  }
+
+  static void _remapRef(Map<dynamic, dynamic> json, String key, Map<String, String> remap) {
+    final v = json[key];
+    if (v is String && remap.containsKey(v)) json[key] = remap[v];
   }
 
   int _applySettings(Map<String, dynamic> s) {

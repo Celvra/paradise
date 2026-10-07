@@ -376,7 +376,7 @@ class SettingsTab extends StatelessWidget {
     final l = context.l;
     String json;
     try {
-      json = st.exportBackupString();
+      json = await st.exportBackupString();
     } catch (_) {
       if (context.mounted) showBulletin(context, l.dataBackupSaveFailed);
       return;
@@ -432,7 +432,7 @@ class SettingsTab extends StatelessWidget {
     if (overwrite == null || !context.mounted) return;
 
     try {
-      final report = st.importBackupString(await File(path).readAsString(), overwrite: overwrite);
+      final report = await st.importBackupString(await File(path).readAsString(), overwrite: overwrite);
       if (!context.mounted) return;
       // a file that parsed but held nothing this build can use is its own case,
       // distinct from a failure and from a restore that did something

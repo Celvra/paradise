@@ -1,12 +1,19 @@
+import 'dart:io';
+import 'dart:typed_data';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../core/anim.dart';
 import '../../core/overlays.dart';
 import '../../core/theme.dart';
 import '../../core/ui_kit.dart';
+import '../../data/ai_config.dart';
 import '../../data/backup.dart' show parseBackup;
+import '../../data/full_backup.dart';
 import '../../data/store.dart';
 import '../../l10n/x.dart';
+import '../../main.dart' show TgApp, bootStore;
 import '../dialogs_page.dart';
 import 'common.dart';
 import 'step_brand.dart';
@@ -76,8 +83,86 @@ class _OnboardingPageState extends State<OnboardingPage> implements OnboardingFl
   Future<void> _offerRestore() async {
     final store = context.store;
     if (store.chats.isNotEmpty || store.personas.isNotEmpty || !mounted) return;
+    // the full snapshot beats the curated document in every way: it carries
+    // files the JSON exporter does not know about yet, so offer it first
+    if (await store.hasFullBackupFile() && mounted) {
+      final zip = await store.readFullBackup();
+      if (zip != null && mounted) {
+        await _runFullRestore(zip);
+        return;
+      }
+    }
     final raw = await store.readAutoBackup();
-    if (raw == null || !mounted) return;
+    if (raw == null) {
+      // A backup can exist yet be unreadable to a fresh install: Android keeps
+      // the file the old install wrote in Download/Paradise but may refuse to
+      // hand its bytes to a new signing identity without the user tapping it.
+      // Seeing the file but not its content still gets the offer, with a
+      // manual pick instead of a silent skip.
+      if (!await store.hasAutoBackupFile() || !mounted) return;
+      final pick = await showTgDialog<bool>(
+        context,
+        title: context.l.autoBackupRestoreTitle,
+        message: context.l.autoBackupPickMessage,
+        actions: [
+          DialogAction(context.l.actionCancel, false),
+          DialogAction(context.l.autoBackupPickAction, true),
+        ],
+      );
+      if (pick != true || !mounted) return;
+      final picked = await FilePicker.pickFiles(type: FileType.custom, allowedExtensions: ['json']);
+      final path = picked.firstOrNull?.path;
+      if (path == null || !mounted) return;
+      try {
+        await _runRestore(await File(path).readAsString());
+      } catch (_) {
+        if (context.mounted) showBulletin(context, context.l.autoBackupRestoreFailed);
+      }
+      return;
+    }
+    await _runRestore(raw);
+  }
+
+  /// The full zip restore: put the files back, rebuild the store on top of
+  /// them and restart the app. The old instance is shut down first so nothing
+  /// of its timers or connections survives into the restored world.
+  Future<void> _runFullRestore(Uint8List zip) async {
+    if (!mounted) return;
+    final store = context.store;
+    final l = context.l;
+    final ok = await showTgDialog<bool>(
+      context,
+      title: l.fullBackupRestoreTitle,
+      message: l.fullBackupRestoreMessage,
+      actions: [
+        DialogAction(l.actionCancel, false),
+        DialogAction(l.fullBackupRestoreAction, true),
+      ],
+    );
+    if (ok != true || !mounted) return;
+    try {
+      await store.shutdownForReplace();
+      await FullBackup.restore(zip);
+      final freshStore = await Store.load();
+      final freshAi = await AiConfig.load();
+      freshStore.attachAi(freshAi);
+      await freshStore.skills.rescan();
+      themeCtl.setAccent(freshStore.wallpaperColor, BubbleGrad.values[freshStore.wallpaperBubbleGrad]);
+      freshStore.addListener(() => themeCtl.setAccent(freshStore.wallpaperColor, BubbleGrad.values[freshStore.wallpaperBubbleGrad]));
+      await bootStore(freshStore);
+      // the restored prefs carry the onboarded flag, so the new tree lands
+      // on the dialog list exactly like a normal launch would
+      runApp(TgApp(store: freshStore, ai: freshAi));
+    } catch (_) {
+      if (context.mounted) showBulletin(context, l.fullBackupRestoreFailed);
+    }
+  }
+
+  /// The shared tail of every restore path: parse for the timestamp, confirm,
+  /// import, land on the dialog list.
+  Future<void> _runRestore(String raw) async {
+    if (!mounted) return;
+    final store = context.store;
     final l = context.l;
     var when = '';
     try {
@@ -101,7 +186,7 @@ class _OnboardingPageState extends State<OnboardingPage> implements OnboardingFl
     );
     if (ok != true || !mounted) return;
     try {
-      store.importBackupString(raw, overwrite: false);
+      await store.importBackupString(raw, overwrite: false);
       store.setOnboarded(true);
       Navigator.of(context).pushAndRemoveUntil(
         TgRoute(builder: (_) => const DialogsPage()),

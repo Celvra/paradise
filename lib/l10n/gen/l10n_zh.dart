@@ -2622,6 +2622,34 @@ class AppLocalizationsZh extends AppLocalizations {
   String get personaClingyMax => '最多连续主动';
 
   @override
+  String get personaClingyQuietTitle => '安静时段';
+
+  @override
+  String get personaClingyQuietSub => '这个时段内不主动发消息，模拟睡觉';
+
+  @override
+  String get personaClingyQuietStart => '开始时间';
+
+  @override
+  String get personaClingyQuietEnd => '结束时间';
+
+  @override
+  String get personaClingyUrgentTitle => '允许紧急发话';
+
+  @override
+  String get personaClingyUrgentSub =>
+      '时段内真有睡不着的理由时仍可能发消息，由 AI 自行判断；它选择沉默时不会发送任何内容';
+
+  @override
+  String get personaClingyUrgentCap => '限制紧急次数';
+
+  @override
+  String get personaClingyUrgentCapSub => '每个安静时段最多紧急发话的次数，防止刷 token';
+
+  @override
+  String get personaClingyUrgentMax => '每时段最多紧急';
+
+  @override
   String personaClingyMinutes(int min) {
     return '$min 分钟';
   }
@@ -3476,7 +3504,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get onboardPermNotifWhy => '主动发信和定时回复要靠通知才能及时提醒你。';
 
   @override
-  String get onboardPermPhotosName => '照片';
+  String get onboardPermPhotosName => '访问媒体';
 
   @override
   String get onboardPermPhotosWhy => '发送图片、保存表情包。';
@@ -3926,10 +3954,30 @@ class AppLocalizationsZh extends AppLocalizations {
   String get autoBackupRestoreAction => '恢复';
 
   @override
+  String get autoBackupPickMessage =>
+      '在 下载/Paradise 文件夹找到了备份，但新安装的应用无法直接读取——系统会保护旧安装留下的文件。点下方按钮手动选择 paradise_autobackup.json 即可恢复全部数据。';
+
+  @override
+  String get autoBackupPickAction => '选择备份文件';
+
+  @override
   String get autoBackupRestored => '备份已恢复';
 
   @override
   String get autoBackupRestoreFailed => '备份读取失败';
+
+  @override
+  String get fullBackupRestoreTitle => '发现完整备份';
+
+  @override
+  String get fullBackupRestoreMessage =>
+      '发现一份全部数据的完整快照（聊天记录、人设、图片、设置和 API KEY）。恢复全部内容并重启吗？取消则保留备份文件。';
+
+  @override
+  String get fullBackupRestoreAction => '全部恢复';
+
+  @override
+  String get fullBackupRestoreFailed => '完整备份恢复失败';
 
   @override
   String get whatsNewEntry => '更新说明';
@@ -6747,6 +6795,34 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get personaClingyMax => '最多連續主動';
 
   @override
+  String get personaClingyQuietTitle => '安靜時段';
+
+  @override
+  String get personaClingyQuietSub => '這個時段內不主動發消息，模擬睡覺';
+
+  @override
+  String get personaClingyQuietStart => '開始時間';
+
+  @override
+  String get personaClingyQuietEnd => '結束時間';
+
+  @override
+  String get personaClingyUrgentTitle => '允許緊急發話';
+
+  @override
+  String get personaClingyUrgentSub =>
+      '時段內真有睡不著的理由時仍可能發消息，由 AI 自行判斷；它選擇沉默時不會發送任何內容';
+
+  @override
+  String get personaClingyUrgentCap => '限制緊急次數';
+
+  @override
+  String get personaClingyUrgentCapSub => '每個安靜時段最多緊急發話的次數，防止刷 token';
+
+  @override
+  String get personaClingyUrgentMax => '每時段最多緊急';
+
+  @override
   String personaClingyMinutes(int min) {
     return '$min 分鐘';
   }
@@ -7601,7 +7677,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get onboardPermNotifWhy => '主動傳訊和排定回覆要靠通知才能即時提醒你。';
 
   @override
-  String get onboardPermPhotosName => '照片';
+  String get onboardPermPhotosName => '訪問媒體';
 
   @override
   String get onboardPermPhotosWhy => '傳送圖片、儲存貼圖。';
@@ -8051,10 +8127,30 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get autoBackupRestoreAction => '恢復';
 
   @override
+  String get autoBackupPickMessage =>
+      '在 下載/Paradise 資料夾找到了備份，但新安裝的應用無法直接讀取——系統會保護舊安裝留下的檔案。點下方按鈕手動選擇 paradise_autobackup.json 即可恢復全部資料。';
+
+  @override
+  String get autoBackupPickAction => '選擇備份檔案';
+
+  @override
   String get autoBackupRestored => '備份已恢復';
 
   @override
   String get autoBackupRestoreFailed => '備份讀取失敗';
+
+  @override
+  String get fullBackupRestoreTitle => '發現完整備份';
+
+  @override
+  String get fullBackupRestoreMessage =>
+      '發現一份全部資料的完整快照（聊天記錄、人設、圖片、設定和 API KEY）。恢復全部內容並重啟嗎？取消則保留備份檔案。';
+
+  @override
+  String get fullBackupRestoreAction => '全部恢復';
+
+  @override
+  String get fullBackupRestoreFailed => '完整備份恢復失敗';
 
   @override
   String get whatsNewEntry => '更新說明';

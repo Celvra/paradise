@@ -104,6 +104,14 @@ class _PersonaCardPageState extends State<PersonaCardPage> {
   late int _clingySilentMin = widget.chat?.persona.clingySilentMin ?? 90;
   late bool _clingyCap = widget.chat?.persona.clingyCap ?? false;
   late int _clingyMax = widget.chat?.persona.clingyMax ?? 3;
+  // quiet hours: no proactive check-ins inside the window (simulated sleep),
+  // optionally lifted for genuinely urgent thoughts the model decides on its own
+  late bool _clingyQuietOn = widget.chat?.persona.clingyQuietOn ?? false;
+  late int _clingyQuietStart = widget.chat?.persona.clingyQuietStart ?? 1320;
+  late int _clingyQuietEnd = widget.chat?.persona.clingyQuietEnd ?? 480;
+  late bool _clingyUrgent = widget.chat?.persona.clingyUrgent ?? false;
+  late bool _clingyUrgentCap = widget.chat?.persona.clingyUrgentCap ?? true;
+  late int _clingyUrgentMax = widget.chat?.persona.clingyUrgentMax ?? 1;
   // skills this role may use, null follows the global set
   late List<String>? _skillIds = widget.chat?.persona.skillIds == null ? null : [...widget.chat!.persona.skillIds!];
   // drawing and speaking, per role. The switches are plain bools (off
@@ -218,6 +226,12 @@ class _PersonaCardPageState extends State<PersonaCardPage> {
           clingySilentMin: _clingySilentMin,
           clingyCap: _clingyCap,
           clingyMax: _clingyMax,
+          clingyQuietOn: _clingyQuietOn,
+          clingyQuietStart: _clingyQuietStart,
+          clingyQuietEnd: _clingyQuietEnd,
+          clingyUrgent: _clingyUrgent,
+          clingyUrgentCap: _clingyUrgentCap,
+          clingyUrgentMax: _clingyUrgentMax,
           skillIds: _skillIds == null ? null : [..._skillIds!],
           clearSkillIds: _skillIds == null);
       st.setPersonaGen(widget.chat!,
@@ -248,6 +262,12 @@ clingy: _clingy,
           clingySilentMin: _clingySilentMin,
           clingyCap: _clingyCap,
           clingyMax: _clingyMax,
+          clingyQuietOn: _clingyQuietOn,
+          clingyQuietStart: _clingyQuietStart,
+          clingyQuietEnd: _clingyQuietEnd,
+          clingyUrgent: _clingyUrgent,
+          clingyUrgentCap: _clingyUrgentCap,
+          clingyUrgentMax: _clingyUrgentMax,
           skillIds: _skillIds == null ? null : [..._skillIds!],
           imageEnabled: _imageOn,
           imageProvider: _imageProvider,
@@ -316,6 +336,12 @@ _clingy != c.clingy ||
         _clingySilentMin != c.clingySilentMin ||
         _clingyCap != c.clingyCap ||
         _clingyMax != c.clingyMax ||
+        _clingyQuietOn != c.clingyQuietOn ||
+        _clingyQuietStart != c.clingyQuietStart ||
+        _clingyQuietEnd != c.clingyQuietEnd ||
+        _clingyUrgent != c.clingyUrgent ||
+        _clingyUrgentCap != c.clingyUrgentCap ||
+        _clingyUrgentMax != c.clingyUrgentMax ||
         !_sameSkills(_skillIds, c.skillIds) ||
         _imageOn != c.imageEnabled ||
         _imageProvider != c.imageProvider ||
@@ -810,12 +836,109 @@ _clingySection(),
               icon: Ic.list,
               title: l.personaClingyMax,
               value: '$_clingyMax',
-              divider: false,
+              divider: _clingyQuietOn || _clingyUrgent,
               onTap: _pickMax,
             ),
+          TgCheckCell(
+            icon: Ic.moon,
+            title: l.personaClingyQuietTitle,
+            subtitle: l.personaClingyQuietSub,
+            value: _clingyQuietOn,
+            divider: _clingyQuietOn,
+            onChanged: (v) => setState(() => _clingyQuietOn = v),
+          ),
+          if (_clingyQuietOn) ...[
+            TgTextCell(
+              icon: Ic.calendar,
+              title: l.personaClingyQuietStart,
+              value: _fmtClock(_clingyQuietStart),
+              onTap: _pickQuietStart,
+            ),
+            TgTextCell(
+              icon: Ic.calendar,
+              title: l.personaClingyQuietEnd,
+              value: _fmtClock(_clingyQuietEnd),
+              divider: false,
+              onTap: _pickQuietEnd,
+            ),
+          ],
+          TgCheckCell(
+            icon: Ic.bell,
+            title: l.personaClingyUrgentTitle,
+            subtitle: l.personaClingyUrgentSub,
+            value: _clingyUrgent,
+            divider: _clingyUrgent,
+            onChanged: (v) => setState(() => _clingyUrgent = v),
+          ),
+          if (_clingyUrgent) ...[
+            TgCheckCell(
+              icon: Ic.minus,
+              title: l.personaClingyUrgentCap,
+              subtitle: l.personaClingyUrgentCapSub,
+              value: _clingyUrgentCap,
+              divider: _clingyUrgentCap,
+              onChanged: (v) => setState(() => _clingyUrgentCap = v),
+            ),
+            if (_clingyUrgentCap)
+              TgTextCell(
+                icon: Ic.list,
+                title: l.personaClingyUrgentMax,
+                value: '$_clingyUrgentMax',
+                divider: false,
+                onTap: _pickUrgentMax,
+              ),
+          ],
         ],
       ],
     );
+  }
+
+  /// '22:00' style clock label from minutes since midnight
+  String _fmtClock(int m) {
+    final h = (m ~/ 60).toString().padLeft(2, '0');
+    final mm = (m % 60).toString().padLeft(2, '0');
+    return '$h:$mm';
+  }
+
+  Future<void> _pickQuietStart() async {
+    final l = context.l;
+    const opts = [1200, 1260, 1320, 1380, 0];
+    final v = await showAiSelect<int>(
+      context,
+      title: l.personaClingyQuietStart,
+      value: _clingyQuietStart,
+      options: [
+        for (final m in opts) (value: m, label: _fmtClock(m), sub: null),
+      ],
+    );
+    if (v != null) setState(() => _clingyQuietStart = v);
+  }
+
+  Future<void> _pickQuietEnd() async {
+    final l = context.l;
+    const opts = [360, 420, 480, 540, 600];
+    final v = await showAiSelect<int>(
+      context,
+      title: l.personaClingyQuietEnd,
+      value: _clingyQuietEnd,
+      options: [
+        for (final m in opts) (value: m, label: _fmtClock(m), sub: null),
+      ],
+    );
+    if (v != null) setState(() => _clingyQuietEnd = v);
+  }
+
+  Future<void> _pickUrgentMax() async {
+    final l = context.l;
+    final v = await showAiSelect<int>(
+      context,
+      title: l.personaClingyUrgentMax,
+      value: _clingyUrgentMax,
+      options: [
+        for (var n = 1; n <= 5; n++) (value: n, label: '$n', sub: null),
+      ],
+    );
+    if (v != null) setState(() => _clingyUrgentMax = v);
   }
 
   String _fmtMin(int m) {

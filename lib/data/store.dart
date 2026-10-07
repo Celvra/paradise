@@ -33,6 +33,7 @@ import 'auto_backup.dart';
 import 'backup.dart';
 import 'db.dart';
 import 'file_text.dart';
+import 'full_backup.dart';
 import 'gen_prefs.dart';
 import 'speech_config.dart';
 import 'human/br_parser.dart';
@@ -191,6 +192,7 @@ class Store extends ChangeNotifier {
   /// rides the scheduler heartbeat in [startHuman].
   AutoBackup autoBackup = AutoBackup();
   BackupSink? _backupSink;
+  FullBackupSink? _fullSink;
   bool _backupDirty = false;
   bool _backupRunning = false;
   int _seq = 0;
@@ -380,6 +382,7 @@ class Store extends ChangeNotifier {
     await s._loadChats(dbPath: dbPath);
     s._loadAutoBackup();
     s._backupSink = MediaStoreBackupSink();
+    s._fullSink = MediaStoreFullBackupSink();
     // the voice module rides along here rather than being handed in from main:
     // it reads the same SharedPreferences this store already holds, and every
     // path that builds a Store gets a working module without a second load.
@@ -510,6 +513,25 @@ class Store extends ChangeNotifier {
       unawaited(_autoBackupTick());
     });
     unawaited(humanTick());
+  }
+
+  /// Stops every live wire of this instance so the process can restart on
+  /// restored files. Only the full zip restore calls this: the widget tree is
+  /// about to be rebuilt on a fresh [Store.load], and a stray heartbeat or a
+  /// half flushed save from the old instance would write into files that no
+  /// longer belong to it.
+  Future<void> shutdownForReplace() async {
+    _humanTimer?.cancel();
+    _humanTimer = null;
+    _saveTimer?.cancel();
+    _saveTimer = null;
+    for (final c in chats) {
+      _unlisten(c);
+    }
+    try {
+      await _db?.close();
+    } catch (_) {}
+    _db = null;
   }
 
   String _id() => '${DateTime.now().microsecondsSinceEpoch}_${_seq++}';
@@ -824,8 +846,15 @@ class Store extends ChangeNotifier {
     if (raw != null) {
       try {
         for (final j in jsonDecode(raw) as List) {
-          final p = UserPersona.fromJson(j as Map<String, dynamic>);
-          if (p.id.isNotEmpty) personas.add(p);
+          // per card, not per list: one malformed entry must never again wipe
+          // every persona, which is the "my profile disappeared" update bug
+          try {
+            if (j is! Map) continue;
+            final p = UserPersona.fromJson(j.cast<String, dynamic>());
+            if (p.id.isNotEmpty) personas.add(p);
+          } catch (_) {
+            // skip the broken card, keep the rest
+          }
         }
       } catch (_) {
         personas.clear();
@@ -1243,8 +1272,8 @@ class Store extends ChangeNotifier {
     notifyListeners();
   }
 
-Chat createChat(String name, String prompt, {String bio = '', String greeting = '', String emoji = '', String examples = '', String avatarPath = '', int? color, String modelProvider = '', String modelId = '', bool modelFallback = true, bool? thinking, bool? agent, bool clingy = false, int clingySilentMin = 90, bool clingyCap = false, int clingyMax = 3, List<String>? skillIds, bool imageEnabled = false, String imageProvider = '', String imageModel = '', String imageSize = '', bool ttsEnabled = false, TtsEngine? ttsEngine, String ttsBaseUrl = '', String ttsModel = '', String ttsVoice = '', bool ttsAutoSpeak = false}) {
-    final c = Chat(id: _id(), persona: Persona(name: name, prompt: prompt, color: color ?? name.hashCode.abs() % avatarColorCount, bio: bio, greeting: greeting, emoji: emoji, examples: examples, avatarPath: avatarPath, modelProvider: modelProvider, modelId: modelId, modelFallback: modelFallback, thinking: thinking, agent: agent, clingy: clingy, clingySilentMin: clingySilentMin, clingyCap: clingyCap, clingyMax: clingyMax, skillIds: skillIds, imageEnabled: imageEnabled, imageProvider: imageProvider, imageModel: imageModel, imageSize: imageSize, ttsEnabled: ttsEnabled, ttsEngine: ttsEngine, ttsBaseUrl: ttsBaseUrl, ttsModel: ttsModel, ttsVoice: ttsVoice, ttsAutoSpeak: ttsAutoSpeak));
+Chat createChat(String name, String prompt, {String bio = '', String greeting = '', String emoji = '', String examples = '', String avatarPath = '', int? color, String modelProvider = '', String modelId = '', bool modelFallback = true, bool? thinking, bool? agent, bool clingy = false, int clingySilentMin = 90, bool clingyCap = false, int clingyMax = 3, bool clingyQuietOn = false, int clingyQuietStart = 1320, int clingyQuietEnd = 480, bool clingyUrgent = false, bool clingyUrgentCap = true, int clingyUrgentMax = 1, List<String>? skillIds, bool imageEnabled = false, String imageProvider = '', String imageModel = '', String imageSize = '', bool ttsEnabled = false, TtsEngine? ttsEngine, String ttsBaseUrl = '', String ttsModel = '', String ttsVoice = '', bool ttsAutoSpeak = false}) {
+    final c = Chat(id: _id(), persona: Persona(name: name, prompt: prompt, color: color ?? name.hashCode.abs() % avatarColorCount, bio: bio, greeting: greeting, emoji: emoji, examples: examples, avatarPath: avatarPath, modelProvider: modelProvider, modelId: modelId, modelFallback: modelFallback, thinking: thinking, agent: agent, clingy: clingy, clingySilentMin: clingySilentMin, clingyCap: clingyCap, clingyMax: clingyMax, clingyQuietOn: clingyQuietOn, clingyQuietStart: clingyQuietStart, clingyQuietEnd: clingyQuietEnd, clingyUrgent: clingyUrgent, clingyUrgentCap: clingyUrgentCap, clingyUrgentMax: clingyUrgentMax, skillIds: skillIds, imageEnabled: imageEnabled, imageProvider: imageProvider, imageModel: imageModel, imageSize: imageSize, ttsEnabled: ttsEnabled, ttsEngine: ttsEngine, ttsBaseUrl: ttsBaseUrl, ttsModel: ttsModel, ttsVoice: ttsVoice, ttsAutoSpeak: ttsAutoSpeak));
     if (greeting.trim().isNotEmpty) c.msgs.add(Msg(id: _id(), out: false, text: greeting.trim(), time: DateTime.now().millisecondsSinceEpoch));
     _listen(c);
     chats.add(c);
@@ -1254,7 +1283,7 @@ Chat createChat(String name, String prompt, {String bio = '', String greeting = 
     return c;
   }
 
-  void editPersona(Chat c, String name, String prompt, {String? bio, String? greeting, String? emoji, String? examples, String? avatarPath, int? color, String? modelProvider, String? modelId, bool? modelFallback, bool? thinking, bool? agent, bool? clingy, int? clingySilentMin, bool? clingyCap, int? clingyMax, List<String>? skillIds, bool clearSkillIds = false}) {
+  void editPersona(Chat c, String name, String prompt, {String? bio, String? greeting, String? emoji, String? examples, String? avatarPath, int? color, String? modelProvider, String? modelId, bool? modelFallback, bool? thinking, bool? agent, bool? clingy, int? clingySilentMin, bool? clingyCap, int? clingyMax, bool? clingyQuietOn, int? clingyQuietStart, int? clingyQuietEnd, bool? clingyUrgent, bool? clingyUrgentCap, int? clingyUrgentMax, List<String>? skillIds, bool clearSkillIds = false}) {
     c.persona
       ..name = name
       ..prompt = prompt;
@@ -1273,6 +1302,12 @@ Chat createChat(String name, String prompt, {String bio = '', String greeting = 
     if (clingySilentMin != null) c.persona.clingySilentMin = clingySilentMin;
     if (clingyCap != null) c.persona.clingyCap = clingyCap;
     if (clingyMax != null) c.persona.clingyMax = clingyMax;
+    if (clingyQuietOn != null) c.persona.clingyQuietOn = clingyQuietOn;
+    if (clingyQuietStart != null) c.persona.clingyQuietStart = clingyQuietStart;
+    if (clingyQuietEnd != null) c.persona.clingyQuietEnd = clingyQuietEnd;
+    if (clingyUrgent != null) c.persona.clingyUrgent = clingyUrgent;
+    if (clingyUrgentCap != null) c.persona.clingyUrgentCap = clingyUrgentCap;
+    if (clingyUrgentMax != null) c.persona.clingyUrgentMax = clingyUrgentMax;
     if (clearSkillIds) {
       c.persona.skillIds = null;
     } else if (skillIds != null) {

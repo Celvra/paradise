@@ -612,6 +612,9 @@ extension StoreHuman on Store {
 
     void enqueue(List<BrSegment> segs) {
       for (final s in segs) {
+        // the urgent quiet-hours check answers exactly <silent> when nothing
+        // qualified; that answer is a decision, not a message
+        if (s.text.trim() == '<silent>') continue;
         run.queued.add(s.text);
         pipeline = pipeline.then((_) => show(s));
       }
@@ -913,30 +916,48 @@ _runs[c.id]?.row = row;
     final now = _nowMs;
     for (final c in chats) {
       final p = c.persona;
-      if (!p.clingy || p.clingySilentMin <= 0) continue;
-      if (c.muted || _runs.containsKey(c.id)) continue;
-      if (c.msgs.isEmpty) continue;
-      // silence counts from the newest message on either side, so a check-in
-      // that just went out restarts the wait instead of chaining forever
-      final newest = c.msgs.last.time;
-      final silentFor = now - (newest > c.human.lastAiAt ? newest : c.human.lastAiAt);
-      if (silentFor < p.clingySilentMin * 60000) continue;
-      if (p.clingyCap) {
-        // trailing incoming bubbles since the user's last message; the user
-        // sending again breaks the run, which is the refresh the cap promises
-        var proactive = 0;
-        for (final m in c.msgs.reversed) {
-          if (m.service) continue;
-          if (m.out) break;
-          proactive++;
-        }
-        if (proactive >= p.clingyMax) continue;
-      }
+      if (!_clingyDue(c, p, now)) continue;
       unawaited(_clingyFire(c, p));
     }
   }
 
-  Future<void> _clingyFire(Chat c, Persona p) async {
+  /// The full "is this chat owed a check-in right now" test, shared by the
+  /// foreground heartbeat and the headless WorkManager sweep.
+  bool _clingyDue(Chat c, Persona p, int now) {
+    if (!p.clingy || p.clingySilentMin <= 0) return false;
+    if (c.muted || _runs.containsKey(c.id)) return false;
+    if (c.msgs.isEmpty) return false;
+    // silence counts from the newest message on either side, so a check-in
+    // that just went out restarts the wait instead of chaining forever
+    final newest = c.msgs.last.time;
+    final silentFor = now - (newest > c.human.lastAiAt ? newest : c.human.lastAiAt);
+    if (silentFor < p.clingySilentMin * 60000) return false;
+    if (p.clingyCap) {
+      // trailing incoming bubbles since the user's last message; the user
+      // sending again breaks the run, which is the refresh the cap promises
+      var proactive = 0;
+      for (final m in c.msgs.reversed) {
+        if (m.service) continue;
+        if (m.out) break;
+        proactive++;
+      }
+      if (proactive >= p.clingyMax) return false;
+    }
+    return true;
+  }
+
+  /// The headless half of the standalone clingy switch: the WorkManager job
+  /// calls this when the humanize pipeline is off, so check-ins fire while
+  /// the app is swiped away, not only once it comes back to the front.
+  Future<void> runClingyHeadless() async {
+    final now = _nowMs;
+    for (final c in chats) {
+      if (!_clingyDue(c, c.persona, now)) continue;
+      await _clingyFire(c, c.persona, notify: true);
+    }
+  }
+
+  Future<void> _clingyFire(Chat c, Persona p, {bool notify = false}) async {
     // the config check comes first: marking the chat as spoken before knowing
     // we can actually speak would silently swallow a whole silence period
     final cfg = _ai;
@@ -977,6 +998,9 @@ _runs[c.id]?.row = row;
       if (text.isNotEmpty) {
         c.msgs.add(Msg(id: _id(), out: false, text: text, time: _nowMs));
         if (openId != c.id) c.unread++;
+        // headless send: the user is not inside the app, so the check-in
+        // would sit unread forever without a nudge in the shade
+        if (notify) unawaited(Notifier.instance.show('clingy_${c.id}', c.persona.name, text));
       }
       // an empty or failed check-in stays silent: it retries on a later
       // silence and never surfaces a service row that would read like a crash
@@ -1002,9 +1026,14 @@ _runs[c.id]?.row = row;
 
   /// WorkManager entry: runs everything that is due without a UI.
   Future<void> runDueHeadless() async {
-    final hh = human;
-    if (hh == null) return;
     await Notifier.instance.init();
+    final hh = human;
+    if (hh == null) {
+      // no humanize pipeline: persona clinginess is a standalone switch and
+      // still owes its check-ins, the foreground must not be a requirement
+      await runClingyHeadless();
+      return;
+    }
     hh.onNotify = (chatId, msgId, title, body) => unawaited(Notifier.instance.show(msgId, title, body));
     hh.onCancelNotify = (msgId) => unawaited(Notifier.instance.cancel(msgId));
     await humanTick();

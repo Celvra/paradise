@@ -4,18 +4,26 @@ import 'dart:convert';
 ///
 /// One JSON document, following the envelope the sticker and memory exports
 /// already use, so a file that is handed to somebody can be read without this
-/// app. Attachments are deliberately not in it: the photo and file
+/// app. Chat attachments are deliberately not in it: the photo and file
 /// messages only carry a path into app private storage, and pulling the bytes
-/// in would make this a multi gigabyte archive rather than a document.
+/// in would make this a multi gigabyte archive rather than a document. The
+/// images a persona or a sticker cannot live without (avatars, sticker art)
+/// are embedded under `images`, keyed by their old path so a restore can
+/// rewrite the references.
 ///
-/// API keys are never written here. A provider config carries `apiKeyRef`,
-/// which names where a secret lives rather than being one, and the secrets
-/// themselves sit under their own preferences entry. A backup that followed the
-/// keys around would be a credential in every file the user ever shares.
+/// Provider API keys ARE included (the `secrets` section): without them a
+/// restore leaves every provider unconfigured, which for an auto backup that
+/// exists to survive a reinstall defeats the point. The file therefore stays
+/// as sensitive as the keys it carries — same as any credential store, and a
+/// reason the auto backup never leaves the device's backup location.
 const backupKind = 'lib3.backup';
 
 /// Bumped only for a change that older builds cannot read. An unknown higher
 /// version is refused rather than half applied.
+///
+/// The v1 additions (images / human / secrets sections) are deliberately
+/// additive: a v1 reader from before they existed applies what it knows and
+/// ignores the rest, which degrades to the old behaviour instead of breaking.
 const backupVersion = 1;
 
 class BackupReport {
@@ -27,6 +35,9 @@ class BackupReport {
   int stickers = 0;
   int memories = 0;
   int settings = 0;
+  int images = 0;
+  bool human = false;
+  int secrets = 0;
   bool ai = false;
 
   /// Records that were present in the file but could not be used. A backup that
@@ -37,8 +48,8 @@ class BackupReport {
 
   @override
   String toString() => 'chats=$chats messages=$messages personas=$personas '
-      'stickers=$stickers memories=$memories settings=$settings ai=$ai '
-      'warnings=${warnings.length}';
+      'stickers=$stickers memories=$memories settings=$settings images=$images '
+      'human=$human secrets=$secrets ai=$ai warnings=${warnings.length}';
 }
 
 /// A parsed file, held as plain maps so it can be inspected without a Store.
@@ -53,6 +64,9 @@ class BackupDoc {
     required this.memory,
     required this.settings,
     required this.ai,
+    this.images,
+    this.human,
+    this.secrets,
   });
 
   final int version;
@@ -69,6 +83,19 @@ class BackupDoc {
   final Map<String, dynamic> settings;
   final Map<String, dynamic>? ai;
 
+  /// Local image bytes, old absolute path -> {'b64': ..., 'name': file name}.
+  /// Only the images personas and stickers point at; message attachments stay
+  /// out for size.
+  final Map<String, dynamic>? images;
+
+  /// The humanize layer that used to be missing from backups: settings,
+  /// wallet and scheduler, each already in its own serialised shape.
+  final Map<String, dynamic>? human;
+
+  /// Provider id -> API key. Present means the restore can put a provider
+  /// back fully working, keys included.
+  final Map<String, dynamic>? secrets;
+
   int get messageCount => chats.fold(0, (n, c) => n + ((c['msgs'] as List?)?.length ?? 0));
 }
 
@@ -82,6 +109,9 @@ String buildBackup({
   Map<String, dynamic>? memory,
   Map<String, dynamic> settings = const {},
   Map<String, dynamic>? ai,
+  Map<String, dynamic>? images,
+  Map<String, dynamic>? human,
+  Map<String, dynamic>? secrets,
   String appVersion = '',
   DateTime? exportedAt,
 }) =>
@@ -97,6 +127,9 @@ String buildBackup({
         if (memory != null) 'memory': memory,
         if (settings.isNotEmpty) 'settings': settings,
         if (ai != null) 'ai': ai,
+        if (images != null && images.isNotEmpty) 'images': images,
+        if (human != null) 'human': human,
+        if (secrets != null && secrets.isNotEmpty) 'secrets': secrets,
       },
     });
 
@@ -142,6 +175,9 @@ BackupDoc parseBackup(String raw) {
     memory: sections['memory'] is Map ? (sections['memory'] as Map).cast<String, dynamic>() : null,
     settings: sections['settings'] is Map ? (sections['settings'] as Map).cast<String, dynamic>() : const {},
     ai: sections['ai'] is Map ? (sections['ai'] as Map).cast<String, dynamic>() : null,
+    images: sections['images'] is Map ? (sections['images'] as Map).cast<String, dynamic>() : null,
+    human: sections['human'] is Map ? (sections['human'] as Map).cast<String, dynamic>() : null,
+    secrets: sections['secrets'] is Map ? (sections['secrets'] as Map).cast<String, dynamic>() : null,
   );
 }
 

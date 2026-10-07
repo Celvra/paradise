@@ -2702,6 +2702,36 @@ class AppLocalizationsEn extends AppLocalizations {
   String get personaClingyMax => 'Max proactive in a row';
 
   @override
+  String get personaClingyQuietTitle => 'Quiet hours';
+
+  @override
+  String get personaClingyQuietSub =>
+      'No proactive messages inside this window, simulating sleep';
+
+  @override
+  String get personaClingyQuietStart => 'Starts at';
+
+  @override
+  String get personaClingyQuietEnd => 'Ends at';
+
+  @override
+  String get personaClingyUrgentTitle => 'Allow urgent messages';
+
+  @override
+  String get personaClingyUrgentSub =>
+      'Inside quiet hours the model may still speak up for a genuinely restless reason, deciding on its own; nothing is sent when it stays silent';
+
+  @override
+  String get personaClingyUrgentCap => 'Limit urgent count';
+
+  @override
+  String get personaClingyUrgentCapSub =>
+      'Max urgent messages per quiet window, so tokens are not burned through';
+
+  @override
+  String get personaClingyUrgentMax => 'Max urgent per window';
+
+  @override
   String personaClingyMinutes(int min) {
     return '$min min';
   }
@@ -3595,7 +3625,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Proactive messages and scheduled replies need notifications to reach you in time.';
 
   @override
-  String get onboardPermPhotosName => 'Photos';
+  String get onboardPermPhotosName => 'Media access';
 
   @override
   String get onboardPermPhotosWhy => 'Sending pictures and saving stickers.';
@@ -4101,10 +4131,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get autoBackupRestoreAction => 'Restore';
 
   @override
+  String get autoBackupPickMessage =>
+      'A backup was found in Download/Paradise, but a fresh install cannot read it directly — Android protects files left by the old install. Tap below and pick paradise_autobackup.json to restore everything.';
+
+  @override
+  String get autoBackupPickAction => 'Choose backup file';
+
+  @override
   String get autoBackupRestored => 'Backup restored';
 
   @override
   String get autoBackupRestoreFailed => 'The backup could not be read';
+
+  @override
+  String get fullBackupRestoreTitle => 'Full backup found';
+
+  @override
+  String get fullBackupRestoreMessage =>
+      'A complete snapshot of all data was found (chats, personas, images, settings and API keys). Restore everything and restart? Declining leaves the backup on the device.';
+
+  @override
+  String get fullBackupRestoreAction => 'Restore all';
+
+  @override
+  String get fullBackupRestoreFailed => 'The full backup could not be restored';
 
   @override
   String get whatsNewEntry => 'What\'s new';
