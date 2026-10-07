@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:file_picker/file_picker.dart';
@@ -7,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:paradise/core/ui_kit.dart';
 import 'package:paradise/data/ai_config.dart';
 import 'package:paradise/data/backup.dart';
+import 'package:paradise/data/backup_archive.dart';
 import 'package:paradise/data/models.dart';
 import 'package:paradise/data/store.dart';
 import 'package:paradise/main.dart';
@@ -79,13 +79,14 @@ void main() {
     await settleBulletin(t);
 
     expect(picker.calls, 1, reason: 'the save dialog was actually opened');
-    expect(picker.fileName, matches(RegExp(r'^paradise-\d{8}-\d{4}\.json$')));
-    expect(picker.mimeType, 'application/json');
+    expect(picker.fileName, matches(RegExp(r'^paradise-[0-9]{8}-[0-9]{4}[.]zip$')));
+    expect(picker.mimeType, 'application/zip');
 
-    final doc = parseBackup(utf8.decode(picker.bytes!));
+    final archive = readBackupZip(picker.bytes!);
+    final doc = parseBackup(archive.json);
     expect(doc.chats.length, 1);
     expect(doc.messageCount, 1);
-    expect(utf8.decode(picker.bytes!), contains('\n  "kind"'), reason: 'indented, readable without the app');
+    expect(archive.json, contains('"kind"'), reason: 'indented, readable without the app');
   });
 
   testWidgets('export with nothing to export still hands over a valid file', (t) async {
@@ -95,7 +96,7 @@ void main() {
     await settleBulletin(t);
 
     expect(picker.calls, 1);
-    expect(parseBackup(utf8.decode(picker.bytes!)).chats, isEmpty);
+    expect(parseBackup(readBackupZip(picker.bytes!).json).chats, isEmpty);
   });
 
   testWidgets('backing out of the save dialog is not an error', (t) async {
