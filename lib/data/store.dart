@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math' show Random, max, min;
-import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -2064,13 +2063,6 @@ Chat createChat(String name, String prompt, {String bio = '', String greeting = 
       final comma = loaded.indexOf(',');
       final mime = comma > 0 ? loaded.substring(5, comma) : 'image/jpeg';
       rebuilt.add(ChatTurn(turn.role, [TextPart(source.content), ImagePart(loaded.substring(comma + 1), mime)], sourceId: turn.sourceId));
-    }
-    turns = rebuilt;
-
-    // the card goes in after the rebuild so an attachment never eats the slot
-    _injectDepth(c, turns);
-
-    le, [TextPart(source.content), ImagePart(loaded.substring(comma + 1), mime)], sourceId: turn.sourceId));
     }
     turns = rebuilt;
 

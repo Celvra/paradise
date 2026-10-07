@@ -9,6 +9,7 @@ import '../core/overlays.dart';
 import '../core/theme.dart';
 import '../core/ui_kit.dart';
 import '../app_info.dart' show appVersion;
+import '../data/backup_remote.dart';
 import '../data/models.dart';
 import '../data/speech_config.dart';
 import '../data/ai/provider_model.dart';
@@ -70,7 +71,7 @@ class SettingsTab extends StatelessWidget {
             padding: EdgeInsets.only(top: top + 56 + 12, bottom: mq.padding.bottom + 56 + 8 + 24),
             children: [
               // the profile already has its own tab, so nothing here repeats it
-         ,    _Group(children: [
+              _Group(children: [
                 _Cell(icon: Ic.user, colors: _blue, title: l.settingsAccount, sub: l.settingsAccountSub, onTap: () => openAccount(context)),
                 _Cell(
                   icon: Ic.ai,
@@ -604,7 +605,7 @@ class _Cell extends StatelessWidget {
             child: Row(children: [
               Expanded(
                 child: Column(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text(title, maxL p.danger : p.title, fontSize: 16, height: 1.2, decoration: TextDecoration.none, fontWeight: FontWeight.w400)),
+                  Text(title, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(color: danger ? p.danger : p.title, fontSize: 16, height: 1.2, decoration: TextDecoration.none, fontWeight: FontWeight.w400)),
                   if (sub != null) Text(sub!, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(color: p.subtitle, fontSize: 13, height: 1.3, decoration: TextDecoration.none, fontWeight: FontWeight.w400)),
                 ]),
               ),
@@ -677,10 +678,6 @@ String wsSettingsSummary(Store st) {
 String skillSettingsSummary(Store st, AppLocalizations l) {
   final n = st.skills.skills.length;
   return n == 0 ? l.skillSubEmpty : l.skillSubCount(n);
-}
-
-String wsTitles(int n) => L10n.number('#,##0').format(n);
-SubCount(n);
 }
 
 String wsTitles(int n) => L10n.number('#,##0').format(n);
