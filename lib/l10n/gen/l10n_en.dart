@@ -4083,7 +4083,95 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get autoBackupSub =>
-      'Backups overwrite one file kept outside the app, so they survive updates and reinstalls.';
+      'The latest backup is kept as a single zip outside the app and replaced on every run, so an update or reinstall cannot lose your data.';
+
+  @override
+  String get remoteBackupTitle => 'Remote backup';
+
+  @override
+  String get remoteBackupSub =>
+      'A dated copy of the backup is uploaded once a day to WebDAV or S3, so a copy survives even if the phone is lost.';
+
+  @override
+  String get remoteBackupOn => 'On';
+
+  @override
+  String get remoteBackupOff => 'Off';
+
+  @override
+  String get remoteBackupKind => 'Protocol';
+
+  @override
+  String get remoteBackupKindWebdav => 'WebDAV';
+
+  @override
+  String get remoteBackupKindS3 => 'S3';
+
+  @override
+  String get remoteBackupUrl => 'WebDAV URL';
+
+  @override
+  String get remoteBackupUser => 'Username';
+
+  @override
+  String get remoteBackupPass => 'Password';
+
+  @override
+  String get remoteBackupEndpoint => 'Endpoint';
+
+  @override
+  String get remoteBackupRegion => 'Region';
+
+  @override
+  String get remoteBackupBucket => 'Bucket';
+
+  @override
+  String get remoteBackupAccessKey => 'Access key';
+
+  @override
+  String get remoteBackupSecretKey => 'Secret key';
+
+  @override
+  String get remoteBackupPrefix => 'Path prefix';
+
+  @override
+  String get remoteBackupPathStyle => 'Force path-style addressing';
+
+  @override
+  String get remoteBackupEnable => 'Auto upload';
+
+  @override
+  String get remoteBackupTest => 'Test connection';
+
+  @override
+  String get remoteBackupTestOk => 'Connected';
+
+  @override
+  String get remoteBackupTestFail => 'Connection failed';
+
+  @override
+  String get remoteBackupUpload => 'Upload backup now';
+
+  @override
+  String get remoteBackupUploaded => 'Backup uploaded';
+
+  @override
+  String get remoteBackupUploadFail => 'Upload failed';
+
+  @override
+  String get remoteBackupRestore => 'Restore from remote';
+
+  @override
+  String get remoteBackupRestorePick => 'Choose a backup to restore';
+
+  @override
+  String get remoteBackupNone => 'No backup found on the remote';
+
+  @override
+  String get remoteBackupNotConfigured => 'Fill in and save the settings first';
+
+  @override
+  String get remoteBackupSaved => 'Remote settings saved';
 
   @override
   String get autoBackupModeChange => 'On data change (recommended)';
@@ -4365,4 +4453,60 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get speechTestFailed => 'Could not speak: ';
+
+  @override
+  String get storageTitle => 'Storage';
+
+  @override
+  String get storageSub =>
+      'See what each kind of data uses and clear the cache';
+
+  @override
+  String get storageUsage => 'Usage';
+
+  @override
+  String get storageTotal => 'Total';
+
+  @override
+  String get storageChats => 'Chat records';
+
+  @override
+  String get storageMedia => 'Media and files';
+
+  @override
+  String get storageStickers => 'Stickers';
+
+  @override
+  String get storageWallpaper => 'Wallpaper';
+
+  @override
+  String get storageBackups => 'Local backups';
+
+  @override
+  String get storageWorkspace => 'Workspace and environment';
+
+  @override
+  String get storageDatabase => 'Database';
+
+  @override
+  String get storageCache => 'Cache';
+
+  @override
+  String get storageOther => 'Other';
+
+  @override
+  String get storagePerAgent => 'Chat records by assistant';
+
+  @override
+  String get storageClear => 'Clear cache';
+
+  @override
+  String get storageClearTitle => 'Clear cache?';
+
+  @override
+  String get storageClearMessage =>
+      'Temporary files are removed. Chats, personas, stickers and settings are kept.';
+
+  @override
+  String get storageClearDone => 'Cache cleared';
 }

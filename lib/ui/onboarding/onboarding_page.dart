@@ -1,3 +1,4 @@
+import 'dart:convert' show utf8;
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -10,6 +11,7 @@ import '../../core/theme.dart';
 import '../../core/ui_kit.dart';
 import '../../data/ai_config.dart';
 import '../../data/backup.dart' show parseBackup;
+import '../../data/backup_archive.dart' show looksLikeZip, readBackupZip;
 import '../../data/full_backup.dart';
 import '../../data/store.dart';
 import '../../l10n/x.dart';
@@ -110,11 +112,11 @@ class _OnboardingPageState extends State<OnboardingPage> implements OnboardingFl
         ],
       );
       if (pick != true || !mounted) return;
-      final picked = await FilePicker.pickFiles(type: FileType.custom, allowedExtensions: ['json']);
+      final picked = await FilePicker.pickFiles(type: FileType.custom, allowedExtensions: ['zip', 'json']);
       final path = picked.firstOrNull?.path;
       if (path == null || !mounted) return;
       try {
-        await _runRestore(await File(path).readAsString());
+        await _runRestore(await File(path).readAsBytes());
       } catch (_) {
         if (context.mounted) showBulletin(context, context.l.autoBackupRestoreFailed);
       }
@@ -159,14 +161,16 @@ class _OnboardingPageState extends State<OnboardingPage> implements OnboardingFl
   }
 
   /// The shared tail of every restore path: parse for the timestamp, confirm,
-  /// import, land on the dialog list.
-  Future<void> _runRestore(String raw) async {
+  /// import, land on the dialog list. Handles both the zip archive and the
+  /// legacy plain-json document.
+  Future<void> _runRestore(Uint8List bytes) async {
     if (!mounted) return;
     final store = context.store;
     final l = context.l;
     var when = '';
     try {
-      final doc = parseBackup(raw);
+      final json = looksLikeZip(bytes) ? readBackupZip(bytes).json : utf8.decode(bytes, allowMalformed: true);
+      final doc = parseBackup(json);
       final at = doc.exportedAt;
       if (at != null) {
         String p(int v) => v.toString().padLeft(2, '0');
@@ -186,7 +190,7 @@ class _OnboardingPageState extends State<OnboardingPage> implements OnboardingFl
     );
     if (ok != true || !mounted) return;
     try {
-      await store.importBackupString(raw, overwrite: false);
+      await store.importBackupArchive(bytes, overwrite: false);
       store.setOnboarded(true);
       Navigator.of(context).pushAndRemoveUntil(
         TgRoute(builder: (_) => const DialogsPage()),

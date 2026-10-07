@@ -7386,8 +7386,182 @@ abstract class AppLocalizations {
   /// No description provided for @autoBackupSub.
   ///
   /// In en, this message translates to:
-  /// **'Backups overwrite one file kept outside the app, so they survive updates and reinstalls.'**
+  /// **'The latest backup is kept as a single zip outside the app and replaced on every run, so an update or reinstall cannot lose your data.'**
   String get autoBackupSub;
+
+  /// No description provided for @remoteBackupTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remote backup'**
+  String get remoteBackupTitle;
+
+  /// No description provided for @remoteBackupSub.
+  ///
+  /// In en, this message translates to:
+  /// **'A dated copy of the backup is uploaded once a day to WebDAV or S3, so a copy survives even if the phone is lost.'**
+  String get remoteBackupSub;
+
+  /// No description provided for @remoteBackupOn.
+  ///
+  /// In en, this message translates to:
+  /// **'On'**
+  String get remoteBackupOn;
+
+  /// No description provided for @remoteBackupOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get remoteBackupOff;
+
+  /// No description provided for @remoteBackupKind.
+  ///
+  /// In en, this message translates to:
+  /// **'Protocol'**
+  String get remoteBackupKind;
+
+  /// No description provided for @remoteBackupKindWebdav.
+  ///
+  /// In en, this message translates to:
+  /// **'WebDAV'**
+  String get remoteBackupKindWebdav;
+
+  /// No description provided for @remoteBackupKindS3.
+  ///
+  /// In en, this message translates to:
+  /// **'S3'**
+  String get remoteBackupKindS3;
+
+  /// No description provided for @remoteBackupUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'WebDAV URL'**
+  String get remoteBackupUrl;
+
+  /// No description provided for @remoteBackupUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Username'**
+  String get remoteBackupUser;
+
+  /// No description provided for @remoteBackupPass.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get remoteBackupPass;
+
+  /// No description provided for @remoteBackupEndpoint.
+  ///
+  /// In en, this message translates to:
+  /// **'Endpoint'**
+  String get remoteBackupEndpoint;
+
+  /// No description provided for @remoteBackupRegion.
+  ///
+  /// In en, this message translates to:
+  /// **'Region'**
+  String get remoteBackupRegion;
+
+  /// No description provided for @remoteBackupBucket.
+  ///
+  /// In en, this message translates to:
+  /// **'Bucket'**
+  String get remoteBackupBucket;
+
+  /// No description provided for @remoteBackupAccessKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Access key'**
+  String get remoteBackupAccessKey;
+
+  /// No description provided for @remoteBackupSecretKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Secret key'**
+  String get remoteBackupSecretKey;
+
+  /// No description provided for @remoteBackupPrefix.
+  ///
+  /// In en, this message translates to:
+  /// **'Path prefix'**
+  String get remoteBackupPrefix;
+
+  /// No description provided for @remoteBackupPathStyle.
+  ///
+  /// In en, this message translates to:
+  /// **'Force path-style addressing'**
+  String get remoteBackupPathStyle;
+
+  /// No description provided for @remoteBackupEnable.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto upload'**
+  String get remoteBackupEnable;
+
+  /// No description provided for @remoteBackupTest.
+  ///
+  /// In en, this message translates to:
+  /// **'Test connection'**
+  String get remoteBackupTest;
+
+  /// No description provided for @remoteBackupTestOk.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected'**
+  String get remoteBackupTestOk;
+
+  /// No description provided for @remoteBackupTestFail.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection failed'**
+  String get remoteBackupTestFail;
+
+  /// No description provided for @remoteBackupUpload.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload backup now'**
+  String get remoteBackupUpload;
+
+  /// No description provided for @remoteBackupUploaded.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup uploaded'**
+  String get remoteBackupUploaded;
+
+  /// No description provided for @remoteBackupUploadFail.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload failed'**
+  String get remoteBackupUploadFail;
+
+  /// No description provided for @remoteBackupRestore.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore from remote'**
+  String get remoteBackupRestore;
+
+  /// No description provided for @remoteBackupRestorePick.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a backup to restore'**
+  String get remoteBackupRestorePick;
+
+  /// No description provided for @remoteBackupNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No backup found on the remote'**
+  String get remoteBackupNone;
+
+  /// No description provided for @remoteBackupNotConfigured.
+  ///
+  /// In en, this message translates to:
+  /// **'Fill in and save the settings first'**
+  String get remoteBackupNotConfigured;
+
+  /// No description provided for @remoteBackupSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Remote settings saved'**
+  String get remoteBackupSaved;
 
   /// No description provided for @autoBackupModeChange.
   ///
@@ -7898,6 +8072,114 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Could not speak: '**
   String get speechTestFailed;
+
+  /// No description provided for @storageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Storage'**
+  String get storageTitle;
+
+  /// No description provided for @storageSub.
+  ///
+  /// In en, this message translates to:
+  /// **'See what each kind of data uses and clear the cache'**
+  String get storageSub;
+
+  /// No description provided for @storageUsage.
+  ///
+  /// In en, this message translates to:
+  /// **'Usage'**
+  String get storageUsage;
+
+  /// No description provided for @storageTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get storageTotal;
+
+  /// No description provided for @storageChats.
+  ///
+  /// In en, this message translates to:
+  /// **'Chat records'**
+  String get storageChats;
+
+  /// No description provided for @storageMedia.
+  ///
+  /// In en, this message translates to:
+  /// **'Media and files'**
+  String get storageMedia;
+
+  /// No description provided for @storageStickers.
+  ///
+  /// In en, this message translates to:
+  /// **'Stickers'**
+  String get storageStickers;
+
+  /// No description provided for @storageWallpaper.
+  ///
+  /// In en, this message translates to:
+  /// **'Wallpaper'**
+  String get storageWallpaper;
+
+  /// No description provided for @storageBackups.
+  ///
+  /// In en, this message translates to:
+  /// **'Local backups'**
+  String get storageBackups;
+
+  /// No description provided for @storageWorkspace.
+  ///
+  /// In en, this message translates to:
+  /// **'Workspace and environment'**
+  String get storageWorkspace;
+
+  /// No description provided for @storageDatabase.
+  ///
+  /// In en, this message translates to:
+  /// **'Database'**
+  String get storageDatabase;
+
+  /// No description provided for @storageCache.
+  ///
+  /// In en, this message translates to:
+  /// **'Cache'**
+  String get storageCache;
+
+  /// No description provided for @storageOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get storageOther;
+
+  /// No description provided for @storagePerAgent.
+  ///
+  /// In en, this message translates to:
+  /// **'Chat records by assistant'**
+  String get storagePerAgent;
+
+  /// No description provided for @storageClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear cache'**
+  String get storageClear;
+
+  /// No description provided for @storageClearTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear cache?'**
+  String get storageClearTitle;
+
+  /// No description provided for @storageClearMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Temporary files are removed. Chats, personas, stickers and settings are kept.'**
+  String get storageClearMessage;
+
+  /// No description provided for @storageClearDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Cache cleared'**
+  String get storageClearDone;
 }
 
 class _AppLocalizationsDelegate

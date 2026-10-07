@@ -1,6 +1,7 @@
 package fan.x0.para
 
 import android.content.ContentValues
+import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import fan.x0.para.workspace.WorkspacePlugin
@@ -31,10 +32,10 @@ class MainActivity : FlutterActivity() {
         backupChannel = ch
         ch.setMethodCallHandler { call, result ->
             when (call.method) {
-                "write" -> backupWrite((call.arguments as? String ?: "").toByteArray(), BACKUP_NAME, "application/json", result)
-                "read" -> backupRead(result)
+                "write" -> backupWrite((call.arguments as? ByteArray) ?: ByteArray(0), BACKUP_NAME, "application/zip", result)
+                "read" -> backupRead(BACKUP_NAME, result)
                 "exists" -> backupExists(BACKUP_NAME, result)
-                // the full zip backup rides the same channel: one directory,
+                // the full zip snapshot rides the same channel: one directory,
                 // one overwrite policy, two logical files
                 "writeFull" -> backupWrite(call.arguments as? ByteArray ?: ByteArray(0), FULL_BACKUP_NAME, "application/zip", result)
                 "readFull" -> backupReadBytes(FULL_BACKUP_NAME, result)
@@ -49,11 +50,20 @@ class MainActivity : FlutterActivity() {
             result.error("api", "MediaStore.Downloads needs api 29+", null)
             return
         }
-        // one logical backup: drop every older copy, including the "(1)"
-        // variants some vendors mint when an insert lands before the delete of
-        // the previous row becomes visible
+        // One fixed name per logical backup, replaced on every write. A fresh
+        // name per run left a pile of near-identical archives and a "which one
+        // is the newest" guess; the change mode fires after every editing
+        // burst, so that pile grew fast. The fixed name makes the file on disk
+        // always the latest backup. Every older row is deleted first —
+        // including the "(1)" variants some vendors mint when an insert lands
+        // before the delete of the previous row becomes visible — because
+        // MediaStore rejects a duplicate insert on the same name.
         for (uri in queryBackupUris(name)) {
-            contentResolver.delete(uri, null, null)
+            try {
+                contentResolver.delete(uri, null, null)
+            } catch (_: Exception) {
+                // a row we cannot delete is harmless; the insert below still runs
+            }
         }
         val values = ContentValues().apply {
             put(MediaStore.Downloads.DISPLAY_NAME, name)
@@ -75,14 +85,26 @@ class MainActivity : FlutterActivity() {
         }
     }
 
-    private fun backupRead(result: MethodChannel.Result) {
-        val raw = backupReadBytes(BACKUP_NAME)
-        result.success(raw?.let { String(it) })
+    private fun backupRead(name: String, result: MethodChannel.Result) {
+        if (Build.VERSION.SDK_INT < 29) {
+            result.error("api", "MediaStore.Downloads needs api 29+", null)
+            return
+        }
+        result.success(backupReadBytes(name))
+    }
+
+    private fun backupReadBytes(name: String, result: MethodChannel.Result) {
+        if (Build.VERSION.SDK_INT < 29) {
+            result.error("api", "MediaStore.Downloads needs api 29+", null)
+            return
+        }
+        result.success(backupReadBytes(name))
     }
 
     /// Newest first, and every name variant counts: after a reinstall the
-    /// row the old install left may sit under "paradise_autobackup (1).json"
-    /// on some vendors, and the exact-name query would miss it.
+    /// row the old install left may sit under "paradise_autobackup (1).zip"
+    /// (or the legacy ".json" name) on some vendors, and an exact-name query
+    /// would miss it. Matching on the name stem keeps both visible.
     private fun backupReadBytes(name: String): ByteArray? {
         if (Build.VERSION.SDK_INT < 29) {
             return null
@@ -103,14 +125,6 @@ class MainActivity : FlutterActivity() {
         return null
     }
 
-    private fun backupReadBytes(name: String, result: MethodChannel.Result) {
-        if (Build.VERSION.SDK_INT < 29) {
-            result.error("api", "MediaStore.Downloads needs api 29+", null)
-            return
-        }
-        result.success(backupReadBytes(name))
-    }
-
     /// Whether any backup file is visible at all, readable or not. The Dart
     /// side uses it to offer a manual pick when a reinstall can see the file
     /// but Android will not hand its bytes over without the user tapping it.
@@ -125,16 +139,17 @@ class MainActivity : FlutterActivity() {
     /// Newest backup rows of this app in its Downloads folder, exact name and
     /// "name (n)" variants alike, so nothing the previous install wrote is
     /// ever invisible to the next one.
-    private fun queryBackupUris(name: String): List<android.net.Uri> {
+    private fun queryBackupUris(name: String): List<Uri> {
+        val stem = name.substringBeforeLast('.')
         val cols = arrayOf(MediaStore.Downloads._ID)
         val sel = "${MediaStore.Downloads.DISPLAY_NAME} LIKE ? AND ${MediaStore.Downloads.RELATIVE_PATH} = ?"
-        val args = arrayOf("$name%", "Download/Paradise/")
+        val args = arrayOf("$stem%", "Download/Paradise/")
         val sort = "${MediaStore.Downloads.DATE_ADDED} DESC"
-        val out = mutableListOf<android.net.Uri>()
+        val out = mutableListOf<Uri>()
         contentResolver.query(MediaStore.Downloads.EXTERNAL_CONTENT_URI, cols, sel, args, sort)?.use { c ->
             while (c.moveToNext()) {
                 out.add(
-                    android.net.Uri.withAppendedPath(
+                    Uri.withAppendedPath(
                         MediaStore.Downloads.EXTERNAL_CONTENT_URI,
                         c.getLong(0).toString(),
                     ),
@@ -150,14 +165,14 @@ class MainActivity : FlutterActivity() {
     }
 
     override fun onDestroy() {
-        workspacePlugin?.detachActivity(this)
+        workspacePlugin?.detachActivity()
         workspacePlugin = null
         backupChannel = null
         super.onDestroy()
     }
 
     companion object {
-        const val BACKUP_NAME = "paradise_autobackup.json"
+        const val BACKUP_NAME = "paradise_autobackup.zip"
         const val FULL_BACKUP_NAME = "paradise_full.zip"
     }
 }

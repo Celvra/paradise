@@ -3907,7 +3907,94 @@ class AppLocalizationsZh extends AppLocalizations {
   String get autoBackupTitle => '自动备份';
 
   @override
-  String get autoBackupSub => '备份以覆盖方式写入应用外部的一个文件，更新或重装后仍可找回。';
+  String get autoBackupSub => '最新备份以单个 zip 保存在应用外部，每次都会覆盖上一次，更新或重装后仍可找回。';
+
+  @override
+  String get remoteBackupTitle => '远端备份';
+
+  @override
+  String get remoteBackupSub => '每天把一份按日期命名的备份上传到 WebDAV 或 S3，即使手机丢失也留有一份。';
+
+  @override
+  String get remoteBackupOn => '已启用';
+
+  @override
+  String get remoteBackupOff => '未启用';
+
+  @override
+  String get remoteBackupKind => '协议';
+
+  @override
+  String get remoteBackupKindWebdav => 'WebDAV';
+
+  @override
+  String get remoteBackupKindS3 => 'S3';
+
+  @override
+  String get remoteBackupUrl => 'WebDAV 地址';
+
+  @override
+  String get remoteBackupUser => '用户名';
+
+  @override
+  String get remoteBackupPass => '密码';
+
+  @override
+  String get remoteBackupEndpoint => 'Endpoint';
+
+  @override
+  String get remoteBackupRegion => 'Region';
+
+  @override
+  String get remoteBackupBucket => 'Bucket';
+
+  @override
+  String get remoteBackupAccessKey => 'Access Key';
+
+  @override
+  String get remoteBackupSecretKey => 'Secret Key';
+
+  @override
+  String get remoteBackupPrefix => '路径前缀';
+
+  @override
+  String get remoteBackupPathStyle => '强制 path-style 寻址';
+
+  @override
+  String get remoteBackupEnable => '自动上传';
+
+  @override
+  String get remoteBackupTest => '测试连接';
+
+  @override
+  String get remoteBackupTestOk => '连接成功';
+
+  @override
+  String get remoteBackupTestFail => '连接失败';
+
+  @override
+  String get remoteBackupUpload => '立即上传备份';
+
+  @override
+  String get remoteBackupUploaded => '备份已上传';
+
+  @override
+  String get remoteBackupUploadFail => '上传失败';
+
+  @override
+  String get remoteBackupRestore => '从远端恢复';
+
+  @override
+  String get remoteBackupRestorePick => '选择要恢复的备份';
+
+  @override
+  String get remoteBackupNone => '远端没有找到备份';
+
+  @override
+  String get remoteBackupNotConfigured => '请先填写并保存配置';
+
+  @override
+  String get remoteBackupSaved => '远端设置已保存';
 
   @override
   String get autoBackupModeChange => '数据变化时自动备份（推荐）';
@@ -4175,6 +4262,60 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get speechTestFailed => '无法朗读：';
+
+  @override
+  String get storageTitle => '存储';
+
+  @override
+  String get storageSub => '查看各类数据的占用并清空缓存';
+
+  @override
+  String get storageUsage => '占用';
+
+  @override
+  String get storageTotal => '总计';
+
+  @override
+  String get storageChats => '聊天记录';
+
+  @override
+  String get storageMedia => '媒体与文件';
+
+  @override
+  String get storageStickers => '表情包';
+
+  @override
+  String get storageWallpaper => '壁纸';
+
+  @override
+  String get storageBackups => '本地备份';
+
+  @override
+  String get storageWorkspace => '工作区与环境';
+
+  @override
+  String get storageDatabase => '数据库';
+
+  @override
+  String get storageCache => '缓存';
+
+  @override
+  String get storageOther => '其他';
+
+  @override
+  String get storagePerAgent => '各智能体的聊天记录';
+
+  @override
+  String get storageClear => '清空缓存';
+
+  @override
+  String get storageClearTitle => '清空缓存？';
+
+  @override
+  String get storageClearMessage => '将删除临时文件，聊天记录、人设、表情包和设置都会保留。';
+
+  @override
+  String get storageClearDone => '缓存已清空';
 }
 
 /// The translations for Chinese, using the Han script (`zh_Hant`).
@@ -8080,7 +8221,94 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get autoBackupTitle => '自動備份';
 
   @override
-  String get autoBackupSub => '備份以覆蓋方式寫入應用外部的一個檔案，更新或重裝後仍可找回。';
+  String get autoBackupSub => '最新備份以單個 zip 保存在應用程式外部，每次都會覆蓋上一次，更新或重裝後仍可找回。';
+
+  @override
+  String get remoteBackupTitle => '遠端備份';
+
+  @override
+  String get remoteBackupSub => '每天把一份按日期命名的備份上傳到 WebDAV 或 S3，即使手機遺失也留有一份。';
+
+  @override
+  String get remoteBackupOn => '已啟用';
+
+  @override
+  String get remoteBackupOff => '未啟用';
+
+  @override
+  String get remoteBackupKind => '協定';
+
+  @override
+  String get remoteBackupKindWebdav => 'WebDAV';
+
+  @override
+  String get remoteBackupKindS3 => 'S3';
+
+  @override
+  String get remoteBackupUrl => 'WebDAV 位址';
+
+  @override
+  String get remoteBackupUser => '使用者名稱';
+
+  @override
+  String get remoteBackupPass => '密碼';
+
+  @override
+  String get remoteBackupEndpoint => 'Endpoint';
+
+  @override
+  String get remoteBackupRegion => 'Region';
+
+  @override
+  String get remoteBackupBucket => 'Bucket';
+
+  @override
+  String get remoteBackupAccessKey => 'Access Key';
+
+  @override
+  String get remoteBackupSecretKey => 'Secret Key';
+
+  @override
+  String get remoteBackupPrefix => '路徑前綴';
+
+  @override
+  String get remoteBackupPathStyle => '強制 path-style 定址';
+
+  @override
+  String get remoteBackupEnable => '自動上傳';
+
+  @override
+  String get remoteBackupTest => '測試連線';
+
+  @override
+  String get remoteBackupTestOk => '連線成功';
+
+  @override
+  String get remoteBackupTestFail => '連線失敗';
+
+  @override
+  String get remoteBackupUpload => '立即上傳備份';
+
+  @override
+  String get remoteBackupUploaded => '備份已上傳';
+
+  @override
+  String get remoteBackupUploadFail => '上傳失敗';
+
+  @override
+  String get remoteBackupRestore => '從遠端還原';
+
+  @override
+  String get remoteBackupRestorePick => '選擇要還原的備份';
+
+  @override
+  String get remoteBackupNone => '遠端找不到備份';
+
+  @override
+  String get remoteBackupNotConfigured => '請先填寫並儲存設定';
+
+  @override
+  String get remoteBackupSaved => '遠端設定已儲存';
 
   @override
   String get autoBackupModeChange => '資料變更時自動備份（推薦）';
@@ -8348,4 +8576,58 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get speechTestFailed => '無法朗讀：';
+
+  @override
+  String get storageTitle => '儲存';
+
+  @override
+  String get storageSub => '檢視各類資料的佔用並清除快取';
+
+  @override
+  String get storageUsage => '佔用';
+
+  @override
+  String get storageTotal => '總計';
+
+  @override
+  String get storageChats => '聊天記錄';
+
+  @override
+  String get storageMedia => '媒體與檔案';
+
+  @override
+  String get storageStickers => '表情貼圖';
+
+  @override
+  String get storageWallpaper => '桌布';
+
+  @override
+  String get storageBackups => '本機備份';
+
+  @override
+  String get storageWorkspace => '工作區與環境';
+
+  @override
+  String get storageDatabase => '資料庫';
+
+  @override
+  String get storageCache => '快取';
+
+  @override
+  String get storageOther => '其他';
+
+  @override
+  String get storagePerAgent => '各智慧體的聊天記錄';
+
+  @override
+  String get storageClear => '清除快取';
+
+  @override
+  String get storageClearTitle => '清除快取？';
+
+  @override
+  String get storageClearMessage => '將刪除暫存檔案，聊天記錄、人設、表情貼圖和設定都會保留。';
+
+  @override
+  String get storageClearDone => '快取已清除';
 }

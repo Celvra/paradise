@@ -281,6 +281,7 @@ class TgEditCell extends StatelessWidget {
       this.lines = 1,
       this.max = 0,
       this.divider = false,
+      this.obscure = false,
       this.focusNode,
       this.label});
 
@@ -289,6 +290,7 @@ class TgEditCell extends StatelessWidget {
   final int lines;
   final int max;
   final bool divider;
+  final bool obscure;
   final FocusNode? focusNode;
   final String? label;
 
@@ -318,6 +320,7 @@ class TgEditCell extends StatelessWidget {
               controller: controller,
               hint: hint,
               maxLines: lines,
+              obscure: obscure,
               focusNode: focusNode,
               style: TextStyle(
                   color: p.title, fontSize: 17, height: 1.3, decoration: _none),

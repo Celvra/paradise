@@ -165,7 +165,7 @@ void main() {
         chats: const [],
         personas: const [],
         images: const {'/old/avatar.png': {'b64': 'AAAA', 'name': 'avatar.png'}},
-        human: const {'wallet': {'balance': 42.0, 'txs': []}},
+        humanSettings: const {'wallet': {'balance': 42.0, 'txs': []}},
         secrets: const {'prov_1': 'sk-xyz'},
       );
       final doc = parseBackup(raw);

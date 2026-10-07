@@ -6,8 +6,8 @@ import 'package:path_provider/path_provider.dart';
 /// Automatic backup policy and the place it writes to.
 ///
 /// The policy is deliberately pure: [AutoBackup] decides *when*, the store
-/// decides *what* (it owns exportBackupString) and a [BackupSink] decides
-/// *where*. All three can be tested without each other.
+/// decides *what* (it owns the archive) and a [BackupSink] decides *where*.
+/// All three can be tested without each other.
 ///
 /// Modes:
 ///   change   – run shortly after real data changes (the default)
@@ -60,35 +60,56 @@ class AutoBackup {
 /// survives an uninstall because the file lives in the shared Downloads
 /// collection, and a plain directory one, which is the fallback on platforms
 /// without that channel and in tests.
+///
+/// A sink moves opaque archive bytes to one fixed address. Every write replaces
+/// what is there, so the copy on disk is always the newest one and a restore
+/// never has to choose between near-identical archives.
 abstract class BackupSink {
-  Future<void> write(String content);
-  Future<String?> read();
-
-  /// Whether a backup file exists at all, readable or not. Drives the
-  /// manual-pick offer when a reinstall can see the file but the OS will not
-  /// hand over its bytes without the user tapping it.
+  Future<void> write(List<int> bytes);
+  Future<List<int>?> read();
   Future<bool> exists();
 }
 
+/// The single file an automatic backup overwrites. The name is stable on
+/// purpose: it is what makes the local copy the latest one rather than the first
+/// of a pile.
+const autoBackupFileName = 'paradise_autobackup.zip';
+
+const autoBackupExt = 'zip';
+const autoBackupMime = 'application/zip';
+
+/// The name a remote copy is stored under, one per day. A date rather than a
+/// timestamp because the remote is written at most once a day: two runs on the
+/// same date describe the same day and replace each other, and the folder reads
+/// as a calendar instead of a log.
+String remoteBackupFileName(DateTime at) {
+  String p(int v) => v.toString().padLeft(2, '0');
+  return 'paradise-${at.year}${p(at.month)}${p(at.day)}.$autoBackupExt';
+}
+
+/// The fallback sink: a plain directory the app can always write. It holds one
+/// archive at a fixed name and replaces it on every write, so the newest backup
+/// is always the one a restore reads.
 class DirBackupSink implements BackupSink {
   DirBackupSink(this.dir);
 
   final Directory dir;
 
-  File get _file => File('${dir.path}/paradise_autobackup.json');
+  File get _file => File('${dir.path}/$autoBackupFileName');
 
   @override
-  Future<void> write(String content) async {
+  Future<void> write(List<int> bytes) async {
     if (!await dir.exists()) await dir.create(recursive: true);
-    await _file.writeAsString(content, flush: true);
+    // writeAsBytes truncates first, so a shorter archive cannot leave the tail
+    // of a longer one behind
+    await _file.writeAsBytes(bytes, flush: true);
   }
 
   @override
-  Future<String?> read() async {
-    final f = _file;
-    if (!await f.exists()) return null;
+  Future<List<int>?> read() async {
     try {
-      return await f.readAsString();
+      if (!await _file.exists()) return null;
+      return await _file.readAsBytes();
     } catch (_) {
       return null;
     }
@@ -115,26 +136,25 @@ class MediaStoreBackupSink implements BackupSink {
   }
 
   @override
-  Future<void> write(String content) async {
-    if (_broken) return (await _fb()).write(content);
+  Future<void> write(List<int> bytes) async {
+    if (_broken) return (await _fb()).write(bytes);
     try {
-      await _ch.invokeMethod<int>('write', content);
+      await _ch.invokeMethod<int>('write', bytes is Uint8List ? bytes : Uint8List.fromList(bytes));
     } on MissingPluginException {
       _broken = true;
-      return (await _fb()).write(content);
+      return (await _fb()).write(bytes);
     } on PlatformException {
       // MediaStore refused (old api, revoked collection...): keep a private
       // copy rather than no copy
-      return (await _fb()).write(content);
+      return (await _fb()).write(bytes);
     }
   }
 
   @override
-  Future<String?> read() async {
+  Future<List<int>?> read() async {
     if (_broken) return (await _fb()).read();
     try {
-      final s = await _ch.invokeMethod<String>('read');
-      return s;
+      return await _ch.invokeMethod<Uint8List>('read');
     } on MissingPluginException {
       _broken = true;
       return (await _fb()).read();
