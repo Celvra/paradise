@@ -79,5 +79,7 @@ tmp/
 # are exec'd rather than linked.
 android/app/src/main/jniLibs/**/*.so
 
-# locally built installers are not source
-apk/*.apk
+# the local build drop box: installers, and the notes about them. Nothing in
+# here is source, and the notes are already on the wiki of the fork that
+# publishes builds.
+apk/
