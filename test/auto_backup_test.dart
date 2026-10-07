@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:paradise/data/auto_backup.dart';
 import 'package:paradise/data/backup.dart';
-import 'package:paradise/data/backup_archive.dart';
 import 'package:paradise/data/models.dart';
 import 'package:paradise/data/store.dart';
 import 'package:path/path.dart' as p;
@@ -60,29 +59,14 @@ void main() {
   });
 
   group('DirBackupSink', () {
-    test('write then read roundtrips the newest archive', () async {
+    test('write then read roundtrips the content', () async {
       final dir = await Directory.systemTemp.createTemp('autobackup_sink');
       final sink = DirBackupSink(dir);
       expect(await sink.read(), isNull);
-      await sink.write([1, 2, 3]);
-      expect(await sink.read(), [1, 2, 3]);
-      await sink.write([9, 8, 7]);
-      expect(await sink.read(), [9, 8, 7], reason: 'the newest archive wins');
-      expect((await sink.read())!.length, 3);
-      await dir.delete(recursive: true);
-    });
-
-    test('keeps only the newest archives', () async {
-      final dir = await Directory.systemTemp.createTemp('autobackup_keep');
-      final sink = DirBackupSink(dir, keep: 2);
-      // seeding the directory directly is the only way to get distinct second
-      // stamps without waiting; the naming is what the sink lists on
-      for (var i = 0; i < 5; i++) {
-        File(p.join(dir.path, autoBackupFileName(DateTime(2026, 10, 6, 12, 0, i)))).writeAsBytesSync([i]);
-      }
-      await sink.write([42]);
-      final left = dir.listSync().whereType<File>().where((f) => f.path.endsWith('.$autoBackupExt')).length;
-      expect(left, lessThanOrEqualTo(3), reason: 'the window rolls, it does not grow without bound');
+      await sink.write('hello backup');
+      expect(await sink.read(), 'hello backup');
+      await sink.write('overwritten');
+      expect(await sink.read(), 'overwritten', reason: 'updates overwrite');
       await dir.delete(recursive: true);
     });
   });
@@ -96,10 +80,7 @@ void main() {
       SharedPreferences.setMockInitialValues({});
     });
 
-    File onlyZip(Directory dir) =>
-        dir.listSync().whereType<File>().where((f) => f.path.endsWith('.$autoBackupExt')).single;
-
-    test('setAutoBackup writes a real backup archive through the sink', () async {
+    test('setAutoBackup writes a real backup file through the sink', () async {
       final s = await Store.load(dbPath: p.join(device.path, 'paradise.db'));
       final dir = Directory(p.join(device.path, 'out'));
       s.debugBackupSink = DirBackupSink(dir);
@@ -108,28 +89,25 @@ void main() {
 
       await s.setAutoBackup(mode: 'change');
 
-      final f = onlyZip(dir);
+      final f = File(p.join(dir.path, 'paradise_autobackup.json'));
       expect(await f.exists(), isTrue, reason: 'enabling the schedule must produce a backup at once');
-      final doc = parseBackup(readBackupZip(await f.readAsBytes()).json);
+      final doc = parseBackup(await f.readAsString());
       expect(doc.chats, hasLength(1));
       expect(s.autoBackup.lastAt, greaterThan(0));
     });
 
-    test('backupNow writes a fresh archive even when the schedule just ran', () async {
+    test('backupNow refreshes the file even when the schedule just ran', () async {
       final s = await Store.load(dbPath: p.join(device.path, 'paradise.db'));
       final dir = Directory(p.join(device.path, 'out'));
       s.debugBackupSink = DirBackupSink(dir);
 
       await s.setAutoBackup(mode: 'interval', intervalMin: 720);
-      final first = onlyZip(dir);
+      final first = File(p.join(dir.path, 'paradise_autobackup.json'));
       final t1 = await first.lastModified();
 
       await Future<void>.delayed(const Duration(milliseconds: 20));
       await s.backupNow();
-      final files = dir.listSync().whereType<File>().where((f) => f.path.endsWith('.$autoBackupExt')).toList();
-      expect(files, isNotEmpty);
-      final newest = files.first;
-      expect((await newest.lastModified()).isAfter(t1) || (await newest.lastModified()).isAtSameMomentAs(t1), isTrue);
+      expect((await first.lastModified()).isAfter(t1) || (await first.lastModified()).isAtSameMomentAs(t1), isTrue);
     });
   });
 }

@@ -1,7 +1,9 @@
+import 'dart:async' show unawaited;
+import 'dart:convert' show utf8;
 import 'dart:io';
-import 'dart:typed_data' show Uint8List;
 
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 import '../core/anim.dart';
@@ -9,7 +11,6 @@ import '../core/overlays.dart';
 import '../core/theme.dart';
 import '../core/ui_kit.dart';
 import '../app_info.dart' show appVersion;
-import '../data/backup_remote.dart';
 import '../data/models.dart';
 import '../data/speech_config.dart';
 import '../data/ai/provider_model.dart';
@@ -30,7 +31,6 @@ import 'ai_settings_page.dart';
 import 'speech_page.dart';
 import 'human_pages.dart';
 import 'shop_page.dart';
-import 'backup_remote_page.dart';
 
 // IconBackgroundColors pairs top and bottom
 const _blue = [Color(0xFF1CA5ED), Color(0xFF1488E1)];
@@ -293,26 +293,7 @@ class SettingsTab extends StatelessWidget {
           onTap: () => _autoBackupPick(context),
         ),
       ]),
-      _Head(l.remoteBackupTitle),
-      _Group(children: [
-        _Cell(
-          icon: Ic.storage,
-          colors: _blueDeep,
-          title: l.remoteBackupTitle,
-          sub: _remoteSummary(st, l),
-          last: true,
-          onTap: () => Navigator.of(context).push(TgRoute(builder: (_) => const RemoteBackupPage())),
-        ),
-      ]),
     ];
-  }
-
-  /// One line for the remote row: which protocol, and whether auto upload is on.
-  static String _remoteSummary(Store st, AppLocalizations l) {
-    final cfg = st.remoteBackup;
-    if (!cfg.isConfigured) return l.remoteBackupSub;
-    final kind = cfg.kind == RemoteKind.s3 ? l.remoteBackupKindS3 : l.remoteBackupKindWebdav;
-    return '$kind · ${cfg.enabled ? l.remoteBackupOn : l.remoteBackupOff}';
   }
 
   static String _clockMin(int m) => '${(m ~/ 60).toString().padLeft(2, '0')}:${(m % 60).toString().padLeft(2, '0')}';
@@ -380,19 +361,22 @@ class SettingsTab extends StatelessWidget {
     }
   }
 
-  /// Hands the whole account to the system save dialog as one zip: the document
-  /// plus every avatar, sticker and the wallpaper it names.
+  /// Hands the whole account to the system save dialog.
   ///
   /// Not the app's own exports directory: that is private storage, so a backup
   /// written there is a file the user cannot reach, cannot attach to a message
   /// and cannot put in a cloud drive. The save dialog puts it wherever they
   /// choose, which is the only place a backup is actually a backup.
+  ///
+  /// The clipboard is only the fallback for when that dialog cannot be used at
+  /// all. It is not the primary route: a large history will not fit in a
+  /// clipboard, and the string has to be in memory twice to get there.
   Future<void> _exportBackup(BuildContext context) async {
     final st = context.store;
     final l = context.l;
-    Uint8List bytes;
+    String json;
     try {
-      bytes = await st.exportBackupArchive();
+      json = st.exportBackupString();
     } catch (_) {
       if (context.mounted) showBulletin(context, l.dataBackupSaveFailed);
       return;
@@ -400,17 +384,22 @@ class SettingsTab extends StatelessWidget {
 
     try {
       final saved = await FilePicker.saveFile(
-        fileName: 'paradise-${_stamp()}.zip',
-        bytes: bytes,
-        mimeType: 'application/zip',
-        allowedExtensions: const ['zip'],
+        fileName: 'paradise-${_stamp()}.json',
+        bytes: utf8.encode(json),
+        mimeType: 'application/json',
+        allowedExtensions: const ['json'],
         dialogTitle: l.humanExport,
       );
       // null means the user backed out of the dialog, which is not a failure
       if (saved == null) return;
       if (context.mounted) showBulletin(context, l.dataBackupSaved);
     } catch (_) {
-      if (context.mounted) showBulletin(context, l.dataBackupSaveFailed);
+      try {
+        unawaited(Clipboard.setData(ClipboardData(text: json)));
+        if (context.mounted) showBulletin(context, l.humanCopiedClipboard);
+      } catch (_) {
+        if (context.mounted) showBulletin(context, l.dataBackupSaveFailed);
+      }
     }
   }
 
@@ -424,7 +413,7 @@ class SettingsTab extends StatelessWidget {
   Future<void> _importBackup(BuildContext context) async {
     final st = context.store;
     final l = context.l;
-    final picked = await FilePicker.pickFiles(type: FileType.custom, allowedExtensions: ['json', 'zip']);
+    final picked = await FilePicker.pickFiles(type: FileType.custom, allowedExtensions: ['json']);
     final path = picked.firstOrNull?.path;
     if (path == null || !context.mounted) return;
 
@@ -443,7 +432,7 @@ class SettingsTab extends StatelessWidget {
     if (overwrite == null || !context.mounted) return;
 
     try {
-      final report = await st.importBackupArchive(await File(path).readAsBytes(), overwrite: overwrite);
+      final report = st.importBackupString(await File(path).readAsString(), overwrite: overwrite);
       if (!context.mounted) return;
       // a file that parsed but held nothing this build can use is its own case,
       // distinct from a failure and from a restore that did something
