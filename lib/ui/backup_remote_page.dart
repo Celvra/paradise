@@ -1,7 +1,6 @@
 import 'package:flutter/widgets.dart';
 
 import '../core/overlays.dart';
-import '../core/theme.dart';
 import '../core/ui_kit.dart';
 import '../data/backup_remote.dart';
 import '../data/store.dart';
