@@ -3879,7 +3879,94 @@ class AppLocalizationsZh extends AppLocalizations {
   String get autoBackupTitle => '自动备份';
 
   @override
-  String get autoBackupSub => '备份以覆盖方式写入应用外部的一个文件，更新或重装后仍可找回。';
+  String get autoBackupSub => '每次备份都是一个保存在应用外部的 zip，不会覆盖旧文件，更新或重装后仍可找回。';
+
+  @override
+  String get remoteBackupTitle => '远端备份';
+
+  @override
+  String get remoteBackupSub => '把每次自动备份同步到 WebDAV 或 S3，即使手机丢失也留有一份。';
+
+  @override
+  String get remoteBackupOn => '已启用';
+
+  @override
+  String get remoteBackupOff => '未启用';
+
+  @override
+  String get remoteBackupKind => '协议';
+
+  @override
+  String get remoteBackupKindWebdav => 'WebDAV';
+
+  @override
+  String get remoteBackupKindS3 => 'S3';
+
+  @override
+  String get remoteBackupUrl => 'WebDAV 地址';
+
+  @override
+  String get remoteBackupUser => '用户名';
+
+  @override
+  String get remoteBackupPass => '密码';
+
+  @override
+  String get remoteBackupEndpoint => 'Endpoint';
+
+  @override
+  String get remoteBackupRegion => 'Region';
+
+  @override
+  String get remoteBackupBucket => 'Bucket';
+
+  @override
+  String get remoteBackupAccessKey => 'Access Key';
+
+  @override
+  String get remoteBackupSecretKey => 'Secret Key';
+
+  @override
+  String get remoteBackupPrefix => '路径前缀';
+
+  @override
+  String get remoteBackupPathStyle => '强制 path-style 寻址';
+
+  @override
+  String get remoteBackupEnable => '自动上传';
+
+  @override
+  String get remoteBackupTest => '测试连接';
+
+  @override
+  String get remoteBackupTestOk => '连接成功';
+
+  @override
+  String get remoteBackupTestFail => '连接失败';
+
+  @override
+  String get remoteBackupUpload => '立即上传备份';
+
+  @override
+  String get remoteBackupUploaded => '备份已上传';
+
+  @override
+  String get remoteBackupUploadFail => '上传失败';
+
+  @override
+  String get remoteBackupRestore => '从远端恢复';
+
+  @override
+  String get remoteBackupRestorePick => '选择要恢复的备份';
+
+  @override
+  String get remoteBackupNone => '远端没有找到备份';
+
+  @override
+  String get remoteBackupNotConfigured => '请先填写并保存配置';
+
+  @override
+  String get remoteBackupSaved => '远端设置已保存';
 
   @override
   String get autoBackupModeChange => '数据变化时自动备份（推荐）';
@@ -8004,7 +8091,94 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get autoBackupTitle => '自動備份';
 
   @override
-  String get autoBackupSub => '備份以覆蓋方式寫入應用外部的一個檔案，更新或重裝後仍可找回。';
+  String get autoBackupSub => '每次備份都是一個保存在應用程式外部的 zip，不會覆蓋舊檔案，更新或重裝後仍可找回。';
+
+  @override
+  String get remoteBackupTitle => '遠端備份';
+
+  @override
+  String get remoteBackupSub => '把每次自動備份同步到 WebDAV 或 S3，即使手機遺失也留有一份。';
+
+  @override
+  String get remoteBackupOn => '已啟用';
+
+  @override
+  String get remoteBackupOff => '未啟用';
+
+  @override
+  String get remoteBackupKind => '協定';
+
+  @override
+  String get remoteBackupKindWebdav => 'WebDAV';
+
+  @override
+  String get remoteBackupKindS3 => 'S3';
+
+  @override
+  String get remoteBackupUrl => 'WebDAV 位址';
+
+  @override
+  String get remoteBackupUser => '使用者名稱';
+
+  @override
+  String get remoteBackupPass => '密碼';
+
+  @override
+  String get remoteBackupEndpoint => 'Endpoint';
+
+  @override
+  String get remoteBackupRegion => 'Region';
+
+  @override
+  String get remoteBackupBucket => 'Bucket';
+
+  @override
+  String get remoteBackupAccessKey => 'Access Key';
+
+  @override
+  String get remoteBackupSecretKey => 'Secret Key';
+
+  @override
+  String get remoteBackupPrefix => '路徑前綴';
+
+  @override
+  String get remoteBackupPathStyle => '強制 path-style 定址';
+
+  @override
+  String get remoteBackupEnable => '自動上傳';
+
+  @override
+  String get remoteBackupTest => '測試連線';
+
+  @override
+  String get remoteBackupTestOk => '連線成功';
+
+  @override
+  String get remoteBackupTestFail => '連線失敗';
+
+  @override
+  String get remoteBackupUpload => '立即上傳備份';
+
+  @override
+  String get remoteBackupUploaded => '備份已上傳';
+
+  @override
+  String get remoteBackupUploadFail => '上傳失敗';
+
+  @override
+  String get remoteBackupRestore => '從遠端還原';
+
+  @override
+  String get remoteBackupRestorePick => '選擇要還原的備份';
+
+  @override
+  String get remoteBackupNone => '遠端找不到備份';
+
+  @override
+  String get remoteBackupNotConfigured => '請先填寫並儲存設定';
+
+  @override
+  String get remoteBackupSaved => '遠端設定已儲存';
 
   @override
   String get autoBackupModeChange => '資料變更時自動備份（推薦）';

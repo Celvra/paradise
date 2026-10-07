@@ -31,6 +31,8 @@ import 'ai/tool_wire.dart';
 import 'ai_config.dart';
 import 'auto_backup.dart';
 import 'backup.dart';
+import 'backup_archive.dart';
+import 'backup_remote.dart';
 import 'db.dart';
 import 'file_text.dart';
 import 'gen_prefs.dart';
@@ -190,6 +192,12 @@ class Store extends ChangeNotifier {
   /// Automatic backup policy and where it writes. Loaded at boot; the tick
   /// rides the scheduler heartbeat in [startHuman].
   AutoBackup autoBackup = AutoBackup();
+
+  /// The remote target every automatic backup is also pushed to, when one is
+  /// configured. Holds credentials, so it is deliberately kept out of the
+  /// backup document: a restore must never be able to carry a secret.
+  RemoteConfig remoteBackup = RemoteConfig();
+
   BackupSink? _backupSink;
   bool _backupDirty = false;
   bool _backupRunning = false;
@@ -379,6 +387,7 @@ class Store extends ChangeNotifier {
     s.skippedRelease = s._sp.getString('skippedRelease') ?? '';
     await s._loadChats(dbPath: dbPath);
     s._loadAutoBackup();
+    s._loadRemoteBackup();
     s._backupSink = MediaStoreBackupSink();
     // the voice module rides along here rather than being handed in from main:
     // it reads the same SharedPreferences this store already holds, and every

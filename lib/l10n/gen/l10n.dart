@@ -7332,8 +7332,182 @@ abstract class AppLocalizations {
   /// No description provided for @autoBackupSub.
   ///
   /// In en, this message translates to:
-  /// **'Backups overwrite one file kept outside the app, so they survive updates and reinstalls.'**
+  /// **'Each backup is a zip kept outside the app and never overwritten, so an update or reinstall cannot lose your data.'**
   String get autoBackupSub;
+
+  /// No description provided for @remoteBackupTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remote backup'**
+  String get remoteBackupTitle;
+
+  /// No description provided for @remoteBackupSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Push every automatic backup to WebDAV or S3, so a copy survives even if the phone is lost.'**
+  String get remoteBackupSub;
+
+  /// No description provided for @remoteBackupOn.
+  ///
+  /// In en, this message translates to:
+  /// **'On'**
+  String get remoteBackupOn;
+
+  /// No description provided for @remoteBackupOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get remoteBackupOff;
+
+  /// No description provided for @remoteBackupKind.
+  ///
+  /// In en, this message translates to:
+  /// **'Protocol'**
+  String get remoteBackupKind;
+
+  /// No description provided for @remoteBackupKindWebdav.
+  ///
+  /// In en, this message translates to:
+  /// **'WebDAV'**
+  String get remoteBackupKindWebdav;
+
+  /// No description provided for @remoteBackupKindS3.
+  ///
+  /// In en, this message translates to:
+  /// **'S3'**
+  String get remoteBackupKindS3;
+
+  /// No description provided for @remoteBackupUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'WebDAV URL'**
+  String get remoteBackupUrl;
+
+  /// No description provided for @remoteBackupUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Username'**
+  String get remoteBackupUser;
+
+  /// No description provided for @remoteBackupPass.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get remoteBackupPass;
+
+  /// No description provided for @remoteBackupEndpoint.
+  ///
+  /// In en, this message translates to:
+  /// **'Endpoint'**
+  String get remoteBackupEndpoint;
+
+  /// No description provided for @remoteBackupRegion.
+  ///
+  /// In en, this message translates to:
+  /// **'Region'**
+  String get remoteBackupRegion;
+
+  /// No description provided for @remoteBackupBucket.
+  ///
+  /// In en, this message translates to:
+  /// **'Bucket'**
+  String get remoteBackupBucket;
+
+  /// No description provided for @remoteBackupAccessKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Access key'**
+  String get remoteBackupAccessKey;
+
+  /// No description provided for @remoteBackupSecretKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Secret key'**
+  String get remoteBackupSecretKey;
+
+  /// No description provided for @remoteBackupPrefix.
+  ///
+  /// In en, this message translates to:
+  /// **'Path prefix'**
+  String get remoteBackupPrefix;
+
+  /// No description provided for @remoteBackupPathStyle.
+  ///
+  /// In en, this message translates to:
+  /// **'Force path-style addressing'**
+  String get remoteBackupPathStyle;
+
+  /// No description provided for @remoteBackupEnable.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto upload'**
+  String get remoteBackupEnable;
+
+  /// No description provided for @remoteBackupTest.
+  ///
+  /// In en, this message translates to:
+  /// **'Test connection'**
+  String get remoteBackupTest;
+
+  /// No description provided for @remoteBackupTestOk.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected'**
+  String get remoteBackupTestOk;
+
+  /// No description provided for @remoteBackupTestFail.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection failed'**
+  String get remoteBackupTestFail;
+
+  /// No description provided for @remoteBackupUpload.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload backup now'**
+  String get remoteBackupUpload;
+
+  /// No description provided for @remoteBackupUploaded.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup uploaded'**
+  String get remoteBackupUploaded;
+
+  /// No description provided for @remoteBackupUploadFail.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload failed'**
+  String get remoteBackupUploadFail;
+
+  /// No description provided for @remoteBackupRestore.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore from remote'**
+  String get remoteBackupRestore;
+
+  /// No description provided for @remoteBackupRestorePick.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a backup to restore'**
+  String get remoteBackupRestorePick;
+
+  /// No description provided for @remoteBackupNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No backup found on the remote'**
+  String get remoteBackupNone;
+
+  /// No description provided for @remoteBackupNotConfigured.
+  ///
+  /// In en, this message translates to:
+  /// **'Fill in and save the settings first'**
+  String get remoteBackupNotConfigured;
+
+  /// No description provided for @remoteBackupSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Remote settings saved'**
+  String get remoteBackupSaved;
 
   /// No description provided for @autoBackupModeChange.
   ///

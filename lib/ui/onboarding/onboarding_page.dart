@@ -1,3 +1,5 @@
+import 'dart:convert' show utf8;
+
 import 'package:flutter/widgets.dart';
 
 import '../../core/anim.dart';
@@ -5,6 +7,7 @@ import '../../core/overlays.dart';
 import '../../core/theme.dart';
 import '../../core/ui_kit.dart';
 import '../../data/backup.dart' show parseBackup;
+import '../../data/backup_archive.dart' show looksLikeZip, readBackupZip;
 import '../../data/store.dart';
 import '../../l10n/x.dart';
 import '../dialogs_page.dart';
@@ -76,12 +79,13 @@ class _OnboardingPageState extends State<OnboardingPage> implements OnboardingFl
   Future<void> _offerRestore() async {
     final store = context.store;
     if (store.chats.isNotEmpty || store.personas.isNotEmpty || !mounted) return;
-    final raw = await store.readAutoBackup();
-    if (raw == null || !mounted) return;
+    final bytes = await store.readAutoBackup();
+    if (bytes == null || !mounted) return;
     final l = context.l;
     var when = '';
     try {
-      final doc = parseBackup(raw);
+      final json = looksLikeZip(bytes) ? readBackupZip(bytes).json : utf8.decode(bytes, allowMalformed: true);
+      final doc = parseBackup(json);
       final at = doc.exportedAt;
       if (at != null) {
         String p(int v) => v.toString().padLeft(2, '0');
@@ -101,7 +105,7 @@ class _OnboardingPageState extends State<OnboardingPage> implements OnboardingFl
     );
     if (ok != true || !mounted) return;
     try {
-      store.importBackupString(raw, overwrite: false);
+      await store.importBackupArchive(bytes, overwrite: false);
       store.setOnboarded(true);
       Navigator.of(context).pushAndRemoveUntil(
         TgRoute(builder: (_) => const DialogsPage()),
