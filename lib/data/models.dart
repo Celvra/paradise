@@ -549,6 +549,7 @@ class Msg {
       'poll' => MsgKind.poll,
       'sticker' => MsgKind.sticker,
       'transfer' => MsgKind.transfer,
+      'gift' => MsgKind.gift,
       'trace' => MsgKind.trace,
       'html' => MsgKind.html,
       'latex' => MsgKind.latex,
@@ -654,7 +655,9 @@ class Chat extends ChangeNotifier {
 
   void touch() => notifyListeners();
 
-  Map<String, dynamic> toJson() => {'id': id, 'persona': persona.toJson(), 'msgs': msgs.map((e) => e.toJson()).toList(), 'unread': unread, 'pinned': pinned, 'muted': muted, 'draft': draft, 'markedUnread': markedUnread, 'personaId': personaId, if (wallpaperPath != null) 'wallpaperPath': wallpaperPath, if (ws.isBound) 'ws': ws.toJson(), 'human': human.toJson()};
+  // The DB stores the head separately; do not materialize every message just
+  // to discard `msgs` when an incremental flush updates one row.
+  Map<String, dynamic> toJson({bool includeMessages = true}) => {'id': id, 'persona': persona.toJson(), if (includeMessages) 'msgs': msgs.map((e) => e.toJson()).toList(), 'unread': unread, 'pinned': pinned, 'muted': muted, 'draft': draft, 'markedUnread': markedUnread, 'personaId': personaId, if (wallpaperPath != null) 'wallpaperPath': wallpaperPath, if (ws.isBound) 'ws': ws.toJson(), 'human': human.toJson()};
   factory Chat.fromJson(Map<String, dynamic> j) => Chat(
         id: j['id'] as String,
         persona: Persona.fromJson(j['persona'] as Map<String, dynamic>),

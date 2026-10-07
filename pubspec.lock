@@ -653,6 +653,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "9.6.2"
+  oii_bridge:
+    dependency: "direct main"
+    description:
+      path: "packages/oii_bridge"
+      relative: true
+    source: path
+    version: "0.1.0"
   package_config:
     dependency: transitive
     description:

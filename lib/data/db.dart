@@ -194,7 +194,7 @@ class ChatDb {
   /// whole-list behaviour, which is still the right answer for a restore, a
   /// migration or a reorder, where every row is genuinely new.
   Future<void> saveChat(Chat c, int ord, {List<Msg>? msgs, Set<int>? dirty}) async {
-    final head = c.toJson()..remove('msgs');
+    final head = c.toJson(includeMessages: false);
     await _db.transaction((txn) async {
       // UPSERT, not INSERT OR REPLACE. `replace` resolves an id conflict by
       // deleting the old chats row first, and messages.chat_id carries ON

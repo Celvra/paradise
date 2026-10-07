@@ -1,0 +1,28 @@
+[package]
+name = "oii_bridge"
+version = "0.1.0"
+edition = "2021"
+license = "AGPL-3.0"
+
+[lib]
+name = "oii_bridge"
+crate-type = ["cdylib", "staticlib"]
+
+[dependencies]
+# Only the interpreter core is needed: parse, eval and diagnostics. oii's
+# default features add `json`, which in turn pulls in lsp-server, clap and
+# clap_complete. Nothing here calls oii::to_json or the LSP entry points, and
+# that tree is the single biggest cost of building this crate -- it is why the
+# Android link took the better part of an hour.
+oii = { version = "1.1.1", default-features = false }
+serde_json = "1"
+
+# The shipped configuration: smallest code that still runs at full speed.
+# `panic = "abort"` and `strip` are what shrink the library, and `lto` across
+# the whole graph is what lets the hot paths inline through oii's parser.
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true
