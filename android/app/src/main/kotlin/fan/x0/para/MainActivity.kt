@@ -165,7 +165,7 @@ class MainActivity : FlutterActivity() {
     }
 
     override fun onDestroy() {
-        workspacePlugin?.detachActivity()
+        workspacePlugin?.detachActivity(this)
         workspacePlugin = null
         backupChannel = null
         super.onDestroy()
