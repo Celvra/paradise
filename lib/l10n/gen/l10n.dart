@@ -1191,71 +1191,263 @@ abstract class AppLocalizations {
   /// **'About'**
   String get settingsAbout;
 
-  /// Bulletin when the community link cannot be opened
+  /// Bulletin when a link on the about page cannot be opened
   ///
   /// In en, this message translates to:
   /// **'Could not open the link'**
   String get aboutLinkFailed;
 
-  /// Settings row subtitle of the about entry
+  /// Settings row subtitle of the about entry, and the version line on the about page
   ///
   /// In en, this message translates to:
-  /// **'Version 1.0.2'**
-  String get settingsAboutSub;
+  /// **'Version {version}'**
+  String settingsAboutSub(String version);
 
-  /// Licence and ownership notice in the about dialog
+  /// About page row that opens the repository
   ///
   /// In en, this message translates to:
-  /// **'Developer: 殘月. It is distributed under the AGPL 3.0 open source licence, which means you may not redistribute or commercialise it without publishing its source code. Violations will be handled in accordance with the law.'**
-  String get settingsAboutLicense;
+  /// **'Source code'**
+  String get aboutSourceCode;
 
-  /// Label in front of the community link in the about dialog
+  /// About page row that opens the community chat invite
   ///
   /// In en, this message translates to:
-  /// **'Join the community:'**
-  String get settingsAboutCommunity;
+  /// **'Community'**
+  String get aboutCommunity;
 
-  /// Repository link in the about dialog
+  /// About page row that opens the QQ group invite
   ///
   /// In en, this message translates to:
-  /// **'Project address:\nhttps://github.com/Celvra/paradise'**
-  String get settingsAboutRepo;
+  /// **'QQ group'**
+  String get aboutQqGroup;
 
-  /// Acknowledgements to the projects this one was modelled on
+  /// Header of the block naming the projects this one was modelled on
   ///
   /// In en, this message translates to:
-  /// **'Acknowledgements:\n\nKelivo - ToolCall reference\nhttps://github.com/Chevey339/kelivo\n\nSillyTavern - persona card reference\nhttps://github.com/SillyTavern/SillyTavern'**
-  String get settingsAboutThanks;
+  /// **'Acknowledgements'**
+  String get aboutAcknowledgements;
 
-  /// Direct dependencies with their licence, the transitive tree is in the lockfile
+  /// What the Kelivo project was used for
   ///
   /// In en, this message translates to:
-  /// **'Dependencies:\n\narchive 4.3.0 - zipping a workspace for export  (MIT)\nhttps://github.com/brendan-duncan/archive\nasync 2.13.0 - not used directly, pulled in by flutter_local_notifications  (BSD-2-Clause)\nhttps://github.com/dart-lang/async\ncharacters 1.4.1 - grapheme clusters for text measurement  (BSD-3-Clause)\nhttps://github.com/dart-lang/core/tree/main/pkgs/characters\ncrypto 3.0.7 - declared for the workspace, nothing on device is hashed yet  (BSD-3-Clause)\nhttps://github.com/dart-lang/core/tree/main/pkgs/crypto\nfile_picker 13.1.0 - picking documents and audio files  (MIT)\nhttps://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker\nflutter_contacts 2.5.0 - sharing a contact card  (MIT)\nhttps://github.com/QuisApp/flutter_contacts\nflutter_highlight 0.7.0 - colouring the code preview  (MIT)\nhttps://github.com/git-touch/highlight\nflutter_local_notifications 18.0.1 - local notifications  (BSD-3-Clause)\nhttps://github.com/MaikuB/flutter_local_notifications\nflutter_math_fork 0.7.4 - inline TeX math in a bubble  (Apache-2.0)\nhttps://github.com/simplezhli/flutter_math_fork\nflutter_svg 2.3.0 - provider logos and vector icons  (MIT)\nhttps://github.com/flutter/packages/tree/main/third_party/packages/flutter_svg\ngeolocator 13.0.4 - location attachments  (MIT)\nhttps://github.com/baseflow/flutter-geolocator/tree/main/geolocator\nglob 2.2.0 - the workspace find tool  (BSD-3-Clause)\nhttps://github.com/dart-lang/tools/tree/main/pkgs/glob\nhighlight 0.7.0 - the grammar data behind the code preview  (MIT)\nhttps://github.com/pd4d10/highlight\nhttp 1.6.0 - OpenAI compatible endpoints  (BSD-3-Clause)\nhttps://github.com/dart-lang/http/tree/master/pkgs/http\nimage_picker 1.2.3 - camera and gallery photos  (Apache-2.0)\nhttps://github.com/flutter/packages/tree/main/packages/image_picker/image_picker\nintl 0.20.3 - date and number formatting  (BSD-3-Clause)\nhttps://github.com/dart-lang/i18n/tree/main/pkgs/intl\npath 1.9.1 - path arithmetic in the workspace sandbox  (BSD-3-Clause)\nhttps://github.com/dart-lang/core/tree/main/pkgs/path\npath_provider 2.1.6 - app directory for stickers and exports  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/path_provider/path_provider\npermission_handler 13.0.2 - one place to ask for photos, contacts, location and notifications  (MIT)\nhttps://github.com/baseflow/flutter-permission-handler\nphoto_manager 3.12.0 - album access for attachments  (Apache-2.0)\nhttps://github.com/fluttercandies/flutter_photo_manager\nratex_flutter 0.1.14 - the native LaTeX math card  (MIT)\nhttps://github.com/erweixin/RaTeX\nshared_preferences 2.5.5 - settings and chat storage  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/shared_preferences/shared_preferences\nsqflite 2.4.4 - message history and per chat paging  (BSD-2-Clause)\nhttps://github.com/tekartik/sqflite/tree/master/sqflite\ntimezone 0.10.1 - timezone data for scheduled messages  (BSD-2-Clause)\nhttps://github.com/srawlins/timezone\ntypst_flutter 3.0.0 - the embedded Typst compiler behind the CeTZ drawing card  (Apache-2.0)\nhttps://github.com/ajmalbuv/typst_flutter\nurl_launcher 6.3.2 - the community link in this dialog  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/url_launcher/url_launcher\nwebview_flutter 4.14.1 - rendering html in a file preview  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/webview_flutter/webview_flutter\nvideo_player 2.14.1 - video playback in chat bubbles  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/video_player/video_player\nworkmanager 0.10.10 - background delivery when the app is killed  (MIT)\nhttps://github.com/fluttercommunity/flutter_workmanager'**
-  String get settingsAboutDeps;
+  /// **'ToolCall reference'**
+  String get aboutThanksKelivo;
 
-  /// Community link in the about dialog, identical in every language
+  /// What the SillyTavern project was used for
   ///
   /// In en, this message translates to:
-  /// **'https://discord.gg/aQaNUHPsw'**
-  String get settingsAboutCommunityUrl;
+  /// **'Persona card reference'**
+  String get aboutThanksSillyTavern;
 
-  /// Label in front of the QQ group link in the about dialog
+  /// About page row that opens the licenses page
   ///
   /// In en, this message translates to:
-  /// **'QQ group 272298906:'**
-  String get settingsAboutQqGroup;
+  /// **'Open source licenses'**
+  String get aboutLicenses;
 
-  /// QQ group link in the about dialog, identical in every language
+  /// Note under the open source licenses row
   ///
   /// In en, this message translates to:
-  /// **'https://qm.qq.com/q/BeQPYWuzVS'**
-  String get settingsAboutQqGroupUrl;
+  /// **'These are the packages this app ships, each under its own licence. The full text sits in its repository.'**
+  String get aboutLicensesSub;
 
-  /// Small print at the bottom of settings
+  /// What this app uses archive for
   ///
   /// In en, this message translates to:
-  /// **'Developed by Celvra'**
-  String get settingsFooter;
+  /// **'Zipping a workspace for export'**
+  String get aboutDepArchive;
+
+  /// What this app uses characters for
+  ///
+  /// In en, this message translates to:
+  /// **'Grapheme clusters for text measurement'**
+  String get aboutDepCharacters;
+
+  /// What this app uses crypto for
+  ///
+  /// In en, this message translates to:
+  /// **'Hashing in the workspace; nothing is hashed on device yet'**
+  String get aboutDepCrypto;
+
+  /// What this app uses file_picker for
+  ///
+  /// In en, this message translates to:
+  /// **'Picking documents and audio files'**
+  String get aboutDepFilePicker;
+
+  /// What this app uses flutter_contacts for
+  ///
+  /// In en, this message translates to:
+  /// **'Sharing a contact card'**
+  String get aboutDepFlutterContacts;
+
+  /// What this app uses flutter_highlight for
+  ///
+  /// In en, this message translates to:
+  /// **'Colouring the code preview'**
+  String get aboutDepFlutterHighlight;
+
+  /// What this app uses flutter_local_notifications for
+  ///
+  /// In en, this message translates to:
+  /// **'Local notifications'**
+  String get aboutDepFlutterLocalNotifications;
+
+  /// What this app uses flutter_math_fork for
+  ///
+  /// In en, this message translates to:
+  /// **'Rendering LaTeX inside a bubble'**
+  String get aboutDepFlutterMathFork;
+
+  /// What this app uses flutter_svg for
+  ///
+  /// In en, this message translates to:
+  /// **'Provider logos and vector icons'**
+  String get aboutDepFlutterSvg;
+
+  /// What this app uses geolocator for
+  ///
+  /// In en, this message translates to:
+  /// **'Location attachments'**
+  String get aboutDepGeolocator;
+
+  /// What this app uses glob for
+  ///
+  /// In en, this message translates to:
+  /// **'The workspace find tool'**
+  String get aboutDepGlob;
+
+  /// What this app uses highlight for
+  ///
+  /// In en, this message translates to:
+  /// **'The grammar data behind the code preview'**
+  String get aboutDepHighlight;
+
+  /// What this app uses http for
+  ///
+  /// In en, this message translates to:
+  /// **'OpenAI compatible endpoints'**
+  String get aboutDepHttp;
+
+  /// What this app uses image_picker for
+  ///
+  /// In en, this message translates to:
+  /// **'Camera and gallery photos'**
+  String get aboutDepImagePicker;
+
+  /// What this app uses intl for
+  ///
+  /// In en, this message translates to:
+  /// **'Date and number formatting'**
+  String get aboutDepIntl;
+
+  /// What this app uses path for
+  ///
+  /// In en, this message translates to:
+  /// **'Path arithmetic in the workspace sandbox'**
+  String get aboutDepPath;
+
+  /// What this app uses path_provider for
+  ///
+  /// In en, this message translates to:
+  /// **'App directory for stickers and exports'**
+  String get aboutDepPathProvider;
+
+  /// What this app uses permission_handler for
+  ///
+  /// In en, this message translates to:
+  /// **'Asking for photos, contacts, location and notifications in one place'**
+  String get aboutDepPermissionHandler;
+
+  /// What this app uses photo_manager for
+  ///
+  /// In en, this message translates to:
+  /// **'Album access for attachments'**
+  String get aboutDepPhotoManager;
+
+  /// What this app uses ratex_flutter for
+  ///
+  /// In en, this message translates to:
+  /// **'The native LaTeX math card'**
+  String get aboutDepRatex;
+
+  /// What this app uses shared_preferences for
+  ///
+  /// In en, this message translates to:
+  /// **'Settings and chat storage'**
+  String get aboutDepSharedPreferences;
+
+  /// What this app uses sqflite for
+  ///
+  /// In en, this message translates to:
+  /// **'Message history and per chat paging'**
+  String get aboutDepSqflite;
+
+  /// What this app uses terminal_view for
+  ///
+  /// In en, this message translates to:
+  /// **'The VT100 parser and renderer behind the workspace terminal, a vendored fork'**
+  String get aboutDepTerminalView;
+
+  /// What this app uses timezone for
+  ///
+  /// In en, this message translates to:
+  /// **'Timezone data for scheduled messages'**
+  String get aboutDepTimezone;
+
+  /// What this app uses typst_flutter for
+  ///
+  /// In en, this message translates to:
+  /// **'The embedded Typst compiler behind the CeTZ drawing card'**
+  String get aboutDepTypstFlutter;
+
+  /// What this app uses url_launcher for
+  ///
+  /// In en, this message translates to:
+  /// **'Opening the links on this page'**
+  String get aboutDepUrlLauncher;
+
+  /// What this app uses video_player for
+  ///
+  /// In en, this message translates to:
+  /// **'Video playback in chat bubbles'**
+  String get aboutDepVideoPlayer;
+
+  /// What this app uses webview_flutter for
+  ///
+  /// In en, this message translates to:
+  /// **'Rendering html in a file preview'**
+  String get aboutDepWebview;
+
+  /// What this app uses workmanager for
+  ///
+  /// In en, this message translates to:
+  /// **'Background delivery when the app is killed'**
+  String get aboutDepWorkmanager;
+
+  /// About page row that opens the contributors list
+  ///
+  /// In en, this message translates to:
+  /// **'Contributors'**
+  String get aboutContributors;
+
+  /// Subtitle of a contributor row with their commit count
+  ///
+  /// In en, this message translates to:
+  /// **'{n, plural, =1{1 contribution} other{{n} contributions}}'**
+  String aboutContributions(int n);
+
+  /// Row shown when the contributors list cannot be loaded
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load the list. Tap to retry.'**
+  String get aboutContributorsFailed;
+
+  /// Settings footer that opens the contributors list
+  ///
+  /// In en, this message translates to:
+  /// **'Thanks to all contributors'**
+  String get settingsContributorsThanks;
 
   /// Incoming bubble text in the message preview on the appearance page
   ///

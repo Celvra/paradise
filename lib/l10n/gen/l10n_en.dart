@@ -614,38 +614,147 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aboutLinkFailed => 'Could not open the link';
 
   @override
-  String get settingsAboutSub => 'Version 1.0.2';
+  String settingsAboutSub(String version) {
+    return 'Version $version';
+  }
 
   @override
-  String get settingsAboutLicense =>
-      'Developer: 殘月. It is distributed under the AGPL 3.0 open source licence, which means you may not redistribute or commercialise it without publishing its source code. Violations will be handled in accordance with the law.';
+  String get aboutSourceCode => 'Source code';
 
   @override
-  String get settingsAboutCommunity => 'Join the community:';
+  String get aboutCommunity => 'Community';
 
   @override
-  String get settingsAboutRepo =>
-      'Project address:\nhttps://github.com/Celvra/paradise';
+  String get aboutQqGroup => 'QQ group';
 
   @override
-  String get settingsAboutThanks =>
-      'Acknowledgements:\n\nKelivo - ToolCall reference\nhttps://github.com/Chevey339/kelivo\n\nSillyTavern - persona card reference\nhttps://github.com/SillyTavern/SillyTavern';
+  String get aboutAcknowledgements => 'Acknowledgements';
 
   @override
-  String get settingsAboutDeps =>
-      'Dependencies:\n\narchive 4.3.0 - zipping a workspace for export  (MIT)\nhttps://github.com/brendan-duncan/archive\nasync 2.13.0 - not used directly, pulled in by flutter_local_notifications  (BSD-2-Clause)\nhttps://github.com/dart-lang/async\ncharacters 1.4.1 - grapheme clusters for text measurement  (BSD-3-Clause)\nhttps://github.com/dart-lang/core/tree/main/pkgs/characters\ncrypto 3.0.7 - declared for the workspace, nothing on device is hashed yet  (BSD-3-Clause)\nhttps://github.com/dart-lang/core/tree/main/pkgs/crypto\nfile_picker 13.1.0 - picking documents and audio files  (MIT)\nhttps://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker\nflutter_contacts 2.5.0 - sharing a contact card  (MIT)\nhttps://github.com/QuisApp/flutter_contacts\nflutter_highlight 0.7.0 - colouring the code preview  (MIT)\nhttps://github.com/git-touch/highlight\nflutter_local_notifications 18.0.1 - local notifications  (BSD-3-Clause)\nhttps://github.com/MaikuB/flutter_local_notifications\nflutter_math_fork 0.7.4 - inline TeX math in a bubble  (Apache-2.0)\nhttps://github.com/simplezhli/flutter_math_fork\nflutter_svg 2.3.0 - provider logos and vector icons  (MIT)\nhttps://github.com/flutter/packages/tree/main/third_party/packages/flutter_svg\ngeolocator 13.0.4 - location attachments  (MIT)\nhttps://github.com/baseflow/flutter-geolocator/tree/main/geolocator\nglob 2.2.0 - the workspace find tool  (BSD-3-Clause)\nhttps://github.com/dart-lang/tools/tree/main/pkgs/glob\nhighlight 0.7.0 - the grammar data behind the code preview  (MIT)\nhttps://github.com/pd4d10/highlight\nhttp 1.6.0 - OpenAI compatible endpoints  (BSD-3-Clause)\nhttps://github.com/dart-lang/http/tree/master/pkgs/http\nimage_picker 1.2.3 - camera and gallery photos  (Apache-2.0)\nhttps://github.com/flutter/packages/tree/main/packages/image_picker/image_picker\nintl 0.20.3 - date and number formatting  (BSD-3-Clause)\nhttps://github.com/dart-lang/i18n/tree/main/pkgs/intl\npath 1.9.1 - path arithmetic in the workspace sandbox  (BSD-3-Clause)\nhttps://github.com/dart-lang/core/tree/main/pkgs/path\npath_provider 2.1.6 - app directory for stickers and exports  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/path_provider/path_provider\npermission_handler 13.0.2 - one place to ask for photos, contacts, location and notifications  (MIT)\nhttps://github.com/baseflow/flutter-permission-handler\nphoto_manager 3.12.0 - album access for attachments  (Apache-2.0)\nhttps://github.com/fluttercandies/flutter_photo_manager\nratex_flutter 0.1.14 - the native LaTeX math card  (MIT)\nhttps://github.com/erweixin/RaTeX\nshared_preferences 2.5.5 - settings and chat storage  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/shared_preferences/shared_preferences\nsqflite 2.4.4 - message history and per chat paging  (BSD-2-Clause)\nhttps://github.com/tekartik/sqflite/tree/master/sqflite\ntimezone 0.10.1 - timezone data for scheduled messages  (BSD-2-Clause)\nhttps://github.com/srawlins/timezone\ntypst_flutter 3.0.0 - the embedded Typst compiler behind the CeTZ drawing card  (Apache-2.0)\nhttps://github.com/ajmalbuv/typst_flutter\nurl_launcher 6.3.2 - the community link in this dialog  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/url_launcher/url_launcher\nwebview_flutter 4.14.1 - rendering html in a file preview  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/webview_flutter/webview_flutter\nvideo_player 2.14.1 - video playback in chat bubbles  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/video_player/video_player\nworkmanager 0.10.10 - background delivery when the app is killed  (MIT)\nhttps://github.com/fluttercommunity/flutter_workmanager';
+  String get aboutThanksKelivo => 'ToolCall reference';
 
   @override
-  String get settingsAboutCommunityUrl => 'https://discord.gg/aQaNUHPsw';
+  String get aboutThanksSillyTavern => 'Persona card reference';
 
   @override
-  String get settingsAboutQqGroup => 'QQ group 272298906:';
+  String get aboutLicenses => 'Open source licenses';
 
   @override
-  String get settingsAboutQqGroupUrl => 'https://qm.qq.com/q/BeQPYWuzVS';
+  String get aboutLicensesSub =>
+      'These are the packages this app ships, each under its own licence. The full text sits in its repository.';
 
   @override
-  String get settingsFooter => 'Developed by Celvra';
+  String get aboutDepArchive => 'Zipping a workspace for export';
+
+  @override
+  String get aboutDepCharacters => 'Grapheme clusters for text measurement';
+
+  @override
+  String get aboutDepCrypto =>
+      'Hashing in the workspace; nothing is hashed on device yet';
+
+  @override
+  String get aboutDepFilePicker => 'Picking documents and audio files';
+
+  @override
+  String get aboutDepFlutterContacts => 'Sharing a contact card';
+
+  @override
+  String get aboutDepFlutterHighlight => 'Colouring the code preview';
+
+  @override
+  String get aboutDepFlutterLocalNotifications => 'Local notifications';
+
+  @override
+  String get aboutDepFlutterMathFork => 'Rendering LaTeX inside a bubble';
+
+  @override
+  String get aboutDepFlutterSvg => 'Provider logos and vector icons';
+
+  @override
+  String get aboutDepGeolocator => 'Location attachments';
+
+  @override
+  String get aboutDepGlob => 'The workspace find tool';
+
+  @override
+  String get aboutDepHighlight => 'The grammar data behind the code preview';
+
+  @override
+  String get aboutDepHttp => 'OpenAI compatible endpoints';
+
+  @override
+  String get aboutDepImagePicker => 'Camera and gallery photos';
+
+  @override
+  String get aboutDepIntl => 'Date and number formatting';
+
+  @override
+  String get aboutDepPath => 'Path arithmetic in the workspace sandbox';
+
+  @override
+  String get aboutDepPathProvider => 'App directory for stickers and exports';
+
+  @override
+  String get aboutDepPermissionHandler =>
+      'Asking for photos, contacts, location and notifications in one place';
+
+  @override
+  String get aboutDepPhotoManager => 'Album access for attachments';
+
+  @override
+  String get aboutDepRatex => 'The native LaTeX math card';
+
+  @override
+  String get aboutDepSharedPreferences => 'Settings and chat storage';
+
+  @override
+  String get aboutDepSqflite => 'Message history and per chat paging';
+
+  @override
+  String get aboutDepTerminalView =>
+      'The VT100 parser and renderer behind the workspace terminal, a vendored fork';
+
+  @override
+  String get aboutDepTimezone => 'Timezone data for scheduled messages';
+
+  @override
+  String get aboutDepTypstFlutter =>
+      'The embedded Typst compiler behind the CeTZ drawing card';
+
+  @override
+  String get aboutDepUrlLauncher => 'Opening the links on this page';
+
+  @override
+  String get aboutDepVideoPlayer => 'Video playback in chat bubbles';
+
+  @override
+  String get aboutDepWebview => 'Rendering html in a file preview';
+
+  @override
+  String get aboutDepWorkmanager =>
+      'Background delivery when the app is killed';
+
+  @override
+  String get aboutContributors => 'Contributors';
+
+  @override
+  String aboutContributions(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n contributions',
+      one: '1 contribution',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get aboutContributorsFailed =>
+      'Couldn\'t load the list. Tap to retry.';
+
+  @override
+  String get settingsContributorsThanks => 'Thanks to all contributors';
 
   @override
   String get previewSampleIncoming => 'Good morning! How can I help today?';

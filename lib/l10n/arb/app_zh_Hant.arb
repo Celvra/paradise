@@ -758,47 +758,180 @@
   },
   "aboutLinkFailed": "無法開啟連結",
   "@aboutLinkFailed": {
-    "description": "Bulletin when the community link cannot be opened"
+    "description": "Bulletin when a link on the about page cannot be opened"
   },
-  "settingsAboutSub": "版本 1.0.2",
+  "settingsAboutSub": "版本 {version}",
   "@settingsAboutSub": {
-    "description": "Settings row subtitle of the about entry"
+    "description": "Settings row subtitle of the about entry, and the version line on the about page",
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
   },
-  "settingsAboutLicense": "開發者: 殘月。請遵守 AGPL 3.0 開源授權，這意味著您不得在閉源的前提下二次分發和商業化本項目，若違反，我們將依法處理。",
-  "@settingsAboutLicense": {
-    "description": "Licence and ownership notice in the about dialog"
+  "aboutSourceCode": "原始碼",
+  "@aboutSourceCode": {
+    "description": "About page row that opens the repository"
   },
-  "settingsAboutCommunity": "加入交流群:",
-  "@settingsAboutCommunity": {
-    "description": "Label in front of the community link in the about dialog"
+  "aboutCommunity": "交流群",
+  "@aboutCommunity": {
+    "description": "About page row that opens the community chat invite"
   },
-  "settingsAboutRepo": "本項目地址:\nhttps://github.com/Celvra/paradise",
-  "@settingsAboutRepo": {
-    "description": "Repository link in the about dialog"
+  "aboutQqGroup": "QQ 群",
+  "@aboutQqGroup": {
+    "description": "About page row that opens the QQ group invite"
   },
-  "settingsAboutThanks": "鳴謝:\n\nKelivo - ToolCall 參考\nhttps://github.com/Chevey339/kelivo\n\nSillyTavern - 人設卡參考\nhttps://github.com/SillyTavern/SillyTavern",
-  "@settingsAboutThanks": {
-    "description": "Acknowledgements to the projects this one was modelled on"
+  "aboutAcknowledgements": "鳴謝",
+  "@aboutAcknowledgements": {
+    "description": "Header of the block naming the projects this one was modelled on"
   },
-  "settingsAboutDeps": "依賴庫:\n\ncharacters 1.4.1 - 字形叢集，用於正確計算文字寬度  (BSD-3-Clause)\nhttps://github.com/dart-lang/core/tree/main/pkgs/characters\nfile_picker 13.1.0 - 檔案與音訊選擇  (MIT)\nhttps://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker\nflutter_contacts 2.5.0 - 分享聯絡人名片  (MIT)\nhttps://github.com/QuisApp/flutter_contacts\nflutter_highlight 0.7.0 - 程式碼預覽配色  (MIT)\nhttps://github.com/git-touch/highlight\nflutter_local_notifications 18.0.1 - 本機通知  (BSD-3-Clause)\nflutter_math_fork 0.7.4 - 氣泡內渲染 LaTeX  (Apache-2.0)\nhttps://github.com/simplezhli/flutter_math_fork\nflutter_svg 2.3.0 - 服務商圖示與向量圖示  (MIT)\nhttps://github.com/flutter/packages/tree/main/third_party/packages/flutter_svg\ngeolocator 13.0.4 - 位置附件  (MIT)\nhttps://github.com/baseflow/flutter-geolocator/tree/main/geolocator\nhttp 1.6.0 - OpenAI 相容介面請求  (BSD-3-Clause)\nhttps://github.com/dart-lang/http/tree/master/pkgs/http\nimage_picker 1.2.3 - 相機與相簿圖片  (Apache-2.0)\nhttps://github.com/flutter/packages/tree/main/packages/image_picker/image_picker\nintl 0.20.3 - 日期與數字格式化  (BSD-3-Clause)\nhttps://github.com/dart-lang/i18n/tree/main/pkgs/intl\npath_provider 2.1.6 - 應用程式目錄，用於表情與匯出檔案  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/path_provider/path_provider\npermission_handler 13.0.2 - 照片、聯絡人、位置與通知權限的統一申請入口  (MIT)\nhttps://github.com/baseflow/flutter-permission-handler\nphoto_manager 3.12.0 - 相簿存取，用於附件  (Apache-2.0)\nhttps://github.com/fluttercandies/flutter_photo_manager\nratex_flutter 0.1.14 - 原生渲染 LaTeX 數學卡片  (MIT)\nhttps://github.com/erweixin/RaTeX\nshared_preferences 2.5.5 - 設定與對話紀錄儲存  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/shared_preferences/shared_preferences\nsqflite 2.4.4 - 訊息歷史與對話分頁  (BSD-2-Clause)\nhttps://github.com/tekartik/sqflite/tree/master/sqflite\ntimezone 0.10.1 - 排程訊息的時區資料  (BSD-2-Clause)\nhttps://github.com/srawlins/timezone\ntypst_flutter 3.0.0 - CeTZ 繪圖卡片背後的內嵌 Typst 編譯器  (Apache-2.0)\nhttps://github.com/ajmalbuv/typst_flutter\nurl_launcher 6.3.2 - 本彈出視窗中的交流群連結  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/url_launcher/url_launcher\nvideo_player 2.14.1 - 聊天氣泡內的影片播放  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/video_player/video_player\nworkmanager 0.10.10 - 應用程式被關閉後的背景送達  (MIT)\nhttps://github.com/fluttercommunity/flutter_workmanager",
-  "@settingsAboutDeps": {
-    "description": "Direct dependencies with their licence, the transitive tree is in the lockfile"
+  "aboutThanksKelivo": "ToolCall 參考",
+  "@aboutThanksKelivo": {
+    "description": "What the Kelivo project was used for"
   },
-  "settingsAboutCommunityUrl": "https://discord.gg/aQaNUHPsw",
-  "@settingsAboutCommunityUrl": {
-    "description": "Community link in the about dialog, identical in every language"
+  "aboutThanksSillyTavern": "人設卡參考",
+  "@aboutThanksSillyTavern": {
+    "description": "What the SillyTavern project was used for"
   },
-  "settingsAboutQqGroup": "QQ 群 272298906:",
-  "@settingsAboutQqGroup": {
-    "description": "Label in front of the QQ group link in the about dialog"
+  "aboutLicenses": "開源授權",
+  "@aboutLicenses": {
+    "description": "About page row that opens the licenses page"
   },
-  "settingsAboutQqGroupUrl": "https://qm.qq.com/q/BeQPYWuzVS",
-  "@settingsAboutQqGroupUrl": {
-    "description": "QQ group link in the about dialog, identical in every language"
+  "aboutLicensesSub": "以下是本應用隨附的函式庫，各自遵循其授權條款，全文見各自的儲存庫。",
+  "@aboutLicensesSub": {
+    "description": "Note under the open source licenses row"
   },
-  "settingsFooter": "Developed by Celvra",
-  "@settingsFooter": {
-    "description": "Small print at the bottom of settings"
+  "aboutDepArchive": "壓縮工作區匯出包",
+  "@aboutDepArchive": {
+    "description": "What this app uses archive for"
+  },
+  "aboutDepCharacters": "字形叢集，用於正確計算文字寬度",
+  "@aboutDepCharacters": {
+    "description": "What this app uses characters for"
+  },
+  "aboutDepCrypto": "工作區已宣告，裝置上尚未用於雜湊",
+  "@aboutDepCrypto": {
+    "description": "What this app uses crypto for"
+  },
+  "aboutDepFilePicker": "檔案與音訊選擇",
+  "@aboutDepFilePicker": {
+    "description": "What this app uses file_picker for"
+  },
+  "aboutDepFlutterContacts": "分享聯絡人名片",
+  "@aboutDepFlutterContacts": {
+    "description": "What this app uses flutter_contacts for"
+  },
+  "aboutDepFlutterHighlight": "程式碼預覽配色",
+  "@aboutDepFlutterHighlight": {
+    "description": "What this app uses flutter_highlight for"
+  },
+  "aboutDepFlutterLocalNotifications": "本機通知",
+  "@aboutDepFlutterLocalNotifications": {
+    "description": "What this app uses flutter_local_notifications for"
+  },
+  "aboutDepFlutterMathFork": "氣泡內算繪 LaTeX",
+  "@aboutDepFlutterMathFork": {
+    "description": "What this app uses flutter_math_fork for"
+  },
+  "aboutDepFlutterSvg": "服務商圖示與向量圖示",
+  "@aboutDepFlutterSvg": {
+    "description": "What this app uses flutter_svg for"
+  },
+  "aboutDepGeolocator": "位置附件",
+  "@aboutDepGeolocator": {
+    "description": "What this app uses geolocator for"
+  },
+  "aboutDepGlob": "工作區尋找工具",
+  "@aboutDepGlob": {
+    "description": "What this app uses glob for"
+  },
+  "aboutDepHighlight": "程式碼預覽的語法資料",
+  "@aboutDepHighlight": {
+    "description": "What this app uses highlight for"
+  },
+  "aboutDepHttp": "OpenAI 相容介面請求",
+  "@aboutDepHttp": {
+    "description": "What this app uses http for"
+  },
+  "aboutDepImagePicker": "相機與相簿圖片",
+  "@aboutDepImagePicker": {
+    "description": "What this app uses image_picker for"
+  },
+  "aboutDepIntl": "日期與數字格式化",
+  "@aboutDepIntl": {
+    "description": "What this app uses intl for"
+  },
+  "aboutDepPath": "工作區沙箱中的路徑運算",
+  "@aboutDepPath": {
+    "description": "What this app uses path for"
+  },
+  "aboutDepPathProvider": "應用程式目錄，用於表情與匯出檔案",
+  "@aboutDepPathProvider": {
+    "description": "What this app uses path_provider for"
+  },
+  "aboutDepPermissionHandler": "照片、聯絡人、位置與通知權限的統一申請入口",
+  "@aboutDepPermissionHandler": {
+    "description": "What this app uses permission_handler for"
+  },
+  "aboutDepPhotoManager": "相簿存取，用於附件",
+  "@aboutDepPhotoManager": {
+    "description": "What this app uses photo_manager for"
+  },
+  "aboutDepRatex": "原生算繪 LaTeX 數學卡片",
+  "@aboutDepRatex": {
+    "description": "What this app uses ratex_flutter for"
+  },
+  "aboutDepSharedPreferences": "設定與對話紀錄儲存",
+  "@aboutDepSharedPreferences": {
+    "description": "What this app uses shared_preferences for"
+  },
+  "aboutDepSqflite": "訊息歷史與對話分頁",
+  "@aboutDepSqflite": {
+    "description": "What this app uses sqflite for"
+  },
+  "aboutDepTerminalView": "工作區終端機的 VT100 解析與算繪，內建分支",
+  "@aboutDepTerminalView": {
+    "description": "What this app uses terminal_view for"
+  },
+  "aboutDepTimezone": "排程訊息的時區資料",
+  "@aboutDepTimezone": {
+    "description": "What this app uses timezone for"
+  },
+  "aboutDepTypstFlutter": "CeTZ 繪圖卡片背後的內嵌 Typst 編譯器",
+  "@aboutDepTypstFlutter": {
+    "description": "What this app uses typst_flutter for"
+  },
+  "aboutDepUrlLauncher": "開啟本頁的連結",
+  "@aboutDepUrlLauncher": {
+    "description": "What this app uses url_launcher for"
+  },
+  "aboutDepVideoPlayer": "對話氣泡中的影片播放",
+  "@aboutDepVideoPlayer": {
+    "description": "What this app uses video_player for"
+  },
+  "aboutDepWebview": "檔案預覽中的 html 算繪",
+  "@aboutDepWebview": {
+    "description": "What this app uses webview_flutter for"
+  },
+  "aboutDepWorkmanager": "應用程式被關閉後的後台送達",
+  "@aboutDepWorkmanager": {
+    "description": "What this app uses workmanager for"
+  },
+  "aboutContributors": "貢獻者",
+  "@aboutContributors": {
+    "description": "About page row that opens the contributors list"
+  },
+  "aboutContributions": "{n} 次貢獻",
+  "@aboutContributions": {
+    "description": "Subtitle of a contributor row with their commit count"
+  },
+  "aboutContributorsFailed": "載入失敗，點按重試。",
+  "@aboutContributorsFailed": {
+    "description": "Row shown when the contributors list cannot be loaded"
+  },
+  "settingsContributorsThanks": "感謝所有貢獻者",
+  "@settingsContributorsThanks": {
+    "description": "Settings footer that opens the contributors list"
   },
   "previewSampleIncoming": "早安！今天有什麼可以幫你的？",
   "@previewSampleIncoming": {

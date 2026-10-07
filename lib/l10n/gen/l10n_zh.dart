@@ -599,37 +599,134 @@ class AppLocalizationsZh extends AppLocalizations {
   String get aboutLinkFailed => '无法打开链接';
 
   @override
-  String get settingsAboutSub => '版本 1.0.2';
+  String settingsAboutSub(String version) {
+    return '版本 $version';
+  }
 
   @override
-  String get settingsAboutLicense =>
-      '开发者: 殘月。请遵守 AGPL 3.0 开源许可证，这意味着您不得在不开源代码的前提下二次分发和商业化本项目，若违反，我们将依法处理。';
+  String get aboutSourceCode => '源代码';
 
   @override
-  String get settingsAboutCommunity => '加入交流群:';
+  String get aboutCommunity => '交流群';
 
   @override
-  String get settingsAboutRepo => '本项目地址:\nhttps://github.com/Celvra/paradise';
+  String get aboutQqGroup => 'QQ 群';
 
   @override
-  String get settingsAboutThanks =>
-      '鸣谢:\n\nKelivo - ToolCall 参考\nhttps://github.com/Chevey339/kelivo\n\nSillyTavern - 人设卡参考\nhttps://github.com/SillyTavern/SillyTavern';
+  String get aboutAcknowledgements => '鸣谢';
 
   @override
-  String get settingsAboutDeps =>
-      '依赖库:\n\ncharacters 1.4.1 - 字形簇，用于正确计算文本宽度  (BSD-3-Clause)\nhttps://github.com/dart-lang/core/tree/main/pkgs/characters\nfile_picker 13.1.0 - 文件与音频选择  (MIT)\nhttps://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker\nflutter_contacts 2.5.0 - 分享联系人名片  (MIT)\nhttps://github.com/QuisApp/flutter_contacts\nflutter_highlight 0.7.0 - 代码预览配色  (MIT)\nhttps://github.com/git-touch/highlight\nflutter_local_notifications 18.0.1 - 本地通知  (BSD-3-Clause)\nflutter_math_fork 0.7.4 - 气泡内渲染 LaTeX  (Apache-2.0)\nhttps://github.com/simplezhli/flutter_math_fork\nflutter_svg 2.3.0 - 服务商图标与矢量图标  (MIT)\nhttps://github.com/flutter/packages/tree/main/third_party/packages/flutter_svg\ngeolocator 13.0.4 - 位置附件  (MIT)\nhttps://github.com/baseflow/flutter-geolocator/tree/main/geolocator\nhttp 1.6.0 - OpenAI 兼容接口请求  (BSD-3-Clause)\nhttps://github.com/dart-lang/http/tree/master/pkgs/http\nimage_picker 1.2.3 - 相机与相册图片  (Apache-2.0)\nhttps://github.com/flutter/packages/tree/main/packages/image_picker/image_picker\nintl 0.20.3 - 日期与数字格式化  (BSD-3-Clause)\nhttps://github.com/dart-lang/i18n/tree/main/pkgs/intl\npath_provider 2.1.6 - 应用目录，用于表情与导出文件  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/path_provider/path_provider\npermission_handler 13.0.2 - 照片、联系人、位置与通知权限的统一申请入口  (MIT)\nhttps://github.com/baseflow/flutter-permission-handler\nphoto_manager 3.12.0 - 相册访问，用于附件  (Apache-2.0)\nhttps://github.com/fluttercandies/flutter_photo_manager\nratex_flutter 0.1.14 - 原生渲染 LaTeX 数学卡片  (MIT)\nhttps://github.com/erweixin/RaTeX\nshared_preferences 2.5.5 - 设置与聊天记录存储  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/shared_preferences/shared_preferences\nsqflite 2.4.4 - 消息历史与会话分页  (BSD-2-Clause)\nhttps://github.com/tekartik/sqflite/tree/master/sqflite\ntimezone 0.10.1 - 日程消息的时区数据  (BSD-2-Clause)\nhttps://github.com/srawlins/timezone\ntypst_flutter 3.0.0 - CeTZ 绘图卡片背后的内嵌 Typst 编译器  (Apache-2.0)\nhttps://github.com/ajmalbuv/typst_flutter\nurl_launcher 6.3.2 - 本弹窗中的交流群链接  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/url_launcher/url_launcher\nvideo_player 2.14.1 - 聊天气泡内的视频播放  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/video_player/video_player\nworkmanager 0.10.10 - 应用被杀后的后台送达  (MIT)\nhttps://github.com/fluttercommunity/flutter_workmanager';
+  String get aboutThanksKelivo => 'ToolCall 参考';
 
   @override
-  String get settingsAboutCommunityUrl => 'https://discord.gg/aQaNUHPsw';
+  String get aboutThanksSillyTavern => '人设卡参考';
 
   @override
-  String get settingsAboutQqGroup => 'QQ 群 272298906:';
+  String get aboutLicenses => '开源许可证';
 
   @override
-  String get settingsAboutQqGroupUrl => 'https://qm.qq.com/q/BeQPYWuzVS';
+  String get aboutLicensesSub => '以下是本应用随包发布的库，各自遵循其许可证，全文见各自的仓库。';
 
   @override
-  String get settingsFooter => 'Developed by Celvra';
+  String get aboutDepArchive => '压缩工作区导出包';
+
+  @override
+  String get aboutDepCharacters => '字形簇，用于正确计算文本宽度';
+
+  @override
+  String get aboutDepCrypto => '工作区已声明，设备上尚未用于哈希';
+
+  @override
+  String get aboutDepFilePicker => '文件与音频选择';
+
+  @override
+  String get aboutDepFlutterContacts => '分享联系人名片';
+
+  @override
+  String get aboutDepFlutterHighlight => '代码预览配色';
+
+  @override
+  String get aboutDepFlutterLocalNotifications => '本地通知';
+
+  @override
+  String get aboutDepFlutterMathFork => '气泡内渲染 LaTeX';
+
+  @override
+  String get aboutDepFlutterSvg => '服务商图标与矢量图标';
+
+  @override
+  String get aboutDepGeolocator => '位置附件';
+
+  @override
+  String get aboutDepGlob => '工作区查找工具';
+
+  @override
+  String get aboutDepHighlight => '代码预览的语法数据';
+
+  @override
+  String get aboutDepHttp => 'OpenAI 兼容接口请求';
+
+  @override
+  String get aboutDepImagePicker => '相机与相册图片';
+
+  @override
+  String get aboutDepIntl => '日期与数字格式化';
+
+  @override
+  String get aboutDepPath => '工作区沙箱中的路径运算';
+
+  @override
+  String get aboutDepPathProvider => '应用目录，用于表情与导出文件';
+
+  @override
+  String get aboutDepPermissionHandler => '照片、联系人、位置与通知权限的统一申请入口';
+
+  @override
+  String get aboutDepPhotoManager => '相册访问，用于附件';
+
+  @override
+  String get aboutDepRatex => '原生渲染 LaTeX 数学卡片';
+
+  @override
+  String get aboutDepSharedPreferences => '设置与聊天记录存储';
+
+  @override
+  String get aboutDepSqflite => '消息历史与会话分页';
+
+  @override
+  String get aboutDepTerminalView => '工作区终端的 VT100 解析与渲染，内置分支';
+
+  @override
+  String get aboutDepTimezone => '日程消息的时区数据';
+
+  @override
+  String get aboutDepTypstFlutter => 'CeTZ 绘图卡片背后的内嵌 Typst 编译器';
+
+  @override
+  String get aboutDepUrlLauncher => '打开本页的链接';
+
+  @override
+  String get aboutDepVideoPlayer => '聊天气泡中的视频播放';
+
+  @override
+  String get aboutDepWebview => '文件预览中的 html 渲染';
+
+  @override
+  String get aboutDepWorkmanager => '应用被杀后的后台送达';
+
+  @override
+  String get aboutContributors => '贡献者';
+
+  @override
+  String aboutContributions(int n) {
+    return '$n 次贡献';
+  }
+
+  @override
+  String get aboutContributorsFailed => '加载失败，点击重试。';
+
+  @override
+  String get settingsContributorsThanks => '感谢所有贡献者';
 
   @override
   String get previewSampleIncoming => '早上好！今天有什么可以帮你的？';
@@ -4618,37 +4715,134 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get aboutLinkFailed => '無法開啟連結';
 
   @override
-  String get settingsAboutSub => '版本 1.0.2';
+  String settingsAboutSub(String version) {
+    return '版本 $version';
+  }
 
   @override
-  String get settingsAboutLicense =>
-      '開發者: 殘月。請遵守 AGPL 3.0 開源授權，這意味著您不得在閉源的前提下二次分發和商業化本項目，若違反，我們將依法處理。';
+  String get aboutSourceCode => '原始碼';
 
   @override
-  String get settingsAboutCommunity => '加入交流群:';
+  String get aboutCommunity => '交流群';
 
   @override
-  String get settingsAboutRepo => '本項目地址:\nhttps://github.com/Celvra/paradise';
+  String get aboutQqGroup => 'QQ 群';
 
   @override
-  String get settingsAboutThanks =>
-      '鳴謝:\n\nKelivo - ToolCall 參考\nhttps://github.com/Chevey339/kelivo\n\nSillyTavern - 人設卡參考\nhttps://github.com/SillyTavern/SillyTavern';
+  String get aboutAcknowledgements => '鳴謝';
 
   @override
-  String get settingsAboutDeps =>
-      '依賴庫:\n\ncharacters 1.4.1 - 字形叢集，用於正確計算文字寬度  (BSD-3-Clause)\nhttps://github.com/dart-lang/core/tree/main/pkgs/characters\nfile_picker 13.1.0 - 檔案與音訊選擇  (MIT)\nhttps://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker\nflutter_contacts 2.5.0 - 分享聯絡人名片  (MIT)\nhttps://github.com/QuisApp/flutter_contacts\nflutter_highlight 0.7.0 - 程式碼預覽配色  (MIT)\nhttps://github.com/git-touch/highlight\nflutter_local_notifications 18.0.1 - 本機通知  (BSD-3-Clause)\nflutter_math_fork 0.7.4 - 氣泡內渲染 LaTeX  (Apache-2.0)\nhttps://github.com/simplezhli/flutter_math_fork\nflutter_svg 2.3.0 - 服務商圖示與向量圖示  (MIT)\nhttps://github.com/flutter/packages/tree/main/third_party/packages/flutter_svg\ngeolocator 13.0.4 - 位置附件  (MIT)\nhttps://github.com/baseflow/flutter-geolocator/tree/main/geolocator\nhttp 1.6.0 - OpenAI 相容介面請求  (BSD-3-Clause)\nhttps://github.com/dart-lang/http/tree/master/pkgs/http\nimage_picker 1.2.3 - 相機與相簿圖片  (Apache-2.0)\nhttps://github.com/flutter/packages/tree/main/packages/image_picker/image_picker\nintl 0.20.3 - 日期與數字格式化  (BSD-3-Clause)\nhttps://github.com/dart-lang/i18n/tree/main/pkgs/intl\npath_provider 2.1.6 - 應用程式目錄，用於表情與匯出檔案  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/path_provider/path_provider\npermission_handler 13.0.2 - 照片、聯絡人、位置與通知權限的統一申請入口  (MIT)\nhttps://github.com/baseflow/flutter-permission-handler\nphoto_manager 3.12.0 - 相簿存取，用於附件  (Apache-2.0)\nhttps://github.com/fluttercandies/flutter_photo_manager\nratex_flutter 0.1.14 - 原生渲染 LaTeX 數學卡片  (MIT)\nhttps://github.com/erweixin/RaTeX\nshared_preferences 2.5.5 - 設定與對話紀錄儲存  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/shared_preferences/shared_preferences\nsqflite 2.4.4 - 訊息歷史與對話分頁  (BSD-2-Clause)\nhttps://github.com/tekartik/sqflite/tree/master/sqflite\ntimezone 0.10.1 - 排程訊息的時區資料  (BSD-2-Clause)\nhttps://github.com/srawlins/timezone\ntypst_flutter 3.0.0 - CeTZ 繪圖卡片背後的內嵌 Typst 編譯器  (Apache-2.0)\nhttps://github.com/ajmalbuv/typst_flutter\nurl_launcher 6.3.2 - 本彈出視窗中的交流群連結  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/url_launcher/url_launcher\nvideo_player 2.14.1 - 聊天氣泡內的影片播放  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/video_player/video_player\nworkmanager 0.10.10 - 應用程式被關閉後的背景送達  (MIT)\nhttps://github.com/fluttercommunity/flutter_workmanager';
+  String get aboutThanksKelivo => 'ToolCall 參考';
 
   @override
-  String get settingsAboutCommunityUrl => 'https://discord.gg/aQaNUHPsw';
+  String get aboutThanksSillyTavern => '人設卡參考';
 
   @override
-  String get settingsAboutQqGroup => 'QQ 群 272298906:';
+  String get aboutLicenses => '開源授權';
 
   @override
-  String get settingsAboutQqGroupUrl => 'https://qm.qq.com/q/BeQPYWuzVS';
+  String get aboutLicensesSub => '以下是本應用隨附的函式庫，各自遵循其授權條款，全文見各自的儲存庫。';
 
   @override
-  String get settingsFooter => 'Developed by Celvra';
+  String get aboutDepArchive => '壓縮工作區匯出包';
+
+  @override
+  String get aboutDepCharacters => '字形叢集，用於正確計算文字寬度';
+
+  @override
+  String get aboutDepCrypto => '工作區已宣告，裝置上尚未用於雜湊';
+
+  @override
+  String get aboutDepFilePicker => '檔案與音訊選擇';
+
+  @override
+  String get aboutDepFlutterContacts => '分享聯絡人名片';
+
+  @override
+  String get aboutDepFlutterHighlight => '程式碼預覽配色';
+
+  @override
+  String get aboutDepFlutterLocalNotifications => '本機通知';
+
+  @override
+  String get aboutDepFlutterMathFork => '氣泡內算繪 LaTeX';
+
+  @override
+  String get aboutDepFlutterSvg => '服務商圖示與向量圖示';
+
+  @override
+  String get aboutDepGeolocator => '位置附件';
+
+  @override
+  String get aboutDepGlob => '工作區尋找工具';
+
+  @override
+  String get aboutDepHighlight => '程式碼預覽的語法資料';
+
+  @override
+  String get aboutDepHttp => 'OpenAI 相容介面請求';
+
+  @override
+  String get aboutDepImagePicker => '相機與相簿圖片';
+
+  @override
+  String get aboutDepIntl => '日期與數字格式化';
+
+  @override
+  String get aboutDepPath => '工作區沙箱中的路徑運算';
+
+  @override
+  String get aboutDepPathProvider => '應用程式目錄，用於表情與匯出檔案';
+
+  @override
+  String get aboutDepPermissionHandler => '照片、聯絡人、位置與通知權限的統一申請入口';
+
+  @override
+  String get aboutDepPhotoManager => '相簿存取，用於附件';
+
+  @override
+  String get aboutDepRatex => '原生算繪 LaTeX 數學卡片';
+
+  @override
+  String get aboutDepSharedPreferences => '設定與對話紀錄儲存';
+
+  @override
+  String get aboutDepSqflite => '訊息歷史與對話分頁';
+
+  @override
+  String get aboutDepTerminalView => '工作區終端機的 VT100 解析與算繪，內建分支';
+
+  @override
+  String get aboutDepTimezone => '排程訊息的時區資料';
+
+  @override
+  String get aboutDepTypstFlutter => 'CeTZ 繪圖卡片背後的內嵌 Typst 編譯器';
+
+  @override
+  String get aboutDepUrlLauncher => '開啟本頁的連結';
+
+  @override
+  String get aboutDepVideoPlayer => '對話氣泡中的影片播放';
+
+  @override
+  String get aboutDepWebview => '檔案預覽中的 html 算繪';
+
+  @override
+  String get aboutDepWorkmanager => '應用程式被關閉後的後台送達';
+
+  @override
+  String get aboutContributors => '貢獻者';
+
+  @override
+  String aboutContributions(int n) {
+    return '$n 次貢獻';
+  }
+
+  @override
+  String get aboutContributorsFailed => '載入失敗，點按重試。';
+
+  @override
+  String get settingsContributorsThanks => '感謝所有貢獻者';
 
   @override
   String get previewSampleIncoming => '早安！今天有什麼可以幫你的？';
