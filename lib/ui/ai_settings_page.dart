@@ -547,6 +547,7 @@ class _AdvancedTab extends StatelessWidget {
       allowFollowChain: false,
       followTitle: l.actionNone,
       followSubtitle: l.aiModelDefault,
+      purpose: ModelPurpose.image,
     );
     if (picked == null) return;
     cfg.update((s) => s.copyWith(imageProviderId: picked.providerId, imageModelId: picked.modelId));

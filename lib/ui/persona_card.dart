@@ -1009,6 +1009,7 @@ _clingySection(),
       allowFollowChain: true,
       followTitle: l.voiceImageFollowGlobal,
       followSubtitle: l.personaModelFollowsSettings,
+      purpose: ModelPurpose.image,
     );
     if (picked == null || !mounted) return;
     setState(() {

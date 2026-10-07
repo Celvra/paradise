@@ -1357,6 +1357,18 @@
   "@aiFollowChainSub": {
     "description": "Default subtitle of the follow chain row in the model picker"
   },
+  "aiModelTabChat": "对话",
+  "@aiModelTabChat": {
+    "description": "Model picker tab limiting the list to chat models"
+  },
+  "aiModelTabImage": "生图",
+  "@aiModelTabImage": {
+    "description": "Model picker tab limiting the list to image models"
+  },
+  "aiModelTabAll": "全部",
+  "@aiModelTabAll": {
+    "description": "Model picker tab showing every model"
+  },
   "aiSearchModels": "搜索模型",
   "@aiSearchModels": {
     "description": "Search field placeholder in the model picker"

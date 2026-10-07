@@ -7,6 +7,7 @@ import '../core/ui_kit.dart';
 import '../data/ai/provider_model.dart';
 import '../data/ai_config.dart';
 import '../l10n/x.dart';
+import 'tg_cells.dart';
 
 /// Inherited access to the AI config so any screen below the provider can read
 /// and mutate it without threading it through every constructor.
@@ -22,6 +23,25 @@ class AiScope extends InheritedNotifier<AiConfig> {
 extension AiX on BuildContext {
   AiConfig get ai => AiScope.of(this);
 }
+
+/// Which half of a provider's models a picker is for.
+///
+/// A gateway usually serves both, and listing the image endpoints while the
+/// user is picking a model to chat with is how a chat ends up pointed at
+/// `gpt-image-1`. The picker opens on the tab that matches its caller and lets
+/// the user widen it, because the capability flags come from a feed and a
+/// model the feed does not know would otherwise be unreachable.
+enum ModelPurpose { chat, image }
+
+/// Whether a model belongs on [tab] of a picker opened for [purpose].
+///
+/// Tabs are 0 the caller's own half, 1 the other half, 2 everything. Pure and
+/// top level so the rule can be tested without pumping the page.
+bool modelFitsTab(ModelMeta m, ModelPurpose purpose, int tab) => switch (tab) {
+      0 => m.textToImage == (purpose == ModelPurpose.image),
+      1 => m.textToImage == (purpose != ModelPurpose.image),
+      _ => true,
+    };
 
 /// Result of the model picker, an empty provider id means follow the chain.
 typedef AiModelPick = ({String providerId, String modelId});
@@ -124,19 +144,21 @@ Future<AiModelPick?> showAiModelPicker(
   bool allowFollowChain = false,
   String? followTitle,
   String? followSubtitle,
+  ModelPurpose purpose = ModelPurpose.chat,
 }) =>
     Navigator.of(context, rootNavigator: true).push(
-      _PickerRoute(cfg: cfg, title: title, allowFollowChain: allowFollowChain, followTitle: followTitle, followSubtitle: followSubtitle),
+      _PickerRoute(cfg: cfg, title: title, allowFollowChain: allowFollowChain, followTitle: followTitle, followSubtitle: followSubtitle, purpose: purpose),
     );
 
 class _PickerRoute extends PopupRoute<AiModelPick> {
-  _PickerRoute({required this.cfg, required this.title, required this.allowFollowChain, required this.followTitle, required this.followSubtitle});
+  _PickerRoute({required this.cfg, required this.title, required this.allowFollowChain, required this.followTitle, required this.followSubtitle, required this.purpose});
 
   final AiConfig cfg;
   final String title;
   final bool allowFollowChain;
   final String? followTitle;
   final String? followSubtitle;
+  final ModelPurpose purpose;
 
   @override
   Color? get barrierColor => const Color(0x73000000);
@@ -150,7 +172,7 @@ class _PickerRoute extends PopupRoute<AiModelPick> {
   Duration get reverseTransitionDuration => const Duration(milliseconds: 200);
 
   @override
-  Widget buildPage(BuildContext context, Animation<double> a, Animation<double> s) => _PickerPage(cfg: cfg, title: title, allowFollowChain: allowFollowChain, followTitle: followTitle, followSubtitle: followSubtitle);
+  Widget buildPage(BuildContext context, Animation<double> a, Animation<double> s) => _PickerPage(cfg: cfg, title: title, allowFollowChain: allowFollowChain, followTitle: followTitle, followSubtitle: followSubtitle, purpose: purpose);
 
   // the picker is a full page over a scrim, so it rises and fades in rather
   // than fading in place. Leaving eases in so it accelerates away, the same
@@ -167,13 +189,14 @@ class _PickerRoute extends PopupRoute<AiModelPick> {
 }
 
 class _PickerPage extends StatefulWidget {
-  const _PickerPage({required this.cfg, required this.title, required this.allowFollowChain, required this.followTitle, required this.followSubtitle});
+  const _PickerPage({required this.cfg, required this.title, required this.allowFollowChain, required this.followTitle, required this.followSubtitle, required this.purpose});
 
   final AiConfig cfg;
   final String title;
   final bool allowFollowChain;
   final String? followTitle;
   final String? followSubtitle;
+  final ModelPurpose purpose;
 
   @override
   State<_PickerPage> createState() => _PickerPageState();
@@ -181,6 +204,17 @@ class _PickerPage extends StatefulWidget {
 
 class _PickerPageState extends State<_PickerPage> {
   String _query = '';
+
+  /// 0 the caller's own half, 1 the other half, 2 everything. Opens on the
+  /// caller's half so the common case is one tap, and All is one more tap away
+  /// for a model the capability feed does not know about.
+  late int _tab = widget.purpose == ModelPurpose.image ? 1 : 0;
+
+  List<String> _labels(AppLocalizations l) => widget.purpose == ModelPurpose.image
+      ? [l.aiModelTabImage, l.aiModelTabChat, l.aiModelTabAll]
+      : [l.aiModelTabChat, l.aiModelTabImage, l.aiModelTabAll];
+
+  bool _keep(ModelMeta m) => modelFitsTab(m, widget.purpose, _tab);
 
   @override
   Widget build(BuildContext context) {
@@ -193,7 +227,7 @@ class _PickerPageState extends State<_PickerPage> {
     final options = <AiModelOption>[
       for (final provider in widget.cfg.settings.providers)
         for (final model in provider.models)
-          if (q.isEmpty || model.id.toLowerCase().contains(q) || model.name.toLowerCase().contains(q) || provider.name.toLowerCase().contains(q)) AiModelOption(providerId: provider.id, providerName: provider.name, baseUrl: provider.baseUrl, model: model),
+          if (_keep(model) && (q.isEmpty || model.id.toLowerCase().contains(q) || model.name.toLowerCase().contains(q) || provider.name.toLowerCase().contains(q))) AiModelOption(providerId: provider.id, providerName: provider.name, baseUrl: provider.baseUrl, model: model),
     ]..sort((a, b) {
         final byProvider = a.providerName.compareTo(b.providerName);
         if (byProvider != 0) return byProvider;
@@ -217,6 +251,7 @@ class _PickerPageState extends State<_PickerPage> {
             padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
             child: AiSearchBox(value: _query, onChanged: (v) => setState(() => _query = v), hint: l.aiSearchModels),
           ),
+          TgTabStrip(labels: _labels(l), index: _tab, onChange: (i) => setState(() => _tab = i)),
           // the follow chain row is always offered, it is a valid answer
           // even when no provider has any model loaded yet
           if (options.isEmpty)
