@@ -779,47 +779,185 @@
   },
   "aboutLinkFailed": "Could not open the link",
   "@aboutLinkFailed": {
-    "description": "Bulletin when the community link cannot be opened"
+    "description": "Bulletin when a link on the about page cannot be opened"
   },
-  "settingsAboutSub": "Version 1.0.2",
+  "settingsAboutSub": "Version {version}",
   "@settingsAboutSub": {
-    "description": "Settings row subtitle of the about entry"
+    "description": "Settings row subtitle of the about entry, and the version line on the about page",
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
   },
-  "settingsAboutLicense": "Developer: 殘月. It is distributed under the AGPL 3.0 open source licence, which means you may not redistribute or commercialise it without publishing its source code. Violations will be handled in accordance with the law.",
-  "@settingsAboutLicense": {
-    "description": "Licence and ownership notice in the about dialog"
+  "aboutSourceCode": "Source code",
+  "@aboutSourceCode": {
+    "description": "About page row that opens the repository"
   },
-  "settingsAboutCommunity": "Join the community:",
-  "@settingsAboutCommunity": {
-    "description": "Label in front of the community link in the about dialog"
+  "aboutCommunity": "Community",
+  "@aboutCommunity": {
+    "description": "About page row that opens the community chat invite"
   },
-  "settingsAboutRepo": "Project address:\nhttps://github.com/Celvra/paradise",
-  "@settingsAboutRepo": {
-    "description": "Repository link in the about dialog"
+  "aboutQqGroup": "QQ group",
+  "@aboutQqGroup": {
+    "description": "About page row that opens the QQ group invite"
   },
-  "settingsAboutThanks": "Acknowledgements:\n\nKelivo - ToolCall reference\nhttps://github.com/Chevey339/kelivo\n\nSillyTavern - persona card reference\nhttps://github.com/SillyTavern/SillyTavern",
-  "@settingsAboutThanks": {
-    "description": "Acknowledgements to the projects this one was modelled on"
+  "aboutAcknowledgements": "Acknowledgements",
+  "@aboutAcknowledgements": {
+    "description": "Header of the block naming the projects this one was modelled on"
   },
-  "settingsAboutDeps": "Dependencies:\n\narchive 4.3.0 - zipping a workspace for export  (MIT)\nhttps://github.com/brendan-duncan/archive\nasync 2.13.0 - not used directly, pulled in by flutter_local_notifications  (BSD-2-Clause)\nhttps://github.com/dart-lang/async\ncharacters 1.4.1 - grapheme clusters for text measurement  (BSD-3-Clause)\nhttps://github.com/dart-lang/core/tree/main/pkgs/characters\ncrypto 3.0.7 - declared for the workspace, nothing on device is hashed yet  (BSD-3-Clause)\nhttps://github.com/dart-lang/core/tree/main/pkgs/crypto\nfile_picker 13.1.0 - picking documents and audio files  (MIT)\nhttps://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker\nflutter_contacts 2.5.0 - sharing a contact card  (MIT)\nhttps://github.com/QuisApp/flutter_contacts\nflutter_highlight 0.7.0 - colouring the code preview  (MIT)\nhttps://github.com/git-touch/highlight\nflutter_local_notifications 18.0.1 - local notifications  (BSD-3-Clause)\nhttps://github.com/MaikuB/flutter_local_notifications\nflutter_math_fork 0.7.4 - inline TeX math in a bubble  (Apache-2.0)\nhttps://github.com/simplezhli/flutter_math_fork\nflutter_svg 2.3.0 - provider logos and vector icons  (MIT)\nhttps://github.com/flutter/packages/tree/main/third_party/packages/flutter_svg\ngeolocator 13.0.4 - location attachments  (MIT)\nhttps://github.com/baseflow/flutter-geolocator/tree/main/geolocator\nglob 2.2.0 - the workspace find tool  (BSD-3-Clause)\nhttps://github.com/dart-lang/tools/tree/main/pkgs/glob\nhighlight 0.7.0 - the grammar data behind the code preview  (MIT)\nhttps://github.com/pd4d10/highlight\nhttp 1.6.0 - OpenAI compatible endpoints  (BSD-3-Clause)\nhttps://github.com/dart-lang/http/tree/master/pkgs/http\nimage_picker 1.2.3 - camera and gallery photos  (Apache-2.0)\nhttps://github.com/flutter/packages/tree/main/packages/image_picker/image_picker\nintl 0.20.3 - date and number formatting  (BSD-3-Clause)\nhttps://github.com/dart-lang/i18n/tree/main/pkgs/intl\npath 1.9.1 - path arithmetic in the workspace sandbox  (BSD-3-Clause)\nhttps://github.com/dart-lang/core/tree/main/pkgs/path\npath_provider 2.1.6 - app directory for stickers and exports  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/path_provider/path_provider\npermission_handler 13.0.2 - one place to ask for photos, contacts, location and notifications  (MIT)\nhttps://github.com/baseflow/flutter-permission-handler\nphoto_manager 3.12.0 - album access for attachments  (Apache-2.0)\nhttps://github.com/fluttercandies/flutter_photo_manager\nratex_flutter 0.1.14 - the native LaTeX math card  (MIT)\nhttps://github.com/erweixin/RaTeX\nshared_preferences 2.5.5 - settings and chat storage  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/shared_preferences/shared_preferences\nsqflite 2.4.4 - message history and per chat paging  (BSD-2-Clause)\nhttps://github.com/tekartik/sqflite/tree/master/sqflite\ntimezone 0.10.1 - timezone data for scheduled messages  (BSD-2-Clause)\nhttps://github.com/srawlins/timezone\ntypst_flutter 3.0.0 - the embedded Typst compiler behind the CeTZ drawing card  (Apache-2.0)\nhttps://github.com/ajmalbuv/typst_flutter\nurl_launcher 6.3.2 - the community link in this dialog  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/url_launcher/url_launcher\nwebview_flutter 4.14.1 - rendering html in a file preview  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/webview_flutter/webview_flutter\nvideo_player 2.14.1 - video playback in chat bubbles  (BSD-3-Clause)\nhttps://github.com/flutter/packages/tree/main/packages/video_player/video_player\nworkmanager 0.10.10 - background delivery when the app is killed  (MIT)\nhttps://github.com/fluttercommunity/flutter_workmanager",
-  "@settingsAboutDeps": {
-    "description": "Direct dependencies with their licence, the transitive tree is in the lockfile"
+  "aboutThanksKelivo": "ToolCall reference",
+  "@aboutThanksKelivo": {
+    "description": "What the Kelivo project was used for"
   },
-  "settingsAboutCommunityUrl": "https://discord.gg/aQaNUHPsw",
-  "@settingsAboutCommunityUrl": {
-    "description": "Community link in the about dialog, identical in every language"
+  "aboutThanksSillyTavern": "Persona card reference",
+  "@aboutThanksSillyTavern": {
+    "description": "What the SillyTavern project was used for"
   },
-  "settingsAboutQqGroup": "QQ group 272298906:",
-  "@settingsAboutQqGroup": {
-    "description": "Label in front of the QQ group link in the about dialog"
+  "aboutLicenses": "Open source licenses",
+  "@aboutLicenses": {
+    "description": "About page row that opens the licenses page"
   },
-  "settingsAboutQqGroupUrl": "https://qm.qq.com/q/BeQPYWuzVS",
-  "@settingsAboutQqGroupUrl": {
-    "description": "QQ group link in the about dialog, identical in every language"
+  "aboutLicensesSub": "These are the packages this app ships, each under its own licence. The full text sits in its repository.",
+  "@aboutLicensesSub": {
+    "description": "Note under the open source licenses row"
   },
-  "settingsFooter": "Developed by Celvra",
-  "@settingsFooter": {
-    "description": "Small print at the bottom of settings"
+  "aboutDepArchive": "Zipping a workspace for export",
+  "@aboutDepArchive": {
+    "description": "What this app uses archive for"
+  },
+  "aboutDepCharacters": "Grapheme clusters for text measurement",
+  "@aboutDepCharacters": {
+    "description": "What this app uses characters for"
+  },
+  "aboutDepCrypto": "Hashing in the workspace; nothing is hashed on device yet",
+  "@aboutDepCrypto": {
+    "description": "What this app uses crypto for"
+  },
+  "aboutDepFilePicker": "Picking documents and audio files",
+  "@aboutDepFilePicker": {
+    "description": "What this app uses file_picker for"
+  },
+  "aboutDepFlutterContacts": "Sharing a contact card",
+  "@aboutDepFlutterContacts": {
+    "description": "What this app uses flutter_contacts for"
+  },
+  "aboutDepFlutterHighlight": "Colouring the code preview",
+  "@aboutDepFlutterHighlight": {
+    "description": "What this app uses flutter_highlight for"
+  },
+  "aboutDepFlutterLocalNotifications": "Local notifications",
+  "@aboutDepFlutterLocalNotifications": {
+    "description": "What this app uses flutter_local_notifications for"
+  },
+  "aboutDepFlutterMathFork": "Rendering LaTeX inside a bubble",
+  "@aboutDepFlutterMathFork": {
+    "description": "What this app uses flutter_math_fork for"
+  },
+  "aboutDepFlutterSvg": "Provider logos and vector icons",
+  "@aboutDepFlutterSvg": {
+    "description": "What this app uses flutter_svg for"
+  },
+  "aboutDepGeolocator": "Location attachments",
+  "@aboutDepGeolocator": {
+    "description": "What this app uses geolocator for"
+  },
+  "aboutDepGlob": "The workspace find tool",
+  "@aboutDepGlob": {
+    "description": "What this app uses glob for"
+  },
+  "aboutDepHighlight": "The grammar data behind the code preview",
+  "@aboutDepHighlight": {
+    "description": "What this app uses highlight for"
+  },
+  "aboutDepHttp": "OpenAI compatible endpoints",
+  "@aboutDepHttp": {
+    "description": "What this app uses http for"
+  },
+  "aboutDepImagePicker": "Camera and gallery photos",
+  "@aboutDepImagePicker": {
+    "description": "What this app uses image_picker for"
+  },
+  "aboutDepIntl": "Date and number formatting",
+  "@aboutDepIntl": {
+    "description": "What this app uses intl for"
+  },
+  "aboutDepPath": "Path arithmetic in the workspace sandbox",
+  "@aboutDepPath": {
+    "description": "What this app uses path for"
+  },
+  "aboutDepPathProvider": "App directory for stickers and exports",
+  "@aboutDepPathProvider": {
+    "description": "What this app uses path_provider for"
+  },
+  "aboutDepPermissionHandler": "Asking for photos, contacts, location and notifications in one place",
+  "@aboutDepPermissionHandler": {
+    "description": "What this app uses permission_handler for"
+  },
+  "aboutDepPhotoManager": "Album access for attachments",
+  "@aboutDepPhotoManager": {
+    "description": "What this app uses photo_manager for"
+  },
+  "aboutDepRatex": "The native LaTeX math card",
+  "@aboutDepRatex": {
+    "description": "What this app uses ratex_flutter for"
+  },
+  "aboutDepSharedPreferences": "Settings and chat storage",
+  "@aboutDepSharedPreferences": {
+    "description": "What this app uses shared_preferences for"
+  },
+  "aboutDepSqflite": "Message history and per chat paging",
+  "@aboutDepSqflite": {
+    "description": "What this app uses sqflite for"
+  },
+  "aboutDepTerminalView": "The VT100 parser and renderer behind the workspace terminal, a vendored fork",
+  "@aboutDepTerminalView": {
+    "description": "What this app uses terminal_view for"
+  },
+  "aboutDepTimezone": "Timezone data for scheduled messages",
+  "@aboutDepTimezone": {
+    "description": "What this app uses timezone for"
+  },
+  "aboutDepTypstFlutter": "The embedded Typst compiler behind the CeTZ drawing card",
+  "@aboutDepTypstFlutter": {
+    "description": "What this app uses typst_flutter for"
+  },
+  "aboutDepUrlLauncher": "Opening the links on this page",
+  "@aboutDepUrlLauncher": {
+    "description": "What this app uses url_launcher for"
+  },
+  "aboutDepVideoPlayer": "Video playback in chat bubbles",
+  "@aboutDepVideoPlayer": {
+    "description": "What this app uses video_player for"
+  },
+  "aboutDepWebview": "Rendering html in a file preview",
+  "@aboutDepWebview": {
+    "description": "What this app uses webview_flutter for"
+  },
+  "aboutDepWorkmanager": "Background delivery when the app is killed",
+  "@aboutDepWorkmanager": {
+    "description": "What this app uses workmanager for"
+  },
+  "aboutContributors": "Contributors",
+  "@aboutContributors": {
+    "description": "About page row that opens the contributors list"
+  },
+  "aboutContributions": "{n, plural, =1{1 contribution} other{{n} contributions}}",
+  "@aboutContributions": {
+    "description": "Subtitle of a contributor row with their commit count",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "aboutContributorsFailed": "Couldn't load the list. Tap to retry.",
+  "@aboutContributorsFailed": {
+    "description": "Row shown when the contributors list cannot be loaded"
+  },
+  "settingsContributorsThanks": "Thanks to all contributors",
+  "@settingsContributorsThanks": {
+    "description": "Settings footer that opens the contributors list"
   },
   "previewSampleIncoming": "Good morning! How can I help today?",
   "@previewSampleIncoming": {

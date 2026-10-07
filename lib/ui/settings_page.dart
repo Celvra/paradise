@@ -2,9 +2,7 @@ import 'dart:async' show unawaited;
 import 'dart:convert' show utf8;
 import 'dart:io';
 
-import 'package:url_launcher/url_launcher.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/gestures.dart' show TapGestureRecognizer;
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
@@ -20,6 +18,7 @@ import '../data/store.dart';
 import '../l10n/x.dart';
 import 'bubble.dart';
 import 'account_page.dart';
+import 'about_page.dart';
 import 'update_sheet.dart';
 import 'wallpaper.dart';
 import 'wallpaper_page.dart';
@@ -114,20 +113,8 @@ class SettingsTab extends StatelessWidget {
                   icon: Ic.info,
                   colors: _gray,
                   title: l.settingsAbout,
-                  sub: l.settingsAboutSub,
-                  onTap: () => showTgDialog<void>(
-                    context,
-                    title: l.settingsAboutSub,
-                    content: _AboutBody(sections: [
-                      l.settingsAboutLicense,
-                      l.settingsAboutRepo,
-                      l.settingsAboutThanks,
-                      l.settingsAboutQqGroup + ' ' + l.settingsAboutQqGroupUrl,
-                      l.settingsAboutCommunity + ' ' + l.settingsAboutCommunityUrl,
-                      l.settingsAboutDeps,
-                    ]),
-                    actions: [DialogAction(l.actionOk, null)],
-                  ),
+                  sub: l.settingsAboutSub(appVersion),
+                  onTap: () => openAboutPage(context),
                 ),
                 _Cell(
                   icon: Ic.up,
@@ -138,7 +125,7 @@ class SettingsTab extends StatelessWidget {
                   onTap: () => showWhatsNewDialog(context),
                 ),
               ]),
-              Padding(padding: const EdgeInsets.fromLTRB(20, 16, 20, 0), child: Center(child: Text(l.settingsFooter, style: TextStyle(color: p.subtitle, fontSize: 13, decoration: TextDecoration.none, fontWeight: FontWeight.w400)))),
+              Padding(padding: const EdgeInsets.fromLTRB(20, 16, 20, 0), child: Center(child: Tap(scale: .96, onTap: () => openContributorsPage(context), child: Text(l.settingsContributorsThanks, style: TextStyle(color: p.subtitle, fontSize: 13, decoration: TextDecoration.none, fontWeight: FontWeight.w400))))),
             ],
           ),
         ),
@@ -683,99 +670,3 @@ String skillSettingsSummary(Store st, AppLocalizations l) {
 }
 
 String wsTitles(int n) => L10n.number('#,##0').format(n);
-
-/// Body of the about dialog: the licence notice, then the repository link, the
-/// projects this one was modelled on and the direct dependencies with their
-/// licence.
-///
-/// Every URL in those blocks is tinted so it reads as a link, and each one
-/// taps its own address.
-class _AboutBody extends StatelessWidget {
-  const _AboutBody({required this.sections});
-
-  /// Each block carries its own label, so this stays dumb.
-  final List<String> sections;
-
-  @override
-  Widget build(BuildContext context) {
-    final mq = MediaQuery.of(context);
-    return ConstrainedBox(
-      // the dialog is a Column of mainAxisSize.min, a body this long needs a
-      // ceiling or it runs off the top and bottom of the screen
-      constraints: BoxConstraints(maxHeight: mq.size.height * 0.62),
-      child: ListView(
-        shrinkWrap: true,
-        padding: EdgeInsets.zero,
-        physics: const ClampingScrollPhysics(),
-        children: [
-          for (final s in sections) ...[
-            _Block(text: s),
-            const SizedBox(height: 16),
-          ],
-        ],
-      ),
-    );
-  }
-}
-
-/// One paragraph with the urls inside it tinted. Each url gets its own tap
-/// target, so a block holding two addresses (like the thanks block with
-/// Kelivo and SillyTavern) opens the one actually tapped.
-class _Block extends StatefulWidget {
-  const _Block({required this.text});
-
-  final String text;
-
-  static final _url = RegExp(r'https?://[^\s,;)\]]+');
-
-  @override
-  State<_Block> createState() => _BlockState();
-}
-
-class _BlockState extends State<_Block> {
-  final _recs = <TapGestureRecognizer>[];
-
-  @override
-  void dispose() {
-    for (final r in _recs) {
-      r.dispose();
-    }
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    for (final r in _recs) {
-      r.dispose();
-    }
-    _recs.clear();
-    final p = context.p;
-    final base = TextStyle(color: p.title, fontSize: 14.5, height: 1.55, decoration: TextDecoration.none, fontWeight: FontWeight.w400);
-    final spans = <TextSpan>[];
-    var at = 0;
-    for (final m in _Block._url.allMatches(widget.text)) {
-      if (m.start > at) spans.add(TextSpan(text: widget.text.substring(at, m.start)));
-      final url = m.group(0)!;
-      final rec = TapGestureRecognizer()..onTap = () => _open(context, url);
-      _recs.add(rec);
-      spans.add(TextSpan(text: url, style: base.copyWith(color: p.accent, fontWeight: FontWeight.w500), recognizer: rec));
-      at = m.end;
-    }
-    if (at < widget.text.length) spans.add(TextSpan(text: widget.text.substring(at)));
-    if (spans.isEmpty) spans.add(TextSpan(text: widget.text));
-
-    return Text.rich(TextSpan(children: spans), style: base);
-  }
-
-  Future<void> _open(BuildContext context, String href) async {
-    final uri = Uri.tryParse(href);
-    if (uri == null) return;
-    var ok = false;
-    try {
-      ok = await launchUrl(uri, mode: LaunchMode.externalApplication);
-    } catch (_) {
-      ok = false;
-    }
-    if (!ok && context.mounted) showBulletin(context, L10n.current.aboutLinkFailed);
-  }
-}

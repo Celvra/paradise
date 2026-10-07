@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../app_info.dart';
 import '../core/overlays.dart';
+import '../core/theme.dart';
 import '../l10n/x.dart';
 
 const _kSeenVersion = 'whatsNewSeenVersion';
@@ -48,7 +49,10 @@ Future<void> showWhatsNewDialog(BuildContext context) async {
     content: Builder(
       builder: (c) => ConstrainedBox(
         constraints: BoxConstraints(maxHeight: MediaQuery.of(c).size.height * .5),
-        child: SingleChildScrollView(child: Text(l.whatsNewBody, style: const TextStyle(fontSize: 16, height: 1.25, decoration: TextDecoration.none))),
+        // no color in const styles: an unpainted Text is black, which is
+        // invisible on the dark dialog. The message form exists for this, but
+        // it cannot scroll a long bullet list.
+        child: SingleChildScrollView(child: Text(l.whatsNewBody, style: TextStyle(color: c.p.title, fontSize: 16, height: 1.25, decoration: TextDecoration.none))),
       ),
     ),
     actions: [DialogAction(l.actionOk, null)],

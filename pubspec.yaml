@@ -77,6 +77,9 @@ flutter:
   assets:
     # provider logos, see core/provider_icons.dart
     - assets/providers/
+    # the launcher mark, drawn monochrome so the about page can tint it
+    # the way it tints a provider logo, see ui/about_page.dart
+    - assets/icon/icon.svg
     # typst packages for the CeTZ drawing card, imported by relative path
     # (cetz, cetz-plot, oxifmt — deps rewritten to be path-local), MIT
     - assets/typst/packages.tgz
