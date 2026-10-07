@@ -55,6 +55,10 @@ dependencies:
   # send the user to the system settings when a permission was denied for good
   permission_handler: ^13.0.2
 
+  # Local Rust OII bridge only; the plugin system is deliberately not included.
+  oii_bridge:
+    path: packages/oii_bridge
+
   # text to speech. Two engines, chosen per role: the offline system engine
   # (flutter_tts) and any OpenAI compatible /audio/speech endpoint, whose mp3
   # just_audio plays back. The engine choice lives on the persona, next to the

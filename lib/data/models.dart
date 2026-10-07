@@ -549,6 +549,7 @@ class Msg {
       'poll' => MsgKind.poll,
       'sticker' => MsgKind.sticker,
       'transfer' => MsgKind.transfer,
+      'gift' => MsgKind.gift,
       'trace' => MsgKind.trace,
       'html' => MsgKind.html,
       'latex' => MsgKind.latex,
