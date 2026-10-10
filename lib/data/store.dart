@@ -36,6 +36,7 @@ import 'backup_archive.dart';
 import 'backup_remote.dart';
 import 'db.dart';
 import 'file_text.dart';
+import 'full_backup.dart';
 import 'gen_prefs.dart';
 import 'speech_config.dart';
 import 'human/br_parser.dart';
@@ -51,6 +52,10 @@ import 'oii/backup_archive.dart' show buildBackupArchive, hasOiiBackupManifest, 
 import 'skills/skill.dart';
 import 'skills/skill_prompt.dart';
 import 'skills/skill_store.dart';
+import 'world_book/injector.dart';
+import 'world_book/migrate.dart';
+import 'world_book/world_book.dart';
+import 'world_book/world_store.dart';
 import 'workspace/host_file_tools.dart';
 import 'workspace/workspace.dart';
 import 'workspace/workspace_metadata.dart';
@@ -177,6 +182,11 @@ class Store extends ChangeNotifier {
   /// skills page does not rebuild the chat list on every toggle.
   late final SkillStore skills;
 
+  /// World books and the per persona bindings. The binding itself rides on
+  /// the persona (`Persona.worldBookIds`) so it serialises with the chat,
+  /// while the books live here, shared across every role that names them.
+  late final WorldStore worldBooks;
+
   /// The environment stack. Set at startup by main so the tool layer and the
   /// environment page share one channel and one installer.
   WorkspaceStack? workspaceStack;
@@ -202,6 +212,7 @@ class Store extends ChangeNotifier {
   RemoteConfig remoteBackup = RemoteConfig();
 
   BackupSink? _backupSink;
+  FullBackupSink? _fullSink;
   bool _backupDirty = false;
   bool _backupRunning = false;
   Directory? _debugBackupDocsDir;
@@ -366,6 +377,7 @@ class Store extends ChangeNotifier {
     s.human = await HumanHub.load(s._sp);
     s.workspace = await WorkspaceStore.load(s._sp);
     s.skills = await SkillStore.load(s._sp);
+    s.worldBooks = await WorldStore.load(s._sp);
     s.userBio = s._sp.getString('userBio') ?? '';
     s.haptics = s._sp.getBool('haptics') ?? true;
     s.countMuted = s._sp.getBool('countMuted') ?? false;
@@ -393,6 +405,7 @@ class Store extends ChangeNotifier {
     s._loadAutoBackup();
     s._loadRemoteBackup();
     s._backupSink = MediaStoreBackupSink();
+    s._fullSink = MediaStoreFullBackupSink();
     // the voice module rides along here rather than being handed in from main:
     // it reads the same SharedPreferences this store already holds, and every
     // path that builds a Store gets a working module without a second load.
@@ -467,6 +480,48 @@ class Store extends ChangeNotifier {
     for (final c in chats) {
       _listen(c);
     }
+    // the character cards of an older build become world books, bound to the
+    // very role they belonged to; runs after the chats are in memory and
+    // before anything is saved, so a migrated card sheds its legacy block on
+    // the first write that follows
+    await _migrateCharacterCards();
+  }
+
+  /// The pre-world-book character card, moved into a book per role.
+  ///
+  /// A card that is empty or unreadable produces no book at all: an upgrade
+  /// must not litter the world book page with a placeholder per chat. A card
+  /// with something in it becomes one book named after the role, whose
+  /// entries are all constant, because the card was always injected and a
+  /// keyword-gated entry would quietly change how the role plays.
+  Future<void> _migrateCharacterCards() async {
+    var moved = 0;
+    for (final c in chats) {
+      final raw = c.human.legacyCard;
+      if (raw == null || LegacyCardSheet.isEmpty(raw)) continue;
+      try {
+        final entries = LegacyCardSheet.entries(raw, newEntryId: worldBooks.newEntryId);
+        if (entries.isEmpty) continue;
+        final name = c.persona.name.trim().isEmpty ? 'Character card' : c.persona.name.trim();
+        final book = await worldBooks.create(name: name, entries: entries);
+        final bound = [...? c.persona.worldBookIds, book.id];
+        c.persona.worldBookIds = bound;
+      } catch (_) {
+        // a card that cannot be moved stays where it is; nothing is lost and
+        // the legacy block still sits in the chat json for a later attempt
+        continue;
+      }
+      c.human.legacyCard = null;
+      moved++;
+    }
+    if (moved > 0) {
+      // the card lives in the chat json, so the drop of the legacy block is
+      // itself a change worth writing
+      for (final c in chats) {
+        if (c.persona.worldBookIds != null) _onChat(c);
+      }
+      notifyListeners();
+    }
   }
 
   /// Moves the legacy chat blob into SQLite. Only runs while the blob key is
@@ -523,6 +578,25 @@ class Store extends ChangeNotifier {
       unawaited(_autoBackupTick());
     });
     unawaited(humanTick());
+  }
+
+  /// Stops every live wire of this instance so the process can restart on
+  /// restored files. Only the full zip restore calls this: the widget tree is
+  /// about to be rebuilt on a fresh [Store.load], and a stray heartbeat or a
+  /// half flushed save from the old instance would write into files that no
+  /// longer belong to it.
+  Future<void> shutdownForReplace() async {
+    _humanTimer?.cancel();
+    _humanTimer = null;
+    _saveTimer?.cancel();
+    _saveTimer = null;
+    for (final c in chats) {
+      _unlisten(c);
+    }
+    try {
+      await _db?.close();
+    } catch (_) {}
+    _db = null;
   }
 
   String _id() => '${DateTime.now().microsecondsSinceEpoch}_${_seq++}';
@@ -837,8 +911,15 @@ class Store extends ChangeNotifier {
     if (raw != null) {
       try {
         for (final j in jsonDecode(raw) as List) {
-          final p = UserPersona.fromJson(j as Map<String, dynamic>);
-          if (p.id.isNotEmpty) personas.add(p);
+          // per card, not per list: one malformed entry must never again wipe
+          // every persona, which is the "my profile disappeared" update bug
+          try {
+            if (j is! Map) continue;
+            final p = UserPersona.fromJson(j.cast<String, dynamic>());
+            if (p.id.isNotEmpty) personas.add(p);
+          } catch (_) {
+            // skip the broken card, keep the rest
+          }
         }
       } catch (_) {
         personas.clear();
@@ -1256,8 +1337,8 @@ class Store extends ChangeNotifier {
     notifyListeners();
   }
 
-Chat createChat(String name, String prompt, {String bio = '', String greeting = '', String emoji = '', String examples = '', String avatarPath = '', int? color, String modelProvider = '', String modelId = '', bool modelFallback = true, bool? thinking, bool? agent, bool clingy = false, int clingySilentMin = 90, bool clingyCap = false, int clingyMax = 3, List<String>? skillIds, bool imageEnabled = false, String imageProvider = '', String imageModel = '', String imageSize = '', bool ttsEnabled = false, TtsEngine? ttsEngine, String ttsBaseUrl = '', String ttsModel = '', String ttsVoice = '', bool ttsAutoSpeak = false}) {
-    final c = Chat(id: _id(), persona: Persona(name: name, prompt: prompt, color: color ?? name.hashCode.abs() % avatarColorCount, bio: bio, greeting: greeting, emoji: emoji, examples: examples, avatarPath: avatarPath, modelProvider: modelProvider, modelId: modelId, modelFallback: modelFallback, thinking: thinking, agent: agent, clingy: clingy, clingySilentMin: clingySilentMin, clingyCap: clingyCap, clingyMax: clingyMax, skillIds: skillIds, imageEnabled: imageEnabled, imageProvider: imageProvider, imageModel: imageModel, imageSize: imageSize, ttsEnabled: ttsEnabled, ttsEngine: ttsEngine, ttsBaseUrl: ttsBaseUrl, ttsModel: ttsModel, ttsVoice: ttsVoice, ttsAutoSpeak: ttsAutoSpeak));
+Chat createChat(String name, String prompt, {String bio = '', String greeting = '', String emoji = '', String examples = '', String avatarPath = '', int? color, String modelProvider = '', String modelId = '', bool modelFallback = true, bool? thinking, bool? agent, bool clingy = false, int clingySilentMin = 90, bool clingyCap = false, int clingyMax = 3, bool clingyQuietOn = false, int clingyQuietStart = 1320, int clingyQuietEnd = 480, bool clingyUrgent = false, bool clingyUrgentCap = true, int clingyUrgentMax = 1, List<String>? skillIds, List<String>? worldBookIds, bool imageEnabled = false, String imageProvider = '', String imageModel = '', String imageSize = '', bool ttsEnabled = false, TtsEngine? ttsEngine, String ttsBaseUrl = '', String ttsModel = '', String ttsVoice = '', bool ttsAutoSpeak = false}) {
+    final c = Chat(id: _id(), persona: Persona(name: name, prompt: prompt, color: color ?? name.hashCode.abs() % avatarColorCount, bio: bio, greeting: greeting, emoji: emoji, examples: examples, avatarPath: avatarPath, modelProvider: modelProvider, modelId: modelId, modelFallback: modelFallback, thinking: thinking, agent: agent, clingy: clingy, clingySilentMin: clingySilentMin, clingyCap: clingyCap, clingyMax: clingyMax, clingyQuietOn: clingyQuietOn, clingyQuietStart: clingyQuietStart, clingyQuietEnd: clingyQuietEnd, clingyUrgent: clingyUrgent, clingyUrgentCap: clingyUrgentCap, clingyUrgentMax: clingyUrgentMax, skillIds: skillIds, worldBookIds: worldBookIds, imageEnabled: imageEnabled, imageProvider: imageProvider, imageModel: imageModel, imageSize: imageSize, ttsEnabled: ttsEnabled, ttsEngine: ttsEngine, ttsBaseUrl: ttsBaseUrl, ttsModel: ttsModel, ttsVoice: ttsVoice, ttsAutoSpeak: ttsAutoSpeak));
     if (greeting.trim().isNotEmpty) c.msgs.add(Msg(id: _id(), out: false, text: greeting.trim(), time: DateTime.now().millisecondsSinceEpoch));
     _listen(c);
     chats.add(c);
@@ -1267,7 +1348,7 @@ Chat createChat(String name, String prompt, {String bio = '', String greeting = 
     return c;
   }
 
-  void editPersona(Chat c, String name, String prompt, {String? bio, String? greeting, String? emoji, String? examples, String? avatarPath, int? color, String? modelProvider, String? modelId, bool? modelFallback, bool? thinking, bool? agent, bool? clingy, int? clingySilentMin, bool? clingyCap, int? clingyMax, List<String>? skillIds, bool clearSkillIds = false}) {
+  void editPersona(Chat c, String name, String prompt, {String? bio, String? greeting, String? emoji, String? examples, String? avatarPath, int? color, String? modelProvider, String? modelId, bool? modelFallback, bool? thinking, bool? agent, bool? clingy, int? clingySilentMin, bool? clingyCap, int? clingyMax, bool? clingyQuietOn, int? clingyQuietStart, int? clingyQuietEnd, bool? clingyUrgent, bool? clingyUrgentCap, int? clingyUrgentMax, List<String>? skillIds, List<String>? worldBookIds, bool clearSkillIds = false}) {
     c.persona
       ..name = name
       ..prompt = prompt;
@@ -1286,17 +1367,31 @@ Chat createChat(String name, String prompt, {String bio = '', String greeting = 
     if (clingySilentMin != null) c.persona.clingySilentMin = clingySilentMin;
     if (clingyCap != null) c.persona.clingyCap = clingyCap;
     if (clingyMax != null) c.persona.clingyMax = clingyMax;
+    if (clingyQuietOn != null) c.persona.clingyQuietOn = clingyQuietOn;
+    if (clingyQuietStart != null) c.persona.clingyQuietStart = clingyQuietStart;
+    if (clingyQuietEnd != null) c.persona.clingyQuietEnd = clingyQuietEnd;
+    if (clingyUrgent != null) c.persona.clingyUrgent = clingyUrgent;
+    if (clingyUrgentCap != null) c.persona.clingyUrgentCap = clingyUrgentCap;
+    if (clingyUrgentMax != null) c.persona.clingyUrgentMax = clingyUrgentMax;
     if (clearSkillIds) {
       c.persona.skillIds = null;
     } else if (skillIds != null) {
       c.persona.skillIds = skillIds;
     }
+    if (worldBookIds != null) c.persona.worldBookIds = worldBookIds;
     c.touch();
   }
 
   /// Replaces the skill selection of one role. Null follows the global set.
   void setPersonaSkills(Chat c, List<String>? ids) {
     c.persona.skillIds = ids == null ? null : List<String>.from(ids);
+    c.touch();
+  }
+
+  /// Replaces the world book binding of one role. Null and empty both mean
+  /// "no world", the state every role written before the world book has.
+  void setPersonaWorldBooks(Chat c, List<String>? ids) {
+    c.persona.worldBookIds = ids == null ? null : List<String>.from(ids);
     c.touch();
   }
 
@@ -1900,15 +1995,94 @@ Chat createChat(String name, String prompt, {String bio = '', String greeting = 
         replyMode: cfg?.settings.replyMode ?? ReplyMode.full,
       ),
     );
+    // the world book wraps the persona definition: "before" is the world the
+    // role stands in, "after" is what the role's state says about the moment
+    final world = worldContextFor(c);
+    final head = world.textFor(EntryPosition.beforeChar);
+    final mid = world.textFor(EntryPosition.afterChar);
+    var prompt = [
+      if (head.isNotEmpty) head, base,
+      if (mid.isNotEmpty) mid,
+    ].join('\n\n');
+    // the entries the model may refine itself, named by id so the tool call
+    // has something to point at. Only listed when the user actually handed
+    // some over, the same rule the skill block follows
+    final editable = worldEditableBlock(c);
+    if (editable.isNotEmpty) prompt = '$prompt\n\n$editable';
     final skillsBlock = skillFragmentFor(c);
     // the generative channels are announced the same way skills are: only when
     // the role actually has one, so a persona that never asked for them is not
     // told about a tool it cannot call
     final voice = _speech;
     final genBlock = cfg == null || voice == null ? '' : genCapabilityBlock(genPrefsFor(c, cfg.settings, voice));
-    final extra = [if (skillsBlock.isNotEmpty) skillsBlock, if (genBlock.isNotEmpty) genBlock];
-    if (extra.isEmpty) return base;
-    return '$base\n\n${extra.join('\n\n')}';
+    final extra = [
+      if (skillsBlock.isNotEmpty) skillsBlock,
+      if (genBlock.isNotEmpty) genBlock,
+    ];
+    final tail = world.textFor(EntryPosition.bottomNote);
+    if (tail.isNotEmpty) extra.add(tail);
+    if (extra.isEmpty) return prompt;
+    return '$prompt\n\n${extra.join('\n\n')}';
+  }
+
+  /// The world book entries that fire for this chat right now.
+  ///
+  /// Both engines funnel through here rather than building their own context,
+  /// so a book behaves the same whether the reply comes from the agent loop
+  /// or the humanize pipeline. The scan window is the tail of the transcript
+  /// the keyword entries are matched against, oldest last.
+  WorldContext worldContextFor(Chat c, {List<String>? recentMessages}) {
+    try {
+      final books = worldBooks.resolve(c.persona.worldBookIds);
+      if (books.isEmpty) return WorldContext();
+      final messages = recentMessages ?? worldHistoryText(c);
+      if (messages.isEmpty && books.every((b) => b.entries.every((e) => !e.constant))) return WorldContext();
+      return WorldInjector.evaluate(
+        books,
+        recentMessages: messages,
+        rng: Random(WorldInjector.seedFor(c.id, c.human.turn)),
+        budgetChars: worldBooks.budgetChars,
+      ).context;
+    } catch (_) {
+      // a broken book must never take the reply down with it
+      return WorldContext();
+    }
+  }
+
+  /// The entries this role's books let the model edit itself, or empty when
+  /// the user handed none over.
+  ///
+  /// Listed by id rather than by title: the tool takes an id, and an id the
+  /// model has to reconstruct from a comment is an id it will get wrong.
+  String worldEditableBlock(Chat c) {
+    try {
+      final ids = c.persona.worldBookIds;
+      if (ids == null || ids.isEmpty) return '';
+      final rows = <String>[];
+      for (final book in worldBooks.resolve(ids)) {
+        for (final e in book.entries) {
+          if (!e.aiEditable || !e.enabled || e.content.trim().isEmpty) continue;
+          rows.add('- ${e.id}: ${e.comment.trim().isEmpty ? book.name : e.comment.trim()}');
+        }
+      }
+      if (rows.isEmpty) return '';
+      return [
+        '# Your own world book notes',
+        'The user lets you refine these entries of the world book yourself, one small adjustment at a time, by calling update_world_entry. Keep each change in the spirit of what it already says.',
+        rows.join('\n'),
+      ].join('\n');
+    } catch (_) {
+      return '';
+    }
+  }
+
+  /// The transcript as a flat list of message bodies, oldest last, for the
+  /// keyword scan. Capped so a long chat cannot turn every scan into a walk
+  /// over thousands of rows.
+  List<String> worldHistoryText(Chat c, {int max = 40}) {
+    final real = c.msgs.where((m) => !m.service && m.text.trim().isNotEmpty).toList();
+    final start = real.length > max ? real.length - max : 0;
+    return [for (var i = start; i < real.length; i++) real[i].text];
   }
 
   /// Skills this chat's role sees, after the global enable switches and the
@@ -1978,15 +2152,36 @@ Chat createChat(String name, String prompt, {String bio = '', String greeting = 
   /// SillyTavern in-chat depth injection, the equivalent of setExtensionPrompt
   /// with IN_CHAT. The turn lands `depth` messages back from the newest one and
   /// carries no sourceId, so the attachment rebuild below passes it through.
+  ///
+  /// The world book's at-depth entries ride the same mechanism: they are the
+  /// same kind of turn, decided by the same knob, and two separate inserters
+  /// would only disagree about the index.
   void _injectDepth(Chat c, List<ChatTurn> turns) {
     final card = personaFor(c);
-    if (card.position != PersonaPosition.atDepth) return;
-    injectPersonaDepth(
-      turns,
-      expandMacros(card.description, c.persona.name, card.name),
-      depth: card.depth,
-      role: card.role,
-    );
+    if (card.position == PersonaPosition.atDepth) {
+      injectPersonaDepth(
+        turns,
+        expandMacros(card.description, c.persona.name, card.name),
+        depth: card.depth,
+        role: card.role,
+      );
+    }
+    try {
+      for (final spec in worldContextFor(c).turns()) {
+        injectPersonaDepth(
+          turns,
+          spec.text,
+          depth: spec.depth,
+          role: switch (spec.roleName) {
+            'user' => PersonaRole.user,
+            'assistant' => PersonaRole.assistant,
+            _ => PersonaRole.system,
+          },
+        );
+      }
+    } catch (_) {
+      // a broken book must not take the history down with it
+    }
   }
 
   /// Rebuilds the request turns, loading base64 for recent photos.

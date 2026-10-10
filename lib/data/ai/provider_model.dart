@@ -1,4 +1,6 @@
 // provider kind decides both the auth style and the request shape
+import 'registry.dart';
+
 enum ProviderKind { openaiChat, openaiResponses, gemini, anthropic, openaiCompatible }
 
 ProviderKind providerKindOf(String raw) => switch (raw) {
@@ -178,7 +180,12 @@ class ModelCaps {
 
 ModelCaps capsOf(AiSettings settings, ChainNode node) {
   final m = findModel(settings, node.providerId, node.modelId);
-  return ModelCaps(vision: m?.vision ?? false, video: m?.video ?? false);
+  if (m == null) return const ModelCaps();
+  // stored lists go stale the moment the bundled catalog learns a new
+  // capability, so the runtime gate enriches from the catalog instead of
+  // trusting whatever the last fetch happened to know
+  final e = enrich(m, node.providerId);
+  return ModelCaps(vision: e.vision, video: e.video);
 }
 
 /// The union over the enabled nodes. The primary node serves most turns but

@@ -1,11 +1,11 @@
 import 'package:flutter/widgets.dart';
 import 'package:permission_handler/permission_handler.dart' as ph;
+import 'package:photo_manager/photo_manager.dart' as pm;
 
 import '../../core/anim.dart';
 import '../../core/overlays.dart';
 import '../../core/theme.dart';
 import '../../core/ui_kit.dart';
-import '../../data/human/notifications.dart';
 import '../../l10n/x.dart';
 import '../tg_cells.dart';
 import 'common.dart';
@@ -31,7 +31,6 @@ class _PermList extends StatefulWidget {
 
 class _PermListState extends State<_PermList> with WidgetsBindingObserver {
   final Map<ph.Permission, ph.PermissionStatus> _states = {};
-  bool _notifAsked = false;
   // a second tap while the system dialog is up makes Android answer the extra
   // request with a plain denied, which used to read as the user refusing
   bool _asking = false;
@@ -58,19 +57,40 @@ class _PermListState extends State<_PermList> with WidgetsBindingObserver {
 
   Future<void> _probe() async {
     // A status read never pops a dialog, so this is safe on page enter and
-    // keeps the rows honest if the user came back from system settings. It
-    // throws MissingPluginException on a platform without the plugin (tests,
-    // desktop): treat that as "not granted yet" and stay silent.
+    // keeps the rows honest if the user came back from system settings — the
+    // notification row included: allowing it in settings must flip the row
+    // without another tap. It throws MissingPluginException on a platform
+    // without the plugin (tests, desktop): treat that as "not granted yet"
+    // and stay silent.
     for (final perm in _rows.map((r) => r.$1)) {
-      if (perm == ph.Permission.notification) continue; // plugin owned, see below
       try {
-        _states[perm] = await perm.status;
+        // media goes through photo_manager, the same ask the in-app gallery
+        // uses: on some vendors permission_handler's photos request returns
+        // denied without ever showing the system prompt, while the gallery's
+        // own ask works
+        _states[perm] = perm == ph.Permission.photos ? await _mediaState() : await perm.status;
       } catch (_) {
         _states[perm] = ph.PermissionStatus.denied;
       }
     }
     if (mounted) setState(() {});
   }
+
+  /// photo_manager's state read, translated onto permission_handler's enum so
+  /// the row rendering stays in one vocabulary.
+  Future<ph.PermissionStatus> _mediaState() async {
+    final s = await pm.PhotoManager.getPermissionState(requestOption: _mediaReq);
+    return switch (s) {
+      pm.PermissionState.authorized || pm.PermissionState.limited => ph.PermissionStatus.granted,
+      pm.PermissionState.restricted => ph.PermissionStatus.restricted,
+      _ => ph.PermissionStatus.denied,
+    };
+  }
+
+  /// image and video, no media location: exactly what the gallery asks for
+  static const _mediaReq = pm.PermissionRequestOption(
+    androidPermission: pm.AndroidPermission(type: pm.RequestType.common, mediaLocation: false),
+  );
 
   static final _rows = <(ph.Permission, String Function(AppLocalizations), String Function(AppLocalizations), Ic)>[
     (
@@ -92,17 +112,27 @@ class _PermListState extends State<_PermList> with WidgetsBindingObserver {
     _asking = true;
     final l = context.l;
     try {
-      if (perm == ph.Permission.notification) {
-        // flutter_local_notifications owns this dialog on Android 13; going
-        // through permission_handler as well would race it.
-        final ok = await Notifier.instance.requestPermission();
-        setState(() => _notifAsked = ok);
-        if (!ok) _suggestSettings(l);
-        return;
+      ph.PermissionStatus status;
+      if (perm == ph.Permission.photos) {
+        // the gallery's own ask: this is the prompt that provably shows on the
+        // devices where permission_handler's photos request silently fails
+        final s = await pm.PhotoManager.requestPermissionExtend();
+        status = switch (s) {
+          pm.PermissionState.authorized || pm.PermissionState.limited => ph.PermissionStatus.granted,
+          pm.PermissionState.restricted => ph.PermissionStatus.restricted,
+          _ => ph.PermissionStatus.denied,
+        };
+      } else {
+        // permission_handler drives the notification row: on Android 13+ its
+        // request reliably shows the system dialog, where the local-notifications
+        // plugin's own ask could return denied without anything on screen
+        status = await askPermission(perm);
       }
-      final status = await askPermission(perm);
+      if (!mounted) return;
       setState(() => _states[perm] = status);
-      if (status == ph.PermissionStatus.permanentlyDenied) _suggestSettings(l);
+      // only a permanent refusal earns the settings detour; a plain denied can
+      // simply be asked again, and nagging here read as the app being broken
+      if (status == ph.PermissionStatus.permanentlyDenied || status == ph.PermissionStatus.restricted) _suggestSettings(l);
     } finally {
       _asking = false;
     }
@@ -134,11 +164,9 @@ class _PermListState extends State<_PermList> with WidgetsBindingObserver {
                 icon: icon,
                 title: name(l),
                 subtitle: why(l),
-                state: perm == ph.Permission.notification
-                    ? (_notifAsked ? l.onboardPermGranted : l.onboardPermAllow)
-                    : permissionStateLabel(_states[perm] ?? ph.PermissionStatus.denied, l),
-                granted: perm == ph.Permission.notification ? _notifAsked : _isGranted(_states[perm]),
-                denied: perm != ph.Permission.notification && (_states[perm] == ph.PermissionStatus.permanentlyDenied),
+                state: permissionStateLabel(_states[perm] ?? ph.PermissionStatus.denied, l),
+                granted: _isGranted(_states[perm]),
+                denied: _states[perm] == ph.PermissionStatus.permanentlyDenied,
                 onAsk: () => _ask(perm),
               ),
           ],

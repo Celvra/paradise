@@ -521,6 +521,25 @@ void paintGlyph(Canvas canvas, Ic ic, Paint sp, Paint fp) {
         ..lineTo(18.6, 16.4)
         ..lineTo(15.2, 19.2);
       canvas.drawPath(p, sp);
+    case Ic.book:
+      // an open book, spine up: two covers curving away from a shared fold,
+      // which reads as lore rather than as a document
+      p
+        ..moveTo(12, 6.8)
+        ..cubicTo(10.3, 5.6, 7.9, 5.4, 5.5, 6.1)
+        ..lineTo(4.4, 6.4)
+        ..lineTo(4.4, 17.6)
+        ..lineTo(6.1, 17.2)
+        ..cubicTo(8.1, 16.7, 10.3, 16.9, 12, 17.9)
+        ..cubicTo(13.7, 16.9, 15.9, 16.7, 17.9, 17.2)
+        ..lineTo(19.6, 17.6)
+        ..lineTo(19.6, 6.4)
+        ..lineTo(18.5, 6.1)
+        ..cubicTo(16.1, 5.4, 13.7, 5.6, 12, 6.8);
+      canvas.drawPath(p, sp);
+      p.moveTo(12, 6.8);
+      p.lineTo(12, 17.9);
+      canvas.drawPath(p, sp);
     case Ic.hidden:
       // a struck-through eye, which reads as hidden without needing a label
       p

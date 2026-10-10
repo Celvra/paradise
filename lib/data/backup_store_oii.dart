@@ -36,7 +36,11 @@ extension OiiBackupStore on Store {
   void _visitAssetFields(Map<String, dynamic> doc, String Function(String) replace) {
     void field(Map map, String key) {
       final v = map[key];
-      if (v is String && v.startsWith('/')) map[key] = replace(v);
+      // Rooted on posix *and* Windows (D:\...) so asset collection works on
+      // either host; bare file names and archive-relative paths are skipped.
+      if (v is String && (v.startsWith('/') || RegExp(r'^[A-Za-z]:[\\/]').hasMatch(v))) {
+        map[key] = replace(v);
+      }
     }
 
     final settings = doc['settings'];
@@ -236,9 +240,16 @@ extension OiiBackupStore on Store {
         // Credentials and MCP servers belong to this device. Keep its list.
         m['mcp'] = hub.settings.toJson()['mcp'];
         hub.settings = HumanSettings.fromJson(m);
+        report.human = true;
       }
-      if (data['tasks'] is List) hub.scheduler.loadJson(data['tasks'] as List);
-      if (data['wallet'] is Map) hub.wallet.loadJson(Map<String, dynamic>.from(data['wallet'] as Map));
+      if (data['tasks'] is List) {
+        hub.scheduler.loadJson(data['tasks'] as List);
+        report.tasks = (data['tasks'] as List).length;
+      }
+      if (data['wallet'] is Map) {
+        hub.wallet.loadJson(Map<String, dynamic>.from(data['wallet'] as Map));
+        report.wallet = true;
+      }
       hub.changed();
     } catch (_) {
       report.warnings.add('human settings, tasks or wallet could not be restored');

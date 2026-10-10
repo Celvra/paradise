@@ -2210,50 +2210,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get humanChatCardFooter =>
-      'Injected before every reply so the voice stays the same. The assistant may tweak it over time.';
-
-  @override
-  String get humanChatSpeechStyle => 'Speaking style';
-
-  @override
-  String get humanChatCatchphrases => 'Catchphrases';
-
-  @override
-  String get humanChatCatchphrasesHint => 'Catchphrases (comma separated)';
-
-  @override
-  String get humanChatValues => 'Values';
-
-  @override
-  String get humanChatTaboos => 'Taboos';
-
-  @override
-  String get humanChatAddressStranger => 'Address: stranger';
-
-  @override
-  String get humanChatAddressAcquaintance => 'Address: acquaintance';
-
-  @override
-  String get humanChatAddressClose => 'Address: close';
-
-  @override
-  String get humanChatExportCard => 'Export card (chara_card_v2)';
-
-  @override
-  String get humanChatCardCopied => 'Card copied to the clipboard';
-
-  @override
-  String get humanChatImportCard => 'Import card from clipboard';
-
-  @override
-  String get humanChatImportCardTitle => 'Import card';
-
-  @override
-  String get humanChatImportCardFooter =>
-      'Overwrite replaces the card, merge only fills empty fields.';
-
-  @override
-  String get humanChatInvalidCard => 'Not a valid card';
+      'Your character sheet now lives in the world book: one book per role, fired by keywords, bound on the role\'s own card.';
 
   @override
   String get humanChatSchedule => 'Daily schedule';
@@ -2702,6 +2659,36 @@ class AppLocalizationsEn extends AppLocalizations {
   String get personaClingyMax => 'Max proactive in a row';
 
   @override
+  String get personaClingyQuietTitle => 'Quiet hours';
+
+  @override
+  String get personaClingyQuietSub =>
+      'No proactive messages inside this window, simulating sleep';
+
+  @override
+  String get personaClingyQuietStart => 'Starts at';
+
+  @override
+  String get personaClingyQuietEnd => 'Ends at';
+
+  @override
+  String get personaClingyUrgentTitle => 'Allow urgent messages';
+
+  @override
+  String get personaClingyUrgentSub =>
+      'Inside quiet hours the model may still speak up for a genuinely restless reason, deciding on its own; nothing is sent when it stays silent';
+
+  @override
+  String get personaClingyUrgentCap => 'Limit urgent count';
+
+  @override
+  String get personaClingyUrgentCapSub =>
+      'Max urgent messages per quiet window, so tokens are not burned through';
+
+  @override
+  String get personaClingyUrgentMax => 'Max urgent per window';
+
+  @override
   String personaClingyMinutes(int min) {
     return '$min min';
   }
@@ -2776,7 +2763,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get whatsNewBody =>
-      'What\'s new in this build:\n\n• Voice and drawing: switched on per role. Speech runs on the device voice or an OpenAI compatible /audio/speech, drawing on /v1/images/generations\n• A real about page: the dialog became a screen, with the open source licences and the contributors\n• Models by purpose: the picker separates chat models from image models, so a chat no longer offers the image endpoints\n• Video messages: send videos from the gallery or as files, and the AI can actually watch them\n• Inline files: small files are injected into the context so the AI truly reads them\n• Stickers: the AI reads a sticker\'s meaning before sending it, with thumbnails\n• Clinginess: choose how often the AI speaks first, with an optional cap on proactive messages\n• Shop rework: gifts now land in the chat as a card the AI actually receives\n• Auto backup: on by default, overwrite backups survive updates and reinstalls, restore offered on first launch\n• Model catalog: video capability flags corrected where the models.dev feed lags the provider (deepseek v4.1 flash)\n• Editor guard: every way out of the persona editor now asks before discarding edits\n• Fixed on Android: the chat list came up empty because the database failed to open. The messages were there all along\n• Fixed: a deleted message came back after a restart\n• Fixed: the what\'s new sheet was black text in night mode\n• UI and performance polish';
+      'What\'s new in this build:\n\n• World book: put the world, its rules, its taboos and how it addresses you into books that fire on their own keywords, bound per role. An entry can be constant, rolled on a probability, limited to the last N messages, injected before, after or at a depth inside the chat, grouped so one replaces another, ranked against a budget, and matched by regex or whole words with a second gate of keywords\n• SillyTavern compatible: world info files import and export, so a community lorebook moves across whole\n• Migration: the old character card (speaking style, catchphrases, values, taboos and the three stage addresses) automatically became a book on the role it belonged to; its old entry point now leads to the world book\n• Sandbox: paste a conversation and see at once which entries would fire, what the block looks like and how much of the budget it spends\n• Voice and drawing: switched on per role. Speech runs on the device voice or an OpenAI compatible /audio/speech, drawing on /v1/images/generations\n• A real about page: the dialog became a screen, with the open source licences and the contributors\n• Models by purpose: the picker separates chat models from image models, so a chat no longer offers the image endpoints\n• Video messages: send videos from the gallery or as files, and the AI can actually watch them\n• Inline files: small files are injected into the context so the AI truly reads them\n• Stickers: the AI reads a sticker\'s meaning before sending it, with thumbnails\n• Clinginess: choose how often the AI speaks first, with an optional cap on proactive messages\n• Shop rework: gifts now land in the chat as a card the AI actually receives\n• Auto backup: on by default, overwrite backups survive updates and reinstalls, restore offered on first launch\n• Model catalog: video capability flags corrected where the models.dev feed lags the provider (deepseek v4.1 flash)\n• Editor guard: every way out of the persona editor now asks before discarding edits\n• Fixed on Android: the chat list came up empty because the database failed to open. The messages were there all along\n• Fixed: a deleted message came back after a restart\n• Fixed: the what\'s new sheet was black text in night mode\n• UI and performance polish';
 
   @override
   String get attachCamera => 'Camera';
@@ -3220,10 +3207,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Reply while showing which message it replies to';
 
   @override
-  String get toolDescCharacterCard =>
-      'Let it tune its own character sheet slowly';
-
-  @override
   String get toolDescRating =>
       'Adjust how it tunes itself from how you replied';
 
@@ -3595,7 +3578,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Proactive messages and scheduled replies need notifications to reach you in time.';
 
   @override
-  String get onboardPermPhotosName => 'Photos';
+  String get onboardPermPhotosName => 'Media access';
 
   @override
   String get onboardPermPhotosWhy => 'Sending pictures and saving stickers.';
@@ -4053,14 +4036,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get autoBackupSub =>
-      'Each backup is a zip kept outside the app and never overwritten, so an update or reinstall cannot lose your data.';
+      'The latest backup is kept as a single zip outside the app and replaced on every run, so an update or reinstall cannot lose your data.';
 
   @override
   String get remoteBackupTitle => 'Remote backup';
 
   @override
   String get remoteBackupSub =>
-      'Push every automatic backup to WebDAV or S3, so a copy survives even if the phone is lost.';
+      'A dated copy of the backup is uploaded once a day to WebDAV or S3, so a copy survives even if the phone is lost.';
 
   @override
   String get remoteBackupOn => 'On';
@@ -4189,10 +4172,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get autoBackupRestoreAction => 'Restore';
 
   @override
+  String get autoBackupPickMessage =>
+      'A backup was found in Download/Paradise, but a fresh install cannot read it directly — Android protects files left by the old install. Tap below and pick paradise_autobackup.json to restore everything.';
+
+  @override
+  String get autoBackupPickAction => 'Choose backup file';
+
+  @override
   String get autoBackupRestored => 'Backup restored';
 
   @override
   String get autoBackupRestoreFailed => 'The backup could not be read';
+
+  @override
+  String get fullBackupRestoreTitle => 'Full backup found';
+
+  @override
+  String get fullBackupRestoreMessage =>
+      'A complete snapshot of all data was found (chats, personas, images, settings and API keys). Restore everything and restart? Declining leaves the backup on the device.';
+
+  @override
+  String get fullBackupRestoreAction => 'Restore all';
+
+  @override
+  String get fullBackupRestoreFailed => 'The full backup could not be restored';
 
   @override
   String get whatsNewEntry => 'What\'s new';
@@ -4403,4 +4406,505 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get speechTestFailed => 'Could not speak: ';
+
+  @override
+  String get storageTitle => 'Storage';
+
+  @override
+  String get storageSub =>
+      'See what each kind of data uses and clear the cache';
+
+  @override
+  String get storageUsage => 'Usage';
+
+  @override
+  String get storageTotal => 'Total';
+
+  @override
+  String get storageChats => 'Chat records';
+
+  @override
+  String get storageMedia => 'Media and files';
+
+  @override
+  String get storageStickers => 'Stickers';
+
+  @override
+  String get storageWallpaper => 'Wallpaper';
+
+  @override
+  String get storageBackups => 'Local backups';
+
+  @override
+  String get storageWorkspace => 'Workspace and environment';
+
+  @override
+  String get storageDatabase => 'Database';
+
+  @override
+  String get storageCache => 'Cache';
+
+  @override
+  String get storageOther => 'Other';
+
+  @override
+  String get storagePerAgent => 'Chat records by assistant';
+
+  @override
+  String get storageClear => 'Clear cache';
+
+  @override
+  String get storageClearTitle => 'Clear cache?';
+
+  @override
+  String get storageClearMessage =>
+      'Temporary files are removed. Chats, personas, stickers and settings are kept.';
+
+  @override
+  String get storageClearDone => 'Cache cleared';
+
+  @override
+  String get humanChatCardMoved => 'Character card in the world book';
+
+  @override
+  String get toolDescWorldEntry => 'Let it tune its own character sheet slowly';
+
+  @override
+  String get worldBookTitle => 'World book';
+
+  @override
+  String worldBookSummary(int on, int entries) {
+    return '$on books · $entries entries';
+  }
+
+  @override
+  String get worldBookIntro =>
+      'The world book holds the world: its places, its rules, its taboos and how it addresses you. An entry only reaches the model when its keywords fire or it is marked constant. Books are bound per role.';
+
+  @override
+  String get worldBookEmpty => 'No world book yet';
+
+  @override
+  String get worldBookEmptyBody =>
+      'Create one, or import a SillyTavern world info file.';
+
+  @override
+  String get worldBookAdd => 'Add a world book';
+
+  @override
+  String get worldBookAddNew => 'New book';
+
+  @override
+  String get worldBookAddPaste => 'Paste JSON';
+
+  @override
+  String get worldBookAddFile => 'Import file';
+
+  @override
+  String get worldBookDefaultName => 'New world';
+
+  @override
+  String get worldBookName => 'Book name';
+
+  @override
+  String get worldBookNameHint => 'Give it a name';
+
+  @override
+  String get worldBookImportTitle => 'Import world book';
+
+  @override
+  String get worldBookImportHint =>
+      'Paste a SillyTavern world info file, or JSON this app exported';
+
+  @override
+  String worldBookImported(int count) {
+    return 'Imported $count';
+  }
+
+  @override
+  String get worldBookInvalid => 'Invalid file';
+
+  @override
+  String get worldBookSettingsHeader => 'Injection';
+
+  @override
+  String get worldBookBudget => 'Injection budget';
+
+  @override
+  String worldBookBudgetValue(int k) {
+    return '${k}k characters';
+  }
+
+  @override
+  String get worldBookBudgetFooter =>
+      'Fired entries compete for this budget by priority; the rest is dropped this turn. Constant entries ignore the budget.';
+
+  @override
+  String get worldBookBookHeader => 'This book';
+
+  @override
+  String get worldBookBookFooter =>
+      'The kind decides how the block is worded when it reaches the model: rules read as orders, facts read as what is true.';
+
+  @override
+  String get worldBookKind => 'Kind';
+
+  @override
+  String get worldBookKindHint => 'How this book is described to the model';
+
+  @override
+  String get worldBookKindLabelGeneral => 'General';
+
+  @override
+  String get worldBookKindLabelFacts => 'World facts';
+
+  @override
+  String get worldBookKindLabelRules => 'World rules';
+
+  @override
+  String get worldBookKindLabelStyle => 'Style guide';
+
+  @override
+  String get worldBookKindLabelRelations => 'Relationship map';
+
+  @override
+  String get worldBookKindLabelScenes => 'Scene';
+
+  @override
+  String worldBookEntries(int count) {
+    return '$count entries';
+  }
+
+  @override
+  String get worldBookEntriesHeader => 'Entries';
+
+  @override
+  String worldBookEntriesFooter(int count) {
+    return '$count in total. Tap to edit, long press to delete.';
+  }
+
+  @override
+  String get worldBookEntriesEmpty => 'No entries yet';
+
+  @override
+  String get worldBookEntriesEmptyBody => 'Add one, or paste a body in.';
+
+  @override
+  String get worldBookEntryAdd => 'Add entry';
+
+  @override
+  String get worldBookEntryUntitled => 'Untitled entry';
+
+  @override
+  String get worldBookDataHeader => 'Data';
+
+  @override
+  String get worldBookExportSub => 'Export as SillyTavern world info JSON';
+
+  @override
+  String get worldBookDelete => 'Delete book';
+
+  @override
+  String worldBookDeleteMessage(String name) {
+    return '\"$name\" will be deleted. This cannot be undone.';
+  }
+
+  @override
+  String get worldBookGone => 'This book was deleted';
+
+  @override
+  String get worldBookEntryTitle => 'Entry';
+
+  @override
+  String get worldBookEntryBodyHeader => 'Body';
+
+  @override
+  String get worldBookEntryBodyFooter =>
+      'The comment is injected with the content, so the model can attribute a line and you can spot it in the trace.';
+
+  @override
+  String get worldBookEntryComment => 'Comment';
+
+  @override
+  String get worldBookEntryCommentHint => 'What this entry is';
+
+  @override
+  String get worldBookEntryContent => 'Content';
+
+  @override
+  String get worldBookEntryContentHint => 'What the model reads';
+
+  @override
+  String get worldBookEntryKeys => 'Keywords';
+
+  @override
+  String get worldBookEntryKeysHint =>
+      'Any one fires the entry. Separate with commas to add several.';
+
+  @override
+  String get worldBookEntrySecondary => 'Secondary keywords';
+
+  @override
+  String get worldBookEntrySecondaryHint =>
+      'One more condition on top of the primary';
+
+  @override
+  String get worldBookKeysNone => 'No keywords yet';
+
+  @override
+  String get worldBookKeyAdd => 'Add keyword';
+
+  @override
+  String get worldBookEntryTriggerHeader => 'Trigger';
+
+  @override
+  String get worldBookEntryTriggerFooter =>
+      'The probability is rolled per request; the same seed gives the same roll for the same turn.';
+
+  @override
+  String get worldBookEntryLogic => 'Combination';
+
+  @override
+  String get worldBookLogicLabelAnySecondary => 'Any secondary';
+
+  @override
+  String get worldBookLogicLabelNotAnySecondary => 'No secondary';
+
+  @override
+  String get worldBookLogicLabelAllSecondary => 'All secondary';
+
+  @override
+  String get worldBookLogicLabelNotAllSecondary => 'Not all secondary';
+
+  @override
+  String get worldBookLogicSubAnySecondary =>
+      'Primary hit AND at least one secondary hit';
+
+  @override
+  String get worldBookLogicSubNotAnySecondary =>
+      'Primary hit AND no secondary hit';
+
+  @override
+  String get worldBookLogicSubAllSecondary =>
+      'Primary hit AND every secondary hit';
+
+  @override
+  String get worldBookLogicSubNotAllSecondary =>
+      'Primary hit AND not every secondary hit';
+
+  @override
+  String get worldBookEntryProbability => 'Trigger chance';
+
+  @override
+  String get worldBookEntryCaseSensitive => 'Case sensitive';
+
+  @override
+  String get worldBookEntryWholeWords => 'Whole words only';
+
+  @override
+  String get worldBookEntryRegex => 'Regular expression';
+
+  @override
+  String get worldBookEntryWhenHeader => 'When it fires';
+
+  @override
+  String get worldBookEntryWhenFooter =>
+      'Constant entries ignore both keywords and budget, and inject every turn.';
+
+  @override
+  String get worldBookConstant => 'Always on';
+
+  @override
+  String get worldBookConstantSub =>
+      'Injected whether the keywords fire or not';
+
+  @override
+  String get worldBookEntryScanDepth => 'Scan depth';
+
+  @override
+  String get worldBookEntryScanAll => 'Whole history';
+
+  @override
+  String get worldBookEntryPosition => 'Position';
+
+  @override
+  String get worldBookPositionLabelBeforeChar => 'Before the character';
+
+  @override
+  String get worldBookPositionLabelAfterChar => 'After the character';
+
+  @override
+  String get worldBookPositionLabelAtDepth => 'In the chat, at depth';
+
+  @override
+  String get worldBookPositionLabelBottomNote => 'End of the system prompt';
+
+  @override
+  String get worldBookPositionSubBeforeChar =>
+      'Ahead of the character definition, read first';
+
+  @override
+  String get worldBookPositionSubAfterChar =>
+      'Right behind the character definition';
+
+  @override
+  String get worldBookPositionSubAtDepth => 'A history turn, n messages back';
+
+  @override
+  String get worldBookPositionSubBottomNote =>
+      'The last block, closest to the conversation';
+
+  @override
+  String get worldBookEntryDepth => 'Depth';
+
+  @override
+  String get worldBookEntryRole => 'Role';
+
+  @override
+  String get worldBookRoleLabelSystem => 'System';
+
+  @override
+  String get worldBookRoleLabelUser => 'User';
+
+  @override
+  String get worldBookRoleLabelAssistant => 'Assistant';
+
+  @override
+  String get worldBookEntryStackHeader => 'Groups and order';
+
+  @override
+  String get worldBookEntryStackFooter =>
+      'Entries sharing a group fire as one: the highest weight wins, which is how a season or a stage replaces an earlier one.';
+
+  @override
+  String get worldBookEntryGroup => 'Group';
+
+  @override
+  String get worldBookEntryGroupHint =>
+      'Same name means mutually exclusive. Empty means no group.';
+
+  @override
+  String get worldBookEntryGroupWeight => 'Group weight';
+
+  @override
+  String get worldBookEntryGroupWeightSub =>
+      'Which member wins when several of the group fire';
+
+  @override
+  String get worldBookEntryPriority => 'Priority';
+
+  @override
+  String get worldBookEntryPrioritySub =>
+      'Higher survives a tight budget first';
+
+  @override
+  String get worldBookEntryAiEditable => 'AI may refine';
+
+  @override
+  String get worldBookEntryAiEditableSub =>
+      'The assistant may slowly edit this entry with update_world_entry';
+
+  @override
+  String get worldBookEntryDelete => 'Delete entry';
+
+  @override
+  String get worldBookTplBlank => 'Blank entry';
+
+  @override
+  String get worldBookTplBlankSub => 'Start from nothing';
+
+  @override
+  String get worldBookTplPlace => 'Place';
+
+  @override
+  String get worldBookTplPlaceSub => 'A location, region or building';
+
+  @override
+  String get worldBookTplItem => 'Thing';
+
+  @override
+  String get worldBookTplItemSub => 'An object, weapon or token';
+
+  @override
+  String get worldBookTplRule => 'Rule';
+
+  @override
+  String get worldBookTplRuleSub => 'Something that must or must never happen';
+
+  @override
+  String get worldBookTplRelation => 'Relationship';
+
+  @override
+  String get worldBookTplRelationSub => 'A tie and the stance it carries';
+
+  @override
+  String get worldBookTplStyle => 'Speaking style';
+
+  @override
+  String get worldBookTplStyleSub => 'Constant. Sets tone and word choice';
+
+  @override
+  String get worldBookTplAddress => 'Address (by closeness)';
+
+  @override
+  String get worldBookTplAddressSub =>
+      'Constant. Stranger, acquaintance, close';
+
+  @override
+  String get worldBookTplAddressComment =>
+      'Address (how you call the user, by closeness)';
+
+  @override
+  String get worldBookBind => 'World';
+
+  @override
+  String get worldBookBindSub => 'The books this role lives in.';
+
+  @override
+  String get worldBookBindNone => 'No world';
+
+  @override
+  String worldBookBindCount(int count) {
+    return '$count books bound';
+  }
+
+  @override
+  String get worldBookBindPicker => 'Choose world books';
+
+  @override
+  String get worldBookSandbox => 'Sandbox';
+
+  @override
+  String get worldBookSandboxHeader => 'Try a conversation';
+
+  @override
+  String get worldBookSandboxFooter =>
+      'Paste a few lines of a real conversation and see which entries fire, and where they land.';
+
+  @override
+  String get worldBookSandboxInput => 'Conversation';
+
+  @override
+  String get worldBookSandboxHint =>
+      'One message per line, as the model reads it';
+
+  @override
+  String get worldBookSandboxRun => 'Run';
+
+  @override
+  String get worldBookSandboxNone => 'No entry fired';
+
+  @override
+  String get worldBookSandboxDropped => 'Dropped by the budget';
+
+  @override
+  String get worldBookSandboxSpent => 'Injected size';
+
+  @override
+  String worldBookSandboxRecursion(int count) {
+    return 'Recursion traced $count layers';
+  }
+
+  @override
+  String get worldBookEnabled => 'Enable this book';
 }

@@ -114,6 +114,7 @@ enum Ic {
   eye,
   download,
   wrap,
+  book,
   hidden
 }
 

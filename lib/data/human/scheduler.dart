@@ -245,7 +245,10 @@ class Scheduler {
     }
     if (cfg.dnd) return const Gate(Verdict.skip, 'do not disturb is on');
     if (cfg.inQuietHours(now)) {
-      if (!(t.urgent && cfg.allowUrgent)) return Gate(Verdict.defer, 'quiet hours', until: _quietEnd(now, cfg));
+      // a clingy urgent check already passed its own persona level opt in,
+      // quota and dice, so the global quiet hours must not defer it again
+      final clingyUrgent = t.urgent && t.tag.startsWith('clingy:');
+      if (!(t.urgent && (cfg.allowUrgent || clingyUrgent))) return Gate(Verdict.defer, 'quiet hours', until: _quietEnd(now, cfg));
     }
     // a clingy check-in is a switch the user set on purpose: it fires when the
     // silence is long enough, not when the mood dice feel like it, and a young
@@ -282,7 +285,8 @@ class Scheduler {
   /// writes what is said. With [persona] the clingy switch joins the list: a
   /// persona that misses the user queues one check-in after the configured
   /// silence, at most one at a time.
-  List<ScheduledTask> autoTasks({required String chatId, required HumanState s, required HumanSettings cfg, required int now, Persona? persona}) {
+  List<ScheduledTask> autoTasks({required String chatId, required HumanState s, required HumanSettings cfg, required int now, Persona? persona, HumanRandom? rng}) {
+    final dice = rng ?? HumanRandom(Random());
     final out = <ScheduledTask>[];
     final d = DateTime.fromMillisecondsSinceEpoch(now);
     final day = '${d.year}-${d.month}-${d.day}';
@@ -317,16 +321,68 @@ class Scheduler {
       // silence counts from the newest message on either side, so a check-in
       // that just went out restarts the wait instead of chaining into more
       final silentFor = now - max(s.lastUserAt, s.lastAiAt);
-      final underCap = !persona.clingyCap || s.consecutiveProactive < persona.clingyMax;
       final tag = 'clingy:$chatId';
-      if (intervalMs > 0 && silentFor >= intervalMs && underCap && !tasks.any((t) => t.open && t.tag == tag)) {
-        final t = schedule(chatId: chatId, delayMs: 0, prompt: 'The user has been quiet for a while. Check in on them, in your own tone, do not nag.', condition: 'user_silent', type: ProactiveType.checkin, now: now);
-        t.tag = tag;
-        out.add(t);
+      if (intervalMs > 0 && silentFor >= intervalMs && !tasks.any((t) => t.open && t.tag == tag)) {
+        final inQuiet = persona.clingyQuietOn && inClingyQuiet(now, persona.clingyQuietStart, persona.clingyQuietEnd);
+        if (inQuiet) {
+          // the persona is "asleep": no ordinary check-in. An allowed urgent
+          // check rolls the dice instead — the model itself decides whether
+          // anything cannot wait, and answers <silent> when nothing does
+          if (persona.clingyUrgent && clingyUrgentBudgetLeft(persona, s, now) && dice.chance(0.35)) {
+            if (s.clingyUrgentStamp == 0 || now - s.clingyUrgentStamp > 12 * 3600000) {
+              // first urgent check of a fresh stretch: the stamp is what makes
+              // the quota per stretch instead of per message
+              s.clingyUrgentStamp = now;
+              s.clingyUrgentCount = 1;
+            } else {
+              s.clingyUrgentCount++;
+            }
+            final t = schedule(
+              chatId: chatId,
+              delayMs: 0,
+              prompt: 'Quiet hours are on, the user is likely asleep. You may ONLY speak if something genuinely cannot wait: you cannot sleep, something exciting just happened, or you are truly worried. If nothing qualifies, reply with exactly <silent> and nothing else. Otherwise one short message in your own tone.',
+              condition: 'user_silent',
+              type: ProactiveType.checkin,
+              urgent: true,
+              now: now,
+            );
+            t.tag = tag;
+            out.add(t);
+          }
+        } else {
+          // a fresh stretch outside the window resets the urgent quota
+          if (s.clingyUrgentCount > 0 && s.clingyUrgentStamp > 0 && now - s.clingyUrgentStamp > 12 * 3600000) {
+            s.clingyUrgentCount = 0;
+          }
+          final underCap = !persona.clingyCap || s.consecutiveProactive < persona.clingyMax;
+          if (underCap) {
+            final t = schedule(chatId: chatId, delayMs: 0, prompt: 'The user has been quiet for a while. Check in on them, in your own tone, do not nag.', condition: 'user_silent', type: ProactiveType.checkin, now: now);
+            t.tag = tag;
+            out.add(t);
+          }
+        }
       }
     }
     s.autoKeys.removeWhere((k) => !k.startsWith(day) && !k.startsWith('ice:'));
     return out;
+  }
+
+  /// Whether [now] falls inside the clingy quiet window. Start after end is
+  /// an overnight window, the common shape for "sleeping hours".
+  static bool inClingyQuiet(int now, int start, int end) {
+    if (start == end) return false;
+    final d = DateTime.fromMillisecondsSinceEpoch(now);
+    final m = d.hour * 60 + d.minute;
+    return start < end ? (m >= start && m < end) : (m >= start || m < end);
+  }
+
+  /// Urgent quota for the current quiet stretch. The counter lives on the
+  /// chat state and is stamped when the first urgent check of a stretch is
+  /// queued; a cap of zero means unlimited.
+  static bool clingyUrgentBudgetLeft(Persona persona, HumanState s, int now) {
+    if (!persona.clingyUrgentCap) return true;
+    if (s.clingyUrgentStamp == 0 || now - s.clingyUrgentStamp > 12 * 3600000) return true;
+    return s.clingyUrgentCount < persona.clingyUrgentMax;
   }
 
   /// Old finished tasks are kept for the debug panel but not forever.

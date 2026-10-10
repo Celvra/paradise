@@ -2683,65 +2683,9 @@
   "@humanChatCardHeader": {
     "description": "Section header of the character card"
   },
-  "humanChatCardFooter": "每次回覆前都會注入，讓語氣保持一致，助理可能會慢慢微調。",
+  "humanChatCardFooter": "人設現在住在世界書裡：每個角色一本，按關鍵詞觸發，可從角色卡綁定。",
   "@humanChatCardFooter": {
-    "description": "Section footer of the character card"
-  },
-  "humanChatSpeechStyle": "說話風格",
-  "@humanChatSpeechStyle": {
-    "description": "Field of the character card"
-  },
-  "humanChatCatchphrases": "口頭禪",
-  "@humanChatCatchphrases": {
-    "description": "Field of the character card"
-  },
-  "humanChatCatchphrasesHint": "口頭禪（以逗號分隔）",
-  "@humanChatCatchphrasesHint": {
-    "description": "Prompt title for the catchphrase list"
-  },
-  "humanChatValues": "價值觀",
-  "@humanChatValues": {
-    "description": "Field of the character card"
-  },
-  "humanChatTaboos": "禁忌",
-  "@humanChatTaboos": {
-    "description": "Field of the character card"
-  },
-  "humanChatAddressStranger": "稱呼：陌生人",
-  "@humanChatAddressStranger": {
-    "description": "Field of the character card"
-  },
-  "humanChatAddressAcquaintance": "稱呼：熟人",
-  "@humanChatAddressAcquaintance": {
-    "description": "Field of the character card"
-  },
-  "humanChatAddressClose": "稱呼：親近的人",
-  "@humanChatAddressClose": {
-    "description": "Field of the character card"
-  },
-  "humanChatExportCard": "匯出角色卡（chara_card_v2）",
-  "@humanChatExportCard": {
-    "description": "Row that copies the card as json"
-  },
-  "humanChatCardCopied": "角色卡已複製到剪貼簿",
-  "@humanChatCardCopied": {
-    "description": "Bulletin after copying the card"
-  },
-  "humanChatImportCard": "從剪貼簿匯入角色卡",
-  "@humanChatImportCard": {
-    "description": "Row that imports the card from the clipboard"
-  },
-  "humanChatImportCardTitle": "匯入角色卡",
-  "@humanChatImportCardTitle": {
-    "description": "Dialog title of the card import"
-  },
-  "humanChatImportCardFooter": "覆蓋會取代整張角色卡，合併只填補空白欄位。",
-  "@humanChatImportCardFooter": {
-    "description": "Body of the card import mode picker"
-  },
-  "humanChatInvalidCard": "角色卡無效",
-  "@humanChatInvalidCard": {
-    "description": "Bulletin when the card payload is broken"
+    "description": "Section footer that points at the world book"
   },
   "humanChatSchedule": "每日行程",
   "@humanChatSchedule": {
@@ -3367,6 +3311,42 @@
   "@personaClingyMax": {
     "description": "Row that picks the cap on consecutive proactive messages"
   },
+  "personaClingyQuietTitle": "安靜時段",
+  "@personaClingyQuietTitle": {
+    "description": "Switch for the time window with no proactive messages"
+  },
+  "personaClingyQuietSub": "這個時段內不主動發消息，模擬睡覺",
+  "@personaClingyQuietSub": {
+    "description": "Subtitle of the quiet hours switch"
+  },
+  "personaClingyQuietStart": "開始時間",
+  "@personaClingyQuietStart": {
+    "description": "Row that picks when the quiet hours begin"
+  },
+  "personaClingyQuietEnd": "結束時間",
+  "@personaClingyQuietEnd": {
+    "description": "Row that picks when the quiet hours end"
+  },
+  "personaClingyUrgentTitle": "允許緊急發話",
+  "@personaClingyUrgentTitle": {
+    "description": "Switch that lets the model speak up inside quiet hours when it truly has to"
+  },
+  "personaClingyUrgentSub": "時段內真有睡不著的理由時仍可能發消息，由 AI 自行判斷；它選擇沉默時不會發送任何內容",
+  "@personaClingyUrgentSub": {
+    "description": "Subtitle of the urgent messages switch"
+  },
+  "personaClingyUrgentCap": "限制緊急次數",
+  "@personaClingyUrgentCap": {
+    "description": "Switch that caps urgent messages per quiet window"
+  },
+  "personaClingyUrgentCapSub": "每個安靜時段最多緊急發話的次數，防止刷 token",
+  "@personaClingyUrgentCapSub": {
+    "description": "Subtitle of the urgent count limit switch"
+  },
+  "personaClingyUrgentMax": "每時段最多緊急",
+  "@personaClingyUrgentMax": {
+    "description": "Row that picks the cap on urgent messages in one quiet window"
+  },
   "personaClingyMinutes": "{min} 分鐘",
   "@personaClingyMinutes": {
     "description": "Minutes label for the clinginess interval picker",
@@ -3471,7 +3451,7 @@
       }
     }
   },
-  "whatsNewBody": "本次更新內容：\n\n• 語音與畫圖：每個角色單獨開關。語音可用裝置 TTS 或 OpenAI 相容的 /audio/speech，畫圖走 /v1/images/generations\n• 關於頁重做：從彈窗改成獨立頁面，並附上開源授權列表與貢獻者名單\n• 模型分檔：模型選擇器按對話 / 生圖分開，選對話模型不再混進生圖模型\n• 視訊訊息：相簿與檔案均可傳送視訊，AI 能看懂視訊內容\n• 檔案直讀：小檔案直接注入上下文，AI 真正讀到內容\n• 貼紙三件套：AI 先讀懂表情包含義再主動傳送，並顯示縮圖\n• 黏人度：可配置 AI 主動發話的頻率與次數上限\n• 商城改版：購買後跳轉聊天，禮物以卡片送達且 AI 真正收到\n• 自動備份：預設開啟，覆蓋式備份可隨更新與重裝存活，首次啟動偵測到備份可一鍵恢復\n• 模型目錄：修正 models.dev 資料滌後導致的視訊能力誤判（DeepSeek V4.1 Flash）\n• 編輯器保護：人設編輯器所有退出方式都會先確認再丟棄修改\n• 修復 Android 上聊天記錄讀不出來：資料庫開啟失敗導致列表空白，訊息其實都還在\n• 修復刪除的訊息重啟後復活\n• 修復更新內容弹窗在夜間模式下的黑字\n• 介面與效能優化",
+  "whatsNewBody": "本次更新內容：\n\n• 世界書：把世界觀、設定、禁忌和稱呼寫進一本書，按關鍵詞觸發，從角色卡綁定；條目可設常駐、觸發機率、掃描深度、注入位置與對話深度、互斥組與優先權，支援正規表示式、全詞比對與次級關鍵詞，命中的條目還能繼續牽出更多設定\n• 相容 SillyTavern：世界書 JSON 可匯入匯出，社群的世界觀可以整本搬過來\n• 遷移：舊版角色卡（說話風格、口頭禪、價值觀、禁忌、三階段稱呼）自動變成該角色的預設世界書，原入口改為導向世界書\n• 測試沙盒：貼上一段對話，立刻看到哪些條目會命中、注入後的樣子與預算佔用\n• 語音與畫圖：每個角色單獨開關。語音可用裝置 TTS 或 OpenAI 相容的 /audio/speech，畫圖走 /v1/images/generations\n• 關於頁重做：從彈窗改成獨立頁面，並附上開源授權列表與貢獻者名單\n• 模型分檔：模型選擇器按對話 / 生圖分開，選對話模型不再混進生圖模型\n• 視訊訊息：相簿與檔案均可傳送視訊，AI 能看懂視訊內容\n• 檔案直讀：小檔案直接注入上下文，AI 真正讀到內容\n• 貼紙三件套：AI 先讀懂表情包含義再主動傳送，並顯示縮圖\n• 黏人度：可配置 AI 主動發話的頻率與次數上限\n• 商城改版：購買後跳轉聊天，禮物以卡片送達且 AI 真正收到\n• 自動備份：預設開啟，覆蓋式備份可隨更新與重裝存活，首次啟動偵測到備份可一鍵恢復\n• 模型目錄：修正 models.dev 資料滌後導致的視訊能力誤判（DeepSeek V4.1 Flash）\n• 編輯器保護：人設編輯器所有退出方式都會先確認再丟棄修改\n• 修復 Android 上聊天記錄讀不出來：資料庫開啟失敗導致列表空白，訊息其實都還在\n• 修復刪除的訊息重啟後復活\n• 修復更新內容弹窗在夜間模式下的黑字\n• 介面與效能優化",
   "@whatsNewBody": {
     "description": "Body of the one-time whats-new dialog, one bullet per line"
   },
@@ -3650,7 +3630,6 @@
   "toolDescPinMessage": "在對話裡置頂或取消置頂一則訊息",
   "toolDescEditMessage": "改寫它自己先前發過的一則訊息",
   "toolDescQuoteMessage": "引用某則訊息來回覆",
-  "toolDescCharacterCard": "讓它緩慢微調自己的人設",
   "toolDescRating": "根據你的回應調整它的自我調校",
   "toolDescSendSticker": "從表情庫發一張貼紙",
   "toolDescSaveSticker": "把你發過的梗圖存進表情庫",
@@ -3766,7 +3745,7 @@
   "onboardPermDenied": "已被拒絕。可以到系統設定裡開啟。",
   "onboardPermNotifName": "通知",
   "onboardPermNotifWhy": "主動傳訊和排定回覆要靠通知才能即時提醒你。",
-  "onboardPermPhotosName": "照片",
+  "onboardPermPhotosName": "訪問媒體",
   "onboardPermPhotosWhy": "傳送圖片、儲存貼圖。",
   "onboardPrivacyTitle": "隱私協議",
   "onboardPrivacyIntro": "開始前請讀一遍。我們故意寫得很短。",
@@ -4031,9 +4010,9 @@
     "description": "技能下載時的提示"
   },
   "autoBackupTitle": "自動備份",
-  "autoBackupSub": "每次備份都是一個保存在應用程式外部的 zip，不會覆蓋舊檔案，更新或重裝後仍可找回。",
+  "autoBackupSub": "最新備份以單個 zip 保存在應用程式外部，每次都會覆蓋上一次，更新或重裝後仍可找回。",
   "remoteBackupTitle": "遠端備份",
-  "remoteBackupSub": "把每次自動備份同步到 WebDAV 或 S3，即使手機遺失也留有一份。",
+  "remoteBackupSub": "每天把一份按日期命名的備份上傳到 WebDAV 或 S3，即使手機遺失也留有一份。",
   "remoteBackupOn": "已啟用",
   "remoteBackupOff": "未啟用",
   "remoteBackupKind": "協定",
@@ -4061,7 +4040,6 @@
   "remoteBackupNone": "遠端找不到備份",
   "remoteBackupNotConfigured": "請先填寫並儲存設定",
   "remoteBackupSaved": "遠端設定已儲存",
-
   "autoBackupModeChange": "資料變更時自動備份（推薦）",
   "autoBackupModeInterval": "每隔 {n} 小時",
   "@autoBackupModeInterval": {
@@ -4109,8 +4087,17 @@
     }
   },
   "autoBackupRestoreAction": "恢復",
+  "autoBackupPickMessage": "在 下載/Paradise 資料夾找到了備份，但新安裝的應用無法直接讀取——系統會保護舊安裝留下的檔案。點下方按鈕手動選擇 paradise_autobackup.json 即可恢復全部資料。",
+  "autoBackupPickAction": "選擇備份檔案",
   "autoBackupRestored": "備份已恢復",
   "autoBackupRestoreFailed": "備份讀取失敗",
+  "fullBackupRestoreTitle": "發現完整備份",
+  "fullBackupRestoreMessage": "發現一份全部資料的完整快照（聊天記錄、人設、圖片、設定和 API KEY）。恢復全部內容並重啟嗎？取消則保留備份檔案。",
+  "@fullBackupRestoreMessage": {
+    "description": "full zip backup restore offer on a fresh install"
+  },
+  "fullBackupRestoreAction": "全部恢復",
+  "fullBackupRestoreFailed": "完整備份恢復失敗",
   "whatsNewEntry": "更新說明",
   "@whatsNewEntry": {
     "description": "Settings row that reopens the current version highlights"
@@ -4178,5 +4165,602 @@
   "speechTest": "試聽語音",
   "speechTestSub": "用目前引擎朗讀一行",
   "speechTestLine": "你好，這是語音測試。",
-  "speechTestFailed": "無法朗讀："
+  "speechTestFailed": "無法朗讀：",
+  "storageTitle": "儲存",
+  "storageSub": "檢視各類資料的佔用並清除快取",
+  "storageUsage": "佔用",
+  "storageTotal": "總計",
+  "storageChats": "聊天記錄",
+  "storageMedia": "媒體與檔案",
+  "storageStickers": "表情貼圖",
+  "storageWallpaper": "桌布",
+  "storageBackups": "本機備份",
+  "storageWorkspace": "工作區與環境",
+  "storageDatabase": "資料庫",
+  "storageCache": "快取",
+  "storageOther": "其他",
+  "storagePerAgent": "各智慧體的聊天記錄",
+  "storageClear": "清除快取",
+  "storageClearTitle": "清除快取？",
+  "storageClearMessage": "將刪除暫存檔案，聊天記錄、人設、表情貼圖和設定都會保留。",
+  "storageClearDone": "快取已清除",
+  "humanChatCardMoved": "世界書裡的角色卡",
+  "@humanChatCardMoved": {
+    "description": "Row that opens the world book page"
+  },
+  "toolDescWorldEntry": "讓它緩慢微調自己的人設",
+  "@toolDescWorldEntry": {
+    "description": "What update_world_entry does"
+  },
+  "worldBookTitle": "世界書",
+  "@worldBookTitle": {
+    "description": "World book UI"
+  },
+  "worldBookSummary": "{on} 本 · {entries} 條",
+  "@worldBookSummary": {
+    "description": "World book UI",
+    "placeholders": {
+      "on": {
+        "type": "int"
+      },
+      "entries": {
+        "type": "int"
+      }
+    }
+  },
+  "worldBookIntro": "世界書是存放世界觀、設定、禁忌與稱呼的地方。條目只有在自己關鍵詞命中或標記為常駐時才會注入，並按角色綁定。",
+  "@worldBookIntro": {
+    "description": "World book UI"
+  },
+  "worldBookEmpty": "還沒有世界書",
+  "@worldBookEmpty": {
+    "description": "World book UI"
+  },
+  "worldBookEmptyBody": "新增一本，或從 SillyTavern 的世界書 JSON 匯入。",
+  "@worldBookEmptyBody": {
+    "description": "World book UI"
+  },
+  "worldBookAdd": "新增世界書",
+  "@worldBookAdd": {
+    "description": "World book UI"
+  },
+  "worldBookAddNew": "新增",
+  "@worldBookAddNew": {
+    "description": "World book UI"
+  },
+  "worldBookAddPaste": "貼上匯入",
+  "@worldBookAddPaste": {
+    "description": "World book UI"
+  },
+  "worldBookAddFile": "從檔案匯入",
+  "@worldBookAddFile": {
+    "description": "World book UI"
+  },
+  "worldBookDefaultName": "新世界",
+  "@worldBookDefaultName": {
+    "description": "World book UI"
+  },
+  "worldBookName": "世界書名",
+  "@worldBookName": {
+    "description": "World book UI"
+  },
+  "worldBookNameHint": "幫它取個名字",
+  "@worldBookNameHint": {
+    "description": "World book UI"
+  },
+  "worldBookImportTitle": "匯入世界書",
+  "@worldBookImportTitle": {
+    "description": "World book UI"
+  },
+  "worldBookImportHint": "貼上 SillyTavern 世界書 JSON，或本應用匯出的 JSON",
+  "@worldBookImportHint": {
+    "description": "World book UI"
+  },
+  "worldBookImported": "已匯入 {count} 本",
+  "@worldBookImported": {
+    "description": "World book UI",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "worldBookInvalid": "檔案無效",
+  "@worldBookInvalid": {
+    "description": "World book UI"
+  },
+  "worldBookSettingsHeader": "注入設定",
+  "@worldBookSettingsHeader": {
+    "description": "World book UI"
+  },
+  "worldBookBudget": "注入預算",
+  "@worldBookBudget": {
+    "description": "World book UI"
+  },
+  "worldBookBudgetValue": "{k} 千字元",
+  "@worldBookBudgetValue": {
+    "description": "World book UI",
+    "placeholders": {
+      "k": {
+        "type": "int"
+      }
+    }
+  },
+  "worldBookBudgetFooter": "命中條目依優先權爭奪這份預算，超出部分本輪會被丟棄；標記為常駐的條目不受預算限制。",
+  "@worldBookBudgetFooter": {
+    "description": "World book UI"
+  },
+  "worldBookBookHeader": "這本書",
+  "@worldBookBookHeader": {
+    "description": "World book UI"
+  },
+  "worldBookBookFooter": "類型決定注入時的說法：規則會被當成必須遵守的指令，事實會被當成既成背景。",
+  "@worldBookBookFooter": {
+    "description": "World book UI"
+  },
+  "worldBookKind": "類型",
+  "@worldBookKind": {
+    "description": "World book UI"
+  },
+  "worldBookKindHint": "注入時怎麼描述這本書",
+  "@worldBookKindHint": {
+    "description": "World book UI"
+  },
+  "worldBookKindLabelGeneral": "綜合",
+  "@worldBookKindLabelGeneral": {
+    "description": "World book UI"
+  },
+  "worldBookKindLabelFacts": "世界事實",
+  "@worldBookKindLabelFacts": {
+    "description": "World book UI"
+  },
+  "worldBookKindLabelRules": "世界規則",
+  "@worldBookKindLabelRules": {
+    "description": "World book UI"
+  },
+  "worldBookKindLabelStyle": "風格指南",
+  "@worldBookKindLabelStyle": {
+    "description": "World book UI"
+  },
+  "worldBookKindLabelRelations": "關係圖",
+  "@worldBookKindLabelRelations": {
+    "description": "World book UI"
+  },
+  "worldBookKindLabelScenes": "場景",
+  "@worldBookKindLabelScenes": {
+    "description": "World book UI"
+  },
+  "worldBookEntries": "{count} 條",
+  "@worldBookEntries": {
+    "description": "World book UI",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "worldBookEntriesHeader": "條目",
+  "@worldBookEntriesHeader": {
+    "description": "World book UI"
+  },
+  "worldBookEntriesFooter": "共 {count} 條。點擊編輯，長按刪除。",
+  "@worldBookEntriesFooter": {
+    "description": "World book UI",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "worldBookEntriesEmpty": "還沒有條目",
+  "@worldBookEntriesEmpty": {
+    "description": "World book UI"
+  },
+  "worldBookEntriesEmptyBody": "新增條目，或直接貼上內容。",
+  "@worldBookEntriesEmptyBody": {
+    "description": "World book UI"
+  },
+  "worldBookEntryAdd": "新增條目",
+  "@worldBookEntryAdd": {
+    "description": "World book UI"
+  },
+  "worldBookEntryUntitled": "未命名條目",
+  "@worldBookEntryUntitled": {
+    "description": "World book UI"
+  },
+  "worldBookDataHeader": "資料",
+  "@worldBookDataHeader": {
+    "description": "World book UI"
+  },
+  "worldBookExportSub": "匯出為 SillyTavern 世界書 JSON",
+  "@worldBookExportSub": {
+    "description": "World book UI"
+  },
+  "worldBookDelete": "刪除這本書",
+  "@worldBookDelete": {
+    "description": "World book UI"
+  },
+  "worldBookDeleteMessage": "「{name}」將被刪除，無法復原。",
+  "@worldBookDeleteMessage": {
+    "description": "Confirm body of the book delete",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "worldBookGone": "這本書已被刪除",
+  "@worldBookGone": {
+    "description": "World book UI"
+  },
+  "worldBookEntryTitle": "條目",
+  "@worldBookEntryTitle": {
+    "description": "World book UI"
+  },
+  "worldBookEntryBodyHeader": "內容",
+  "@worldBookEntryBodyHeader": {
+    "description": "World book UI"
+  },
+  "worldBookEntryBodyFooter": "標題會隨內容一起注入，方便模型引用，也方便你在除錯時辨認。",
+  "@worldBookEntryBodyFooter": {
+    "description": "World book UI"
+  },
+  "worldBookEntryComment": "標題",
+  "@worldBookEntryComment": {
+    "description": "World book UI"
+  },
+  "worldBookEntryCommentHint": "這是什麼",
+  "@worldBookEntryCommentHint": {
+    "description": "World book UI"
+  },
+  "worldBookEntryContent": "內容",
+  "@worldBookEntryContent": {
+    "description": "World book UI"
+  },
+  "worldBookEntryContentHint": "模型讀到的內容",
+  "@worldBookEntryContentHint": {
+    "description": "World book UI"
+  },
+  "worldBookEntryKeys": "關鍵詞",
+  "@worldBookEntryKeys": {
+    "description": "World book UI"
+  },
+  "worldBookEntryKeysHint": "任一命中即觸發。以逗號分隔可一次新增多個。",
+  "@worldBookEntryKeysHint": {
+    "description": "World book UI"
+  },
+  "worldBookEntrySecondary": "次級關鍵詞",
+  "@worldBookEntrySecondary": {
+    "description": "World book UI"
+  },
+  "worldBookEntrySecondaryHint": "在主要關鍵詞之上再加一層條件",
+  "@worldBookEntrySecondaryHint": {
+    "description": "World book UI"
+  },
+  "worldBookKeysNone": "尚未設定關鍵詞",
+  "@worldBookKeysNone": {
+    "description": "World book UI"
+  },
+  "worldBookKeyAdd": "新增關鍵詞",
+  "@worldBookKeyAdd": {
+    "description": "World book UI"
+  },
+  "worldBookEntryTriggerHeader": "觸發條件",
+  "@worldBookEntryTriggerHeader": {
+    "description": "World book UI"
+  },
+  "worldBookEntryTriggerFooter": "機率每次重新擲骰；同一個種子下同一輪會得到相同結果。",
+  "@worldBookEntryTriggerFooter": {
+    "description": "World book UI"
+  },
+  "worldBookEntryLogic": "組合邏輯",
+  "@worldBookEntryLogic": {
+    "description": "World book UI"
+  },
+  "worldBookLogicLabelAnySecondary": "任一命中",
+  "@worldBookLogicLabelAnySecondary": {
+    "description": "World book UI"
+  },
+  "worldBookLogicLabelNotAnySecondary": "無一命中",
+  "@worldBookLogicLabelNotAnySecondary": {
+    "description": "World book UI"
+  },
+  "worldBookLogicLabelAllSecondary": "全部命中",
+  "@worldBookLogicLabelAllSecondary": {
+    "description": "World book UI"
+  },
+  "worldBookLogicLabelNotAllSecondary": "非全部命中",
+  "@worldBookLogicLabelNotAllSecondary": {
+    "description": "World book UI"
+  },
+  "worldBookLogicSubAnySecondary": "主要命中 且 至少一個次級命中",
+  "@worldBookLogicSubAnySecondary": {
+    "description": "World book UI"
+  },
+  "worldBookLogicSubNotAnySecondary": "主要命中 且 沒有次級命中",
+  "@worldBookLogicSubNotAnySecondary": {
+    "description": "World book UI"
+  },
+  "worldBookLogicSubAllSecondary": "主要命中 且 次級全部命中",
+  "@worldBookLogicSubAllSecondary": {
+    "description": "World book UI"
+  },
+  "worldBookLogicSubNotAllSecondary": "主要命中 且 次級未全部命中",
+  "@worldBookLogicSubNotAllSecondary": {
+    "description": "World book UI"
+  },
+  "worldBookEntryProbability": "觸發機率",
+  "@worldBookEntryProbability": {
+    "description": "World book UI"
+  },
+  "worldBookEntryCaseSensitive": "區分大小寫",
+  "@worldBookEntryCaseSensitive": {
+    "description": "World book UI"
+  },
+  "worldBookEntryWholeWords": "全詞比對",
+  "@worldBookEntryWholeWords": {
+    "description": "World book UI"
+  },
+  "worldBookEntryRegex": "正規表示式",
+  "@worldBookEntryRegex": {
+    "description": "World book UI"
+  },
+  "worldBookEntryWhenHeader": "何時注入",
+  "@worldBookEntryWhenHeader": {
+    "description": "World book UI"
+  },
+  "worldBookEntryWhenFooter": "常駐條目無視關鍵詞與預算，每輪都會注入。",
+  "@worldBookEntryWhenFooter": {
+    "description": "World book UI"
+  },
+  "worldBookConstant": "常駐",
+  "@worldBookConstant": {
+    "description": "World book UI"
+  },
+  "worldBookConstantSub": "無論關鍵詞是否命中都注入",
+  "@worldBookConstantSub": {
+    "description": "World book UI"
+  },
+  "worldBookEntryScanDepth": "掃描深度",
+  "@worldBookEntryScanDepth": {
+    "description": "World book UI"
+  },
+  "worldBookEntryScanAll": "全部歷史",
+  "@worldBookEntryScanAll": {
+    "description": "World book UI"
+  },
+  "worldBookEntryPosition": "注入位置",
+  "@worldBookEntryPosition": {
+    "description": "World book UI"
+  },
+  "worldBookPositionLabelBeforeChar": "角色定義前",
+  "@worldBookPositionLabelBeforeChar": {
+    "description": "World book UI"
+  },
+  "worldBookPositionLabelAfterChar": "角色定義後",
+  "@worldBookPositionLabelAfterChar": {
+    "description": "World book UI"
+  },
+  "worldBookPositionLabelAtDepth": "對話中（指定深度）",
+  "@worldBookPositionLabelAtDepth": {
+    "description": "World book UI"
+  },
+  "worldBookPositionLabelBottomNote": "系統提示結尾",
+  "@worldBookPositionLabelBottomNote": {
+    "description": "World book UI"
+  },
+  "worldBookPositionSubBeforeChar": "在角色設定之前，最先讀到",
+  "@worldBookPositionSubBeforeChar": {
+    "description": "World book UI"
+  },
+  "worldBookPositionSubAfterChar": "緊跟角色設定之後",
+  "@worldBookPositionSubAfterChar": {
+    "description": "World book UI"
+  },
+  "worldBookPositionSubAtDepth": "作為歷史訊息插入，離最新的訊息 n 條",
+  "@worldBookPositionSubAtDepth": {
+    "description": "World book UI"
+  },
+  "worldBookPositionSubBottomNote": "系統提示的最後一段，最接近對話",
+  "@worldBookPositionSubBottomNote": {
+    "description": "World book UI"
+  },
+  "worldBookEntryDepth": "深度",
+  "@worldBookEntryDepth": {
+    "description": "World book UI"
+  },
+  "worldBookEntryRole": "角色",
+  "@worldBookEntryRole": {
+    "description": "World book UI"
+  },
+  "worldBookRoleLabelSystem": "系統",
+  "@worldBookRoleLabelSystem": {
+    "description": "World book UI"
+  },
+  "worldBookRoleLabelUser": "使用者",
+  "@worldBookRoleLabelUser": {
+    "description": "World book UI"
+  },
+  "worldBookRoleLabelAssistant": "助理",
+  "@worldBookRoleLabelAssistant": {
+    "description": "World book UI"
+  },
+  "worldBookEntryStackHeader": "互斥與排序",
+  "@worldBookEntryStackHeader": {
+    "description": "World book UI"
+  },
+  "worldBookEntryStackFooter": "同組條目只保留權重最高的一個，適合「季節」「關係階段」這類替代關係。",
+  "@worldBookEntryStackFooter": {
+    "description": "World book UI"
+  },
+  "worldBookEntryGroup": "互斥組",
+  "@worldBookEntryGroup": {
+    "description": "World book UI"
+  },
+  "worldBookEntryGroupHint": "同名條目互相排斥，留空則不互斥",
+  "@worldBookEntryGroupHint": {
+    "description": "World book UI"
+  },
+  "worldBookEntryGroupWeight": "組內權重",
+  "@worldBookEntryGroupWeight": {
+    "description": "World book UI"
+  },
+  "worldBookEntryGroupWeightSub": "同組命中多條時保留權重最高的一條",
+  "@worldBookEntryGroupWeightSub": {
+    "description": "World book UI"
+  },
+  "worldBookEntryPriority": "優先權",
+  "@worldBookEntryPriority": {
+    "description": "World book UI"
+  },
+  "worldBookEntryPrioritySub": "預算不足時，優先權高的先保留",
+  "@worldBookEntryPrioritySub": {
+    "description": "World book UI"
+  },
+  "worldBookEntryAiEditable": "允許 AI 微調",
+  "@worldBookEntryAiEditable": {
+    "description": "World book UI"
+  },
+  "worldBookEntryAiEditableSub": "助理可透過 update_world_entry 工具緩慢修改這一條",
+  "@worldBookEntryAiEditableSub": {
+    "description": "World book UI"
+  },
+  "worldBookEntryDelete": "刪除條目",
+  "@worldBookEntryDelete": {
+    "description": "World book UI"
+  },
+  "worldBookTplBlank": "空白條目",
+  "@worldBookTplBlank": {
+    "description": "World book UI"
+  },
+  "worldBookTplBlankSub": "從零開始",
+  "@worldBookTplBlankSub": {
+    "description": "World book UI"
+  },
+  "worldBookTplPlace": "地點",
+  "@worldBookTplPlace": {
+    "description": "World book UI"
+  },
+  "worldBookTplPlaceSub": "一個場所、區域或建築",
+  "@worldBookTplPlaceSub": {
+    "description": "World book UI"
+  },
+  "worldBookTplItem": "物品",
+  "@worldBookTplItem": {
+    "description": "World book UI"
+  },
+  "worldBookTplItemSub": "一件道具、武器或憑證",
+  "@worldBookTplItemSub": {
+    "description": "World book UI"
+  },
+  "worldBookTplRule": "規則",
+  "@worldBookTplRule": {
+    "description": "World book UI"
+  },
+  "worldBookTplRuleSub": "一條必須或絕不能發生的事",
+  "@worldBookTplRuleSub": {
+    "description": "World book UI"
+  },
+  "worldBookTplRelation": "關係",
+  "@worldBookTplRelation": {
+    "description": "World book UI"
+  },
+  "worldBookTplRelationSub": "一段關係與當前立場",
+  "@worldBookTplRelationSub": {
+    "description": "World book UI"
+  },
+  "worldBookTplStyle": "說話風格",
+  "@worldBookTplStyle": {
+    "description": "World book UI"
+  },
+  "worldBookTplStyleSub": "常駐，決定語氣與用詞",
+  "@worldBookTplStyleSub": {
+    "description": "World book UI"
+  },
+  "worldBookTplAddress": "稱呼（隨親密度）",
+  "@worldBookTplAddress": {
+    "description": "World book UI"
+  },
+  "worldBookTplAddressSub": "常駐，陌生人 / 熟人 / 親密三階段",
+  "@worldBookTplAddressSub": {
+    "description": "World book UI"
+  },
+  "worldBookTplAddressComment": "稱呼（隨親密度變化）",
+  "@worldBookTplAddressComment": {
+    "description": "World book UI"
+  },
+  "worldBookBind": "世界觀",
+  "@worldBookBind": {
+    "description": "World book UI"
+  },
+  "worldBookBindSub": "這個角色在哪幾本書裡生活。",
+  "@worldBookBindSub": {
+    "description": "World book UI"
+  },
+  "worldBookBindNone": "未綁定",
+  "@worldBookBindNone": {
+    "description": "World book UI"
+  },
+  "worldBookBindCount": "已綁定 {count} 本",
+  "@worldBookBindCount": {
+    "description": "World book UI",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "worldBookBindPicker": "選擇世界書",
+  "@worldBookBindPicker": {
+    "description": "World book UI"
+  },
+  "worldBookSandbox": "測試沙盒",
+  "@worldBookSandbox": {
+    "description": "World book UI"
+  },
+  "worldBookSandboxHeader": "試一段對話",
+  "@worldBookSandboxHeader": {
+    "description": "World book UI"
+  },
+  "worldBookSandboxFooter": "貼上真實對話的幾行，看哪些條目會命中、注入位置在哪裡。",
+  "@worldBookSandboxFooter": {
+    "description": "World book UI"
+  },
+  "worldBookSandboxInput": "對話內容",
+  "@worldBookSandboxInput": {
+    "description": "World book UI"
+  },
+  "worldBookSandboxHint": "每行一則訊息，模型讀取時的原文",
+  "@worldBookSandboxHint": {
+    "description": "World book UI"
+  },
+  "worldBookSandboxRun": "試執行",
+  "@worldBookSandboxRun": {
+    "description": "World book UI"
+  },
+  "worldBookSandboxNone": "沒有條目命中",
+  "@worldBookSandboxNone": {
+    "description": "World book UI"
+  },
+  "worldBookSandboxDropped": "被預算丟棄",
+  "@worldBookSandboxDropped": {
+    "description": "World book UI"
+  },
+  "worldBookSandboxSpent": "注入體積",
+  "@worldBookSandboxSpent": {
+    "description": "World book UI"
+  },
+  "worldBookSandboxRecursion": "遞迴追溯了 {count} 層",
+  "@worldBookSandboxRecursion": {
+    "description": "World book UI",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "worldBookEnabled": "啟用這本書",
+  "@worldBookEnabled": {
+    "description": "Switch that disables a whole book"
+  }
 }

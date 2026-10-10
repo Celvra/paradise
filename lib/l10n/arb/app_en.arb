@@ -2738,65 +2738,9 @@
   "@humanChatCardHeader": {
     "description": "Section header of the character card"
   },
-  "humanChatCardFooter": "Injected before every reply so the voice stays the same. The assistant may tweak it over time.",
+  "humanChatCardFooter": "Your character sheet now lives in the world book: one book per role, fired by keywords, bound on the role's own card.",
   "@humanChatCardFooter": {
-    "description": "Section footer of the character card"
-  },
-  "humanChatSpeechStyle": "Speaking style",
-  "@humanChatSpeechStyle": {
-    "description": "Field of the character card"
-  },
-  "humanChatCatchphrases": "Catchphrases",
-  "@humanChatCatchphrases": {
-    "description": "Field of the character card"
-  },
-  "humanChatCatchphrasesHint": "Catchphrases (comma separated)",
-  "@humanChatCatchphrasesHint": {
-    "description": "Prompt title for the catchphrase list"
-  },
-  "humanChatValues": "Values",
-  "@humanChatValues": {
-    "description": "Field of the character card"
-  },
-  "humanChatTaboos": "Taboos",
-  "@humanChatTaboos": {
-    "description": "Field of the character card"
-  },
-  "humanChatAddressStranger": "Address: stranger",
-  "@humanChatAddressStranger": {
-    "description": "Field of the character card"
-  },
-  "humanChatAddressAcquaintance": "Address: acquaintance",
-  "@humanChatAddressAcquaintance": {
-    "description": "Field of the character card"
-  },
-  "humanChatAddressClose": "Address: close",
-  "@humanChatAddressClose": {
-    "description": "Field of the character card"
-  },
-  "humanChatExportCard": "Export card (chara_card_v2)",
-  "@humanChatExportCard": {
-    "description": "Row that copies the card as json"
-  },
-  "humanChatCardCopied": "Card copied to the clipboard",
-  "@humanChatCardCopied": {
-    "description": "Bulletin after copying the card"
-  },
-  "humanChatImportCard": "Import card from clipboard",
-  "@humanChatImportCard": {
-    "description": "Row that imports the card from the clipboard"
-  },
-  "humanChatImportCardTitle": "Import card",
-  "@humanChatImportCardTitle": {
-    "description": "Dialog title of the card import"
-  },
-  "humanChatImportCardFooter": "Overwrite replaces the card, merge only fills empty fields.",
-  "@humanChatImportCardFooter": {
-    "description": "Body of the card import mode picker"
-  },
-  "humanChatInvalidCard": "Not a valid card",
-  "@humanChatInvalidCard": {
-    "description": "Bulletin when the card payload is broken"
+    "description": "Section footer that points at the world book"
   },
   "humanChatSchedule": "Daily schedule",
   "@humanChatSchedule": {
@@ -3410,6 +3354,42 @@
   "@personaClingyMax": {
     "description": "Row that picks the cap on consecutive proactive messages"
   },
+  "personaClingyQuietTitle": "Quiet hours",
+  "@personaClingyQuietTitle": {
+    "description": "Switch for the time window with no proactive messages"
+  },
+  "personaClingyQuietSub": "No proactive messages inside this window, simulating sleep",
+  "@personaClingyQuietSub": {
+    "description": "Subtitle of the quiet hours switch"
+  },
+  "personaClingyQuietStart": "Starts at",
+  "@personaClingyQuietStart": {
+    "description": "Row that picks when the quiet hours begin"
+  },
+  "personaClingyQuietEnd": "Ends at",
+  "@personaClingyQuietEnd": {
+    "description": "Row that picks when the quiet hours end"
+  },
+  "personaClingyUrgentTitle": "Allow urgent messages",
+  "@personaClingyUrgentTitle": {
+    "description": "Switch that lets the model speak up inside quiet hours when it truly has to"
+  },
+  "personaClingyUrgentSub": "Inside quiet hours the model may still speak up for a genuinely restless reason, deciding on its own; nothing is sent when it stays silent",
+  "@personaClingyUrgentSub": {
+    "description": "Subtitle of the urgent messages switch"
+  },
+  "personaClingyUrgentCap": "Limit urgent count",
+  "@personaClingyUrgentCap": {
+    "description": "Switch that caps urgent messages per quiet window"
+  },
+  "personaClingyUrgentCapSub": "Max urgent messages per quiet window, so tokens are not burned through",
+  "@personaClingyUrgentCapSub": {
+    "description": "Subtitle of the urgent count limit switch"
+  },
+  "personaClingyUrgentMax": "Max urgent per window",
+  "@personaClingyUrgentMax": {
+    "description": "Row that picks the cap on urgent messages in one quiet window"
+  },
   "personaClingyMinutes": "{min} min",
   "@personaClingyMinutes": {
     "description": "Minutes label for the clinginess interval picker",
@@ -3514,7 +3494,7 @@
       }
     }
   },
-  "whatsNewBody": "What's new in this build:\n\n• Voice and drawing: switched on per role. Speech runs on the device voice or an OpenAI compatible /audio/speech, drawing on /v1/images/generations\n• A real about page: the dialog became a screen, with the open source licences and the contributors\n• Models by purpose: the picker separates chat models from image models, so a chat no longer offers the image endpoints\n• Video messages: send videos from the gallery or as files, and the AI can actually watch them\n• Inline files: small files are injected into the context so the AI truly reads them\n• Stickers: the AI reads a sticker's meaning before sending it, with thumbnails\n• Clinginess: choose how often the AI speaks first, with an optional cap on proactive messages\n• Shop rework: gifts now land in the chat as a card the AI actually receives\n• Auto backup: on by default, overwrite backups survive updates and reinstalls, restore offered on first launch\n• Model catalog: video capability flags corrected where the models.dev feed lags the provider (deepseek v4.1 flash)\n• Editor guard: every way out of the persona editor now asks before discarding edits\n• Fixed on Android: the chat list came up empty because the database failed to open. The messages were there all along\n• Fixed: a deleted message came back after a restart\n• Fixed: the what's new sheet was black text in night mode\n• UI and performance polish",
+  "whatsNewBody": "What's new in this build:\n\n• World book: put the world, its rules, its taboos and how it addresses you into books that fire on their own keywords, bound per role. An entry can be constant, rolled on a probability, limited to the last N messages, injected before, after or at a depth inside the chat, grouped so one replaces another, ranked against a budget, and matched by regex or whole words with a second gate of keywords\n• SillyTavern compatible: world info files import and export, so a community lorebook moves across whole\n• Migration: the old character card (speaking style, catchphrases, values, taboos and the three stage addresses) automatically became a book on the role it belonged to; its old entry point now leads to the world book\n• Sandbox: paste a conversation and see at once which entries would fire, what the block looks like and how much of the budget it spends\n• Voice and drawing: switched on per role. Speech runs on the device voice or an OpenAI compatible /audio/speech, drawing on /v1/images/generations\n• A real about page: the dialog became a screen, with the open source licences and the contributors\n• Models by purpose: the picker separates chat models from image models, so a chat no longer offers the image endpoints\n• Video messages: send videos from the gallery or as files, and the AI can actually watch them\n• Inline files: small files are injected into the context so the AI truly reads them\n• Stickers: the AI reads a sticker's meaning before sending it, with thumbnails\n• Clinginess: choose how often the AI speaks first, with an optional cap on proactive messages\n• Shop rework: gifts now land in the chat as a card the AI actually receives\n• Auto backup: on by default, overwrite backups survive updates and reinstalls, restore offered on first launch\n• Model catalog: video capability flags corrected where the models.dev feed lags the provider (deepseek v4.1 flash)\n• Editor guard: every way out of the persona editor now asks before discarding edits\n• Fixed on Android: the chat list came up empty because the database failed to open. The messages were there all along\n• Fixed: a deleted message came back after a restart\n• Fixed: the what's new sheet was black text in night mode\n• UI and performance polish",
   "@whatsNewBody": {
     "description": "Body of the one-time whats-new dialog, one bullet per line"
   },
@@ -4063,7 +4043,6 @@
   "toolDescPinMessage": "Pin or unpin a message in the chat",
   "toolDescEditMessage": "Rewrite one of its own earlier messages",
   "toolDescQuoteMessage": "Reply while showing which message it replies to",
-  "toolDescCharacterCard": "Let it tune its own character sheet slowly",
   "toolDescRating": "Adjust how it tunes itself from how you replied",
   "toolDescSendSticker": "Send a sticker from the library",
   "toolDescSaveSticker": "Keep a meme you sent into the library",
@@ -4466,7 +4445,7 @@
   "@onboardPermNotifWhy": {
     "description": "Permission row reason"
   },
-  "onboardPermPhotosName": "Photos",
+  "onboardPermPhotosName": "Media access",
   "@onboardPermPhotosName": {
     "description": "Permission row name"
   },
@@ -4995,9 +4974,9 @@
     "description": "Bulletin while a skill archive downloads"
   },
   "autoBackupTitle": "Auto backup",
-  "autoBackupSub": "Each backup is a zip kept outside the app and never overwritten, so an update or reinstall cannot lose your data.",
+  "autoBackupSub": "The latest backup is kept as a single zip outside the app and replaced on every run, so an update or reinstall cannot lose your data.",
   "remoteBackupTitle": "Remote backup",
-  "remoteBackupSub": "Push every automatic backup to WebDAV or S3, so a copy survives even if the phone is lost.",
+  "remoteBackupSub": "A dated copy of the backup is uploaded once a day to WebDAV or S3, so a copy survives even if the phone is lost.",
   "remoteBackupOn": "On",
   "remoteBackupOff": "Off",
   "remoteBackupKind": "Protocol",
@@ -5025,7 +5004,6 @@
   "remoteBackupNone": "No backup found on the remote",
   "remoteBackupNotConfigured": "Fill in and save the settings first",
   "remoteBackupSaved": "Remote settings saved",
-
   "autoBackupModeChange": "On data change (recommended)",
   "autoBackupModeInterval": "Every {n} hours",
   "@autoBackupModeInterval": {
@@ -5073,8 +5051,17 @@
     }
   },
   "autoBackupRestoreAction": "Restore",
+  "autoBackupPickMessage": "A backup was found in Download/Paradise, but a fresh install cannot read it directly — Android protects files left by the old install. Tap below and pick paradise_autobackup.json to restore everything.",
+  "autoBackupPickAction": "Choose backup file",
   "autoBackupRestored": "Backup restored",
   "autoBackupRestoreFailed": "The backup could not be read",
+  "fullBackupRestoreTitle": "Full backup found",
+  "fullBackupRestoreMessage": "A complete snapshot of all data was found (chats, personas, images, settings and API keys). Restore everything and restart? Declining leaves the backup on the device.",
+  "@fullBackupRestoreMessage": {
+    "description": "full zip backup restore offer on a fresh install"
+  },
+  "fullBackupRestoreAction": "Restore all",
+  "fullBackupRestoreFailed": "The full backup could not be restored",
   "whatsNewEntry": "What's new",
   "@whatsNewEntry": {
     "description": "Settings row that reopens the current version highlights"
@@ -5334,5 +5321,602 @@
   "speechTestFailed": "Could not speak: ",
   "@speechTestFailed": {
     "description": "Error prefix for a failed voice test"
+  },
+  "storageTitle": "Storage",
+  "storageSub": "See what each kind of data uses and clear the cache",
+  "storageUsage": "Usage",
+  "storageTotal": "Total",
+  "storageChats": "Chat records",
+  "storageMedia": "Media and files",
+  "storageStickers": "Stickers",
+  "storageWallpaper": "Wallpaper",
+  "storageBackups": "Local backups",
+  "storageWorkspace": "Workspace and environment",
+  "storageDatabase": "Database",
+  "storageCache": "Cache",
+  "storageOther": "Other",
+  "storagePerAgent": "Chat records by assistant",
+  "storageClear": "Clear cache",
+  "storageClearTitle": "Clear cache?",
+  "storageClearMessage": "Temporary files are removed. Chats, personas, stickers and settings are kept.",
+  "storageClearDone": "Cache cleared",
+  "humanChatCardMoved": "Character card in the world book",
+  "@humanChatCardMoved": {
+    "description": "Row that opens the world book page"
+  },
+  "toolDescWorldEntry": "Let it tune its own character sheet slowly",
+  "@toolDescWorldEntry": {
+    "description": "What update_world_entry does"
+  },
+  "worldBookTitle": "World book",
+  "@worldBookTitle": {
+    "description": "World book UI"
+  },
+  "worldBookSummary": "{on} books · {entries} entries",
+  "@worldBookSummary": {
+    "description": "World book UI",
+    "placeholders": {
+      "on": {
+        "type": "int"
+      },
+      "entries": {
+        "type": "int"
+      }
+    }
+  },
+  "worldBookIntro": "The world book holds the world: its places, its rules, its taboos and how it addresses you. An entry only reaches the model when its keywords fire or it is marked constant. Books are bound per role.",
+  "@worldBookIntro": {
+    "description": "World book UI"
+  },
+  "worldBookEmpty": "No world book yet",
+  "@worldBookEmpty": {
+    "description": "World book UI"
+  },
+  "worldBookEmptyBody": "Create one, or import a SillyTavern world info file.",
+  "@worldBookEmptyBody": {
+    "description": "World book UI"
+  },
+  "worldBookAdd": "Add a world book",
+  "@worldBookAdd": {
+    "description": "World book UI"
+  },
+  "worldBookAddNew": "New book",
+  "@worldBookAddNew": {
+    "description": "World book UI"
+  },
+  "worldBookAddPaste": "Paste JSON",
+  "@worldBookAddPaste": {
+    "description": "World book UI"
+  },
+  "worldBookAddFile": "Import file",
+  "@worldBookAddFile": {
+    "description": "World book UI"
+  },
+  "worldBookDefaultName": "New world",
+  "@worldBookDefaultName": {
+    "description": "World book UI"
+  },
+  "worldBookName": "Book name",
+  "@worldBookName": {
+    "description": "World book UI"
+  },
+  "worldBookNameHint": "Give it a name",
+  "@worldBookNameHint": {
+    "description": "World book UI"
+  },
+  "worldBookImportTitle": "Import world book",
+  "@worldBookImportTitle": {
+    "description": "World book UI"
+  },
+  "worldBookImportHint": "Paste a SillyTavern world info file, or JSON this app exported",
+  "@worldBookImportHint": {
+    "description": "World book UI"
+  },
+  "worldBookImported": "Imported {count}",
+  "@worldBookImported": {
+    "description": "World book UI",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "worldBookInvalid": "Invalid file",
+  "@worldBookInvalid": {
+    "description": "World book UI"
+  },
+  "worldBookSettingsHeader": "Injection",
+  "@worldBookSettingsHeader": {
+    "description": "World book UI"
+  },
+  "worldBookBudget": "Injection budget",
+  "@worldBookBudget": {
+    "description": "World book UI"
+  },
+  "worldBookBudgetValue": "{k}k characters",
+  "@worldBookBudgetValue": {
+    "description": "World book UI",
+    "placeholders": {
+      "k": {
+        "type": "int"
+      }
+    }
+  },
+  "worldBookBudgetFooter": "Fired entries compete for this budget by priority; the rest is dropped this turn. Constant entries ignore the budget.",
+  "@worldBookBudgetFooter": {
+    "description": "World book UI"
+  },
+  "worldBookBookHeader": "This book",
+  "@worldBookBookHeader": {
+    "description": "World book UI"
+  },
+  "worldBookBookFooter": "The kind decides how the block is worded when it reaches the model: rules read as orders, facts read as what is true.",
+  "@worldBookBookFooter": {
+    "description": "World book UI"
+  },
+  "worldBookKind": "Kind",
+  "@worldBookKind": {
+    "description": "World book UI"
+  },
+  "worldBookKindHint": "How this book is described to the model",
+  "@worldBookKindHint": {
+    "description": "World book UI"
+  },
+  "worldBookKindLabelGeneral": "General",
+  "@worldBookKindLabelGeneral": {
+    "description": "World book UI"
+  },
+  "worldBookKindLabelFacts": "World facts",
+  "@worldBookKindLabelFacts": {
+    "description": "World book UI"
+  },
+  "worldBookKindLabelRules": "World rules",
+  "@worldBookKindLabelRules": {
+    "description": "World book UI"
+  },
+  "worldBookKindLabelStyle": "Style guide",
+  "@worldBookKindLabelStyle": {
+    "description": "World book UI"
+  },
+  "worldBookKindLabelRelations": "Relationship map",
+  "@worldBookKindLabelRelations": {
+    "description": "World book UI"
+  },
+  "worldBookKindLabelScenes": "Scene",
+  "@worldBookKindLabelScenes": {
+    "description": "World book UI"
+  },
+  "worldBookEntries": "{count} entries",
+  "@worldBookEntries": {
+    "description": "World book UI",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "worldBookEntriesHeader": "Entries",
+  "@worldBookEntriesHeader": {
+    "description": "World book UI"
+  },
+  "worldBookEntriesFooter": "{count} in total. Tap to edit, long press to delete.",
+  "@worldBookEntriesFooter": {
+    "description": "World book UI",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "worldBookEntriesEmpty": "No entries yet",
+  "@worldBookEntriesEmpty": {
+    "description": "World book UI"
+  },
+  "worldBookEntriesEmptyBody": "Add one, or paste a body in.",
+  "@worldBookEntriesEmptyBody": {
+    "description": "World book UI"
+  },
+  "worldBookEntryAdd": "Add entry",
+  "@worldBookEntryAdd": {
+    "description": "World book UI"
+  },
+  "worldBookEntryUntitled": "Untitled entry",
+  "@worldBookEntryUntitled": {
+    "description": "World book UI"
+  },
+  "worldBookDataHeader": "Data",
+  "@worldBookDataHeader": {
+    "description": "World book UI"
+  },
+  "worldBookExportSub": "Export as SillyTavern world info JSON",
+  "@worldBookExportSub": {
+    "description": "World book UI"
+  },
+  "worldBookDelete": "Delete book",
+  "@worldBookDelete": {
+    "description": "World book UI"
+  },
+  "worldBookDeleteMessage": "\"{name}\" will be deleted. This cannot be undone.",
+  "@worldBookDeleteMessage": {
+    "description": "Confirm body of the book delete",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "worldBookGone": "This book was deleted",
+  "@worldBookGone": {
+    "description": "World book UI"
+  },
+  "worldBookEntryTitle": "Entry",
+  "@worldBookEntryTitle": {
+    "description": "World book UI"
+  },
+  "worldBookEntryBodyHeader": "Body",
+  "@worldBookEntryBodyHeader": {
+    "description": "World book UI"
+  },
+  "worldBookEntryBodyFooter": "The comment is injected with the content, so the model can attribute a line and you can spot it in the trace.",
+  "@worldBookEntryBodyFooter": {
+    "description": "World book UI"
+  },
+  "worldBookEntryComment": "Comment",
+  "@worldBookEntryComment": {
+    "description": "World book UI"
+  },
+  "worldBookEntryCommentHint": "What this entry is",
+  "@worldBookEntryCommentHint": {
+    "description": "World book UI"
+  },
+  "worldBookEntryContent": "Content",
+  "@worldBookEntryContent": {
+    "description": "World book UI"
+  },
+  "worldBookEntryContentHint": "What the model reads",
+  "@worldBookEntryContentHint": {
+    "description": "World book UI"
+  },
+  "worldBookEntryKeys": "Keywords",
+  "@worldBookEntryKeys": {
+    "description": "World book UI"
+  },
+  "worldBookEntryKeysHint": "Any one fires the entry. Separate with commas to add several.",
+  "@worldBookEntryKeysHint": {
+    "description": "World book UI"
+  },
+  "worldBookEntrySecondary": "Secondary keywords",
+  "@worldBookEntrySecondary": {
+    "description": "World book UI"
+  },
+  "worldBookEntrySecondaryHint": "One more condition on top of the primary",
+  "@worldBookEntrySecondaryHint": {
+    "description": "World book UI"
+  },
+  "worldBookKeysNone": "No keywords yet",
+  "@worldBookKeysNone": {
+    "description": "World book UI"
+  },
+  "worldBookKeyAdd": "Add keyword",
+  "@worldBookKeyAdd": {
+    "description": "World book UI"
+  },
+  "worldBookEntryTriggerHeader": "Trigger",
+  "@worldBookEntryTriggerHeader": {
+    "description": "World book UI"
+  },
+  "worldBookEntryTriggerFooter": "The probability is rolled per request; the same seed gives the same roll for the same turn.",
+  "@worldBookEntryTriggerFooter": {
+    "description": "World book UI"
+  },
+  "worldBookEntryLogic": "Combination",
+  "@worldBookEntryLogic": {
+    "description": "World book UI"
+  },
+  "worldBookLogicLabelAnySecondary": "Any secondary",
+  "@worldBookLogicLabelAnySecondary": {
+    "description": "World book UI"
+  },
+  "worldBookLogicLabelNotAnySecondary": "No secondary",
+  "@worldBookLogicLabelNotAnySecondary": {
+    "description": "World book UI"
+  },
+  "worldBookLogicLabelAllSecondary": "All secondary",
+  "@worldBookLogicLabelAllSecondary": {
+    "description": "World book UI"
+  },
+  "worldBookLogicLabelNotAllSecondary": "Not all secondary",
+  "@worldBookLogicLabelNotAllSecondary": {
+    "description": "World book UI"
+  },
+  "worldBookLogicSubAnySecondary": "Primary hit AND at least one secondary hit",
+  "@worldBookLogicSubAnySecondary": {
+    "description": "World book UI"
+  },
+  "worldBookLogicSubNotAnySecondary": "Primary hit AND no secondary hit",
+  "@worldBookLogicSubNotAnySecondary": {
+    "description": "World book UI"
+  },
+  "worldBookLogicSubAllSecondary": "Primary hit AND every secondary hit",
+  "@worldBookLogicSubAllSecondary": {
+    "description": "World book UI"
+  },
+  "worldBookLogicSubNotAllSecondary": "Primary hit AND not every secondary hit",
+  "@worldBookLogicSubNotAllSecondary": {
+    "description": "World book UI"
+  },
+  "worldBookEntryProbability": "Trigger chance",
+  "@worldBookEntryProbability": {
+    "description": "World book UI"
+  },
+  "worldBookEntryCaseSensitive": "Case sensitive",
+  "@worldBookEntryCaseSensitive": {
+    "description": "World book UI"
+  },
+  "worldBookEntryWholeWords": "Whole words only",
+  "@worldBookEntryWholeWords": {
+    "description": "World book UI"
+  },
+  "worldBookEntryRegex": "Regular expression",
+  "@worldBookEntryRegex": {
+    "description": "World book UI"
+  },
+  "worldBookEntryWhenHeader": "When it fires",
+  "@worldBookEntryWhenHeader": {
+    "description": "World book UI"
+  },
+  "worldBookEntryWhenFooter": "Constant entries ignore both keywords and budget, and inject every turn.",
+  "@worldBookEntryWhenFooter": {
+    "description": "World book UI"
+  },
+  "worldBookConstant": "Always on",
+  "@worldBookConstant": {
+    "description": "World book UI"
+  },
+  "worldBookConstantSub": "Injected whether the keywords fire or not",
+  "@worldBookConstantSub": {
+    "description": "World book UI"
+  },
+  "worldBookEntryScanDepth": "Scan depth",
+  "@worldBookEntryScanDepth": {
+    "description": "World book UI"
+  },
+  "worldBookEntryScanAll": "Whole history",
+  "@worldBookEntryScanAll": {
+    "description": "World book UI"
+  },
+  "worldBookEntryPosition": "Position",
+  "@worldBookEntryPosition": {
+    "description": "World book UI"
+  },
+  "worldBookPositionLabelBeforeChar": "Before the character",
+  "@worldBookPositionLabelBeforeChar": {
+    "description": "World book UI"
+  },
+  "worldBookPositionLabelAfterChar": "After the character",
+  "@worldBookPositionLabelAfterChar": {
+    "description": "World book UI"
+  },
+  "worldBookPositionLabelAtDepth": "In the chat, at depth",
+  "@worldBookPositionLabelAtDepth": {
+    "description": "World book UI"
+  },
+  "worldBookPositionLabelBottomNote": "End of the system prompt",
+  "@worldBookPositionLabelBottomNote": {
+    "description": "World book UI"
+  },
+  "worldBookPositionSubBeforeChar": "Ahead of the character definition, read first",
+  "@worldBookPositionSubBeforeChar": {
+    "description": "World book UI"
+  },
+  "worldBookPositionSubAfterChar": "Right behind the character definition",
+  "@worldBookPositionSubAfterChar": {
+    "description": "World book UI"
+  },
+  "worldBookPositionSubAtDepth": "A history turn, n messages back",
+  "@worldBookPositionSubAtDepth": {
+    "description": "World book UI"
+  },
+  "worldBookPositionSubBottomNote": "The last block, closest to the conversation",
+  "@worldBookPositionSubBottomNote": {
+    "description": "World book UI"
+  },
+  "worldBookEntryDepth": "Depth",
+  "@worldBookEntryDepth": {
+    "description": "World book UI"
+  },
+  "worldBookEntryRole": "Role",
+  "@worldBookEntryRole": {
+    "description": "World book UI"
+  },
+  "worldBookRoleLabelSystem": "System",
+  "@worldBookRoleLabelSystem": {
+    "description": "World book UI"
+  },
+  "worldBookRoleLabelUser": "User",
+  "@worldBookRoleLabelUser": {
+    "description": "World book UI"
+  },
+  "worldBookRoleLabelAssistant": "Assistant",
+  "@worldBookRoleLabelAssistant": {
+    "description": "World book UI"
+  },
+  "worldBookEntryStackHeader": "Groups and order",
+  "@worldBookEntryStackHeader": {
+    "description": "World book UI"
+  },
+  "worldBookEntryStackFooter": "Entries sharing a group fire as one: the highest weight wins, which is how a season or a stage replaces an earlier one.",
+  "@worldBookEntryStackFooter": {
+    "description": "World book UI"
+  },
+  "worldBookEntryGroup": "Group",
+  "@worldBookEntryGroup": {
+    "description": "World book UI"
+  },
+  "worldBookEntryGroupHint": "Same name means mutually exclusive. Empty means no group.",
+  "@worldBookEntryGroupHint": {
+    "description": "World book UI"
+  },
+  "worldBookEntryGroupWeight": "Group weight",
+  "@worldBookEntryGroupWeight": {
+    "description": "World book UI"
+  },
+  "worldBookEntryGroupWeightSub": "Which member wins when several of the group fire",
+  "@worldBookEntryGroupWeightSub": {
+    "description": "World book UI"
+  },
+  "worldBookEntryPriority": "Priority",
+  "@worldBookEntryPriority": {
+    "description": "World book UI"
+  },
+  "worldBookEntryPrioritySub": "Higher survives a tight budget first",
+  "@worldBookEntryPrioritySub": {
+    "description": "World book UI"
+  },
+  "worldBookEntryAiEditable": "AI may refine",
+  "@worldBookEntryAiEditable": {
+    "description": "World book UI"
+  },
+  "worldBookEntryAiEditableSub": "The assistant may slowly edit this entry with update_world_entry",
+  "@worldBookEntryAiEditableSub": {
+    "description": "World book UI"
+  },
+  "worldBookEntryDelete": "Delete entry",
+  "@worldBookEntryDelete": {
+    "description": "World book UI"
+  },
+  "worldBookTplBlank": "Blank entry",
+  "@worldBookTplBlank": {
+    "description": "World book UI"
+  },
+  "worldBookTplBlankSub": "Start from nothing",
+  "@worldBookTplBlankSub": {
+    "description": "World book UI"
+  },
+  "worldBookTplPlace": "Place",
+  "@worldBookTplPlace": {
+    "description": "World book UI"
+  },
+  "worldBookTplPlaceSub": "A location, region or building",
+  "@worldBookTplPlaceSub": {
+    "description": "World book UI"
+  },
+  "worldBookTplItem": "Thing",
+  "@worldBookTplItem": {
+    "description": "World book UI"
+  },
+  "worldBookTplItemSub": "An object, weapon or token",
+  "@worldBookTplItemSub": {
+    "description": "World book UI"
+  },
+  "worldBookTplRule": "Rule",
+  "@worldBookTplRule": {
+    "description": "World book UI"
+  },
+  "worldBookTplRuleSub": "Something that must or must never happen",
+  "@worldBookTplRuleSub": {
+    "description": "World book UI"
+  },
+  "worldBookTplRelation": "Relationship",
+  "@worldBookTplRelation": {
+    "description": "World book UI"
+  },
+  "worldBookTplRelationSub": "A tie and the stance it carries",
+  "@worldBookTplRelationSub": {
+    "description": "World book UI"
+  },
+  "worldBookTplStyle": "Speaking style",
+  "@worldBookTplStyle": {
+    "description": "World book UI"
+  },
+  "worldBookTplStyleSub": "Constant. Sets tone and word choice",
+  "@worldBookTplStyleSub": {
+    "description": "World book UI"
+  },
+  "worldBookTplAddress": "Address (by closeness)",
+  "@worldBookTplAddress": {
+    "description": "World book UI"
+  },
+  "worldBookTplAddressSub": "Constant. Stranger, acquaintance, close",
+  "@worldBookTplAddressSub": {
+    "description": "World book UI"
+  },
+  "worldBookTplAddressComment": "Address (how you call the user, by closeness)",
+  "@worldBookTplAddressComment": {
+    "description": "World book UI"
+  },
+  "worldBookBind": "World",
+  "@worldBookBind": {
+    "description": "World book UI"
+  },
+  "worldBookBindSub": "The books this role lives in.",
+  "@worldBookBindSub": {
+    "description": "World book UI"
+  },
+  "worldBookBindNone": "No world",
+  "@worldBookBindNone": {
+    "description": "World book UI"
+  },
+  "worldBookBindCount": "{count} books bound",
+  "@worldBookBindCount": {
+    "description": "World book UI",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "worldBookBindPicker": "Choose world books",
+  "@worldBookBindPicker": {
+    "description": "World book UI"
+  },
+  "worldBookSandbox": "Sandbox",
+  "@worldBookSandbox": {
+    "description": "World book UI"
+  },
+  "worldBookSandboxHeader": "Try a conversation",
+  "@worldBookSandboxHeader": {
+    "description": "World book UI"
+  },
+  "worldBookSandboxFooter": "Paste a few lines of a real conversation and see which entries fire, and where they land.",
+  "@worldBookSandboxFooter": {
+    "description": "World book UI"
+  },
+  "worldBookSandboxInput": "Conversation",
+  "@worldBookSandboxInput": {
+    "description": "World book UI"
+  },
+  "worldBookSandboxHint": "One message per line, as the model reads it",
+  "@worldBookSandboxHint": {
+    "description": "World book UI"
+  },
+  "worldBookSandboxRun": "Run",
+  "@worldBookSandboxRun": {
+    "description": "World book UI"
+  },
+  "worldBookSandboxNone": "No entry fired",
+  "@worldBookSandboxNone": {
+    "description": "World book UI"
+  },
+  "worldBookSandboxDropped": "Dropped by the budget",
+  "@worldBookSandboxDropped": {
+    "description": "World book UI"
+  },
+  "worldBookSandboxSpent": "Injected size",
+  "@worldBookSandboxSpent": {
+    "description": "World book UI"
+  },
+  "worldBookSandboxRecursion": "Recursion traced {count} layers",
+  "@worldBookSandboxRecursion": {
+    "description": "World book UI",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "worldBookEnabled": "Enable this book",
+  "@worldBookEnabled": {
+    "description": "Switch that disables a whole book"
   }
 }
