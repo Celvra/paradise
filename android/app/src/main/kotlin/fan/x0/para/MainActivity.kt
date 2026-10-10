@@ -7,7 +7,9 @@ import fan.x0.para.workspace.WorkspacePlugin
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
+import java.io.File
 import java.io.IOException
+import java.io.OutputStream
 import java.util.UUID
 
 class MainActivity : FlutterActivity() {
@@ -28,24 +30,36 @@ class MainActivity : FlutterActivity() {
         // place a file outlives the app without any storage permission. The
         // Dart side falls back to a private directory when this channel
         // errors (old api levels, revoked collections).
+        //
+        // The full snapshot crosses as a *path*, never as a ByteArray: the
+        // snapshot is the whole data directory and a Binder transaction is
+        // capped near a megabyte. Dart streams the zip to a temp file, hands
+        // the path here, and this side streams it into MediaStore.
         val ch = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "paradise/backup")
         backupChannel = ch
         ch.setMethodCallHandler { call, result ->
             when (call.method) {
                 "write" -> backupWrite((call.arguments as? ByteArray) ?: ByteArray(0), result)
                 "read" -> backupRead(result)
+                "writeFull" -> backupWriteFull(call.arguments as? Map<*, *>, result)
+                "readFull" -> backupReadFull(result)
+                "existsFull" -> result.success(rowFull() != null)
                 else -> result.notImplemented()
             }
         }
     }
 
-    private fun backupWrite(content: ByteArray, result: MethodChannel.Result) {
+    /// The staged publish every backup write shares: a pending row is filled,
+    /// the old row moves aside, the new one takes the fixed name and only
+    /// then is anything deleted. A crash between steps may leave a previous-*
+    /// row, which the readers still recover.
+    private fun publish(result: MethodChannel.Result, name: String, previousPrefix: String, body: (OutputStream) -> Unit) {
         if (Build.VERSION.SDK_INT < 29) {
             result.error("api", "MediaStore.Downloads needs api 29+", null)
             return
         }
         val values = ContentValues().apply {
-            put(MediaStore.Downloads.DISPLAY_NAME, "paradise_autobackup-stage-${UUID.randomUUID()}.zip")
+            put(MediaStore.Downloads.DISPLAY_NAME, "$name-stage-${UUID.randomUUID()}")
             put(MediaStore.Downloads.MIME_TYPE, "application/zip")
             put(MediaStore.Downloads.RELATIVE_PATH, BACKUP_PATH)
             put(MediaStore.Downloads.IS_PENDING, 1)
@@ -57,36 +71,32 @@ class MainActivity : FlutterActivity() {
         try {
             staged = contentResolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values)
                 ?: throw IOException("insert failed")
-            contentResolver.openOutputStream(staged, "w")?.use {
-                it.write(content)
-                it.flush()
-            } ?: throw IOException("no stream")
+            contentResolver.openOutputStream(staged, "w")?.use(body) ?: throw IOException("no stream")
 
             // MediaStore cannot atomically replace an existing row. Move the old
             // name aside (without deleting its bytes), then publish the fully
             // written pending row under the fixed name. A crash between updates
-            // may leave a previous-* row; backupRead can still recover it.
-            previous = backupRows().firstOrNull { it.name == BACKUP_NAME && it.path == BACKUP_PATH }?.uri
+            // may leave a previous-* row; the readers can still recover it.
+            previous = rows().firstOrNull { it.name == name && it.path == BACKUP_PATH }?.uri
             if (previous != null) {
-                val previousName = "paradise_autobackup-previous-${UUID.randomUUID()}.zip"
-                rename(previous, previousName)
+                rename(previous, "$previousPrefix-${UUID.randomUUID()}.zip")
                 previousMoved = true
             }
             val publish = ContentValues().apply {
-                put(MediaStore.Downloads.DISPLAY_NAME, BACKUP_NAME)
+                put(MediaStore.Downloads.DISPLAY_NAME, name)
                 put(MediaStore.Downloads.IS_PENDING, 0)
             }
             if (contentResolver.update(staged, publish, null, null) != 1) throw IOException("publish failed")
             published = true
-            if (displayName(staged) != BACKUP_NAME) throw IOException("backup name was changed by MediaStore")
+            if (displayName(staged) != name) throw IOException("backup name was changed by MediaStore")
 
             // Only remove files in our Paradise folder, after publication was
-            // confirmed. Do not delete the older fixed JSON or anything in a
-            // different Downloads location.
+            // confirmed. Do not delete the older fixed JSON or anything in
+            // a different Downloads location.
             try {
-                for (old in backupRows()) {
+                for (old in rows()) {
                     if (old.path != BACKUP_PATH || old.uri == staged) continue
-                    if (old.name.matches(LEGACY_ZIP) || old.name.matches(PREVIOUS_ZIP)) {
+                    if (old.name.startsWith(previousPrefix)) {
                         try {
                             contentResolver.delete(old.uri, null, null)
                         } catch (_: Exception) {
@@ -101,7 +111,7 @@ class MainActivity : FlutterActivity() {
         } catch (e: Exception) {
             if (!published && previousMoved && previous != null) {
                 try {
-                    rename(previous, BACKUP_NAME)
+                    rename(previous, name)
                 } catch (_: Exception) {
                     // The previous-* row remains readable if rollback fails.
                 }
@@ -112,6 +122,29 @@ class MainActivity : FlutterActivity() {
                 } catch (_: Exception) {}
             }
             result.error("io", e.message, null)
+        }
+    }
+
+    private fun backupWrite(content: ByteArray, result: MethodChannel.Result) {
+        publish(result, BACKUP_NAME, PREVIOUS_PREFIX) { out -> out.write(content) }
+    }
+
+    /// Streams a snapshot the Dart side already built in a temp file. The
+    /// bytes never enter this process twice, so a multi-hundred-megabyte
+    /// zip costs a buffer, not the heap.
+    private fun backupWriteFull(args: Map<*, *>?, result: MethodChannel.Result) {
+        val path = args?.get("path") as? String
+        if (path.isNullOrEmpty()) {
+            result.error("args", "a snapshot path is required", null)
+            return
+        }
+        val src = File(path)
+        if (!src.isFile) {
+            result.error("io", "the snapshot file is gone", null)
+            return
+        }
+        publish(result, BACKUP_FULL, FULL_PREVIOUS_PREFIX) { out ->
+            src.inputStream().use { input -> input.copyTo(out) }
         }
     }
 
@@ -131,17 +164,21 @@ class MainActivity : FlutterActivity() {
 
     private data class BackupRow(val uri: android.net.Uri, val name: String, val path: String)
 
+    private fun rowFull(): BackupRow? = rows().firstOrNull { it.name == BACKUP_FULL && it.path == BACKUP_PATH }
+
     /// Restrict lookup to our folder and the old Downloads root. The latter is
     /// only read, never cleaned; MediaStore names are checked exactly in code,
     /// since SQL LIKE treats underscores in our prefix as wildcards.
-    private fun backupRows(): List<BackupRow> {
+    private fun rows(): List<BackupRow> {
         val rows = mutableListOf<BackupRow>()
         val cols = arrayOf(MediaStore.Downloads._ID, MediaStore.Downloads.DISPLAY_NAME, MediaStore.Downloads.RELATIVE_PATH)
         val sel = "${MediaStore.Downloads.RELATIVE_PATH} IN (?, ?)"
         contentResolver.query(MediaStore.Downloads.EXTERNAL_CONTENT_URI, cols, sel, arrayOf(BACKUP_PATH, "Download/"), null)?.use { c ->
             while (c.moveToNext()) {
                 val name = c.getString(1) ?: continue
-                if (name != BACKUP_NAME && name != BACKUP_JSON && !name.matches(LEGACY_ZIP) && !name.matches(PREVIOUS_ZIP)) continue
+                if (name != BACKUP_NAME && name != BACKUP_JSON && name != BACKUP_FULL &&
+                    !name.startsWith(PREVIOUS_PREFIX) && !name.startsWith(FULL_PREVIOUS_PREFIX) &&
+                    !name.matches(LEGACY_ZIP)) continue
                 rows.add(BackupRow(
                     android.net.Uri.withAppendedPath(MediaStore.Downloads.EXTERNAL_CONTENT_URI, c.getLong(0).toString()),
                     name,
@@ -158,12 +195,11 @@ class MainActivity : FlutterActivity() {
             return
         }
         try {
-            val rows = backupRows()
-            val candidates = rows.filter { it.name == BACKUP_NAME && it.path == BACKUP_PATH } +
-                rows.filter { it.name == BACKUP_NAME && it.path != BACKUP_PATH } +
-                rows.filter { it.name.matches(LEGACY_ZIP) }.sortedByDescending { it.name } +
-                rows.filter { it.name.matches(PREVIOUS_ZIP) } +
-                rows.filter { it.name == BACKUP_JSON }
+            val candidates = rows().filter { it.name == BACKUP_NAME && it.path == BACKUP_PATH } +
+                rows().filter { it.name == BACKUP_NAME && it.path != BACKUP_PATH } +
+                rows().filter { it.name.matches(LEGACY_ZIP) }.sortedByDescending { it.name } +
+                rows().filter { it.name.startsWith(PREVIOUS_PREFIX) } +
+                rows().filter { it.name == BACKUP_JSON }
             for (row in candidates) {
                 try {
                     val raw = contentResolver.openInputStream(row.uri)?.use { it.readBytes() }
@@ -181,12 +217,39 @@ class MainActivity : FlutterActivity() {
         }
     }
 
+    /// Hands the snapshot back as a cache file path: Dart reads the bytes
+    /// itself, so the channel carries a string and the heap holds the zip
+    /// once rather than twice. The same path is reused, so nothing litters.
+    private fun backupReadFull(result: MethodChannel.Result) {
+        if (Build.VERSION.SDK_INT < 29) {
+            result.error("api", "MediaStore.Downloads needs api 29+", null)
+            return
+        }
+        val row = rowFull() ?: run {
+            result.success(null)
+            return
+        }
+        val out = File(cacheDir, FULL_READ_NAME)
+        try {
+            contentResolver.openInputStream(row.uri)?.use { input ->
+                out.outputStream().use { output -> input.copyTo(output) }
+            } ?: throw IOException("no stream")
+            result.success(out.absolutePath)
+        } catch (e: Exception) {
+            try {
+                if (out.exists()) out.delete()
+            } catch (_: Exception) {}
+            result.error("io", e.message, null)
+        }
+    }
+
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         workspacePlugin?.attachActivity(this)
     }
 
     override fun onDestroy() {
+        super.onDestroy()
         workspacePlugin?.detachActivity(this)
         workspacePlugin = null
         backupChannel = null
@@ -196,8 +259,11 @@ class MainActivity : FlutterActivity() {
     companion object {
         const val BACKUP_NAME = "paradise_autobackup.zip"
         const val BACKUP_JSON = "paradise_autobackup.json"
+        const val BACKUP_FULL = "paradise_full.zip"
         const val BACKUP_PATH = "Download/Paradise/"
+        const val PREVIOUS_PREFIX = "paradise_autobackup-previous-"
+        const val FULL_PREVIOUS_PREFIX = "paradise_full-previous-"
+        const val FULL_READ_NAME = "paradise_full_read.zip"
         val LEGACY_ZIP = Regex("paradise_autobackup-[0-9]{8}-[0-9]{6}\\.zip")
-        val PREVIOUS_ZIP = Regex("paradise_autobackup-previous-[0-9a-f-]{36}\\.zip")
     }
 }

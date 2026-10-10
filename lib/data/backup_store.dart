@@ -56,7 +56,12 @@ extension BackupStore on Store {
     return h;
   }
 
-  Future<void> _autoBackupTick() async {
+  /// Cadence of the full snapshot, independent of the curated archive's
+  /// schedule: the zip is a directory-sized artifact, so it runs once a day
+  /// at most and never twice in a row from one editing burst.
+  static const _fullBackupGapMs = 24 * 60 * 60 * 1000;
+
+  Future<void> _autoBackupTick({bool fullSnapshot = false}) async {
     if (_backupRunning) return;
     final ab = autoBackup;
     final sink = _backupSink;
@@ -78,10 +83,11 @@ extension BackupStore on Store {
       // recorded, so a dead server can never make a saved backup look failed
       unawaited(_uploadRemote(bytes));
       // the curated archive and the full snapshot share one schedule: same
-      // policy, same overwrite rule, one dirty mark. the full zip gets its
-      // own guard so a failure there never rewrites the archive's bookkeeping
+      // policy, same overwrite rule, one dirty mark. the full zip keeps its
+      // own daily cadence so the heartbeat cannot re-zip the whole data
+      // directory every time the store flushes
       try {
-        await _writeFullBackup();
+        await _writeFullBackup(force: fullSnapshot);
       } catch (_) {}
     } catch (_) {
       // Keep a failed change-mode backup eligible for the next tick, even
@@ -96,7 +102,7 @@ extension BackupStore on Store {
   Future<void> backupNow() async {
     _backupDirty = true;
     autoBackup.lastAt = 0;
-    await _autoBackupTick();
+    await _autoBackupTick(fullSnapshot: true);
   }
 
   /// The backup an onboarding restore can offer. Null when none exists.
@@ -115,11 +121,51 @@ extension BackupStore on Store {
   /// Rebuilds the whole data directory snapshot and overwrites the shared
   /// copy. Runs right after the archive write inside the same guard so the
   /// two artifacts can never disagree about which schedule they follow.
-  Future<void> _writeFullBackup() async {
-    final sink = _fullSink;
+  ///
+  /// The build itself runs in a worker isolate and streams to a temp file:
+  /// on the main isolate it is a several-second freeze (the whole data
+  /// directory, zipped, with every file read into the heap on the way),
+  /// which is exactly the input-dispatch-timeout ANR a 15 second heartbeat
+  /// lands on while the user is mid-scroll. The path crosses the channel,
+  /// not the bytes: Binder caps one transaction near a megabyte and the
+  /// snapshot is routinely larger.
+  ///
+  /// [force] skips the daily cadence: the user pressing "backup now" asked
+  /// for both artifacts with their own hand. The heartbeat passes false.
+  Future<void> _writeFullBackup({bool force = false}) async {
+    final sink = _debugFullSink ?? _fullSink;
     if (sink == null) return;
-    final bytes = await FullBackup.build();
-    await sink.write(bytes);
+    if (_fullBackupRunning) return;
+    // The curated archive follows the user's 45s/interval/window schedule;
+    // this one is a directory-sized artifact and must not: every keystroke
+    // flush would re-zip everything, and its own walk used to fold the
+    // previous zip into the next one.
+    final now = DateTime.now().millisecondsSinceEpoch;
+    if (!force && now - (_sp.getInt('autoBackup.fullAt') ?? 0) < _fullBackupGapMs) return;
+    _fullBackupRunning = true;
+    File? zip;
+    try {
+      final prefs = <String, Object?>{for (final k in _sp.getKeys()) k: _sp.get(k)};
+      zip = await compute(runFullBackupJob, FullBackupJob(
+        docsPath: (_debugBackupDocsDir ?? await getApplicationDocumentsDirectory()).path,
+        dbDirPath: await FullBackup.dbDirPath(),
+        tmpPath: (await getTemporaryDirectory()).path,
+        prefs: prefs,
+      ));
+      if (zip == null) return;
+      await sink.writeFile(zip);
+      await _sp.setInt('autoBackup.fullAt', now);
+    } catch (_) {
+      // A failed snapshot must never fail the curated archive's
+      // bookkeeping, and never marks the store dirty again either.
+    } finally {
+      _fullBackupRunning = false;
+      if (zip != null) {
+        try {
+          if (await zip.exists()) await zip.delete();
+        } catch (_) {}
+      }
+    }
   }
 
   /// The full zip backup a reinstall can offer. Null when none exists.
@@ -164,7 +210,7 @@ extension BackupStore on Store {
 
   /// Test seam for the full zip backup, same idea as [debugBackupSink].
   @visibleForTesting
-  set debugFullBackupSink(FullBackupSink? sink) => _fullSink = sink;
+  set debugFullBackupSink(FullBackupSink? sink) => _debugFullSink = sink;
 
   // ----------------------------------------------------------------- archive
 

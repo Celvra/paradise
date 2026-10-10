@@ -213,8 +213,10 @@ class Store extends ChangeNotifier {
 
   BackupSink? _backupSink;
   FullBackupSink? _fullSink;
+  FullBackupSink? _debugFullSink;
   bool _backupDirty = false;
   bool _backupRunning = false;
+  bool _fullBackupRunning = false;
   Directory? _debugBackupDocsDir;
   int _seq = 0;
 
@@ -590,6 +592,7 @@ class Store extends ChangeNotifier {
     _humanTimer = null;
     _saveTimer?.cancel();
     _saveTimer = null;
+    _fullBackupRunning = false;
     for (final c in chats) {
       _unlisten(c);
     }

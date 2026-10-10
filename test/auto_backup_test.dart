@@ -106,9 +106,9 @@ void main() {
         final sink = DirBackupSink(dir);
         final json = File(p.join(dir.path, autoBackupLegacyJson));
         final older = File(
-            p.join(dir.path, autoBackupFileName(DateTime(2026, 10, 6, 12))));
+            p.join(dir.path, legacyAutoBackupFileName(DateTime(2026, 10, 6, 12))));
         final newer = File(
-            p.join(dir.path, autoBackupFileName(DateTime(2026, 10, 7, 12))));
+            p.join(dir.path, legacyAutoBackupFileName(DateTime(2026, 10, 7, 12))));
         await json.writeAsBytes([1]);
         expect(await sink.read(), [1]);
         await older.writeAsBytes([2]);
@@ -133,7 +133,7 @@ void main() {
       try {
         final sink = DirBackupSink(dir);
         final legacy =
-            File(p.join(dir.path, autoBackupFileName(DateTime(2026, 10, 6))));
+            File(p.join(dir.path, legacyAutoBackupFileName(DateTime(2026, 10, 6))));
         final json = File(p.join(dir.path, autoBackupLegacyJson));
         final similarlyNamed =
             File(p.join(dir.path, 'paradise_autobackup-other.zip'));
@@ -160,7 +160,7 @@ void main() {
       try {
         final sink = DirBackupSink(dir);
         final legacy =
-            File(p.join(dir.path, autoBackupFileName(DateTime(2026, 10, 6))));
+            File(p.join(dir.path, legacyAutoBackupFileName(DateTime(2026, 10, 6))));
         await legacy.writeAsBytes([7]);
         // A destination directory makes the final rename fail after staging.
         await Directory(p.join(dir.path, autoBackupName)).create();
