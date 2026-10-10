@@ -54,13 +54,33 @@ void main() {
   Future<void> openStorage(WidgetTester t) async {
     await t.tap(find.text('Settings').last);
     await settle(t, 700);
+    // the storage and world book rows pushed the data row below the fold, and
+    // a lazy ListView has not built it yet: locate the list through the first
+    // row on screen and drag the data row into view before tapping it
+    final list = find.ancestor(of: find.text('My Account'), matching: find.byType(ListView));
+    await t.dragUntilVisible(find.text('Data and Storage'), list, const Offset(0, -220));
+    await settle(t, 300);
+    await t.ensureVisible(find.text('Data and Storage'));
     await t.tap(find.text('Data and Storage'));
     await settle(t, 700);
+  }
+
+  /// The data page now carries the usage, clear, backup, auto backup and
+  /// remote sections, so the backup rows sit below the fold and a lazy
+  /// ListView has not built them yet: a tap on 'Export' before scrolling
+  /// finds nothing. The list is located through a section header that is on
+  /// screen, the same trick about_page_test uses.
+  Future<void> scrollToBackupRows(WidgetTester t) async {
+    final list = find.ancestor(of: find.text('Usage'), matching: find.byType(ListView));
+    await t.dragUntilVisible(find.text('Import from file'), list, const Offset(0, -260));
+    await settle(t, 300);
+    await t.ensureVisible(find.text('Export'));
   }
 
   testWidgets('the storage page offers both backup rows', (t) async {
     await boot(t);
     await openStorage(t);
+    await scrollToBackupRows(t);
 
     expect(find.text('Backup'), findsOneWidget, reason: 'the section header');
     expect(find.text('Export'), findsOneWidget);
@@ -74,6 +94,7 @@ void main() {
     store.createChat('Her', 'a persona').msgs.add(Msg(id: 'm1', out: false, text: 'hello', time: 1));
 
     await openStorage(t);
+    await scrollToBackupRows(t);
     await t.tap(find.text('Export'));
     await settleBulletin(t);
 
@@ -90,6 +111,7 @@ void main() {
   testWidgets('export with nothing to export still hands over a valid file', (t) async {
     await boot(t);
     await openStorage(t);
+    await scrollToBackupRows(t);
     await t.tap(find.text('Export'));
     await settleBulletin(t);
 
@@ -101,6 +123,7 @@ void main() {
     await boot(t);
     picker.result = null;
     await openStorage(t);
+    await scrollToBackupRows(t);
     await t.tap(find.text('Export'));
     await settleBulletin(t);
 
