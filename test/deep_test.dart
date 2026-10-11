@@ -5,6 +5,7 @@ import 'package:paradise/core/ui_kit.dart';
 import 'package:paradise/data/models.dart';
 import 'package:paradise/data/store.dart';
 import 'package:paradise/data/ai_config.dart';
+import 'package:paradise/data/human/sticker_lib.dart';
 import 'package:paradise/l10n/gen/l10n_en.dart';
 import 'package:paradise/main.dart';
 import 'package:paradise/ui/emoji_panel.dart';
@@ -48,18 +49,21 @@ void main() {
     (t.state(find.byType(Navigator).first) as NavigatorState).pop();
     await settle(t, 600);
 
-    // emoji panel then sticker: the panel has two tabs now, the GIF tab lives
-    // inside the sticker tab as the "my stickers" section
+    // emoji panel then sticker: the panel has two tabs now, the sticker tab is
+    // nothing but the user's own library
     await t.tap(find.descendant(of: find.byType(InputBar), matching: icon(Ic.smile)));
     await settle(t, 700);
-    expect(find.text('SMILEYS & PEOPLE'), findsWidgets);
-    await t.tap(find.descendant(of: find.byType(EmojiPanel), matching: icon(Ic.sticker)));
+    expect(find.text('SMILEYS & PEOPLE'), findsNothing);
+    store.human!.stickers.add(kind: StickerKind.emoji, value: '🐶', name: 'puppy');
+    store.human!.changed();
     await settle(t, 600);
-    expect(find.text('MY STICKERS'), findsWidgets);
-    expect(find.text('ANIMALS'), findsWidgets);
+    await t.tap(inPanel(icon(Ic.sticker)));
+    await settle(t, 600);
+    expect(find.text('My stickers'), findsOneWidget);
+    expect(find.text('ANIMALS'), findsNothing);
     final chat = store.chats.firstWhere((c) => c.persona.name == 'Assistant');
     final before = chat.msgs.length;
-    // the packs sit below the library section, search brings one into reach
+    // search narrows the library to what was asked for
     await t.tap(inPanel(icon(Ic.search)));
     await settle(t, 600);
     await t.enterText(inPanel(find.byType(EditableText)), 'puppy');
@@ -70,6 +74,8 @@ void main() {
     expect(chat.msgs.length, before + 2);
     expect(chat.msgs[before].kind, MsgKind.sticker);
     expect(chat.msgs[before].data['emoji'], '🐶');
+    await t.tap(inPanel(icon(Ic.back)));
+    await settle(t, 600);
     await t.tap(icon(Ic.keyboard).first);
     await settle(t, 600);
 

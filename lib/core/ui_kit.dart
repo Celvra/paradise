@@ -77,6 +77,9 @@ enum Ic {
   smile,
   keyboard,
   sticker,
+  emoji,
+  clock,
+  cat,
   image,
   file,
   pinLoc,
@@ -115,6 +118,13 @@ enum Ic {
   download,
   wrap,
   book,
+  star,
+  pizza,
+  ball,
+  car,
+  bulb,
+  heart,
+  flag,
   hidden
 }
 

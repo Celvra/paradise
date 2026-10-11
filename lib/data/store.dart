@@ -332,7 +332,6 @@ class Store extends ChangeNotifier {
 
   String? openId;
   List<String> recentEmoji = [];
-  List<String> recentStickers = [];
   List<String> recentSearch = [];
 
   // ---- the two reply switches, global half of a setting the persona can take
@@ -398,7 +397,6 @@ class Store extends ChangeNotifier {
     // than this one would otherwise index off the end of BubbleGrad.values
     s.wallpaperBubbleGrad = (s._sp.getInt('wallpaperBubbleGrad') ?? BubbleGrad.medium.index).clamp(0, BubbleGrad.values.length - 1);
     s.recentEmoji = s._sp.getStringList('recentEmoji') ?? [];
-    s.recentStickers = s._sp.getStringList('recentStickers') ?? [];
     s.recentSearch = s._sp.getStringList('recentSearch') ?? s._sp.getStringList('recentSearches') ?? [];
     final lang = s._sp.getString('locale');
     s.localeTag = lang == null || lang.isEmpty ? null : lang;
@@ -1313,11 +1311,6 @@ class Store extends ChangeNotifier {
   void pushEmoji(String e) {
     recentEmoji = _bump(recentEmoji, e, 32);
     _sp.setStringList('recentEmoji', recentEmoji);
-  }
-
-  void pushSticker(String e) {
-    recentStickers = _bump(recentStickers, e, 24);
-    _sp.setStringList('recentStickers', recentStickers);
   }
 
   void addRecentSearch(String q) {
