@@ -10,7 +10,6 @@ import '../core/anim.dart';
 import '../core/overlays.dart';
 import '../core/theme.dart';
 import '../core/ui_kit.dart';
-import '../data/models.dart';
 import '../data/store.dart';
 import '../data/world_book/injector.dart';
 import '../data/world_book/world_book.dart';
@@ -130,9 +129,12 @@ class _WorldBookPickerState extends State<WorldBookPickerPage> {
                 TgSection(footer: l.worldBookEmptyBody, children: [
                   TgTextCell(title: l.worldBookEmpty, divider: false),
                 ]),
-              for (var i = 0; i < all.length; i++)
-                TgSection(
-                  children: [
+              // one card for the whole list, the way every other picker in
+              // the app reads: a section per book made the page explode into
+              // a stack of floating rows with gaps between them
+              if (all.isNotEmpty)
+                TgSection(footer: l.worldBookBindSub, children: [
+                  for (var i = 0; i < all.length; i++)
                     TgCheckCell(
                       icon: Ic.book,
                       title: all[i].name,
@@ -147,8 +149,7 @@ class _WorldBookPickerState extends State<WorldBookPickerPage> {
                         }
                       }),
                     ),
-                  ],
-                ),
+                ]),
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
                 child: TgButton(
