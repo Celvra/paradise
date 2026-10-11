@@ -13,7 +13,9 @@ import '../core/ui_kit.dart';
 import '../data/human/hub.dart';
 import '../data/human/human_models.dart';
 import '../data/human/scheduler.dart';
+import '../data/models.dart';
 import '../data/store.dart';
+import 'world_book_page.dart';
 import '../l10n/x.dart';
 import 'human_data_pages.dart';
 import 'tg_cells.dart';
@@ -24,6 +26,21 @@ import 'tg_cells.dart';
 void hOpen(BuildContext c, Widget page) => Navigator.of(c).push(TgRoute(builder: (_) => page));
 
 TextStyle hStyle(Pal p, {double size = 16, Color? color, FontWeight weight = FontWeight.w400}) => TextStyle(color: color ?? p.title, fontSize: size, fontWeight: weight, height: 1.25, decoration: TextDecoration.none);
+
+/// What the tools row counts.
+///
+/// It used to count the MCP tools alone, which read as "0 MCP" on every device
+/// that had not added a server of its own, even though the model can always
+/// call the built in ones. It counts both now: the enabled built in tools plus
+/// whatever the servers offered, with the MCP share in brackets when there is
+/// one, so the number predicts what the page behind the row holds.
+String toolsValue(BuildContext c, HumanHub h) {
+  final on = Store.read(c).workspace.toolsEnabled;
+  final builtin = kBuiltinTools.where((e) => on || !kWorkspaceTools.contains(e)).length;
+  final mcp = h.mcp.tools.length;
+  final total = builtin + mcp;
+  return mcp == 0 ? '$total' : '$total ($mcp MCP)';
+}
 
 /// Rebuilds when the hub changes, the hub is not part of the store notifier.
 class HLive extends StatelessWidget {
@@ -114,7 +131,7 @@ class HumanSettingsPage extends StatelessWidget {
             TgTextCell(title: l.humanChatsRow, icon: Ic.user, divider: false, onTap: () => hOpen(c, const HumanChatsPage())),
           ]),
           TgSection(header: l.humanToolsHeader, children: [
-            TgTextCell(title: l.humanToolsRow, icon: Ic.gear, value: '${h.mcp.tools.length} MCP', onTap: () => hOpen(c, const ToolsPage())),
+            TgTextCell(title: l.humanToolsRow, icon: Ic.gear, value: toolsValue(c, h), onTap: () => hOpen(c, const ToolsPage())),
             TgTextCell(title: l.humanWalletRow, icon: Ic.crown, value: h.wallet.balance.toStringAsFixed(2), divider: false, onTap: () => hOpen(c, const WalletPage())),
           ]),
           TgSection(header: l.humanDataHeader, children: [
@@ -490,12 +507,6 @@ class _HumanChatState extends State<HumanChatPage> {
             h.changed();
           }
 
-          Future<void> field(String title, String cur, void Function(String) apply, {int lines = 1}) async {
-            final r = await hAsk(c, title, title, initial: cur, lines: lines);
-            if (r != null) set(() => apply(r.trim()));
-          }
-
-          final card = st.card;
           return [
             TgSection(header: l.humanChatState, footer: '${l.humanChatStage}: ${st.stage.name} · ${l.humanChatMessages}: ${st.userMsgs} · ${l.humanChatMinutes}: ${st.interactionMin}', children: [
               TgTextCell(title: l.humanChatStatus, value: statusWire(st.effective(now, dnd: h.settings.dnd)), onTap: () {
@@ -515,44 +526,11 @@ class _HumanChatState extends State<HumanChatPage> {
                 h.changed();
               }),
             ]),
-            TgSection(header: l.humanChatCardHeader, footer: l.humanChatCardFooter, children: [
-              TgTextCell(title: l.humanChatSpeechStyle, subtitle: card.speechStyle.isEmpty ? null : card.speechStyle, onTap: () => field(l.humanChatSpeechStyle, card.speechStyle, (v) => card.speechStyle = v, lines: 3)),
-              TgTextCell(title: l.humanChatCatchphrases, subtitle: card.catchphrases.isEmpty ? null : card.catchphrases.join(' / '), onTap: () => field(l.humanChatCatchphrasesHint, card.catchphrases.join(', '), (v) => card.catchphrases = v.split(RegExp(r'[,，、]')).map((e) => e.trim()).where((e) => e.isNotEmpty).toList())),
-              TgTextCell(title: l.humanChatValues, subtitle: card.values.isEmpty ? null : card.values, onTap: () => field(l.humanChatValues, card.values, (v) => card.values = v, lines: 3)),
-              TgTextCell(title: l.humanChatTaboos, subtitle: card.taboos.isEmpty ? null : card.taboos, onTap: () => field(l.humanChatTaboos, card.taboos, (v) => card.taboos = v, lines: 3)),
-              TgTextCell(title: l.humanChatAddressStranger, value: card.addressStranger, onTap: () => field(l.humanChatAddressStranger, card.addressStranger, (v) => card.addressStranger = v)),
-              TgTextCell(title: l.humanChatAddressAcquaintance, value: card.addressAcquaintance, onTap: () => field(l.humanChatAddressAcquaintance, card.addressAcquaintance, (v) => card.addressAcquaintance = v)),
-              TgTextCell(title: l.humanChatAddressClose, value: card.addressClose, onTap: () => field(l.humanChatAddressClose, card.addressClose, (v) => card.addressClose = v)),
-              TgTextCell(title: l.humanChatExportCard, icon: Ic.share, onTap: () {
-                final j = const JsonEncoder.withIndent('  ').convert(card.toTavern(name: chat.persona.name, description: chat.persona.prompt, firstMes: chat.persona.greeting));
-                Clipboard.setData(ClipboardData(text: j));
-                showBulletin(c, l.humanChatCardCopied);
-              }),
-              TgTextCell(title: l.humanChatImportCard, icon: Ic.copy, divider: false, onTap: () async {
-                final raw = (await Clipboard.getData('text/plain'))?.text ?? '';
-                try {
-                  final j = Map<String, dynamic>.from(jsonDecode(raw) as Map);
-                  final mode = await showTgDialog<String>(c, title: l.humanChatImportCardTitle, message: l.humanChatImportCardFooter, actions: [DialogAction(l.actionCancel, null), DialogAction(l.humanOverwrite, 'o', danger: true), DialogAction(l.humanMerge, 'm')]);
-                  if (mode == null) return;
-                  final inc = CharacterCard.fromTavern(j);
-                  set(() {
-                    if (mode == 'o') {
-                      st.card = inc;
-                    } else {
-                      if (card.speechStyle.isEmpty) card.speechStyle = inc.speechStyle;
-                      if (card.values.isEmpty) card.values = inc.values;
-                      if (card.taboos.isEmpty) card.taboos = inc.taboos;
-                      if (card.catchphrases.isEmpty) card.catchphrases = inc.catchphrases;
-                      if (card.addressStranger.isEmpty) card.addressStranger = inc.addressStranger;
-                      if (card.addressAcquaintance.isEmpty) card.addressAcquaintance = inc.addressAcquaintance;
-                      if (card.addressClose.isEmpty) card.addressClose = inc.addressClose;
-                    }
-                  });
-                } catch (_) {
-                  if (c.mounted) showBulletin(c, l.humanChatInvalidCard);
-                }
-              }),
-            ]),
+            // the character card moved into the world book: what used to be
+            // seven buried rows here is now a book per role, shared, keyed
+            // and editable in the world book page, bound from the role's
+            // own card. The row stays as the signpost to where it went.
+            _cardSection(c, chat),
             TgSection(header: l.humanChatSchedule, footer: l.humanChatScheduleFooter, children: [
               for (final e in st.life)
                 TgTextCell(
@@ -572,6 +550,30 @@ class _HumanChatState extends State<HumanChatPage> {
           ];
         },
       ),
+    );
+  }
+
+  /// Where the character card went. The sheet this role plays by is a world
+  /// book now, so the row names what is bound and opens the page that edits
+  /// it rather than offering seven one-line fields of its own.
+  Widget _cardSection(BuildContext c, Chat chat) {
+    final l = c.l;
+    final store = Store.of(c);
+    final bound = store.worldBooks.resolve(chat.persona.worldBookIds);
+    final names = bound.map((b) => b.name).join(' · ');
+    return TgSection(
+      header: l.humanChatCardHeader,
+      footer: l.humanChatCardFooter,
+      children: [
+        TgTextCell(
+          title: l.humanChatCardMoved,
+          subtitle: bound.isEmpty ? null : '$names · ${l.worldBookEntries(bound.fold(0, (a, b) => a + b.entries.length))}',
+          icon: Ic.book,
+          value: '${bound.length}',
+          divider: false,
+          onTap: () => openWorldBooks(c),
+        ),
+      ],
     );
   }
 }

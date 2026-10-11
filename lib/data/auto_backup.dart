@@ -83,6 +83,10 @@ String remoteBackupFileName(DateTime at) {
   String p(int v) => v.toString().padLeft(2, '0');
   return 'paradise-${at.year}${p(at.month)}${p(at.day)}.$autoBackupExt';
 }
+/// The private fallback copy of the full snapshot. It lives under the
+/// documents directory, which is exactly why [FullBackup.isBackupArtifact]
+/// folds it back out of every zip it builds.
+const fullBackupName = 'paradise_full.zip';
 const autoBackupLegacyJson = 'paradise_autobackup.json';
 const autoBackupPrefix = 'paradise_autobackup-';
 const autoBackupExt = 'zip';
@@ -226,8 +230,14 @@ class MediaStoreBackupSink implements BackupSink {
 /// Where the full zip backup lands. Same two shapes as [BackupSink]: the
 /// MediaStore one survives an uninstall, the directory one is the fallback
 /// and the test seam.
+///
+/// Writes take a file, never bytes: the snapshot is the whole data directory
+/// and can run to hundreds of megabytes. A `ByteArray` over a MethodChannel
+/// is capped by the Binder transaction size and marshalling it twice (into
+/// the channel, out again into the stream) is seconds of frozen UI on the
+/// way. Passing a path and streaming the file costs one small map.
 abstract class FullBackupSink {
-  Future<void> write(Uint8List bytes);
+  Future<void> writeFile(File file);
   Future<Uint8List?> read();
   Future<bool> exists();
 }
@@ -237,12 +247,12 @@ class DirFullBackupSink implements FullBackupSink {
 
   final Directory dir;
 
-  File get _file => File('${dir.path}/paradise_full.zip');
+File get _file => File('${dir.path}/$fullBackupName');
 
   @override
-  Future<void> write(Uint8List bytes) async {
+  Future<void> writeFile(File file) async {
     if (!await dir.exists()) await dir.create(recursive: true);
-    await _file.writeAsBytes(bytes, flush: true);
+    await file.copy(_file.path);
   }
 
   @override
@@ -267,19 +277,20 @@ class MediaStoreFullBackupSink implements FullBackupSink {
   bool _broken = false;
 
   Future<FullBackupSink> _fb() async {
-    return _fallback ??= DirFullBackupSink(Directory('${(await getApplicationDocumentsDirectory()).path}/backup'));
+return _fallback ??= DirFullBackupSink(
+        Directory('${(await getApplicationDocumentsDirectory()).path}/backup'));
   }
 
   @override
-  Future<void> write(Uint8List bytes) async {
-    if (_broken) return (await _fb()).write(bytes);
+  Future<void> writeFile(File file) async {
+    if (_broken) return (await _fb()).writeFile(file);
     try {
-      await _ch.invokeMethod<int>('writeFull', bytes);
+      await _ch.invokeMethod<void>('writeFull', {'path': file.path});
     } on MissingPluginException {
       _broken = true;
-      return (await _fb()).write(bytes);
+      return (await _fb()).writeFile(file);
     } on PlatformException {
-      return (await _fb()).write(bytes);
+      return (await _fb()).writeFile(file);
     }
   }
 
@@ -287,7 +298,11 @@ class MediaStoreFullBackupSink implements FullBackupSink {
   Future<Uint8List?> read() async {
     if (_broken) return (await _fb()).read();
     try {
-      return await _ch.invokeMethod<Uint8List>('readFull');
+// the platform streams the row to a cache file and hands back its
+      // path: reading it here keeps the channel payload a string
+      final path = await _ch.invokeMethod<String>('readFull');
+      if (path == null) return null;
+      return await File(path).readAsBytes();
     } on MissingPluginException {
       _broken = true;
       return (await _fb()).read();

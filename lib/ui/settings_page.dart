@@ -26,6 +26,7 @@ import 'wallpaper_page.dart';
 import 'whats_new.dart';
 import 'workspace/workspace_pages.dart';
 import 'skills_page.dart';
+import 'world_book_page.dart';
 import 'ai_model_picker.dart';
 import 'ai_reply_page.dart';
 import 'ai_settings_page.dart';
@@ -88,6 +89,13 @@ class SettingsTab extends StatelessWidget {
                 ListenableBuilder(
                   listenable: st.skills,
                   builder: (_, __) => _Cell(icon: Ic.fileCode, colors: _purple, title: l.skillTitle, sub: skillSettingsSummary(st, l), onTap: () => openSkillsSettings(context)),
+                ),
+                // the world book sits with the other lore and tools rather
+                // than under a role: the books are shared, the per role
+                // binding lives on the role's own card
+                ListenableBuilder(
+                  listenable: st.worldBooks,
+                  builder: (_, __) => _Cell(icon: Ic.book, colors: _teal, title: l.worldBookTitle, sub: worldBookSummary(st, l), onTap: () => openWorldBooks(context)),
                 ),
                 _Cell(icon: Ic.palette, colors: _orange, title: l.settingsAppearance, sub: l.settingsAppearanceSub, onTap: () => _open(context, l.settingsAppearance, _appearance)),
                 _Cell(icon: Ic.bell, colors: _red, title: l.settingsNotifications, sub: st.haptics ? l.settingsVibrationOn : l.settingsVibrationOff, onTap: () => _open(context, l.settingsNotifications, _notifications)),

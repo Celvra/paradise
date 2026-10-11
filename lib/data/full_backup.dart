@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:archive/archive.dart';
+import 'package:archive/archive_io.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -29,28 +29,68 @@ class FullBackup {
   static const docsPrefix = 'docs/';
   static const dbNames = ['paradise.db', 'paradise.db-wal', 'paradise.db-shm'];
 
-  static Future<Uint8List> build({Directory? docs, Directory? dbDir, SharedPreferences? sp}) async {
+  /// Relative paths whose bytes are themselves backups.
+  ///
+  /// The walk folds none of them into the snapshot. The private fallback
+  /// json duplicates what the curated archive carries, and the full zip of
+  /// the previous tick is the dangerous one: without this rule every
+  /// snapshot is the previous snapshot plus the day's changes, so the file
+  /// grows without bound and each tick re-zips a megabyte count that
+  /// compounds every time.
+  static bool isBackupArtifact(String rel) {
+    final norm = rel.replaceAll('\\', '/');
+    if (norm == 'backup/paradise_autobackup.json') return true;
+    final base = p.basename(norm);
+    return base.startsWith('paradise_full') && base.endsWith('.zip');
+  }
+
+  /// The databases directory as a path. Lives here rather than at the call
+  /// site because this library already depends on sqflite and the store's
+  /// part files deliberately do not.
+  static Future<String> dbDirPath() async => await getDatabasesPath();
+
+  /// Streams the snapshot to a file and returns it.
+  ///
+  /// The build never holds more than one file in memory, because the whole
+  /// data directory is the input: a user with a workspace environment
+  /// installed owns gigabytes there, and `readAsBytes` per entry plus an
+  /// in-memory `Archive` is a heap the process cannot afford on a phone.
+  /// The caller owns the returned file and deletes it once the sink has
+  /// taken its copy.
+  static Future<File> buildToFile({
+    Directory? docs,
+    Directory? dbDir,
+    SharedPreferences? sp,
+    Map<String, Object?>? prefs,
+    Directory? tmp,
+    String? outPath,
+  }) async {
     docs ??= await getApplicationDocumentsDirectory();
     dbDir ??= Directory(await getDatabasesPath());
-    sp ??= await SharedPreferences.getInstance();
-    final archive = Archive();
+    if (sp == null && prefs == null) sp = await SharedPreferences.getInstance();
+    prefs ??= {for (final k in sp!.getKeys()) k: sp.get(k)};
+    tmp ??= await getTemporaryDirectory();
 
-    // the prefs ride along as one json entry: dumping every key is deliberate,
-    // a curated list is how the API keys got left behind once already
-    final prefs = <String, dynamic>{for (final k in sp.getKeys()) k: sp.get(k)};
-    final prefsBytes = utf8.encode(jsonEncode(prefs));
-    archive.addFile(ArchiveFile(prefsEntry, prefsBytes.length, prefsBytes));
+    final out = File(outPath ?? p.join(tmp.path, 'paradise_full-${DateTime.now().microsecondsSinceEpoch}.zip'));
+    if (await out.exists()) await out.delete();
+
+    final encoder = ZipFileEncoder();
+    encoder.create(out.path);
+
+    // the prefs ride along as one json entry: dumping every key is
+    // deliberate, a curated list is how the API keys got left behind once
+    // already
+    final prefsFile = File(p.join(tmp.path, '_prefs-${DateTime.now().microsecondsSinceEpoch}.json'));
+    await prefsFile.writeAsBytes(utf8.encode(jsonEncode(prefs)), flush: true);
+    await encoder.addFile(prefsFile, prefsEntry);
+    await prefsFile.delete();
 
     if (await docs.exists()) {
       await for (final entity in docs.list(recursive: true, followLinks: false)) {
         if (entity is! File) continue;
         final rel = p.relative(entity.path, from: docs.path).replaceAll('\\', '/');
-        // the private fallback copy of the JSON auto backup only duplicates
-        // what this zip already carries, and resurrecting it on restore would
-        // shadow the newer shared one
-        if (rel == 'backup/paradise_autobackup.json') continue;
-        final bytes = await entity.readAsBytes();
-        archive.addFile(ArchiveFile('$docsPrefix$rel', bytes.length, bytes));
+        if (isBackupArtifact(rel)) continue;
+        await encoder.addFile(entity, '$docsPrefix$rel');
       }
     }
 
@@ -60,11 +100,11 @@ class FullBackup {
     for (final name in dbNames) {
       final f = File(p.join(dbDir.path, name));
       if (!await f.exists()) continue;
-      final bytes = await f.readAsBytes();
-      archive.addFile(ArchiveFile('$dbPrefix$name', bytes.length, bytes)..compression = CompressionType.none);
+      await encoder.addFile(f, '$dbPrefix$name', 0);
     }
 
-    return ZipEncoder().encodeBytes(archive);
+    await encoder.close();
+    return out;
   }
 
   /// Writes the zip back onto disk and returns how many files landed.
@@ -132,5 +172,48 @@ class FullBackup {
       }
     }
     return n;
+  }
+}
+
+/// What a worker isolate needs to build a snapshot: plain paths and a prefs
+/// dump, because neither the Store nor SharedPreferences crosses an isolate
+/// boundary (and must not: the worker runs while the UI keeps touching the
+/// store).
+class FullBackupJob {
+  const FullBackupJob({
+    required this.docsPath,
+    required this.dbDirPath,
+    required this.tmpPath,
+    required this.prefs,
+  });
+
+  final String docsPath;
+  final String dbDirPath;
+  final String tmpPath;
+  final Map<String, Object?> prefs;
+}
+
+/// [compute] entry point for the full snapshot.
+///
+/// Returns null on any failure: a snapshot that could not be built is a
+/// warning, never a reason to take the backup schedule down. The half
+/// written zip is removed here because the caller never received a handle.
+Future<File?> runFullBackupJob(FullBackupJob job) async {
+  File? out;
+  try {
+    out = File(p.join(job.tmpPath, 'paradise_full-${DateTime.now().microsecondsSinceEpoch}.zip'));
+    final f = await FullBackup.buildToFile(
+      docs: Directory(job.docsPath),
+      dbDir: Directory(job.dbDirPath),
+      prefs: job.prefs,
+      tmp: Directory(job.tmpPath),
+      outPath: out.path,
+    );
+    return f;
+  } catch (_) {
+    try {
+      if (out != null && await out.exists()) await out.delete();
+    } catch (_) {}
+    return null;
   }
 }

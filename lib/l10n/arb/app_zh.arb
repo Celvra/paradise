@@ -2683,65 +2683,9 @@
   "@humanChatCardHeader": {
     "description": "Section header of the character card"
   },
-  "humanChatCardFooter": "每次回复前都会注入，好让语气保持一致，助手可能会慢慢微调。",
+  "humanChatCardFooter": "人设现在住在世界书里：每个角色一本，按关键词触发，可从角色卡绑定。",
   "@humanChatCardFooter": {
-    "description": "Section footer of the character card"
-  },
-  "humanChatSpeechStyle": "说话风格",
-  "@humanChatSpeechStyle": {
-    "description": "Field of the character card"
-  },
-  "humanChatCatchphrases": "口头禅",
-  "@humanChatCatchphrases": {
-    "description": "Field of the character card"
-  },
-  "humanChatCatchphrasesHint": "口头禅（用逗号分隔）",
-  "@humanChatCatchphrasesHint": {
-    "description": "Prompt title for the catchphrase list"
-  },
-  "humanChatValues": "价值观",
-  "@humanChatValues": {
-    "description": "Field of the character card"
-  },
-  "humanChatTaboos": "禁忌",
-  "@humanChatTaboos": {
-    "description": "Field of the character card"
-  },
-  "humanChatAddressStranger": "称呼：陌生人",
-  "@humanChatAddressStranger": {
-    "description": "Field of the character card"
-  },
-  "humanChatAddressAcquaintance": "称呼：熟人",
-  "@humanChatAddressAcquaintance": {
-    "description": "Field of the character card"
-  },
-  "humanChatAddressClose": "称呼：亲近的人",
-  "@humanChatAddressClose": {
-    "description": "Field of the character card"
-  },
-  "humanChatExportCard": "导出角色卡（chara_card_v2）",
-  "@humanChatExportCard": {
-    "description": "Row that copies the card as json"
-  },
-  "humanChatCardCopied": "角色卡已复制到剪贴板",
-  "@humanChatCardCopied": {
-    "description": "Bulletin after copying the card"
-  },
-  "humanChatImportCard": "从剪贴板导入角色卡",
-  "@humanChatImportCard": {
-    "description": "Row that imports the card from the clipboard"
-  },
-  "humanChatImportCardTitle": "导入角色卡",
-  "@humanChatImportCardTitle": {
-    "description": "Dialog title of the card import"
-  },
-  "humanChatImportCardFooter": "覆盖会替换整张角色卡，合并只填补空白字段。",
-  "@humanChatImportCardFooter": {
-    "description": "Body of the card import mode picker"
-  },
-  "humanChatInvalidCard": "角色卡无效",
-  "@humanChatInvalidCard": {
-    "description": "Bulletin when the card payload is broken"
+    "description": "Section footer that points at the world book"
   },
   "humanChatSchedule": "每日日程",
   "@humanChatSchedule": {
@@ -3523,7 +3467,7 @@
       }
     }
   },
-  "whatsNewBody": "本次更新内容：\n\n• 语音与画图：每个角色单独开关。语音可用设备 TTS 或 OpenAI 兼容的 /audio/speech，画图走 /v1/images/generations\n• 关于页重做：从弹窗改成独立页面，并附上开源许可证列表与贡献者名单\n• 模型分档：模型选择器按对话 / 生图分开，选对话模型不再混进生图模型\n• 视频消息：相册与文件均可发送视频，AI 能看懂视频内容\n• 文件直读：小文件直接注入上下文，AI 真正读到内容\n• 贴纸三件套：AI 先读懂表情包含义再主动发送，并显示缩略图\n• 粘人度：可配置 AI 主动发话的频率与次数上限\n• 商城改版：购买后跳转聊天，礼物以卡片送达且 AI 真正收到\n• 自动备份：默认开启，覆盖式备份可随更新与重装存活，首次启动检测到备份可一键恢复\n• 模型目录：修正 models.dev 数据滞后导致的视频能力误判（DeepSeek V4.1 Flash）\n• 编辑器保护：人设编辑器所有退出方式都会先确认再丢弃修改\n• 修复 Android 上聊天记录读不出来：数据库打开失败导致列表空白，消息其实都还在\n• 修复删除的消息重启后复活\n• 修复更新内容弹窗在夜间模式下的黑字\n• 界面与性能优化",
+  "whatsNewBody": "本次更新内容：\n\n• 世界书：把世界观、设定、禁忌和称呼写进一本书，按关键词触发，从角色卡绑定；条目可设常驻、触发概率、扫描深度、注入位置与对话深度、互斥组与优先级，支持正则、全词匹配与次级关键词，命中的条目还能继续牵出更多设定\n• 兼容 SillyTavern：世界书 JSON 可导入导出，社区的世界观可以整本搬过来\n• 迁移：旧版角色卡（说话风格、口头禅、价值观、禁忌、三阶段称呼）自动变成本角色的默认世界书，原来的入口改为跳转\n• 测试沙盒：粘贴一段对话，立刻看到哪些条目会命中、注入后的样子和预算占用\n• 语音与画图：每个角色单独开关。语音可用设备 TTS 或 OpenAI 兼容的 /audio/speech，画图走 /v1/images/generations\n• 关于页重做：从弹窗改成独立页面，并附上开源许可证列表与贡献者名单\n• 模型分档：模型选择器按对话 / 生图分开，选对话模型不再混进生图模型\n• 视频消息：相册与文件均可发送视频，AI 能看懂视频内容\n• 文件直读：小文件直接注入上下文，AI 真正读到内容\n• 贴纸三件套：AI 先读懂表情包含义再主动发送，并显示缩略图\n• 粘人度：可配置 AI 主动发话的频率与次数上限\n• 商城改版：购买后跳转聊天，礼物以卡片送达且 AI 真正收到\n• 自动备份：默认开启，覆盖式备份可随更新与重装存活，首次启动检测到备份可一键恢复\n• 模型目录：修正 models.dev 数据滞后导致的视频能力误判（DeepSeek V4.1 Flash）\n• 编辑器保护：人设编辑器所有退出方式都会先确认再丢弃修改\n• 修复 Android 上聊天记录读不出来：数据库打开失败导致列表空白，消息其实都还在\n• 修复删除的消息重启后复活\n• 修复更新内容弹窗在夜间模式下的黑字\n• 界面与性能优化",
   "@whatsNewBody": {
     "description": "Body of the one-time whats-new dialog, one bullet per line"
   },
@@ -3686,7 +3630,6 @@
   "toolDescPinMessage": "在会话里置顶或取消置顶一条消息",
   "toolDescEditMessage": "改写它自己先前发过的一条消息",
   "toolDescQuoteMessage": "引用某条消息来回复",
-  "toolDescCharacterCard": "让它缓慢微调自己的人设",
   "toolDescRating": "根据你的回应调整它的自我调校",
   "toolDescSendSticker": "从表情库发一张贴纸",
   "toolDescSaveSticker": "把你发过的梗图存进表情库",
@@ -4097,8 +4040,6 @@
   "remoteBackupNone": "远端没有找到备份",
   "remoteBackupNotConfigured": "请先填写并保存配置",
   "remoteBackupSaved": "远端设置已保存",
-
-
   "autoBackupModeChange": "数据变化时自动备份（推荐）",
   "autoBackupModeInterval": "每隔 {n} 小时",
   "@autoBackupModeInterval": {
@@ -4242,5 +4183,649 @@
   "storageClear": "清空缓存",
   "storageClearTitle": "清空缓存？",
   "storageClearMessage": "将删除临时文件，聊天记录、人设、表情包和设置都会保留。",
-  "storageClearDone": "缓存已清空"
+  "storageClearDone": "缓存已清空",
+  "humanChatCardMoved": "世界书里的角色卡",
+  "@humanChatCardMoved": {
+    "description": "Row that opens the world book page"
+  },
+  "toolDescWorldEntry": "让它缓慢微调自己的人设",
+  "@toolDescWorldEntry": {
+    "description": "What update_world_entry does"
+  },
+  "worldBookTitle": "世界书",
+  "@worldBookTitle": {
+    "description": "World book UI"
+  },
+  "worldBookSummary": "{on} 本 · {entries} 条",
+  "@worldBookSummary": {
+    "description": "World book UI",
+    "placeholders": {
+      "on": {
+        "type": "int"
+      },
+      "entries": {
+        "type": "int"
+      }
+    }
+  },
+  "worldBookIntro": "世界书是存放世界观、设定、禁忌与称呼的地方。条目只有在自己关键词命中或标记为常驻时才会注入，按角色绑定。",
+  "@worldBookIntro": {
+    "description": "World book UI"
+  },
+  "worldBookEmpty": "还没有世界书",
+  "@worldBookEmpty": {
+    "description": "World book UI"
+  },
+  "worldBookEmptyBody": "新建一本，或从 SillyTavern 的世界书 JSON 导入。",
+  "@worldBookEmptyBody": {
+    "description": "World book UI"
+  },
+  "worldBookAdd": "添加世界书",
+  "@worldBookAdd": {
+    "description": "World book UI"
+  },
+  "worldBookAddNew": "新建",
+  "@worldBookAddNew": {
+    "description": "World book UI"
+  },
+  "worldBookAddPaste": "粘贴导入",
+  "@worldBookAddPaste": {
+    "description": "World book UI"
+  },
+  "worldBookAddFile": "从文件导入",
+  "@worldBookAddFile": {
+    "description": "World book UI"
+  },
+  "worldBookDefaultName": "新世界",
+  "@worldBookDefaultName": {
+    "description": "World book UI"
+  },
+  "worldBookName": "世界书名",
+  "@worldBookName": {
+    "description": "World book UI"
+  },
+  "worldBookNameHint": "给它起个名字",
+  "@worldBookNameHint": {
+    "description": "World book UI"
+  },
+  "worldBookImportTitle": "导入世界书",
+  "@worldBookImportTitle": {
+    "description": "World book UI"
+  },
+  "worldBookImportHint": "粘贴 SillyTavern 世界书 JSON，或本应用导出的 JSON",
+  "@worldBookImportHint": {
+    "description": "World book UI"
+  },
+  "worldBookImported": "已导入 {count} 本",
+  "@worldBookImported": {
+    "description": "World book UI",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "worldBookInvalid": "文件无效",
+  "@worldBookInvalid": {
+    "description": "World book UI"
+  },
+  "worldBookSettingsHeader": "注入设置",
+  "@worldBookSettingsHeader": {
+    "description": "World book UI"
+  },
+  "worldBookBudget": "注入预算",
+  "@worldBookBudget": {
+    "description": "World book UI"
+  },
+  "worldBookBudgetValue": "{k} 千字符",
+  "@worldBookBudgetValue": {
+    "description": "World book UI",
+    "placeholders": {
+      "k": {
+        "type": "int"
+      }
+    }
+  },
+  "worldBookBudgetFooter": "命中条目按优先级争夺这份预算，超出部分本轮会被丢弃；标记为常驻的条目不受预算限制。",
+  "@worldBookBudgetFooter": {
+    "description": "World book UI"
+  },
+  "worldBookBudgetUnlimited": "无限制",
+  "@worldBookBudgetUnlimited": {
+    "description": "World book UI"
+  },
+  "worldBookBudgetUnlimitedNote": "无限制：所有命中条目都会注入，可能会导致 RP 体验不佳（上下文拥挤、注意力涣散）。",
+  "@worldBookBudgetUnlimitedNote": {
+    "description": "World book UI"
+  },
+  "worldBookBookHeader": "这本书",
+  "@worldBookBookHeader": {
+    "description": "World book UI"
+  },
+  "worldBookBookFooter": "类型决定注入时的措辞：规则会被当成必须遵守的指令，事实会被当成既成背景。",
+  "@worldBookBookFooter": {
+    "description": "World book UI"
+  },
+  "worldBookKind": "类型",
+  "@worldBookKind": {
+    "description": "World book UI"
+  },
+  "worldBookKindHint": "注入时怎么描述这本书",
+  "@worldBookKindHint": {
+    "description": "World book UI"
+  },
+  "worldBookKindLabelGeneral": "综合",
+  "@worldBookKindLabelGeneral": {
+    "description": "World book UI"
+  },
+  "worldBookKindLabelFacts": "世界事实",
+  "@worldBookKindLabelFacts": {
+    "description": "World book UI"
+  },
+  "worldBookKindLabelRules": "世界规则",
+  "@worldBookKindLabelRules": {
+    "description": "World book UI"
+  },
+  "worldBookKindLabelStyle": "风格指南",
+  "@worldBookKindLabelStyle": {
+    "description": "World book UI"
+  },
+  "worldBookKindLabelRelations": "关系图",
+  "@worldBookKindLabelRelations": {
+    "description": "World book UI"
+  },
+  "worldBookKindLabelScenes": "场景",
+  "@worldBookKindLabelScenes": {
+    "description": "World book UI"
+  },
+  "worldBookEntries": "{count} 条",
+  "@worldBookEntries": {
+    "description": "World book UI",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "worldBookEntriesHeader": "条目",
+  "@worldBookEntriesHeader": {
+    "description": "World book UI"
+  },
+  "worldBookEntriesFooter": "共 {count} 条。点击编辑，长按删除。",
+  "@worldBookEntriesFooter": {
+    "description": "World book UI",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "worldBookEntriesEmpty": "还没有条目",
+  "@worldBookEntriesEmpty": {
+    "description": "World book UI"
+  },
+  "worldBookEntriesEmptyBody": "添加条目，或直接粘贴内容。",
+  "@worldBookEntriesEmptyBody": {
+    "description": "World book UI"
+  },
+  "worldBookEntryAdd": "添加条目",
+  "@worldBookEntryAdd": {
+    "description": "World book UI"
+  },
+  "worldBookEntryUntitled": "未命名条目",
+  "@worldBookEntryUntitled": {
+    "description": "World book UI"
+  },
+  "worldBookDataHeader": "数据",
+  "@worldBookDataHeader": {
+    "description": "World book UI"
+  },
+  "worldBookExportSub": "导出为 SillyTavern 世界书 JSON",
+  "@worldBookExportSub": {
+    "description": "World book UI"
+  },
+  "worldBookDelete": "删除这本书",
+  "@worldBookDelete": {
+    "description": "World book UI"
+  },
+  "worldBookDeleteMessage": "「{name}」将被删除，无法恢复。",
+  "@worldBookDeleteMessage": {
+    "description": "Confirm body of the book delete",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "worldBookGone": "这本书已被删除",
+  "@worldBookGone": {
+    "description": "World book UI"
+  },
+  "worldBookEntryTitle": "条目",
+  "@worldBookEntryTitle": {
+    "description": "World book UI"
+  },
+  "worldBookEntryBodyHeader": "内容",
+  "@worldBookEntryBodyHeader": {
+    "description": "World book UI"
+  },
+  "worldBookEntryBodyFooter": "标题会随内容一起注入，方便模型引用与你在调试时辨认。",
+  "@worldBookEntryBodyFooter": {
+    "description": "World book UI"
+  },
+  "worldBookEntryComment": "标题",
+  "@worldBookEntryComment": {
+    "description": "World book UI"
+  },
+  "worldBookEntryCommentHint": "这条是什么",
+  "@worldBookEntryCommentHint": {
+    "description": "World book UI"
+  },
+  "worldBookEntryContent": "内容",
+  "@worldBookEntryContent": {
+    "description": "World book UI"
+  },
+  "worldBookEntryContentHint": "模型读到的内容",
+  "@worldBookEntryContentHint": {
+    "description": "World book UI"
+  },
+  "worldBookEntryKeys": "关键词",
+  "@worldBookEntryKeys": {
+    "description": "World book UI"
+  },
+  "worldBookEntryKeysHint": "任意一个命中即触发。逗号分隔可一次添加多个。",
+  "@worldBookEntryKeysHint": {
+    "description": "World book UI"
+  },
+  "worldBookEntrySecondary": "次级关键词",
+  "@worldBookEntrySecondary": {
+    "description": "World book UI"
+  },
+  "worldBookEntrySecondaryHint": "在主要关键词之上再加一层条件",
+  "@worldBookEntrySecondaryHint": {
+    "description": "World book UI"
+  },
+  "worldBookKeysNone": "尚未设置关键词",
+  "@worldBookKeysNone": {
+    "description": "World book UI"
+  },
+  "worldBookKeyAdd": "添加关键词",
+  "@worldBookKeyAdd": {
+    "description": "World book UI"
+  },
+  "worldBookEntryTriggerHeader": "触发条件",
+  "@worldBookEntryTriggerHeader": {
+    "description": "World book UI"
+  },
+  "worldBookEntryTriggerFooter": "概率每次重新掷骰；同种子下同一会话会得到相同结果。",
+  "@worldBookEntryTriggerFooter": {
+    "description": "World book UI"
+  },
+  "worldBookEntryLogic": "组合逻辑",
+  "@worldBookEntryLogic": {
+    "description": "World book UI"
+  },
+  "worldBookLogicLabelAnySecondary": "任一命中",
+  "@worldBookLogicLabelAnySecondary": {
+    "description": "World book UI"
+  },
+  "worldBookLogicLabelNotAnySecondary": "无一命中",
+  "@worldBookLogicLabelNotAnySecondary": {
+    "description": "World book UI"
+  },
+  "worldBookLogicLabelAllSecondary": "全部命中",
+  "@worldBookLogicLabelAllSecondary": {
+    "description": "World book UI"
+  },
+  "worldBookLogicLabelNotAllSecondary": "非全部命中",
+  "@worldBookLogicLabelNotAllSecondary": {
+    "description": "World book UI"
+  },
+  "worldBookLogicSubAnySecondary": "主要命中 且 至少一个次级命中",
+  "@worldBookLogicSubAnySecondary": {
+    "description": "World book UI"
+  },
+  "worldBookLogicSubNotAnySecondary": "主要命中 且 没有次级命中",
+  "@worldBookLogicSubNotAnySecondary": {
+    "description": "World book UI"
+  },
+  "worldBookLogicSubAllSecondary": "主要命中 且 次级全部命中",
+  "@worldBookLogicSubAllSecondary": {
+    "description": "World book UI"
+  },
+  "worldBookLogicSubNotAllSecondary": "主要命中 且 次级未全部命中",
+  "@worldBookLogicSubNotAllSecondary": {
+    "description": "World book UI"
+  },
+  "worldBookEntryProbability": "触发概率",
+  "@worldBookEntryProbability": {
+    "description": "World book UI"
+  },
+  "worldBookEntryCaseSensitive": "区分大小写",
+  "@worldBookEntryCaseSensitive": {
+    "description": "World book UI"
+  },
+  "worldBookEntryWholeWords": "全词匹配",
+  "@worldBookEntryWholeWords": {
+    "description": "World book UI"
+  },
+  "worldBookEntryRegex": "正则表达式",
+  "@worldBookEntryRegex": {
+    "description": "World book UI"
+  },
+  "worldBookEntryWhenHeader": "何时注入",
+  "@worldBookEntryWhenHeader": {
+    "description": "World book UI"
+  },
+  "worldBookEntryWhenFooter": "常驻条目无视关键词与预算，每轮都会注入。",
+  "@worldBookEntryWhenFooter": {
+    "description": "World book UI"
+  },
+  "worldBookConstant": "常驻",
+  "@worldBookConstant": {
+    "description": "World book UI"
+  },
+  "worldBookConstantSub": "无论关键词是否命中都注入",
+  "@worldBookConstantSub": {
+    "description": "World book UI"
+  },
+  "worldBookEntryScanDepth": "扫描深度",
+  "@worldBookEntryScanDepth": {
+    "description": "World book UI"
+  },
+  "worldBookEntryScanAll": "全部历史",
+  "@worldBookEntryScanAll": {
+    "description": "World book UI"
+  },
+  "worldBookEntryPosition": "注入位置",
+  "@worldBookEntryPosition": {
+    "description": "World book UI"
+  },
+  "worldBookPositionLabelBeforeChar": "角色定义前",
+  "@worldBookPositionLabelBeforeChar": {
+    "description": "World book UI"
+  },
+  "worldBookPositionLabelAfterChar": "角色定义后",
+  "@worldBookPositionLabelAfterChar": {
+    "description": "World book UI"
+  },
+  "worldBookPositionLabelAtDepth": "对话中（指定深度）",
+  "@worldBookPositionLabelAtDepth": {
+    "description": "World book UI"
+  },
+  "worldBookPositionLabelBottomNote": "系统提示末尾",
+  "@worldBookPositionLabelBottomNote": {
+    "description": "World book UI"
+  },
+  "worldBookPositionSubBeforeChar": "在角色设定之前，最先读到",
+  "@worldBookPositionSubBeforeChar": {
+    "description": "World book UI"
+  },
+  "worldBookPositionSubAfterChar": "紧跟角色设定之后",
+  "@worldBookPositionSubAfterChar": {
+    "description": "World book UI"
+  },
+  "worldBookPositionSubAtDepth": "作为历史消息插入，离最新的消息 n 条",
+  "@worldBookPositionSubAtDepth": {
+    "description": "World book UI"
+  },
+  "worldBookPositionSubBottomNote": "系统提示的最后一段，最接近对话",
+  "@worldBookPositionSubBottomNote": {
+    "description": "World book UI"
+  },
+  "worldBookEntryDepth": "深度",
+  "@worldBookEntryDepth": {
+    "description": "World book UI"
+  },
+  "worldBookEntryRole": "角色",
+  "@worldBookEntryRole": {
+    "description": "World book UI"
+  },
+  "worldBookRoleLabelSystem": "系统",
+  "@worldBookRoleLabelSystem": {
+    "description": "World book UI"
+  },
+  "worldBookRoleLabelUser": "用户",
+  "@worldBookRoleLabelUser": {
+    "description": "World book UI"
+  },
+  "worldBookRoleLabelAssistant": "助手",
+  "@worldBookRoleLabelAssistant": {
+    "description": "World book UI"
+  },
+  "worldBookEntryStackHeader": "互斥与排序",
+  "@worldBookEntryStackHeader": {
+    "description": "World book UI"
+  },
+  "worldBookEntryStackFooter": "同组条目只保留权重最高的一个，适合\"季节\"\"关系阶段\"这类替代关系。",
+  "@worldBookEntryStackFooter": {
+    "description": "World book UI"
+  },
+  "worldBookEntryGroup": "互斥组",
+  "@worldBookEntryGroup": {
+    "description": "World book UI"
+  },
+  "worldBookEntryGroupHint": "同名条目互相排斥，留空则不互斥",
+  "@worldBookEntryGroupHint": {
+    "description": "World book UI"
+  },
+  "worldBookEntryGroupWeight": "组内权重",
+  "@worldBookEntryGroupWeight": {
+    "description": "World book UI"
+  },
+  "worldBookEntryGroupWeightSub": "同组命中多条时保留权重最高的一条",
+  "@worldBookEntryGroupWeightSub": {
+    "description": "World book UI"
+  },
+  "worldBookEntryPriority": "优先级",
+  "@worldBookEntryPriority": {
+    "description": "World book UI"
+  },
+  "worldBookEntryPrioritySub": "预算不足时，优先级高的先保留",
+  "@worldBookEntryPrioritySub": {
+    "description": "World book UI"
+  },
+  "worldBookEntryAiEditable": "允许 AI 微调",
+  "@worldBookEntryAiEditable": {
+    "description": "World book UI"
+  },
+  "worldBookEntryAiEditableSub": "助手可通过 update_world_entry 工具缓慢修改这一条",
+  "@worldBookEntryAiEditableSub": {
+    "description": "World book UI"
+  },
+  "worldBookEntryDelete": "删除条目",
+  "@worldBookEntryDelete": {
+    "description": "World book UI"
+  },
+  "worldBookTplBlank": "空白条目",
+  "@worldBookTplBlank": {
+    "description": "World book UI"
+  },
+  "worldBookTplBlankSub": "从零开始",
+  "@worldBookTplBlankSub": {
+    "description": "World book UI"
+  },
+  "worldBookTplPlace": "地点",
+  "@worldBookTplPlace": {
+    "description": "World book UI"
+  },
+  "worldBookTplPlaceSub": "一个场所、区域或建筑",
+  "@worldBookTplPlaceSub": {
+    "description": "World book UI"
+  },
+  "worldBookTplItem": "物品",
+  "@worldBookTplItem": {
+    "description": "World book UI"
+  },
+  "worldBookTplItemSub": "一件道具、武器或凭证",
+  "@worldBookTplItemSub": {
+    "description": "World book UI"
+  },
+  "worldBookTplRule": "规则",
+  "@worldBookTplRule": {
+    "description": "World book UI"
+  },
+  "worldBookTplRuleSub": "一条必须或绝不能发生的事",
+  "@worldBookTplRuleSub": {
+    "description": "World book UI"
+  },
+  "worldBookTplRelation": "关系",
+  "@worldBookTplRelation": {
+    "description": "World book UI"
+  },
+  "worldBookTplRelationSub": "一段关系与当前立场",
+  "@worldBookTplRelationSub": {
+    "description": "World book UI"
+  },
+  "worldBookTplStyle": "说话风格",
+  "@worldBookTplStyle": {
+    "description": "World book UI"
+  },
+  "worldBookTplStyleSub": "常驻，决定语气与用词",
+  "@worldBookTplStyleSub": {
+    "description": "World book UI"
+  },
+  "worldBookTplAddress": "称呼（随亲密度）",
+  "@worldBookTplAddress": {
+    "description": "World book UI"
+  },
+  "worldBookTplAddressSub": "常驻，陌生人 / 熟人 / 亲密三阶段",
+  "@worldBookTplAddressSub": {
+    "description": "World book UI"
+  },
+  "worldBookTplAddressComment": "称呼（随亲密度变化）",
+  "@worldBookTplAddressComment": {
+    "description": "World book UI"
+  },
+  "worldBookBind": "世界观",
+  "@worldBookBind": {
+    "description": "World book UI"
+  },
+  "worldBookBindSub": "这个角色在哪几本书里生活。",
+  "@worldBookBindSub": {
+    "description": "World book UI"
+  },
+  "worldBookBindNone": "未绑定",
+  "@worldBookBindNone": {
+    "description": "World book UI"
+  },
+  "worldBookBindCount": "已绑定 {count} 本",
+  "@worldBookBindCount": {
+    "description": "World book UI",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "worldBookBindPicker": "选择世界书",
+  "@worldBookBindPicker": {
+    "description": "World book UI"
+  },
+  "worldBookSandbox": "测试沙盒",
+  "@worldBookSandbox": {
+    "description": "World book UI"
+  },
+  "worldBookSandboxHeader": "试一段对话",
+  "@worldBookSandboxHeader": {
+    "description": "World book UI"
+  },
+  "worldBookSandboxFooter": "粘贴真实对话的几行，看哪些条目会命中、注入位置在哪里。",
+  "@worldBookSandboxFooter": {
+    "description": "World book UI"
+  },
+  "worldBookSandboxInput": "对话内容",
+  "@worldBookSandboxInput": {
+    "description": "World book UI"
+  },
+  "worldBookSandboxHint": "每行一条消息，模型读取时的原文",
+  "@worldBookSandboxHint": {
+    "description": "World book UI"
+  },
+  "worldBookSandboxRun": "试运行",
+  "@worldBookSandboxRun": {
+    "description": "World book UI"
+  },
+  "worldBookSandboxNone": "没有条目命中",
+  "@worldBookSandboxNone": {
+    "description": "World book UI"
+  },
+  "worldBookSandboxDropped": "被预算丢弃",
+  "@worldBookSandboxDropped": {
+    "description": "World book UI"
+  },
+  "worldBookSandboxSpent": "注入体积",
+  "@worldBookSandboxSpent": {
+    "description": "World book UI"
+  },
+  "worldBookSandboxRecursion": "递归追溯了 {count} 层",
+  "@worldBookSandboxRecursion": {
+    "description": "World book UI",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "worldBookEnabled": "启用这本书",
+  "@worldBookEnabled": {
+    "description": "Switch that disables a whole book"
+  },
+  "humanChatSpeechStyle": "说话风格",
+  "@humanChatSpeechStyle": {
+    "description": "Field of the character card"
+  },
+  "humanChatCatchphrases": "口头禅",
+  "@humanChatCatchphrases": {
+    "description": "Field of the character card"
+  },
+  "humanChatCatchphrasesHint": "口头禅（用逗号分隔）",
+  "@humanChatCatchphrasesHint": {
+    "description": "Prompt title for the catchphrase list"
+  },
+  "humanChatValues": "价值观",
+  "@humanChatValues": {
+    "description": "Field of the character card"
+  },
+  "humanChatTaboos": "禁忌",
+  "@humanChatTaboos": {
+    "description": "Field of the character card"
+  },
+  "humanChatAddressStranger": "称呼：陌生人",
+  "@humanChatAddressStranger": {
+    "description": "Field of the character card"
+  },
+  "humanChatAddressAcquaintance": "称呼：熟人",
+  "@humanChatAddressAcquaintance": {
+    "description": "Field of the character card"
+  },
+  "humanChatAddressClose": "称呼：亲近的人",
+  "@humanChatAddressClose": {
+    "description": "Field of the character card"
+  },
+  "humanChatExportCard": "导出角色卡（chara_card_v2）",
+  "@humanChatExportCard": {
+    "description": "Row that copies the card as json"
+  },
+  "humanChatCardCopied": "角色卡已复制到剪贴板",
+  "@humanChatCardCopied": {
+    "description": "Bulletin after copying the card"
+  },
+  "humanChatImportCard": "从剪贴板导入角色卡",
+  "@humanChatImportCard": {
+    "description": "Row that imports the card from the clipboard"
+  },
+  "humanChatImportCardTitle": "导入角色卡",
+  "@humanChatImportCardTitle": {
+    "description": "Dialog title of the card import"
+  },
+  "humanChatImportCardFooter": "覆盖会替换整张角色卡，合并只填补空白字段。",
+  "@humanChatImportCardFooter": {
+    "description": "Body of the card import mode picker"
+  },
+  "humanChatInvalidCard": "角色卡无效",
+  "@humanChatInvalidCard": {
+    "description": "Bulletin when the card payload is broken"
+  },
+  "toolDescCharacterCard": "让它缓慢微调自己的人设"
 }

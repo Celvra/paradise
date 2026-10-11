@@ -18,6 +18,7 @@ import '../data/human/sticker_lib.dart';
 import '../data/store.dart';
 import '../l10n/x.dart';
 import 'human_pages.dart';
+import 'media_bubbles.dart' show walletFill, walletInk;
 import 'shop_page.dart';
 import 'tool_descriptions.dart';
 import 'tg_cells.dart';
@@ -64,11 +65,13 @@ Widget stickerView(UserSticker s, double size) {
   }
   final cache = (size * 2).round();
   final local = s.thumb.isNotEmpty && File(s.thumb).existsSync() ? s.thumb : s.value;
+  // contain, never cover: a sticker is a png with transparent margins, and
+  // cropping it to fill the cell cuts the drawing the user picked
   final img = s.isRemote
       ? Image.network(s.value,
           width: size,
           height: size,
-          fit: BoxFit.cover,
+          fit: BoxFit.contain,
           gaplessPlayback: true,
           cacheWidth: cache,
           errorBuilder: (_, __, ___) => SizedBox(width: size, height: size))
@@ -76,7 +79,7 @@ Widget stickerView(UserSticker s, double size) {
           ? Image.file(File(local),
               width: size,
               height: size,
-              fit: BoxFit.cover,
+              fit: BoxFit.contain,
               gaplessPlayback: true,
               cacheWidth: cache)
           : SizedBox(width: size, height: size));
@@ -297,20 +300,53 @@ class _StickerSettingsState extends State<StickerSettingsPage> {
     });
   }
 
+  /// the same pill the panel's category strip uses, so the two sticker surfaces
+  /// read as one design
   Widget _chip(Pal p, String label, bool on, VoidCallback tap) => Tap(
         scale: .94,
         onTap: tap,
         child: Container(
           margin: const EdgeInsets.only(right: 8, bottom: 8),
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 7),
+          alignment: Alignment.center,
           decoration: BoxDecoration(
               color: on ? p.accent : p.gray,
-              borderRadius: BorderRadius.circular(16)),
-          child: Text(label,
-              style: hStyle(p,
-                  size: 14,
-                  color: on ? const Color(0xFFFFFFFF) : p.title,
-                  weight: FontWeight.w500)),
+              borderRadius: BorderRadius.circular(12)),
+          child: Row(mainAxisSize: MainAxisSize.min, children: [
+            if (on) ...[TgIcon(Ic.check, color: p.dark ? const Color(0xFF0F1A24) : const Color(0xFFFFFFFF), size: 13, stroke: 2.4), const SizedBox(width: 5)],
+            Text(label,
+                style: hStyle(p,
+                    size: 14,
+                    color: on ? (p.dark ? const Color(0xFF0F1A24) : const Color(0xFFFFFFFF)) : p.title,
+                    weight: FontWeight.w500)),
+          ]),
+        ),
+      );
+
+  /// [_chip] with a leading glyph, for the filters whose meaning is an icon
+  /// rather than a word
+  Widget _chipIcon(Pal p, Ic ic, String label, bool on, VoidCallback tap) => Tap(
+        scale: .94,
+        onTap: tap,
+        child: Container(
+          margin: const EdgeInsets.only(right: 8, bottom: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 7),
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+              color: on ? p.accent : p.gray,
+              borderRadius: BorderRadius.circular(12)),
+          child: Row(mainAxisSize: MainAxisSize.min, children: [
+            TgIcon(ic,
+                color: on ? (p.dark ? const Color(0xFF0F1A24) : const Color(0xFFFFFFFF)) : p.accent,
+                size: 14,
+                stroke: 2),
+            const SizedBox(width: 5),
+            Text(label,
+                style: hStyle(p,
+                    size: 14,
+                    color: on ? (p.dark ? const Color(0xFF0F1A24) : const Color(0xFFFFFFFF)) : p.title,
+                    weight: FontWeight.w500)),
+          ]),
         ),
       );
 
@@ -320,41 +356,37 @@ class _StickerSettingsState extends State<StickerSettingsPage> {
       behavior: HitTestBehavior.opaque,
       onTap: () => _tapCell(s),
       onLongPress: () => _holdCell(s),
-      child: Container(
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 180),
+        curve: TgCurves.easeOut,
         width: size,
         height: size,
         decoration: BoxDecoration(
-            color: p.gray,
-            borderRadius: BorderRadius.circular(10),
-            border: on ? Border.all(color: p.accent, width: 2) : null),
+            color: on ? p.accent.withAlpha(30) : p.gray,
+            borderRadius: BorderRadius.circular(14),
+            border: on ? Border.all(color: p.accent, width: 1.5) : null),
         child: Stack(children: [
-          Center(child: stickerView(s, size - 16)),
+          Center(child: stickerView(s, size - 18)),
           if (s.favorite)
-            Positioned(
-                top: 3,
-                right: 5,
-                child: Text('★',
-                    style:
-                        hStyle(p, size: 12, color: const Color(0xFFF5A623)))),
+            Positioned(top: 5, right: 6, child: TgIcon(Ic.star, color: p.accent, size: 14, stroke: 2)),
           if (s.source == 'ai')
             Positioned(
-                bottom: 2,
-                left: 5,
+                bottom: 4,
+                left: 6,
                 child: Text(L10n.current.stickerAiBadge,
-                    style: hStyle(p,
-                        size: 10, color: p.accent, weight: FontWeight.w600))),
+                    style: hStyle(p, size: 10, color: p.accent, weight: FontWeight.w600))),
           if (s.emotion.isNotEmpty)
             Positioned(
-                bottom: 2,
-                right: 5,
+                bottom: 4,
+                right: 6,
                 child: Text(s.emotion,
                     style: hStyle(p, size: 10, color: p.subtitle))),
           if (_picking)
             Positioned(
-              top: 2,
-              left: 4,
+              top: 4,
+              left: 5,
               child: on
-                  ? TgIcon(Ic.check2, color: p.accent, size: 18, stroke: 2)
+                  ? TgIcon(Ic.check2, color: p.accent, size: 19, stroke: 2)
                   : Container(
                       width: 16,
                       height: 16,
@@ -398,7 +430,7 @@ class _StickerSettingsState extends State<StickerSettingsPage> {
             child: Text(l.stickerBatchActions,
                 style: hStyle(p,
                     size: 15,
-                    color: const Color(0xFFFFFFFF),
+                    color: p.dark ? const Color(0xFF0F1A24) : const Color(0xFFFFFFFF),
                     weight: FontWeight.w600)),
           ),
         ),
@@ -458,14 +490,10 @@ class _StickerSettingsState extends State<StickerSettingsPage> {
                                   _favs = false;
                                   _recent = false;
                                 })),
-                        _chip(
-                            p,
-                            '★ ${l.stickerFavorites}',
-                            _favs,
-                            () => setState(() {
-                                  _favs = !_favs;
-                                  _recent = false;
-                                })),
+                        _chipIcon(p, Ic.star, l.stickerFavorites, _favs, () => setState(() {
+                              _favs = !_favs;
+                              _recent = false;
+                            })),
                         _chip(
                             p,
                             l.stickerRecent,
@@ -491,16 +519,24 @@ class _StickerSettingsState extends State<StickerSettingsPage> {
                 color: p.bg,
                 padding: const EdgeInsets.fromLTRB(12, 4, 12, 16),
                 child: list.isEmpty
-                    ? Padding(
-                        padding: const EdgeInsets.all(24),
-                        child: Center(
-                            child: Text(l.stickerEmptyLibrary,
-                                textAlign: TextAlign.center,
-                                style: hStyle(p, color: p.subtitle))))
-                    : Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        children: [for (final s in list) _cell(p, s, cell)]),
+                    ? _emptyLibrary(p)
+                    : Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          // the count rides under the filters, the way the panel
+                          // names its set
+                          Padding(
+                            padding: const EdgeInsets.only(left: 4, bottom: 8),
+                            child: Text('${l.stickerMyStickers} · ${list.length}',
+                                style: hStyle(p, size: 12, color: p.subtitle)),
+                          ),
+                          Wrap(
+                            spacing: 8,
+                            runSpacing: 8,
+                            children: [for (final s in list) _cell(p, s, cell)],
+                          ),
+                        ],
+                      ),
               ),
               TgInfoCell(l.stickerLibraryFooter),
             ],
@@ -509,6 +545,41 @@ class _StickerSettingsState extends State<StickerSettingsPage> {
             Positioned(left: 0, right: 0, bottom: 0, child: _batchBar(p)),
         ]);
       }),
+    );
+  }
+
+  /// an empty library used to be one line of grey copy, which left a whole page
+  /// with nothing to look at and no obvious way out of it
+  Widget _emptyLibrary(Pal p) {
+    final l = context.l;
+    final ink = p.dark ? const Color(0xFF0F1A24) : const Color(0xFFFFFFFF);
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(32, 28, 32, 32),
+      child: Column(children: [
+        Container(
+            width: 66,
+            height: 66,
+            decoration: BoxDecoration(color: p.gray, borderRadius: BorderRadius.circular(20)),
+            child: Center(child: TgIcon(Ic.sticker, color: p.subtitle, size: 30, stroke: 1.6))),
+        const SizedBox(height: 14),
+        Text(l.stickerEmptyLibrary,
+            textAlign: TextAlign.center,
+            style: hStyle(p, size: 14, color: p.subtitle)),
+        const SizedBox(height: 18),
+        Tap(
+          scale: .96,
+          onTap: () => addStickerFlow(context),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 10),
+            decoration: BoxDecoration(color: p.accent, borderRadius: BorderRadius.circular(20)),
+            child: Row(mainAxisSize: MainAxisSize.min, children: [
+              TgIcon(Ic.plus, color: ink, size: 16, stroke: 2.2),
+              const SizedBox(width: 6),
+              Text(l.actionAdd, style: hStyle(p, size: 15, color: ink, weight: FontWeight.w600)),
+            ]),
+          ),
+        ),
+      ]),
     );
   }
 }
@@ -608,7 +679,7 @@ const kBuiltinTools = [
   'read_memory',
   'complete_todo', //
   'set_life_schedule', 'pin_message', 'edit_message', 'quote_message',
-  'update_character_card', 'adjust_rating', 'send_sticker', 'save_sticker', //
+  'update_world_entry', 'adjust_rating', 'send_sticker', 'save_sticker', //
   'recall_message', 'send_typo', 'send_image', 'send_file', 'send_svg',
   'send_html', 'send_latex', 'send_cetz',
   'send_transfer', //
@@ -813,29 +884,27 @@ class WalletPage extends StatelessWidget {
       title: l.humanWalletRow,
       body: (c, h, p) {
         final w = h.wallet;
+        // the same fill and ink the wallet card uses inside a conversation, so
+        // the two are one visual: telegram blue on the stock palettes, and the
+        // wallpaper colour's bubble gradient once one is set
+        final fill = walletFill(p, red: false, done: false);
+        final ink = walletInk(p);
         return [
           Container(
             margin: const EdgeInsets.fromLTRB(16, 16, 16, 8),
             padding: const EdgeInsets.all(22),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
-                gradient: const LinearGradient(
-                    colors: [Color(0xFF2AABEE), Color(0xFF229ED9)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight)),
+                gradient: LinearGradient(
+                    colors: fill, begin: Alignment.topLeft, end: Alignment.bottomRight)),
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(l.walletBalance,
-                  style: hStyle(p, size: 14, color: const Color(0xCCFFFFFF))),
+              Text(l.walletBalance, style: hStyle(p, size: 14, color: ink.clock)),
               const SizedBox(height: 6),
               Text('¥ ${w.balance.toStringAsFixed(2)}',
-                  style: hStyle(p,
-                      size: 34,
-                      color: const Color(0xFFFFFFFF),
-                      weight: FontWeight.w600)),
+                  style: hStyle(p, size: 34, color: ink.ink, weight: FontWeight.w600)),
               const SizedBox(height: 8),
-              Text(l.walletPretendNote,
-                  style: hStyle(p, size: 12.5, color: const Color(0xB3FFFFFF))),
+              Text(l.walletPretendNote, style: hStyle(p, size: 12.5, color: ink.soft)),
             ]),
           ),
           TgSection(children: [

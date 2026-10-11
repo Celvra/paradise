@@ -734,6 +734,7 @@ Widget _stickerFace(Msg m) {
   final local = !remote && thumb.isNotEmpty && File(thumb).existsSync() ? thumb : path;
   return ClipRRect(
     borderRadius: BorderRadius.circular(10),
-    child: remote ? Image.network(path, width: 150, height: 150, fit: BoxFit.cover, gaplessPlayback: true, cacheWidth: 300, errorBuilder: (_, __, ___) => const SizedBox(width: 150, height: 150)) : Image.file(File(local), width: 150, height: 150, fit: BoxFit.cover, gaplessPlayback: true, cacheWidth: 300),
+    // contain: sticker art carries transparent margins, cover would crop them
+    child: remote ? Image.network(path, width: 150, height: 150, fit: BoxFit.contain, gaplessPlayback: true, cacheWidth: 300, errorBuilder: (_, __, ___) => const SizedBox(width: 150, height: 150)) : Image.file(File(local), width: 150, height: 150, fit: BoxFit.contain, gaplessPlayback: true, cacheWidth: 300),
   );
 }

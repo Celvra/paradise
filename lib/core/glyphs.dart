@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/widgets.dart';
 
 import 'ui_kit.dart';
@@ -520,6 +522,165 @@ void paintGlyph(Canvas canvas, Ic ic, Paint sp, Paint fp) {
         ..moveTo(15.2, 13.6)
         ..lineTo(18.6, 16.4)
         ..lineTo(15.2, 19.2);
+      canvas.drawPath(p, sp);
+    // a grinning face, the smileys tab of the panel strip. Ic.smile stays the
+    // calm outline the input bar uses, so the two never read as one thing
+    case Ic.star:
+      // a five point star on the same 24 grid, thick enough to read at 14px
+      final r = 8.6;
+      final ri = 3.7;
+      final pts = <Offset>[];
+      for (var i = 0; i < 10; i++) {
+        final a = -math.pi / 2 + i * math.pi / 5;
+        final rad = i.isEven ? r : ri;
+        pts.add(Offset(12 + rad * math.cos(a), 12.4 + rad * math.sin(a)));
+      }
+      for (var i = 0; i < pts.length; i++) {
+        if (i == 0) {
+          p.moveTo(pts[i].dx, pts[i].dy);
+        } else {
+          p.lineTo(pts[i].dx, pts[i].dy);
+        }
+      }
+      p.close();
+      canvas.drawPath(p, fp);
+    case Ic.emoji:
+      canvas.drawCircle(const Offset(12, 12), 9, sp);
+      canvas.drawCircle(const Offset(9, 10), 1.05, fp);
+      canvas.drawCircle(const Offset(15, 10), 1.05, fp);
+      final grin = Path()
+        ..moveTo(8.2, 13.8)
+        ..quadraticBezierTo(12, 18.6, 15.8, 13.8)
+        ..close();
+      canvas.drawPath(grin, fp);
+    case Ic.clock:
+      canvas.drawCircle(const Offset(12, 12), 8.6, sp);
+      p
+        ..moveTo(12, 12)
+        ..lineTo(12, 7.4)
+        ..moveTo(12, 12)
+        ..lineTo(15.6, 13.6);
+      canvas.drawPath(p, sp);
+    case Ic.cat:
+      // ears first, the head then covers their roots
+      canvas.drawPath(Path()
+        ..moveTo(4.8, 10.4)
+        ..lineTo(6.4, 4.6)
+        ..lineTo(10, 8.6), sp);
+      canvas.drawPath(Path()
+        ..moveTo(19.2, 10.4)
+        ..lineTo(17.6, 4.6)
+        ..lineTo(14, 8.6), sp);
+      canvas.drawOval(const Rect.fromLTWH(5.4, 8.4, 13.2, 11), sp);
+      canvas.drawCircle(const Offset(9.8, 13.2), 1, fp);
+      canvas.drawCircle(const Offset(14.2, 13.2), 1, fp);
+      canvas.drawPath(Path()
+        ..moveTo(11, 16.2)
+        ..lineTo(13, 16.2)
+        ..lineTo(12, 17.8)
+        ..close(), fp);
+      canvas.drawPath(Path()
+        ..moveTo(3.4, 13.6)
+        ..lineTo(6.4, 14.4)
+        ..moveTo(20.6, 13.6)
+        ..lineTo(17.6, 14.4), sp);
+    case Ic.pizza:
+      // a slice seen from the side, apex up and a curved crust along the bottom
+      canvas.drawPath(Path()
+        ..moveTo(12, 4)
+        ..lineTo(5.4, 18.2)
+        ..quadraticBezierTo(12, 20.6, 18.6, 18.2)
+        ..close(), sp);
+      canvas.drawCircle(const Offset(10, 13.4), 1, fp);
+      canvas.drawCircle(const Offset(14.4, 15.6), 1, fp);
+    case Ic.ball:
+      canvas.drawCircle(const Offset(12, 12), 8.6, sp);
+      canvas.drawPath(Path()
+        ..moveTo(12, 8.4)
+        ..lineTo(15.2, 10.8)
+        ..lineTo(13.9, 14.6)
+        ..lineTo(10.1, 14.6)
+        ..lineTo(7.8, 10.8)
+        ..close(), sp);
+      canvas.drawPath(Path()
+        ..moveTo(12, 8.4)
+        ..lineTo(12, 3.6)
+        ..moveTo(15.2, 10.8)
+        ..lineTo(19.4, 8.4)
+        ..moveTo(13.9, 14.6)
+        ..lineTo(16.6, 18.6)
+        ..moveTo(10.1, 14.6)
+        ..lineTo(7.4, 18.6)
+        ..moveTo(7.8, 10.8)
+        ..lineTo(2.6, 8.4), sp);
+    case Ic.car:
+      // a side view: roof hump, belt line, two wheels
+      canvas.drawPath(Path()
+        ..moveTo(4.2, 13.4)
+        ..lineTo(6.4, 9)
+        ..quadraticBezierTo(8.8, 7.2, 12, 7.2)
+        ..quadraticBezierTo(15.2, 7.2, 17.6, 9)
+        ..lineTo(19.8, 13.4)
+        ..moveTo(3, 13.4)
+        ..lineTo(21, 13.4), sp);
+      canvas.drawCircle(const Offset(7.4, 16.6), 1.9, sp);
+      canvas.drawCircle(const Offset(16.6, 16.6), 1.9, sp);
+    case Ic.bulb:
+      canvas.drawCircle(const Offset(12, 9), 5, sp);
+      p
+        ..moveTo(9.6, 15)
+        ..lineTo(14.4, 15)
+        ..moveTo(10.2, 17)
+        ..lineTo(13.8, 17)
+        ..moveTo(10.8, 19)
+        ..lineTo(13.2, 19)
+        ..moveTo(12, 1.6)
+        ..lineTo(12, 3.2)
+        ..moveTo(4.8, 3.4)
+        ..lineTo(6.1, 4.7)
+        ..moveTo(19.2, 3.4)
+        ..lineTo(17.9, 4.7);
+      canvas.drawPath(p, sp);
+    case Ic.heart:
+      canvas.drawPath(Path()
+        ..moveTo(12, 20.8)
+        ..cubicTo(12, 20.8, 3.8, 15.4, 3.8, 9.9)
+        ..cubicTo(3.8, 6.5, 6.2, 4.2, 9.2, 4.2)
+        ..cubicTo(10.8, 4.2, 11.9, 5.4, 12, 6.6)
+        ..cubicTo(12.1, 5.4, 13.2, 4.2, 14.8, 4.2)
+        ..cubicTo(17.8, 4.2, 20.2, 6.5, 20.2, 9.9)
+        ..cubicTo(20.2, 15.4, 12, 20.8, 12, 20.8)
+        ..close(), fp);
+    case Ic.flag:
+      p
+        ..moveTo(5.4, 3.4)
+        ..lineTo(5.4, 20.6)
+        ..moveTo(3.6, 20.6)
+        ..lineTo(7.2, 20.6)
+        ..moveTo(5.4, 4.2)
+        ..lineTo(18.6, 4.2)
+        ..lineTo(15.4, 8.2)
+        ..lineTo(18.6, 12.2)
+        ..lineTo(5.4, 12.2);
+      canvas.drawPath(p, sp);
+    case Ic.book:
+      // an open book, spine up: two covers curving away from a shared fold,
+      // which reads as lore rather than as a document
+      p
+        ..moveTo(12, 6.8)
+        ..cubicTo(10.3, 5.6, 7.9, 5.4, 5.5, 6.1)
+        ..lineTo(4.4, 6.4)
+        ..lineTo(4.4, 17.6)
+        ..lineTo(6.1, 17.2)
+        ..cubicTo(8.1, 16.7, 10.3, 16.9, 12, 17.9)
+        ..cubicTo(13.7, 16.9, 15.9, 16.7, 17.9, 17.2)
+        ..lineTo(19.6, 17.6)
+        ..lineTo(19.6, 6.4)
+        ..lineTo(18.5, 6.1)
+        ..cubicTo(16.1, 5.4, 13.7, 5.6, 12, 6.8);
+      canvas.drawPath(p, sp);
+      p.moveTo(12, 6.8);
+      p.lineTo(12, 17.9);
       canvas.drawPath(p, sp);
     case Ic.hidden:
       // a struck-through eye, which reads as hidden without needing a label

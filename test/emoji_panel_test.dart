@@ -57,7 +57,16 @@ void main() {
     expect(inPanel(icon(Ic.smile)), findsOneWidget);
     expect(inPanel(icon(Ic.sticker)), findsOneWidget);
     expect(inPanel(icon(Ic.video)), findsNothing);
-    expect(find.text('SMILEYS & PEOPLE'), findsWidgets);
+    // the bottom bar carries the category strip, and the grid has no headers
+    expect(inPanel(icon(Ic.emoji)), findsOneWidget);
+    expect(inPanel(icon(Ic.heart)), findsOneWidget);
+    expect(find.text('SMILEYS & PEOPLE'), findsNothing);
+    // the strip is wider than the bar, so the tail categories wait behind a drag
+    final strip = find.descendant(of: find.byType(EmojiPanel), matching: find.byWidgetPredicate((w) => w is Scrollable && w.axis == Axis.horizontal));
+    await t.drag(strip, const Offset(-260, 0));
+    await settle(t, 500);
+    expect(inPanel(icon(Ic.flag)), findsOneWidget);
+    expect(inPanel(icon(Ic.cat)), findsOneWidget);
   });
 
   testWidgets('the sticker tab leads with the user library', (t) async {
@@ -68,11 +77,12 @@ void main() {
     await t.pumpAndSettle();
     await openPanel(t, 1);
 
-    // the library sits on top with its filters, the placeholder emoji pack is gone
-    expect(find.text('MY STICKERS'), findsWidgets);
+    // the library sits on top with its filters, and the placeholder packs that
+    // used to sit under it are gone
+    expect(find.text('My stickers'), findsOneWidget);
+    expect(inPanel(icon(Ic.plus)), findsOneWidget);
     expect(find.text('All'), findsWidgets);
-    expect(find.text('+ Add'), findsWidgets);
-    expect(find.text('ANIMALS'), findsWidgets);
+    expect(find.text('ANIMALS'), findsNothing);
     expect(find.text('FACES'), findsNothing);
 
     // the emoji of the library is not in a pack any more, it is the user's own
@@ -105,7 +115,7 @@ void main() {
     expect(find.text('🦈'), findsNothing);
   });
 
-  testWidgets('search reaches the packs and the library together', (t) async {
+  testWidgets('search reaches the user library', (t) async {
     final (store, _) = await boot(t);
     store.human!.stickers.add(kind: StickerKind.emoji, value: '🦈', name: 'shark', tags: ['shark']);
     await t.pumpAndSettle();
@@ -115,9 +125,9 @@ void main() {
     await t.enterText(find.descendant(of: find.byType(EmojiPanel), matching: find.byType(EditableText)).first, 'shark');
     await settle(t, 600);
     expect(find.text('🦈'), findsWidgets);
-    await t.enterText(find.descendant(of: find.byType(EmojiPanel), matching: find.byType(EditableText)).first, 'pizza');
+    await t.enterText(find.descendant(of: find.byType(EmojiPanel), matching: find.byType(EditableText)).first, 'nothing like this');
     await settle(t, 600);
-    expect(find.text('🍕'), findsWidgets);
+    expect(find.text('🦈'), findsNothing);
   });
 
   group('the sticker library in settings', () {

@@ -354,91 +354,6 @@ class LifeEntry {
       );
 }
 
-// ---------------------------------------------------------- character card
-
-/// Personality sheet that is injected before every generation so the voice does
-/// not drift. The import/export format is a SillyTavern chara_card_v2 with the
-/// extra fields kept under `extensions.lib3`.
-class CharacterCard {
-  CharacterCard({
-    this.catchphrases = const [],
-    this.values = '',
-    this.taboos = '',
-    this.speechStyle = '',
-    this.addressStranger = '',
-    this.addressAcquaintance = '',
-    this.addressClose = '',
-  });
-
-  List<String> catchphrases;
-  String values;
-  String taboos;
-  String speechStyle;
-  String addressStranger;
-  String addressAcquaintance;
-  String addressClose;
-
-  bool get isEmpty => catchphrases.isEmpty && values.isEmpty && taboos.isEmpty && speechStyle.isEmpty && addressStranger.isEmpty && addressAcquaintance.isEmpty && addressClose.isEmpty;
-
-  String addressFor(Stage s) => switch (s) {
-        Stage.stranger => addressStranger,
-        Stage.acquaintance => addressAcquaintance.isEmpty ? addressStranger : addressAcquaintance,
-        Stage.close => addressClose.isEmpty ? (addressAcquaintance.isEmpty ? addressStranger : addressAcquaintance) : addressClose,
-      };
-
-  Map<String, dynamic> toJson() => {
-        'catchphrases': catchphrases,
-        'values': values,
-        'taboos': taboos,
-        'speechStyle': speechStyle,
-        'addressStranger': addressStranger,
-        'addressAcquaintance': addressAcquaintance,
-        'addressClose': addressClose,
-      };
-
-  factory CharacterCard.fromJson(Map<String, dynamic> j) => CharacterCard(
-        catchphrases: [for (final e in (j['catchphrases'] as List? ?? const [])) '$e'],
-        values: _s(j['values'], ''),
-        taboos: _s(j['taboos'], ''),
-        speechStyle: _s(j['speechStyle'], ''),
-        addressStranger: _s(j['addressStranger'], ''),
-        addressAcquaintance: _s(j['addressAcquaintance'], ''),
-        addressClose: _s(j['addressClose'], ''),
-      );
-
-  /// SillyTavern chara_card_v2
-  Map<String, dynamic> toTavern({required String name, required String description, required String firstMes}) => {
-        'spec': 'chara_card_v2',
-        'spec_version': '2.0',
-        'data': {
-          'name': name,
-          'description': description,
-          'personality': speechStyle,
-          'scenario': '',
-          'first_mes': firstMes,
-          'mes_example': catchphrases.map((e) => '{{char}}: $e').join('\n'),
-          'creator_notes': '',
-          'system_prompt': '',
-          'post_history_instructions': taboos.isEmpty ? '' : 'Never: $taboos',
-          'alternate_greetings': <String>[],
-          'tags': <String>[],
-          'creator': '',
-          'character_version': '1',
-          'extensions': {'lib3': toJson()},
-        },
-      };
-
-  static CharacterCard fromTavern(Map<String, dynamic> j) {
-    final data = (j['data'] is Map ? j['data'] : j) as Map;
-    final ext = data['extensions'];
-    if (ext is Map && ext['lib3'] is Map) return CharacterCard.fromJson(Map<String, dynamic>.from(ext['lib3'] as Map));
-    return CharacterCard(
-      speechStyle: _s(data['personality'], ''),
-      taboos: _s(data['post_history_instructions'], '').replaceFirst(RegExp(r'^Never:\s*'), ''),
-    );
-  }
-}
-
 // ------------------------------------------------------------------- state
 
 /// Everything that makes the assistant feel like it lives between messages.
@@ -471,7 +386,15 @@ class HumanState {
   int turn = 0;
   final List<int> recallStamps = [];
   final List<LifeEntry> life = [];
-  CharacterCard card = CharacterCard();
+
+  /// The character sheet as it was stored before the world book existed.
+  ///
+  /// Read once by the migration at startup (see data/world_book), which
+  /// turns it into world books bound to the persona and clears this field.
+  /// Nothing else may touch it: it is never injected and, with the card
+  /// empty, [toJson] drops the key, so a migrated chat sheds the legacy
+  /// block on its next save.
+  Map<String, dynamic>? legacyCard;
 
   /// day keys ('yyyy-mm-dd:morning') of the greetings that were already queued
   final Set<String> autoKeys = {};
@@ -613,7 +536,7 @@ class HumanState {
         'turn': turn,
         'recallStamps': recallStamps,
         'life': life.map((e) => e.toJson()).toList(),
-        'card': card.toJson(),
+        if (legacyCard != null) 'card': legacyCard,
         'autoKeys': autoKeys.toList(),
         'feelingLog': feelingLog,
       };
@@ -639,7 +562,8 @@ class HumanState {
     s.turn = _i(j['turn'], 0);
     s.recallStamps.addAll([for (final e in (j['recallStamps'] as List? ?? const [])) (e as num).toInt()]);
     s.life.addAll([for (final e in (j['life'] as List? ?? const [])) LifeEntry.fromJson(Map<String, dynamic>.from(e as Map))]);
-    if (j['card'] is Map) s.card = CharacterCard.fromJson(Map<String, dynamic>.from(j['card'] as Map));
+    // kept only for the startup migration, which moves it into a world book
+    if (j['card'] is Map) s.legacyCard = Map<String, dynamic>.from(j['card'] as Map);
     s.autoKeys.addAll([for (final e in (j['autoKeys'] as List? ?? const [])) '$e']);
     s.feelingLog.addAll([for (final e in (j['feelingLog'] as List? ?? const [])) '$e']);
     return s;

@@ -10,7 +10,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 ///
 /// The format itself is covered in backup_test.dart. This is the half that can
 /// only go wrong against a store: whether a restored chat is actually wired to
-/// the store's change listener, and whether a credential leaks into the file.
+/// the store's change listener, and whether the provider keys the document
+/// carries by design (backup.dart: a restore that leaves every provider
+/// unconfigured is no backup) come back configured.
 void main() {
   // Store.load drives the theme controller, which schedules a frame
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -91,30 +93,27 @@ void main() {
     expect(s.wallpaperColor, isNull);
   });
 
-  test('an api key travels in the secrets section and comes back', () async {
+test('the document carries the provider keys and a restore stays configured', () async {
+    // The user's own backup is handed to the system save dialog, so the keys
+    // travel: backup.dart documents the trade ("a backup whose restore
+    // leaves every provider unconfigured is no backup"). What must never
+    // travel is the OII archive built for the remote targets, which strips
+    // them and is what _uploadRemote sends.
     final (s, ai) = await boot();
-    final provider = ai.settings.providers.first;
-    ai.saveApiKey(provider.id, 'sk-secret-value-1234');
-    s.setSetting(key: 'sk-secret-value-1234');
+    ai.saveApiKey(ai.settings.providers.first.id, 'sk-secret-value-1234');
+    s.setSetting(base: 'https://api.example.com/v1');
 
-    final raw = await s.exportBackupString();
-    expect(raw, contains('sk-secret-value-1234'));
-    expect(raw, contains('"secrets"'));
-    // the provider itself does come back too
-    expect(raw, contains('apiKeyRef'));
-  });
+final raw = s.exportBackupString();
+    expect(raw, contains('secrets'));
 
-  test('the model configuration comes back with its keys', () async {
-    final (s, ai) = await boot();
-    ai.saveApiKey(ai.settings.providers.first.id, 'sk-abc');
-    final raw = await s.exportBackupString();
-
+    // a second install, nothing carried over
     final (fresh, freshAi) = await boot();
     final report = await fresh.importBackupString(raw, overwrite: true);
     expect(report.ai, isTrue);
+    expect(freshAi.apiKeys.values, contains('sk-secret-value-1234'),
+        reason: 'the whole point of the secrets section');
     expect(freshAi.settings.providers.map((p) => p.id), ai.settings.providers.map((p) => p.id));
     expect(freshAi.settings.chain.length, ai.settings.chain.length);
-    expect(freshAi.apiKeys.values.where((k) => k == 'sk-abc'), isNotEmpty);
   });
 
   test('without overwrite an existing chat is not replaced', () async {

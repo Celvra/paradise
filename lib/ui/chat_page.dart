@@ -184,15 +184,6 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
     _wall.forward(from: 0);
   }
 
-  void _sendSticker(String e) {
-    _store.send(chat, '', kind: MsgKind.sticker, data: {'emoji': e}, reply: _reply?.id);
-    setState(() {
-      _reply = null;
-      _phase++;
-    });
-    _wall.forward(from: 0);
-  }
-
   Future<void> _attach() async {
     FocusManager.instance.primaryFocus?.unfocus();
     _closePanel();
@@ -580,7 +571,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
                 height: _panelH,
                 child: Transform.translate(
                   offset: Offset(0, (1 - TgCurves.easeOutQuint.transform(_panel.value)) * _panelH),
-                  child: EmojiPanel(ctl: _ctl, onSticker: _sendSticker, onLibrary: _sendLibSticker),
+                  child: EmojiPanel(ctl: _ctl, onLibrary: _sendLibSticker),
                 ),
               ),
             Positioned(

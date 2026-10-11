@@ -16,6 +16,7 @@ import '../l10n/x.dart';
 import 'ai_model_picker.dart';
 import 'ai_widgets.dart';
 import 'skills_page.dart' show pickRoleSkills, openSkillsSettings;
+import 'world_book_page.dart';
 import 'tg_cells.dart';
 
 /// Emoji, the one line pitch the user sees and the system prompt that goes to
@@ -114,6 +115,8 @@ class _PersonaCardPageState extends State<PersonaCardPage> {
   late int _clingyUrgentMax = widget.chat?.persona.clingyUrgentMax ?? 1;
   // skills this role may use, null follows the global set
   late List<String>? _skillIds = widget.chat?.persona.skillIds == null ? null : [...widget.chat!.persona.skillIds!];
+  // world books this role plays with, an explicit list (empty means no world)
+  late List<String> _worldBookIds = [...? widget.chat?.persona.worldBookIds];
   // drawing and speaking, per role. The switches are plain bools (off
   // unless turned on); the endpoint strings are empty when the role follows
   // the global default, the same rule the model override already follows.
@@ -233,6 +236,7 @@ class _PersonaCardPageState extends State<PersonaCardPage> {
           clingyUrgentCap: _clingyUrgentCap,
           clingyUrgentMax: _clingyUrgentMax,
           skillIds: _skillIds == null ? null : [..._skillIds!],
+          worldBookIds: [..._worldBookIds],
           clearSkillIds: _skillIds == null);
       st.setPersonaGen(widget.chat!,
           imageEnabled: _imageOn,
@@ -269,6 +273,7 @@ clingy: _clingy,
           clingyUrgentCap: _clingyUrgentCap,
           clingyUrgentMax: _clingyUrgentMax,
           skillIds: _skillIds == null ? null : [..._skillIds!],
+          worldBookIds: [..._worldBookIds],
           imageEnabled: _imageOn,
           imageProvider: _imageProvider,
           imageModel: _imageModel,
@@ -343,6 +348,7 @@ _clingy != c.clingy ||
         _clingyUrgentCap != c.clingyUrgentCap ||
         _clingyUrgentMax != c.clingyUrgentMax ||
         !_sameSkills(_skillIds, c.skillIds) ||
+        !_sameBooks(_worldBookIds, c.worldBookIds) ||
         _imageOn != c.imageEnabled ||
         _imageProvider != c.imageProvider ||
         _imageModel != c.imageModel ||
@@ -353,6 +359,13 @@ _clingy != c.clingy ||
         _ttsModel != c.ttsModel ||
         _ttsVoice != c.ttsVoice ||
         _ttsAutoSpeak != c.ttsAutoSpeak;
+  }
+
+  static bool _sameBooks(List<String> a, List<String>? b) {
+    if (b == null) return a.isEmpty;
+    if (a.length != b.length) return false;
+    final set = b.toSet();
+    return a.every(set.contains);
   }
 
   static bool _sameSkills(List<String>? a, List<String>? b) {
@@ -464,9 +477,10 @@ _clingy != c.clingy ||
                   ),
                   _modelSection(p),
                   _replySection(),
-_clingySection(),
+                  _clingySection(),
                   _voiceImageSection(p),
                   _skillsSection(),
+                  _worldBookSection(),
                 ],
               ),
             ),
@@ -975,8 +989,7 @@ _clingySection(),
 
   // Skills this role may use. Null follows the global set (every enabled
   // skill), an explicit list names exactly the ones in its prompt.
-  Widget _skillsSection() {
-    final l = context.l;
+  Widget _skillsSection() {    final l = context.l;
     final st = Store.read(context);
     final installed = st.skills.skills;
     final label = _skillIds == null ? l.personaSkillsFollowGlobal : l.personaSkillsCount(_skillIds!.length);
@@ -994,6 +1007,35 @@ _clingySection(),
         ),
       ],
     );
+  }
+
+  // The world books this role plays in. One row naming what is bound plus the
+  // multi-select, the same shape as the skills row: books are global and a
+  // role picks the ones it lives by, so one book can serve a whole cast.
+  Widget _worldBookSection() {
+    final l = context.l;
+    final st = Store.read(context);
+    final bound = st.worldBooks.resolve(_worldBookIds);
+    return TgSection(
+      header: l.worldBookBind,
+      footer: l.worldBookBindSub,
+      children: [
+        TgTextCell(
+          icon: Ic.book,
+          title: _worldBookIds.isEmpty ? l.worldBookBindNone : l.worldBookBindCount(_worldBookIds.length),
+          subtitle: bound.isEmpty ? null : bound.map((b) => b.name).join(' · '),
+          value: l.actionEdit,
+          divider: false,
+          onTap: () => _pickWorldBooks(),
+        ),
+      ],
+    );
+  }
+
+  Future<void> _pickWorldBooks() async {
+    final picked = await pickWorldBooks(context, _worldBookIds);
+    if (picked == null || !mounted) return;
+    setState(() => _worldBookIds = picked);
   }
 
   // Drawing and speaking for this role alone.

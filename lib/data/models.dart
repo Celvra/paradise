@@ -32,6 +32,7 @@ class Persona {
     this.clingyUrgentCap = true,
     this.clingyUrgentMax = 1,
     this.skillIds,
+    this.worldBookIds,
     this.imageEnabled = false,
     this.imageProvider = '',
     this.imageModel = '',
@@ -130,6 +131,14 @@ class Persona {
   /// means this role uses none.
   List<String>? skillIds;
 
+  /// World books this role plays with, see data/world_book. Null follows
+  /// "no world", which is what every persona written before the world book
+  /// existed expects; an explicit list names the books whose entries may
+  /// fire in this role's chats. Stored on the persona rather than on the
+  /// chat so one book can serve several roles and a restored chat keeps the
+  /// binding it was saved with.
+  List<String>? worldBookIds;
+
   /// Whether this role may draw. Off unless the role turns it on: there is no
   /// app wide switch to inherit from, and a character that quietly starts
   /// spending the user's image credits the moment it is imported is a
@@ -194,6 +203,7 @@ class Persona {
         if (clingyUrgent) 'clingyUrgentCap': clingyUrgentCap,
         if (clingyUrgent && clingyUrgentCap) 'clingyUrgentMax': clingyUrgentMax,
         if (skillIds != null) 'skillIds': skillIds,
+        if (worldBookIds != null) 'worldBookIds': worldBookIds,
         if (imageEnabled) 'imageEnabled': true,
         if (imageProvider.isNotEmpty) 'imageProvider': imageProvider,
         if (imageModel.isNotEmpty) 'imageModel': imageModel,
@@ -234,6 +244,7 @@ class Persona {
         clingyUrgentCap: j['clingyUrgentCap'] as bool? ?? true,
         clingyUrgentMax: (j['clingyUrgentMax'] as num?)?.toInt() ?? 1,
         skillIds: j['skillIds'] is List ? [for (final e in j['skillIds'] as List) '$e'] : null,
+        worldBookIds: j['worldBookIds'] is List ? [for (final e in j['worldBookIds'] as List) '$e'] : null,
         // every one of these is optional: a persona saved before the
         // field existed has no key and follows the global setting, the
         // same rule the two reply switches already follow

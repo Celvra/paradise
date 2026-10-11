@@ -274,20 +274,6 @@ extension StoreHuman on Store {
 
     b.add('# Live context (refreshed for this very turn)\n${_timeBlock(c, now)}');
 
-    // character card
-    final card = st.card;
-    if (!card.isEmpty) {
-      final addr = card.addressFor(st.stage);
-      b.add([
-        '# Your character sheet (stay consistent with it, do not drift into another person)',
-        if (card.speechStyle.isNotEmpty) 'Speaking style: ${card.speechStyle}',
-        if (card.catchphrases.isNotEmpty) 'Catchphrases (use sparingly, not every message): ${card.catchphrases.join(' / ')}',
-        if (card.values.isNotEmpty) 'Values: ${card.values}',
-        if (card.taboos.isNotEmpty) 'Never do or say: ${card.taboos}',
-        if (addr.isNotEmpty) 'How you address the user right now: $addr',
-      ].join('\n'));
-    }
-
     // state, mood, relationship
     final life = st.activeLife(now);
     final moodHint = st.mood >= 70 ? 'good mood: say a little more, warmer and playful' : (st.mood <= 35 ? 'low mood: shorter, flatter, fewer exclamation marks' : 'ordinary mood');
@@ -1219,31 +1205,26 @@ _runs[c.id]?.row = row;
         env.quote = m.id;
         return 'The next bubble will quote it.';
       }, required: ['message_id']),
-      HTool('update_character_card', 'Slightly adjust your own character sheet after long interaction (not to become another person).', {
-        'field': _p('string', 'which part', values: ['catchphrases', 'values', 'taboos', 'speechStyle', 'addressStranger', 'addressAcquaintance', 'addressClose']),
-        'value': _p('string', 'new value, catchphrases comma separated'),
+      HTool('update_world_entry', 'Refine one entry of your own world book, the ones the user marked as yours to adjust. Make a small change in the spirit of the original; never rewrite it into a different fact, and never touch an entry you were not given.', {
+        'entry_id': _p('string', 'id of the entry, from your own world book notes'),
+        'content': _p('string', 'the new body of that entry, complete'),
       }, (a) async {
-        final v = _str(a, 'value');
-        switch (_str(a, 'field')) {
-          case 'catchphrases':
-            st.card.catchphrases = v.split(RegExp(r'[,，、]')).map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
-          case 'values':
-            st.card.values = v;
-          case 'taboos':
-            st.card.taboos = v;
-          case 'speechStyle':
-            st.card.speechStyle = v;
-          case 'addressStranger':
-            st.card.addressStranger = v;
-          case 'addressAcquaintance':
-            st.card.addressAcquaintance = v;
-          case 'addressClose':
-            st.card.addressClose = v;
-          default:
-            return 'Error: unknown field.';
+        final id = _str(a, 'entry_id').trim();
+        final v = _str(a, 'content').trim();
+        if (id.isEmpty) return 'Error: entry_id is required.';
+        if (v.isEmpty) return 'Error: the new body must not be empty.';
+        for (final bookId in c.persona.worldBookIds ?? const <String>[]) {
+          final book = worldBooks.byId(bookId);
+          if (book == null) continue;
+          final e = book.entryById(id);
+          if (e == null) continue;
+          if (!e.aiEditable) return 'Error: that entry is yours to read, not to edit.';
+          e.content = v;
+          await worldBooks.upsertEntry(book.id, e);
+          return 'Entry updated.';
         }
-        return 'Character sheet updated.';
-      }, required: ['field', 'value']),
+        return 'Error: no entry with that id is editable by you.';
+      }, required: ['entry_id', 'content']),
       HTool('adjust_rating', 'Infer how the user feels about you from their behaviour and adjust the tuning scores (1-5).', {
         'metric': _p('string', 'which score', values: ['human_likeness', 'annoyance', 'satisfaction']),
         'delta': _p('number', '-1..1'),

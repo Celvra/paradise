@@ -2140,49 +2140,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get humanChatCardHeader => '角色卡';
 
   @override
-  String get humanChatCardFooter => '每次回复前都会注入，好让语气保持一致，助手可能会慢慢微调。';
-
-  @override
-  String get humanChatSpeechStyle => '说话风格';
-
-  @override
-  String get humanChatCatchphrases => '口头禅';
-
-  @override
-  String get humanChatCatchphrasesHint => '口头禅（用逗号分隔）';
-
-  @override
-  String get humanChatValues => '价值观';
-
-  @override
-  String get humanChatTaboos => '禁忌';
-
-  @override
-  String get humanChatAddressStranger => '称呼：陌生人';
-
-  @override
-  String get humanChatAddressAcquaintance => '称呼：熟人';
-
-  @override
-  String get humanChatAddressClose => '称呼：亲近的人';
-
-  @override
-  String get humanChatExportCard => '导出角色卡（chara_card_v2）';
-
-  @override
-  String get humanChatCardCopied => '角色卡已复制到剪贴板';
-
-  @override
-  String get humanChatImportCard => '从剪贴板导入角色卡';
-
-  @override
-  String get humanChatImportCardTitle => '导入角色卡';
-
-  @override
-  String get humanChatImportCardFooter => '覆盖会替换整张角色卡，合并只填补空白字段。';
-
-  @override
-  String get humanChatInvalidCard => '角色卡无效';
+  String get humanChatCardFooter => '人设现在住在世界书里：每个角色一本，按关键词触发，可从角色卡绑定。';
 
   @override
   String get humanChatSchedule => '每日日程';
@@ -2722,7 +2680,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get whatsNewBody =>
-      '本次更新内容：\n\n• 语音与画图：每个角色单独开关。语音可用设备 TTS 或 OpenAI 兼容的 /audio/speech，画图走 /v1/images/generations\n• 关于页重做：从弹窗改成独立页面，并附上开源许可证列表与贡献者名单\n• 模型分档：模型选择器按对话 / 生图分开，选对话模型不再混进生图模型\n• 视频消息：相册与文件均可发送视频，AI 能看懂视频内容\n• 文件直读：小文件直接注入上下文，AI 真正读到内容\n• 贴纸三件套：AI 先读懂表情包含义再主动发送，并显示缩略图\n• 粘人度：可配置 AI 主动发话的频率与次数上限\n• 商城改版：购买后跳转聊天，礼物以卡片送达且 AI 真正收到\n• 自动备份：默认开启，覆盖式备份可随更新与重装存活，首次启动检测到备份可一键恢复\n• 模型目录：修正 models.dev 数据滞后导致的视频能力误判（DeepSeek V4.1 Flash）\n• 编辑器保护：人设编辑器所有退出方式都会先确认再丢弃修改\n• 修复 Android 上聊天记录读不出来：数据库打开失败导致列表空白，消息其实都还在\n• 修复删除的消息重启后复活\n• 修复更新内容弹窗在夜间模式下的黑字\n• 界面与性能优化';
+      '本次更新内容：\n\n• 世界书：把世界观、设定、禁忌和称呼写进一本书，按关键词触发，从角色卡绑定；条目可设常驻、触发概率、扫描深度、注入位置与对话深度、互斥组与优先级，支持正则、全词匹配与次级关键词，命中的条目还能继续牵出更多设定\n• 兼容 SillyTavern：世界书 JSON 可导入导出，社区的世界观可以整本搬过来\n• 迁移：旧版角色卡（说话风格、口头禅、价值观、禁忌、三阶段称呼）自动变成本角色的默认世界书，原来的入口改为跳转\n• 测试沙盒：粘贴一段对话，立刻看到哪些条目会命中、注入后的样子和预算占用\n• 语音与画图：每个角色单独开关。语音可用设备 TTS 或 OpenAI 兼容的 /audio/speech，画图走 /v1/images/generations\n• 关于页重做：从弹窗改成独立页面，并附上开源许可证列表与贡献者名单\n• 模型分档：模型选择器按对话 / 生图分开，选对话模型不再混进生图模型\n• 视频消息：相册与文件均可发送视频，AI 能看懂视频内容\n• 文件直读：小文件直接注入上下文，AI 真正读到内容\n• 贴纸三件套：AI 先读懂表情包含义再主动发送，并显示缩略图\n• 粘人度：可配置 AI 主动发话的频率与次数上限\n• 商城改版：购买后跳转聊天，礼物以卡片送达且 AI 真正收到\n• 自动备份：默认开启，覆盖式备份可随更新与重装存活，首次启动检测到备份可一键恢复\n• 模型目录：修正 models.dev 数据滞后导致的视频能力误判（DeepSeek V4.1 Flash）\n• 编辑器保护：人设编辑器所有退出方式都会先确认再丢弃修改\n• 修复 Android 上聊天记录读不出来：数据库打开失败导致列表空白，消息其实都还在\n• 修复删除的消息重启后复活\n• 修复更新内容弹窗在夜间模式下的黑字\n• 界面与性能优化';
 
   @override
   String get attachCamera => '相机';
@@ -3150,9 +3108,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get toolDescQuoteMessage => '引用某条消息来回复';
-
-  @override
-  String get toolDescCharacterCard => '让它缓慢微调自己的人设';
 
   @override
   String get toolDescRating => '根据你的回应调整它的自我调校';
@@ -4316,6 +4271,480 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get storageClearDone => '缓存已清空';
+
+  @override
+  String get humanChatCardMoved => '世界书里的角色卡';
+
+  @override
+  String get toolDescWorldEntry => '让它缓慢微调自己的人设';
+
+  @override
+  String get worldBookTitle => '世界书';
+
+  @override
+  String worldBookSummary(int on, int entries) {
+    return '$on 本 · $entries 条';
+  }
+
+  @override
+  String get worldBookIntro =>
+      '世界书是存放世界观、设定、禁忌与称呼的地方。条目只有在自己关键词命中或标记为常驻时才会注入，按角色绑定。';
+
+  @override
+  String get worldBookEmpty => '还没有世界书';
+
+  @override
+  String get worldBookEmptyBody => '新建一本，或从 SillyTavern 的世界书 JSON 导入。';
+
+  @override
+  String get worldBookAdd => '添加世界书';
+
+  @override
+  String get worldBookAddNew => '新建';
+
+  @override
+  String get worldBookAddPaste => '粘贴导入';
+
+  @override
+  String get worldBookAddFile => '从文件导入';
+
+  @override
+  String get worldBookDefaultName => '新世界';
+
+  @override
+  String get worldBookName => '世界书名';
+
+  @override
+  String get worldBookNameHint => '给它起个名字';
+
+  @override
+  String get worldBookImportTitle => '导入世界书';
+
+  @override
+  String get worldBookImportHint => '粘贴 SillyTavern 世界书 JSON，或本应用导出的 JSON';
+
+  @override
+  String worldBookImported(int count) {
+    return '已导入 $count 本';
+  }
+
+  @override
+  String get worldBookInvalid => '文件无效';
+
+  @override
+  String get worldBookSettingsHeader => '注入设置';
+
+  @override
+  String get worldBookBudget => '注入预算';
+
+  @override
+  String worldBookBudgetValue(int k) {
+    return '$k 千字符';
+  }
+
+  @override
+  String get worldBookBudgetFooter =>
+      '命中条目按优先级争夺这份预算，超出部分本轮会被丢弃；标记为常驻的条目不受预算限制。';
+
+  @override
+  String get worldBookBudgetUnlimited => '无限制';
+
+  @override
+  String get worldBookBudgetUnlimitedNote =>
+      '无限制：所有命中条目都会注入，可能会导致 RP 体验不佳（上下文拥挤、注意力涣散）。';
+
+  @override
+  String get worldBookBookHeader => '这本书';
+
+  @override
+  String get worldBookBookFooter => '类型决定注入时的措辞：规则会被当成必须遵守的指令，事实会被当成既成背景。';
+
+  @override
+  String get worldBookKind => '类型';
+
+  @override
+  String get worldBookKindHint => '注入时怎么描述这本书';
+
+  @override
+  String get worldBookKindLabelGeneral => '综合';
+
+  @override
+  String get worldBookKindLabelFacts => '世界事实';
+
+  @override
+  String get worldBookKindLabelRules => '世界规则';
+
+  @override
+  String get worldBookKindLabelStyle => '风格指南';
+
+  @override
+  String get worldBookKindLabelRelations => '关系图';
+
+  @override
+  String get worldBookKindLabelScenes => '场景';
+
+  @override
+  String worldBookEntries(int count) {
+    return '$count 条';
+  }
+
+  @override
+  String get worldBookEntriesHeader => '条目';
+
+  @override
+  String worldBookEntriesFooter(int count) {
+    return '共 $count 条。点击编辑，长按删除。';
+  }
+
+  @override
+  String get worldBookEntriesEmpty => '还没有条目';
+
+  @override
+  String get worldBookEntriesEmptyBody => '添加条目，或直接粘贴内容。';
+
+  @override
+  String get worldBookEntryAdd => '添加条目';
+
+  @override
+  String get worldBookEntryUntitled => '未命名条目';
+
+  @override
+  String get worldBookDataHeader => '数据';
+
+  @override
+  String get worldBookExportSub => '导出为 SillyTavern 世界书 JSON';
+
+  @override
+  String get worldBookDelete => '删除这本书';
+
+  @override
+  String worldBookDeleteMessage(String name) {
+    return '「$name」将被删除，无法恢复。';
+  }
+
+  @override
+  String get worldBookGone => '这本书已被删除';
+
+  @override
+  String get worldBookEntryTitle => '条目';
+
+  @override
+  String get worldBookEntryBodyHeader => '内容';
+
+  @override
+  String get worldBookEntryBodyFooter => '标题会随内容一起注入，方便模型引用与你在调试时辨认。';
+
+  @override
+  String get worldBookEntryComment => '标题';
+
+  @override
+  String get worldBookEntryCommentHint => '这条是什么';
+
+  @override
+  String get worldBookEntryContent => '内容';
+
+  @override
+  String get worldBookEntryContentHint => '模型读到的内容';
+
+  @override
+  String get worldBookEntryKeys => '关键词';
+
+  @override
+  String get worldBookEntryKeysHint => '任意一个命中即触发。逗号分隔可一次添加多个。';
+
+  @override
+  String get worldBookEntrySecondary => '次级关键词';
+
+  @override
+  String get worldBookEntrySecondaryHint => '在主要关键词之上再加一层条件';
+
+  @override
+  String get worldBookKeysNone => '尚未设置关键词';
+
+  @override
+  String get worldBookKeyAdd => '添加关键词';
+
+  @override
+  String get worldBookEntryTriggerHeader => '触发条件';
+
+  @override
+  String get worldBookEntryTriggerFooter => '概率每次重新掷骰；同种子下同一会话会得到相同结果。';
+
+  @override
+  String get worldBookEntryLogic => '组合逻辑';
+
+  @override
+  String get worldBookLogicLabelAnySecondary => '任一命中';
+
+  @override
+  String get worldBookLogicLabelNotAnySecondary => '无一命中';
+
+  @override
+  String get worldBookLogicLabelAllSecondary => '全部命中';
+
+  @override
+  String get worldBookLogicLabelNotAllSecondary => '非全部命中';
+
+  @override
+  String get worldBookLogicSubAnySecondary => '主要命中 且 至少一个次级命中';
+
+  @override
+  String get worldBookLogicSubNotAnySecondary => '主要命中 且 没有次级命中';
+
+  @override
+  String get worldBookLogicSubAllSecondary => '主要命中 且 次级全部命中';
+
+  @override
+  String get worldBookLogicSubNotAllSecondary => '主要命中 且 次级未全部命中';
+
+  @override
+  String get worldBookEntryProbability => '触发概率';
+
+  @override
+  String get worldBookEntryCaseSensitive => '区分大小写';
+
+  @override
+  String get worldBookEntryWholeWords => '全词匹配';
+
+  @override
+  String get worldBookEntryRegex => '正则表达式';
+
+  @override
+  String get worldBookEntryWhenHeader => '何时注入';
+
+  @override
+  String get worldBookEntryWhenFooter => '常驻条目无视关键词与预算，每轮都会注入。';
+
+  @override
+  String get worldBookConstant => '常驻';
+
+  @override
+  String get worldBookConstantSub => '无论关键词是否命中都注入';
+
+  @override
+  String get worldBookEntryScanDepth => '扫描深度';
+
+  @override
+  String get worldBookEntryScanAll => '全部历史';
+
+  @override
+  String get worldBookEntryPosition => '注入位置';
+
+  @override
+  String get worldBookPositionLabelBeforeChar => '角色定义前';
+
+  @override
+  String get worldBookPositionLabelAfterChar => '角色定义后';
+
+  @override
+  String get worldBookPositionLabelAtDepth => '对话中（指定深度）';
+
+  @override
+  String get worldBookPositionLabelBottomNote => '系统提示末尾';
+
+  @override
+  String get worldBookPositionSubBeforeChar => '在角色设定之前，最先读到';
+
+  @override
+  String get worldBookPositionSubAfterChar => '紧跟角色设定之后';
+
+  @override
+  String get worldBookPositionSubAtDepth => '作为历史消息插入，离最新的消息 n 条';
+
+  @override
+  String get worldBookPositionSubBottomNote => '系统提示的最后一段，最接近对话';
+
+  @override
+  String get worldBookEntryDepth => '深度';
+
+  @override
+  String get worldBookEntryRole => '角色';
+
+  @override
+  String get worldBookRoleLabelSystem => '系统';
+
+  @override
+  String get worldBookRoleLabelUser => '用户';
+
+  @override
+  String get worldBookRoleLabelAssistant => '助手';
+
+  @override
+  String get worldBookEntryStackHeader => '互斥与排序';
+
+  @override
+  String get worldBookEntryStackFooter =>
+      '同组条目只保留权重最高的一个，适合\"季节\"\"关系阶段\"这类替代关系。';
+
+  @override
+  String get worldBookEntryGroup => '互斥组';
+
+  @override
+  String get worldBookEntryGroupHint => '同名条目互相排斥，留空则不互斥';
+
+  @override
+  String get worldBookEntryGroupWeight => '组内权重';
+
+  @override
+  String get worldBookEntryGroupWeightSub => '同组命中多条时保留权重最高的一条';
+
+  @override
+  String get worldBookEntryPriority => '优先级';
+
+  @override
+  String get worldBookEntryPrioritySub => '预算不足时，优先级高的先保留';
+
+  @override
+  String get worldBookEntryAiEditable => '允许 AI 微调';
+
+  @override
+  String get worldBookEntryAiEditableSub =>
+      '助手可通过 update_world_entry 工具缓慢修改这一条';
+
+  @override
+  String get worldBookEntryDelete => '删除条目';
+
+  @override
+  String get worldBookTplBlank => '空白条目';
+
+  @override
+  String get worldBookTplBlankSub => '从零开始';
+
+  @override
+  String get worldBookTplPlace => '地点';
+
+  @override
+  String get worldBookTplPlaceSub => '一个场所、区域或建筑';
+
+  @override
+  String get worldBookTplItem => '物品';
+
+  @override
+  String get worldBookTplItemSub => '一件道具、武器或凭证';
+
+  @override
+  String get worldBookTplRule => '规则';
+
+  @override
+  String get worldBookTplRuleSub => '一条必须或绝不能发生的事';
+
+  @override
+  String get worldBookTplRelation => '关系';
+
+  @override
+  String get worldBookTplRelationSub => '一段关系与当前立场';
+
+  @override
+  String get worldBookTplStyle => '说话风格';
+
+  @override
+  String get worldBookTplStyleSub => '常驻，决定语气与用词';
+
+  @override
+  String get worldBookTplAddress => '称呼（随亲密度）';
+
+  @override
+  String get worldBookTplAddressSub => '常驻，陌生人 / 熟人 / 亲密三阶段';
+
+  @override
+  String get worldBookTplAddressComment => '称呼（随亲密度变化）';
+
+  @override
+  String get worldBookBind => '世界观';
+
+  @override
+  String get worldBookBindSub => '这个角色在哪几本书里生活。';
+
+  @override
+  String get worldBookBindNone => '未绑定';
+
+  @override
+  String worldBookBindCount(int count) {
+    return '已绑定 $count 本';
+  }
+
+  @override
+  String get worldBookBindPicker => '选择世界书';
+
+  @override
+  String get worldBookSandbox => '测试沙盒';
+
+  @override
+  String get worldBookSandboxHeader => '试一段对话';
+
+  @override
+  String get worldBookSandboxFooter => '粘贴真实对话的几行，看哪些条目会命中、注入位置在哪里。';
+
+  @override
+  String get worldBookSandboxInput => '对话内容';
+
+  @override
+  String get worldBookSandboxHint => '每行一条消息，模型读取时的原文';
+
+  @override
+  String get worldBookSandboxRun => '试运行';
+
+  @override
+  String get worldBookSandboxNone => '没有条目命中';
+
+  @override
+  String get worldBookSandboxDropped => '被预算丢弃';
+
+  @override
+  String get worldBookSandboxSpent => '注入体积';
+
+  @override
+  String worldBookSandboxRecursion(int count) {
+    return '递归追溯了 $count 层';
+  }
+
+  @override
+  String get worldBookEnabled => '启用这本书';
+
+  @override
+  String get humanChatSpeechStyle => '说话风格';
+
+  @override
+  String get humanChatCatchphrases => '口头禅';
+
+  @override
+  String get humanChatCatchphrasesHint => '口头禅（用逗号分隔）';
+
+  @override
+  String get humanChatValues => '价值观';
+
+  @override
+  String get humanChatTaboos => '禁忌';
+
+  @override
+  String get humanChatAddressStranger => '称呼：陌生人';
+
+  @override
+  String get humanChatAddressAcquaintance => '称呼：熟人';
+
+  @override
+  String get humanChatAddressClose => '称呼：亲近的人';
+
+  @override
+  String get humanChatExportCard => '导出角色卡（chara_card_v2）';
+
+  @override
+  String get humanChatCardCopied => '角色卡已复制到剪贴板';
+
+  @override
+  String get humanChatImportCard => '从剪贴板导入角色卡';
+
+  @override
+  String get humanChatImportCardTitle => '导入角色卡';
+
+  @override
+  String get humanChatImportCardFooter => '覆盖会替换整张角色卡，合并只填补空白字段。';
+
+  @override
+  String get humanChatInvalidCard => '角色卡无效';
+
+  @override
+  String get toolDescCharacterCard => '让它缓慢微调自己的人设';
 }
 
 /// The translations for Chinese, using the Han script (`zh_Hant`).
@@ -6454,49 +6883,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get humanChatCardHeader => '角色卡';
 
   @override
-  String get humanChatCardFooter => '每次回覆前都會注入，讓語氣保持一致，助理可能會慢慢微調。';
-
-  @override
-  String get humanChatSpeechStyle => '說話風格';
-
-  @override
-  String get humanChatCatchphrases => '口頭禪';
-
-  @override
-  String get humanChatCatchphrasesHint => '口頭禪（以逗號分隔）';
-
-  @override
-  String get humanChatValues => '價值觀';
-
-  @override
-  String get humanChatTaboos => '禁忌';
-
-  @override
-  String get humanChatAddressStranger => '稱呼：陌生人';
-
-  @override
-  String get humanChatAddressAcquaintance => '稱呼：熟人';
-
-  @override
-  String get humanChatAddressClose => '稱呼：親近的人';
-
-  @override
-  String get humanChatExportCard => '匯出角色卡（chara_card_v2）';
-
-  @override
-  String get humanChatCardCopied => '角色卡已複製到剪貼簿';
-
-  @override
-  String get humanChatImportCard => '從剪貼簿匯入角色卡';
-
-  @override
-  String get humanChatImportCardTitle => '匯入角色卡';
-
-  @override
-  String get humanChatImportCardFooter => '覆蓋會取代整張角色卡，合併只填補空白欄位。';
-
-  @override
-  String get humanChatInvalidCard => '角色卡無效';
+  String get humanChatCardFooter => '人設現在住在世界書裡：每個角色一本，按關鍵詞觸發，可從角色卡綁定。';
 
   @override
   String get humanChatSchedule => '每日行程';
@@ -7036,7 +7423,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get whatsNewBody =>
-      '本次更新內容：\n\n• 語音與畫圖：每個角色單獨開關。語音可用裝置 TTS 或 OpenAI 相容的 /audio/speech，畫圖走 /v1/images/generations\n• 關於頁重做：從彈窗改成獨立頁面，並附上開源授權列表與貢獻者名單\n• 模型分檔：模型選擇器按對話 / 生圖分開，選對話模型不再混進生圖模型\n• 視訊訊息：相簿與檔案均可傳送視訊，AI 能看懂視訊內容\n• 檔案直讀：小檔案直接注入上下文，AI 真正讀到內容\n• 貼紙三件套：AI 先讀懂表情包含義再主動傳送，並顯示縮圖\n• 黏人度：可配置 AI 主動發話的頻率與次數上限\n• 商城改版：購買後跳轉聊天，禮物以卡片送達且 AI 真正收到\n• 自動備份：預設開啟，覆蓋式備份可隨更新與重裝存活，首次啟動偵測到備份可一鍵恢復\n• 模型目錄：修正 models.dev 資料滌後導致的視訊能力誤判（DeepSeek V4.1 Flash）\n• 編輯器保護：人設編輯器所有退出方式都會先確認再丟棄修改\n• 修復 Android 上聊天記錄讀不出來：資料庫開啟失敗導致列表空白，訊息其實都還在\n• 修復刪除的訊息重啟後復活\n• 修復更新內容弹窗在夜間模式下的黑字\n• 介面與效能優化';
+      '本次更新內容：\n\n• 世界書：把世界觀、設定、禁忌和稱呼寫進一本書，按關鍵詞觸發，從角色卡綁定；條目可設常駐、觸發機率、掃描深度、注入位置與對話深度、互斥組與優先權，支援正規表示式、全詞比對與次級關鍵詞，命中的條目還能繼續牽出更多設定\n• 相容 SillyTavern：世界書 JSON 可匯入匯出，社群的世界觀可以整本搬過來\n• 遷移：舊版角色卡（說話風格、口頭禪、價值觀、禁忌、三階段稱呼）自動變成該角色的預設世界書，原入口改為導向世界書\n• 測試沙盒：貼上一段對話，立刻看到哪些條目會命中、注入後的樣子與預算佔用\n• 語音與畫圖：每個角色單獨開關。語音可用裝置 TTS 或 OpenAI 相容的 /audio/speech，畫圖走 /v1/images/generations\n• 關於頁重做：從彈窗改成獨立頁面，並附上開源授權列表與貢獻者名單\n• 模型分檔：模型選擇器按對話 / 生圖分開，選對話模型不再混進生圖模型\n• 視訊訊息：相簿與檔案均可傳送視訊，AI 能看懂視訊內容\n• 檔案直讀：小檔案直接注入上下文，AI 真正讀到內容\n• 貼紙三件套：AI 先讀懂表情包含義再主動傳送，並顯示縮圖\n• 黏人度：可配置 AI 主動發話的頻率與次數上限\n• 商城改版：購買後跳轉聊天，禮物以卡片送達且 AI 真正收到\n• 自動備份：預設開啟，覆蓋式備份可隨更新與重裝存活，首次啟動偵測到備份可一鍵恢復\n• 模型目錄：修正 models.dev 資料滌後導致的視訊能力誤判（DeepSeek V4.1 Flash）\n• 編輯器保護：人設編輯器所有退出方式都會先確認再丟棄修改\n• 修復 Android 上聊天記錄讀不出來：資料庫開啟失敗導致列表空白，訊息其實都還在\n• 修復刪除的訊息重啟後復活\n• 修復更新內容弹窗在夜間模式下的黑字\n• 介面與效能優化';
 
   @override
   String get attachCamera => '相機';
@@ -7464,9 +7851,6 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get toolDescQuoteMessage => '引用某則訊息來回覆';
-
-  @override
-  String get toolDescCharacterCard => '讓它緩慢微調自己的人設';
 
   @override
   String get toolDescRating => '根據你的回應調整它的自我調校';
@@ -8630,4 +9014,477 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get storageClearDone => '快取已清除';
+
+  @override
+  String get humanChatCardMoved => '世界書裡的角色卡';
+
+  @override
+  String get toolDescWorldEntry => '讓它緩慢微調自己的人設';
+
+  @override
+  String get worldBookTitle => '世界書';
+
+  @override
+  String worldBookSummary(int on, int entries) {
+    return '$on 本 · $entries 條';
+  }
+
+  @override
+  String get worldBookIntro =>
+      '世界書是存放世界觀、設定、禁忌與稱呼的地方。條目只有在自己關鍵詞命中或標記為常駐時才會注入，並按角色綁定。';
+
+  @override
+  String get worldBookEmpty => '還沒有世界書';
+
+  @override
+  String get worldBookEmptyBody => '新增一本，或從 SillyTavern 的世界書 JSON 匯入。';
+
+  @override
+  String get worldBookAdd => '新增世界書';
+
+  @override
+  String get worldBookAddNew => '新增';
+
+  @override
+  String get worldBookAddPaste => '貼上匯入';
+
+  @override
+  String get worldBookAddFile => '從檔案匯入';
+
+  @override
+  String get worldBookDefaultName => '新世界';
+
+  @override
+  String get worldBookName => '世界書名';
+
+  @override
+  String get worldBookNameHint => '幫它取個名字';
+
+  @override
+  String get worldBookImportTitle => '匯入世界書';
+
+  @override
+  String get worldBookImportHint => '貼上 SillyTavern 世界書 JSON，或本應用匯出的 JSON';
+
+  @override
+  String worldBookImported(int count) {
+    return '已匯入 $count 本';
+  }
+
+  @override
+  String get worldBookInvalid => '檔案無效';
+
+  @override
+  String get worldBookSettingsHeader => '注入設定';
+
+  @override
+  String get worldBookBudget => '注入預算';
+
+  @override
+  String worldBookBudgetValue(int k) {
+    return '$k 千字元';
+  }
+
+  @override
+  String get worldBookBudgetFooter =>
+      '命中條目依優先權爭奪這份預算，超出部分本輪會被丟棄；標記為常駐的條目不受預算限制。';
+
+  @override
+  String get worldBookBudgetUnlimited => '無限制';
+
+  @override
+  String get worldBookBudgetUnlimitedNote =>
+      '無限制：所有命中條目都會注入，可能會導致 RP 體驗不佳（上下文擁擠、注意力渙散）。';
+
+  @override
+  String get worldBookBookHeader => '這本書';
+
+  @override
+  String get worldBookBookFooter => '類型決定注入時的說法：規則會被當成必須遵守的指令，事實會被當成既成背景。';
+
+  @override
+  String get worldBookKind => '類型';
+
+  @override
+  String get worldBookKindHint => '注入時怎麼描述這本書';
+
+  @override
+  String get worldBookKindLabelGeneral => '綜合';
+
+  @override
+  String get worldBookKindLabelFacts => '世界事實';
+
+  @override
+  String get worldBookKindLabelRules => '世界規則';
+
+  @override
+  String get worldBookKindLabelStyle => '風格指南';
+
+  @override
+  String get worldBookKindLabelRelations => '關係圖';
+
+  @override
+  String get worldBookKindLabelScenes => '場景';
+
+  @override
+  String worldBookEntries(int count) {
+    return '$count 條';
+  }
+
+  @override
+  String get worldBookEntriesHeader => '條目';
+
+  @override
+  String worldBookEntriesFooter(int count) {
+    return '共 $count 條。點擊編輯，長按刪除。';
+  }
+
+  @override
+  String get worldBookEntriesEmpty => '還沒有條目';
+
+  @override
+  String get worldBookEntriesEmptyBody => '新增條目，或直接貼上內容。';
+
+  @override
+  String get worldBookEntryAdd => '新增條目';
+
+  @override
+  String get worldBookEntryUntitled => '未命名條目';
+
+  @override
+  String get worldBookDataHeader => '資料';
+
+  @override
+  String get worldBookExportSub => '匯出為 SillyTavern 世界書 JSON';
+
+  @override
+  String get worldBookDelete => '刪除這本書';
+
+  @override
+  String worldBookDeleteMessage(String name) {
+    return '「$name」將被刪除，無法復原。';
+  }
+
+  @override
+  String get worldBookGone => '這本書已被刪除';
+
+  @override
+  String get worldBookEntryTitle => '條目';
+
+  @override
+  String get worldBookEntryBodyHeader => '內容';
+
+  @override
+  String get worldBookEntryBodyFooter => '標題會隨內容一起注入，方便模型引用，也方便你在除錯時辨認。';
+
+  @override
+  String get worldBookEntryComment => '標題';
+
+  @override
+  String get worldBookEntryCommentHint => '這是什麼';
+
+  @override
+  String get worldBookEntryContent => '內容';
+
+  @override
+  String get worldBookEntryContentHint => '模型讀到的內容';
+
+  @override
+  String get worldBookEntryKeys => '關鍵詞';
+
+  @override
+  String get worldBookEntryKeysHint => '任一命中即觸發。以逗號分隔可一次新增多個。';
+
+  @override
+  String get worldBookEntrySecondary => '次級關鍵詞';
+
+  @override
+  String get worldBookEntrySecondaryHint => '在主要關鍵詞之上再加一層條件';
+
+  @override
+  String get worldBookKeysNone => '尚未設定關鍵詞';
+
+  @override
+  String get worldBookKeyAdd => '新增關鍵詞';
+
+  @override
+  String get worldBookEntryTriggerHeader => '觸發條件';
+
+  @override
+  String get worldBookEntryTriggerFooter => '機率每次重新擲骰；同一個種子下同一輪會得到相同結果。';
+
+  @override
+  String get worldBookEntryLogic => '組合邏輯';
+
+  @override
+  String get worldBookLogicLabelAnySecondary => '任一命中';
+
+  @override
+  String get worldBookLogicLabelNotAnySecondary => '無一命中';
+
+  @override
+  String get worldBookLogicLabelAllSecondary => '全部命中';
+
+  @override
+  String get worldBookLogicLabelNotAllSecondary => '非全部命中';
+
+  @override
+  String get worldBookLogicSubAnySecondary => '主要命中 且 至少一個次級命中';
+
+  @override
+  String get worldBookLogicSubNotAnySecondary => '主要命中 且 沒有次級命中';
+
+  @override
+  String get worldBookLogicSubAllSecondary => '主要命中 且 次級全部命中';
+
+  @override
+  String get worldBookLogicSubNotAllSecondary => '主要命中 且 次級未全部命中';
+
+  @override
+  String get worldBookEntryProbability => '觸發機率';
+
+  @override
+  String get worldBookEntryCaseSensitive => '區分大小寫';
+
+  @override
+  String get worldBookEntryWholeWords => '全詞比對';
+
+  @override
+  String get worldBookEntryRegex => '正規表示式';
+
+  @override
+  String get worldBookEntryWhenHeader => '何時注入';
+
+  @override
+  String get worldBookEntryWhenFooter => '常駐條目無視關鍵詞與預算，每輪都會注入。';
+
+  @override
+  String get worldBookConstant => '常駐';
+
+  @override
+  String get worldBookConstantSub => '無論關鍵詞是否命中都注入';
+
+  @override
+  String get worldBookEntryScanDepth => '掃描深度';
+
+  @override
+  String get worldBookEntryScanAll => '全部歷史';
+
+  @override
+  String get worldBookEntryPosition => '注入位置';
+
+  @override
+  String get worldBookPositionLabelBeforeChar => '角色定義前';
+
+  @override
+  String get worldBookPositionLabelAfterChar => '角色定義後';
+
+  @override
+  String get worldBookPositionLabelAtDepth => '對話中（指定深度）';
+
+  @override
+  String get worldBookPositionLabelBottomNote => '系統提示結尾';
+
+  @override
+  String get worldBookPositionSubBeforeChar => '在角色設定之前，最先讀到';
+
+  @override
+  String get worldBookPositionSubAfterChar => '緊跟角色設定之後';
+
+  @override
+  String get worldBookPositionSubAtDepth => '作為歷史訊息插入，離最新的訊息 n 條';
+
+  @override
+  String get worldBookPositionSubBottomNote => '系統提示的最後一段，最接近對話';
+
+  @override
+  String get worldBookEntryDepth => '深度';
+
+  @override
+  String get worldBookEntryRole => '角色';
+
+  @override
+  String get worldBookRoleLabelSystem => '系統';
+
+  @override
+  String get worldBookRoleLabelUser => '使用者';
+
+  @override
+  String get worldBookRoleLabelAssistant => '助理';
+
+  @override
+  String get worldBookEntryStackHeader => '互斥與排序';
+
+  @override
+  String get worldBookEntryStackFooter => '同組條目只保留權重最高的一個，適合「季節」「關係階段」這類替代關係。';
+
+  @override
+  String get worldBookEntryGroup => '互斥組';
+
+  @override
+  String get worldBookEntryGroupHint => '同名條目互相排斥，留空則不互斥';
+
+  @override
+  String get worldBookEntryGroupWeight => '組內權重';
+
+  @override
+  String get worldBookEntryGroupWeightSub => '同組命中多條時保留權重最高的一條';
+
+  @override
+  String get worldBookEntryPriority => '優先權';
+
+  @override
+  String get worldBookEntryPrioritySub => '預算不足時，優先權高的先保留';
+
+  @override
+  String get worldBookEntryAiEditable => '允許 AI 微調';
+
+  @override
+  String get worldBookEntryAiEditableSub =>
+      '助理可透過 update_world_entry 工具緩慢修改這一條';
+
+  @override
+  String get worldBookEntryDelete => '刪除條目';
+
+  @override
+  String get worldBookTplBlank => '空白條目';
+
+  @override
+  String get worldBookTplBlankSub => '從零開始';
+
+  @override
+  String get worldBookTplPlace => '地點';
+
+  @override
+  String get worldBookTplPlaceSub => '一個場所、區域或建築';
+
+  @override
+  String get worldBookTplItem => '物品';
+
+  @override
+  String get worldBookTplItemSub => '一件道具、武器或憑證';
+
+  @override
+  String get worldBookTplRule => '規則';
+
+  @override
+  String get worldBookTplRuleSub => '一條必須或絕不能發生的事';
+
+  @override
+  String get worldBookTplRelation => '關係';
+
+  @override
+  String get worldBookTplRelationSub => '一段關係與當前立場';
+
+  @override
+  String get worldBookTplStyle => '說話風格';
+
+  @override
+  String get worldBookTplStyleSub => '常駐，決定語氣與用詞';
+
+  @override
+  String get worldBookTplAddress => '稱呼（隨親密度）';
+
+  @override
+  String get worldBookTplAddressSub => '常駐，陌生人 / 熟人 / 親密三階段';
+
+  @override
+  String get worldBookTplAddressComment => '稱呼（隨親密度變化）';
+
+  @override
+  String get worldBookBind => '世界觀';
+
+  @override
+  String get worldBookBindSub => '這個角色在哪幾本書裡生活。';
+
+  @override
+  String get worldBookBindNone => '未綁定';
+
+  @override
+  String worldBookBindCount(int count) {
+    return '已綁定 $count 本';
+  }
+
+  @override
+  String get worldBookBindPicker => '選擇世界書';
+
+  @override
+  String get worldBookSandbox => '測試沙盒';
+
+  @override
+  String get worldBookSandboxHeader => '試一段對話';
+
+  @override
+  String get worldBookSandboxFooter => '貼上真實對話的幾行，看哪些條目會命中、注入位置在哪裡。';
+
+  @override
+  String get worldBookSandboxInput => '對話內容';
+
+  @override
+  String get worldBookSandboxHint => '每行一則訊息，模型讀取時的原文';
+
+  @override
+  String get worldBookSandboxRun => '試執行';
+
+  @override
+  String get worldBookSandboxNone => '沒有條目命中';
+
+  @override
+  String get worldBookSandboxDropped => '被預算丟棄';
+
+  @override
+  String get worldBookSandboxSpent => '注入體積';
+
+  @override
+  String worldBookSandboxRecursion(int count) {
+    return '遞迴追溯了 $count 層';
+  }
+
+  @override
+  String get worldBookEnabled => '啟用這本書';
+
+  @override
+  String get humanChatSpeechStyle => '說話風格';
+
+  @override
+  String get humanChatCatchphrases => '口頭禪';
+
+  @override
+  String get humanChatCatchphrasesHint => '口頭禪（以逗號分隔）';
+
+  @override
+  String get humanChatValues => '價值觀';
+
+  @override
+  String get humanChatTaboos => '禁忌';
+
+  @override
+  String get humanChatAddressStranger => '稱呼：陌生人';
+
+  @override
+  String get humanChatAddressAcquaintance => '稱呼：熟人';
+
+  @override
+  String get humanChatAddressClose => '稱呼：親近的人';
+
+  @override
+  String get humanChatExportCard => '匯出角色卡（chara_card_v2）';
+
+  @override
+  String get humanChatCardCopied => '角色卡已複製到剪貼簿';
+
+  @override
+  String get humanChatImportCard => '從剪貼簿匯入角色卡';
+
+  @override
+  String get humanChatImportCardTitle => '匯入角色卡';
+
+  @override
+  String get humanChatImportCardFooter => '覆蓋會取代整張角色卡，合併只填補空白欄位。';
+
+  @override
+  String get humanChatInvalidCard => '角色卡無效';
+
+  @override
+  String get toolDescCharacterCard => '讓它緩慢微調自己的人設';
 }

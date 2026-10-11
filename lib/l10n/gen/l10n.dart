@@ -4017,95 +4017,11 @@ abstract class AppLocalizations {
   /// **'Character card'**
   String get humanChatCardHeader;
 
-  /// Section footer of the character card
+  /// Section footer that points at the world book
   ///
   /// In en, this message translates to:
-  /// **'Injected before every reply so the voice stays the same. The assistant may tweak it over time.'**
+  /// **'Your character sheet now lives in the world book: one book per role, fired by keywords, bound on the role\'s own card.'**
   String get humanChatCardFooter;
-
-  /// Field of the character card
-  ///
-  /// In en, this message translates to:
-  /// **'Speaking style'**
-  String get humanChatSpeechStyle;
-
-  /// Field of the character card
-  ///
-  /// In en, this message translates to:
-  /// **'Catchphrases'**
-  String get humanChatCatchphrases;
-
-  /// Prompt title for the catchphrase list
-  ///
-  /// In en, this message translates to:
-  /// **'Catchphrases (comma separated)'**
-  String get humanChatCatchphrasesHint;
-
-  /// Field of the character card
-  ///
-  /// In en, this message translates to:
-  /// **'Values'**
-  String get humanChatValues;
-
-  /// Field of the character card
-  ///
-  /// In en, this message translates to:
-  /// **'Taboos'**
-  String get humanChatTaboos;
-
-  /// Field of the character card
-  ///
-  /// In en, this message translates to:
-  /// **'Address: stranger'**
-  String get humanChatAddressStranger;
-
-  /// Field of the character card
-  ///
-  /// In en, this message translates to:
-  /// **'Address: acquaintance'**
-  String get humanChatAddressAcquaintance;
-
-  /// Field of the character card
-  ///
-  /// In en, this message translates to:
-  /// **'Address: close'**
-  String get humanChatAddressClose;
-
-  /// Row that copies the card as json
-  ///
-  /// In en, this message translates to:
-  /// **'Export card (chara_card_v2)'**
-  String get humanChatExportCard;
-
-  /// Bulletin after copying the card
-  ///
-  /// In en, this message translates to:
-  /// **'Card copied to the clipboard'**
-  String get humanChatCardCopied;
-
-  /// Row that imports the card from the clipboard
-  ///
-  /// In en, this message translates to:
-  /// **'Import card from clipboard'**
-  String get humanChatImportCard;
-
-  /// Dialog title of the card import
-  ///
-  /// In en, this message translates to:
-  /// **'Import card'**
-  String get humanChatImportCardTitle;
-
-  /// Body of the card import mode picker
-  ///
-  /// In en, this message translates to:
-  /// **'Overwrite replaces the card, merge only fills empty fields.'**
-  String get humanChatImportCardFooter;
-
-  /// Bulletin when the card payload is broken
-  ///
-  /// In en, this message translates to:
-  /// **'Not a valid card'**
-  String get humanChatInvalidCard;
 
   /// Section header of the daily schedule
   ///
@@ -5106,7 +5022,7 @@ abstract class AppLocalizations {
   /// Body of the one-time whats-new dialog, one bullet per line
   ///
   /// In en, this message translates to:
-  /// **'What\'s new in this build:\n\n• Voice and drawing: switched on per role. Speech runs on the device voice or an OpenAI compatible /audio/speech, drawing on /v1/images/generations\n• A real about page: the dialog became a screen, with the open source licences and the contributors\n• Models by purpose: the picker separates chat models from image models, so a chat no longer offers the image endpoints\n• Video messages: send videos from the gallery or as files, and the AI can actually watch them\n• Inline files: small files are injected into the context so the AI truly reads them\n• Stickers: the AI reads a sticker\'s meaning before sending it, with thumbnails\n• Clinginess: choose how often the AI speaks first, with an optional cap on proactive messages\n• Shop rework: gifts now land in the chat as a card the AI actually receives\n• Auto backup: on by default, overwrite backups survive updates and reinstalls, restore offered on first launch\n• Model catalog: video capability flags corrected where the models.dev feed lags the provider (deepseek v4.1 flash)\n• Editor guard: every way out of the persona editor now asks before discarding edits\n• Fixed on Android: the chat list came up empty because the database failed to open. The messages were there all along\n• Fixed: a deleted message came back after a restart\n• Fixed: the what\'s new sheet was black text in night mode\n• UI and performance polish'**
+  /// **'What\'s new in this build:\n\n• World book: put the world, its rules, its taboos and how it addresses you into books that fire on their own keywords, bound per role. An entry can be constant, rolled on a probability, limited to the last N messages, injected before, after or at a depth inside the chat, grouped so one replaces another, ranked against a budget, and matched by regex or whole words with a second gate of keywords\n• SillyTavern compatible: world info files import and export, so a community lorebook moves across whole\n• Migration: the old character card (speaking style, catchphrases, values, taboos and the three stage addresses) automatically became a book on the role it belonged to; its old entry point now leads to the world book\n• Sandbox: paste a conversation and see at once which entries would fire, what the block looks like and how much of the budget it spends\n• Voice and drawing: switched on per role. Speech runs on the device voice or an OpenAI compatible /audio/speech, drawing on /v1/images/generations\n• A real about page: the dialog became a screen, with the open source licences and the contributors\n• Models by purpose: the picker separates chat models from image models, so a chat no longer offers the image endpoints\n• Video messages: send videos from the gallery or as files, and the AI can actually watch them\n• Inline files: small files are injected into the context so the AI truly reads them\n• Stickers: the AI reads a sticker\'s meaning before sending it, with thumbnails\n• Clinginess: choose how often the AI speaks first, with an optional cap on proactive messages\n• Shop rework: gifts now land in the chat as a card the AI actually receives\n• Auto backup: on by default, overwrite backups survive updates and reinstalls, restore offered on first launch\n• Model catalog: video capability flags corrected where the models.dev feed lags the provider (deepseek v4.1 flash)\n• Editor guard: every way out of the persona editor now asks before discarding edits\n• Fixed on Android: the chat list came up empty because the database failed to open. The messages were there all along\n• Fixed: a deleted message came back after a restart\n• Fixed: the what\'s new sheet was black text in night mode\n• UI and performance polish'**
   String get whatsNewBody;
 
   /// Label of the camera tile at the top of the gallery grid
@@ -5918,12 +5834,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Reply while showing which message it replies to'**
   String get toolDescQuoteMessage;
-
-  /// No description provided for @toolDescCharacterCard.
-  ///
-  /// In en, this message translates to:
-  /// **'Let it tune its own character sheet slowly'**
-  String get toolDescCharacterCard;
 
   /// No description provided for @toolDescRating.
   ///
@@ -8180,6 +8090,912 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Cache cleared'**
   String get storageClearDone;
+
+  /// Row that opens the world book page
+  ///
+  /// In en, this message translates to:
+  /// **'Character card in the world book'**
+  String get humanChatCardMoved;
+
+  /// What update_world_entry does
+  ///
+  /// In en, this message translates to:
+  /// **'Let it tune its own character sheet slowly'**
+  String get toolDescWorldEntry;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'World book'**
+  String get worldBookTitle;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'{on} books · {entries} entries'**
+  String worldBookSummary(int on, int entries);
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'The world book holds the world: its places, its rules, its taboos and how it addresses you. An entry only reaches the model when its keywords fire or it is marked constant. Books are bound per role.'**
+  String get worldBookIntro;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'No world book yet'**
+  String get worldBookEmpty;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Create one, or import a SillyTavern world info file.'**
+  String get worldBookEmptyBody;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Add a world book'**
+  String get worldBookAdd;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'New book'**
+  String get worldBookAddNew;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Paste JSON'**
+  String get worldBookAddPaste;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Import file'**
+  String get worldBookAddFile;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'New world'**
+  String get worldBookDefaultName;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Book name'**
+  String get worldBookName;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Give it a name'**
+  String get worldBookNameHint;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Import world book'**
+  String get worldBookImportTitle;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Paste a SillyTavern world info file, or JSON this app exported'**
+  String get worldBookImportHint;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Imported {count}'**
+  String worldBookImported(int count);
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid file'**
+  String get worldBookInvalid;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Injection'**
+  String get worldBookSettingsHeader;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Injection budget'**
+  String get worldBookBudget;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'{k}k characters'**
+  String worldBookBudgetValue(int k);
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Fired entries compete for this budget by priority; the rest is dropped this turn. Constant entries ignore the budget.'**
+  String get worldBookBudgetFooter;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Unlimited'**
+  String get worldBookBudgetUnlimited;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Unlimited: everything that fires is injected, which may hurt the RP experience (a crowded context, wandering attention).'**
+  String get worldBookBudgetUnlimitedNote;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'This book'**
+  String get worldBookBookHeader;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'The kind decides how the block is worded when it reaches the model: rules read as orders, facts read as what is true.'**
+  String get worldBookBookFooter;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Kind'**
+  String get worldBookKind;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'How this book is described to the model'**
+  String get worldBookKindHint;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'General'**
+  String get worldBookKindLabelGeneral;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'World facts'**
+  String get worldBookKindLabelFacts;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'World rules'**
+  String get worldBookKindLabelRules;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Style guide'**
+  String get worldBookKindLabelStyle;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Relationship map'**
+  String get worldBookKindLabelRelations;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Scene'**
+  String get worldBookKindLabelScenes;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'{count} entries'**
+  String worldBookEntries(int count);
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Entries'**
+  String get worldBookEntriesHeader;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'{count} in total. Tap to edit, long press to delete.'**
+  String worldBookEntriesFooter(int count);
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'No entries yet'**
+  String get worldBookEntriesEmpty;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Add one, or paste a body in.'**
+  String get worldBookEntriesEmptyBody;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Add entry'**
+  String get worldBookEntryAdd;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Untitled entry'**
+  String get worldBookEntryUntitled;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Data'**
+  String get worldBookDataHeader;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Export as SillyTavern world info JSON'**
+  String get worldBookExportSub;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Delete book'**
+  String get worldBookDelete;
+
+  /// Confirm body of the book delete
+  ///
+  /// In en, this message translates to:
+  /// **'\"{name}\" will be deleted. This cannot be undone.'**
+  String worldBookDeleteMessage(String name);
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'This book was deleted'**
+  String get worldBookGone;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Entry'**
+  String get worldBookEntryTitle;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Body'**
+  String get worldBookEntryBodyHeader;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'The comment is injected with the content, so the model can attribute a line and you can spot it in the trace.'**
+  String get worldBookEntryBodyFooter;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Comment'**
+  String get worldBookEntryComment;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'What this entry is'**
+  String get worldBookEntryCommentHint;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Content'**
+  String get worldBookEntryContent;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'What the model reads'**
+  String get worldBookEntryContentHint;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Keywords'**
+  String get worldBookEntryKeys;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Any one fires the entry. Separate with commas to add several.'**
+  String get worldBookEntryKeysHint;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Secondary keywords'**
+  String get worldBookEntrySecondary;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'One more condition on top of the primary'**
+  String get worldBookEntrySecondaryHint;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'No keywords yet'**
+  String get worldBookKeysNone;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Add keyword'**
+  String get worldBookKeyAdd;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Trigger'**
+  String get worldBookEntryTriggerHeader;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'The probability is rolled per request; the same seed gives the same roll for the same turn.'**
+  String get worldBookEntryTriggerFooter;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Combination'**
+  String get worldBookEntryLogic;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Any secondary'**
+  String get worldBookLogicLabelAnySecondary;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'No secondary'**
+  String get worldBookLogicLabelNotAnySecondary;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'All secondary'**
+  String get worldBookLogicLabelAllSecondary;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Not all secondary'**
+  String get worldBookLogicLabelNotAllSecondary;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Primary hit AND at least one secondary hit'**
+  String get worldBookLogicSubAnySecondary;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Primary hit AND no secondary hit'**
+  String get worldBookLogicSubNotAnySecondary;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Primary hit AND every secondary hit'**
+  String get worldBookLogicSubAllSecondary;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Primary hit AND not every secondary hit'**
+  String get worldBookLogicSubNotAllSecondary;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Trigger chance'**
+  String get worldBookEntryProbability;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Case sensitive'**
+  String get worldBookEntryCaseSensitive;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Whole words only'**
+  String get worldBookEntryWholeWords;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Regular expression'**
+  String get worldBookEntryRegex;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'When it fires'**
+  String get worldBookEntryWhenHeader;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Constant entries ignore both keywords and budget, and inject every turn.'**
+  String get worldBookEntryWhenFooter;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Always on'**
+  String get worldBookConstant;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Injected whether the keywords fire or not'**
+  String get worldBookConstantSub;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Scan depth'**
+  String get worldBookEntryScanDepth;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Whole history'**
+  String get worldBookEntryScanAll;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Position'**
+  String get worldBookEntryPosition;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Before the character'**
+  String get worldBookPositionLabelBeforeChar;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'After the character'**
+  String get worldBookPositionLabelAfterChar;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'In the chat, at depth'**
+  String get worldBookPositionLabelAtDepth;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'End of the system prompt'**
+  String get worldBookPositionLabelBottomNote;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Ahead of the character definition, read first'**
+  String get worldBookPositionSubBeforeChar;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Right behind the character definition'**
+  String get worldBookPositionSubAfterChar;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'A history turn, n messages back'**
+  String get worldBookPositionSubAtDepth;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'The last block, closest to the conversation'**
+  String get worldBookPositionSubBottomNote;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Depth'**
+  String get worldBookEntryDepth;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Role'**
+  String get worldBookEntryRole;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'System'**
+  String get worldBookRoleLabelSystem;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'User'**
+  String get worldBookRoleLabelUser;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Assistant'**
+  String get worldBookRoleLabelAssistant;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Groups and order'**
+  String get worldBookEntryStackHeader;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Entries sharing a group fire as one: the highest weight wins, which is how a season or a stage replaces an earlier one.'**
+  String get worldBookEntryStackFooter;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Group'**
+  String get worldBookEntryGroup;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Same name means mutually exclusive. Empty means no group.'**
+  String get worldBookEntryGroupHint;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Group weight'**
+  String get worldBookEntryGroupWeight;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Which member wins when several of the group fire'**
+  String get worldBookEntryGroupWeightSub;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Priority'**
+  String get worldBookEntryPriority;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Higher survives a tight budget first'**
+  String get worldBookEntryPrioritySub;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'AI may refine'**
+  String get worldBookEntryAiEditable;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'The assistant may slowly edit this entry with update_world_entry'**
+  String get worldBookEntryAiEditableSub;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Delete entry'**
+  String get worldBookEntryDelete;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Blank entry'**
+  String get worldBookTplBlank;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Start from nothing'**
+  String get worldBookTplBlankSub;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Place'**
+  String get worldBookTplPlace;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'A location, region or building'**
+  String get worldBookTplPlaceSub;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Thing'**
+  String get worldBookTplItem;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'An object, weapon or token'**
+  String get worldBookTplItemSub;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Rule'**
+  String get worldBookTplRule;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Something that must or must never happen'**
+  String get worldBookTplRuleSub;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Relationship'**
+  String get worldBookTplRelation;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'A tie and the stance it carries'**
+  String get worldBookTplRelationSub;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Speaking style'**
+  String get worldBookTplStyle;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Constant. Sets tone and word choice'**
+  String get worldBookTplStyleSub;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Address (by closeness)'**
+  String get worldBookTplAddress;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Constant. Stranger, acquaintance, close'**
+  String get worldBookTplAddressSub;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Address (how you call the user, by closeness)'**
+  String get worldBookTplAddressComment;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'World'**
+  String get worldBookBind;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'The books this role lives in.'**
+  String get worldBookBindSub;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'No world'**
+  String get worldBookBindNone;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'{count} books bound'**
+  String worldBookBindCount(int count);
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Choose world books'**
+  String get worldBookBindPicker;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Sandbox'**
+  String get worldBookSandbox;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Try a conversation'**
+  String get worldBookSandboxHeader;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Paste a few lines of a real conversation and see which entries fire, and where they land.'**
+  String get worldBookSandboxFooter;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Conversation'**
+  String get worldBookSandboxInput;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'One message per line, as the model reads it'**
+  String get worldBookSandboxHint;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Run'**
+  String get worldBookSandboxRun;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'No entry fired'**
+  String get worldBookSandboxNone;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Dropped by the budget'**
+  String get worldBookSandboxDropped;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Injected size'**
+  String get worldBookSandboxSpent;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Recursion traced {count} layers'**
+  String worldBookSandboxRecursion(int count);
+
+  /// Switch that disables a whole book
+  ///
+  /// In en, this message translates to:
+  /// **'Enable this book'**
+  String get worldBookEnabled;
+
+  /// Field of the character card
+  ///
+  /// In en, this message translates to:
+  /// **'Speaking style'**
+  String get humanChatSpeechStyle;
+
+  /// Field of the character card
+  ///
+  /// In en, this message translates to:
+  /// **'Catchphrases'**
+  String get humanChatCatchphrases;
+
+  /// Prompt title for the catchphrase list
+  ///
+  /// In en, this message translates to:
+  /// **'Catchphrases (comma separated)'**
+  String get humanChatCatchphrasesHint;
+
+  /// Field of the character card
+  ///
+  /// In en, this message translates to:
+  /// **'Values'**
+  String get humanChatValues;
+
+  /// Field of the character card
+  ///
+  /// In en, this message translates to:
+  /// **'Taboos'**
+  String get humanChatTaboos;
+
+  /// Field of the character card
+  ///
+  /// In en, this message translates to:
+  /// **'Address: stranger'**
+  String get humanChatAddressStranger;
+
+  /// Field of the character card
+  ///
+  /// In en, this message translates to:
+  /// **'Address: acquaintance'**
+  String get humanChatAddressAcquaintance;
+
+  /// Field of the character card
+  ///
+  /// In en, this message translates to:
+  /// **'Address: close'**
+  String get humanChatAddressClose;
+
+  /// Row that copies the card as json
+  ///
+  /// In en, this message translates to:
+  /// **'Export card (chara_card_v2)'**
+  String get humanChatExportCard;
+
+  /// Bulletin after copying the card
+  ///
+  /// In en, this message translates to:
+  /// **'Card copied to the clipboard'**
+  String get humanChatCardCopied;
+
+  /// Row that imports the card from the clipboard
+  ///
+  /// In en, this message translates to:
+  /// **'Import card from clipboard'**
+  String get humanChatImportCard;
+
+  /// Dialog title of the card import
+  ///
+  /// In en, this message translates to:
+  /// **'Import card'**
+  String get humanChatImportCardTitle;
+
+  /// Body of the card import mode picker
+  ///
+  /// In en, this message translates to:
+  /// **'Overwrite replaces the card, merge only fills empty fields.'**
+  String get humanChatImportCardFooter;
+
+  /// Bulletin when the card payload is broken
+  ///
+  /// In en, this message translates to:
+  /// **'Not a valid card'**
+  String get humanChatInvalidCard;
+
+  /// No description provided for @toolDescCharacterCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Let it tune its own character sheet slowly'**
+  String get toolDescCharacterCard;
 }
 
 class _AppLocalizationsDelegate
