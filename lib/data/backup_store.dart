@@ -83,7 +83,7 @@ extension BackupStore on Store {
       // recorded, so a dead server can never make a saved backup look failed
       unawaited(_uploadRemote(bytes));
       // the curated archive and the full snapshot share one schedule: same
-      // policy, same overwrite rule, one dirty mark. the full zip keeps its
+// policy, same overwrite rule, one dirty mark. the full zip keeps its
       // own daily cadence so the heartbeat cannot re-zip the whole data
       // directory every time the store flushes
       try {
@@ -121,8 +121,8 @@ extension BackupStore on Store {
   /// Rebuilds the whole data directory snapshot and overwrites the shared
   /// copy. Runs right after the archive write inside the same guard so the
   /// two artifacts can never disagree about which schedule they follow.
-  ///
-  /// The build itself runs in a worker isolate and streams to a temp file:
+///
+/// The build itself runs in a worker isolate and streams to a temp file:
   /// on the main isolate it is a several-second freeze (the whole data
   /// directory, zipped, with every file read into the heap on the way),
   /// which is exactly the input-dispatch-timeout ANR a 15 second heartbeat
@@ -210,7 +210,7 @@ extension BackupStore on Store {
 
   /// Test seam for the full zip backup, same idea as [debugBackupSink].
   @visibleForTesting
-  set debugFullBackupSink(FullBackupSink? sink) => _debugFullSink = sink;
+set debugFullBackupSink(FullBackupSink? sink) => _debugFullSink = sink;
 
   // ----------------------------------------------------------------- archive
 

@@ -4700,6 +4700,51 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get worldBookEnabled => '启用这本书';
+
+  @override
+  String get humanChatSpeechStyle => '说话风格';
+
+  @override
+  String get humanChatCatchphrases => '口头禅';
+
+  @override
+  String get humanChatCatchphrasesHint => '口头禅（用逗号分隔）';
+
+  @override
+  String get humanChatValues => '价值观';
+
+  @override
+  String get humanChatTaboos => '禁忌';
+
+  @override
+  String get humanChatAddressStranger => '称呼：陌生人';
+
+  @override
+  String get humanChatAddressAcquaintance => '称呼：熟人';
+
+  @override
+  String get humanChatAddressClose => '称呼：亲近的人';
+
+  @override
+  String get humanChatExportCard => '导出角色卡（chara_card_v2）';
+
+  @override
+  String get humanChatCardCopied => '角色卡已复制到剪贴板';
+
+  @override
+  String get humanChatImportCard => '从剪贴板导入角色卡';
+
+  @override
+  String get humanChatImportCardTitle => '导入角色卡';
+
+  @override
+  String get humanChatImportCardFooter => '覆盖会替换整张角色卡，合并只填补空白字段。';
+
+  @override
+  String get humanChatInvalidCard => '角色卡无效';
+
+  @override
+  String get toolDescCharacterCard => '让它缓慢微调自己的人设';
 }
 
 /// The translations for Chinese, using the Han script (`zh_Hant`).
@@ -9397,4 +9442,49 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get worldBookEnabled => '啟用這本書';
+
+  @override
+  String get humanChatSpeechStyle => '說話風格';
+
+  @override
+  String get humanChatCatchphrases => '口頭禪';
+
+  @override
+  String get humanChatCatchphrasesHint => '口頭禪（以逗號分隔）';
+
+  @override
+  String get humanChatValues => '價值觀';
+
+  @override
+  String get humanChatTaboos => '禁忌';
+
+  @override
+  String get humanChatAddressStranger => '稱呼：陌生人';
+
+  @override
+  String get humanChatAddressAcquaintance => '稱呼：熟人';
+
+  @override
+  String get humanChatAddressClose => '稱呼：親近的人';
+
+  @override
+  String get humanChatExportCard => '匯出角色卡（chara_card_v2）';
+
+  @override
+  String get humanChatCardCopied => '角色卡已複製到剪貼簿';
+
+  @override
+  String get humanChatImportCard => '從剪貼簿匯入角色卡';
+
+  @override
+  String get humanChatImportCardTitle => '匯入角色卡';
+
+  @override
+  String get humanChatImportCardFooter => '覆蓋會取代整張角色卡，合併只填補空白欄位。';
+
+  @override
+  String get humanChatInvalidCard => '角色卡無效';
+
+  @override
+  String get toolDescCharacterCard => '讓它緩慢微調自己的人設';
 }

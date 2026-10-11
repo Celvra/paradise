@@ -34,7 +34,7 @@ void main() {
     await settle(t);
     await t.tap(find.text('Settings').last);
     await settle(t, 800);
-    // The settings list is taller than the fold (the world book and storage
+// The settings list is taller than the fold (the world book and storage
     // rows arrived after this test was written), so the About row may not have
     // been built yet and ensureVisible cannot find it. Drag the settings list
     // itself, located through a row that is on screen, until About is in view.

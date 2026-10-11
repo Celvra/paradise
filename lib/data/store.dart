@@ -213,7 +213,7 @@ class Store extends ChangeNotifier {
 
   BackupSink? _backupSink;
   FullBackupSink? _fullSink;
-  FullBackupSink? _debugFullSink;
+FullBackupSink? _debugFullSink;
   bool _backupDirty = false;
   bool _backupRunning = false;
   bool _fullBackupRunning = false;
@@ -590,7 +590,7 @@ class Store extends ChangeNotifier {
     _humanTimer = null;
     _saveTimer?.cancel();
     _saveTimer = null;
-    _fullBackupRunning = false;
+_fullBackupRunning = false;
     for (final c in chats) {
       _unlisten(c);
     }
@@ -1344,7 +1344,7 @@ Chat createChat(String name, String prompt, {String bio = '', String greeting = 
     return c;
   }
 
-  void editPersona(Chat c, String name, String prompt, {String? bio, String? greeting, String? emoji, String? examples, String? avatarPath, int? color, String? modelProvider, String? modelId, bool? modelFallback, bool? thinking, bool? agent, bool? clingy, int? clingySilentMin, bool? clingyCap, int? clingyMax, bool? clingyQuietOn, int? clingyQuietStart, int? clingyQuietEnd, bool? clingyUrgent, bool? clingyUrgentCap, int? clingyUrgentMax, List<String>? skillIds, List<String>? worldBookIds, bool clearSkillIds = false}) {
+void editPersona(Chat c, String name, String prompt, {String? bio, String? greeting, String? emoji, String? examples, String? avatarPath, int? color, String? modelProvider, String? modelId, bool? modelFallback, bool? thinking, bool? agent, bool? clingy, int? clingySilentMin, bool? clingyCap, int? clingyMax, bool? clingyQuietOn, int? clingyQuietStart, int? clingyQuietEnd, bool? clingyUrgent, bool? clingyUrgentCap, int? clingyUrgentMax, List<String>? skillIds, List<String>? worldBookIds, bool clearSkillIds = false}) {
     c.persona
       ..name = name
       ..prompt = prompt;

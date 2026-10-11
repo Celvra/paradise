@@ -46,13 +46,13 @@ void main() {
     c.pinned = true;
     c.draft = 'unsent';
 
-    final raw = s.exportBackupString();
+    final raw = await s.exportBackupString();
 
     // a second install, nothing carried over
     final (fresh, _) = await boot({'dark': true, 'textSize': 22.0, 'chats': '[]'});
     expect(fresh.chats, isEmpty);
 
-    final report = fresh.importBackupString(raw, overwrite: true);
+    final report = await fresh.importBackupString(raw, overwrite: true);
     expect(report.chats, 1);
     expect(report.messages, 2);
     expect(fresh.chats.single.persona.name, 'Her');
@@ -70,12 +70,12 @@ void main() {
     s.setWallpaper('/docs/wallpapers/1_photo.jpg');
     s.setWallpaperColor(0xFFE91E63);
     s.setWallpaperBubbleGrad(2);
-    final raw = s.exportBackupString();
+    final raw = await s.exportBackupString();
 
     final (fresh, _) = await boot();
     expect(fresh.textSize, 16, reason: 'a fresh install is at its own defaults');
 
-    fresh.importBackupString(raw, overwrite: true);
+    await fresh.importBackupString(raw, overwrite: true);
     expect(fresh.textSize, 21);
     expect(fresh.bubbleRadius, 24);
     expect(fresh.haptics, isFalse);
@@ -88,12 +88,12 @@ void main() {
     // the store treats 0 as absent on the way in, so a file written by a build
     // that stored it that way must not turn the accent black
     final (s, _) = await boot();
-    final raw = s.exportBackupString().replaceFirst('"wallpaperColor": null', '"wallpaperColor": 0');
-    s.importBackupString(raw, overwrite: true);
+    final raw = (await s.exportBackupString()).replaceFirst('"wallpaperColor": null', '"wallpaperColor": 0');
+    await s.importBackupString(raw, overwrite: true);
     expect(s.wallpaperColor, isNull);
   });
 
-  test('the document carries the provider keys and a restore stays configured', () async {
+test('the document carries the provider keys and a restore stays configured', () async {
     // The user's own backup is handed to the system save dialog, so the keys
     // travel: backup.dart documents the trade ("a backup whose restore
     // leaves every provider unconfigured is no backup"). What must never
@@ -103,12 +103,12 @@ void main() {
     ai.saveApiKey(ai.settings.providers.first.id, 'sk-secret-value-1234');
     s.setSetting(base: 'https://api.example.com/v1');
 
-    final raw = s.exportBackupString();
+final raw = s.exportBackupString();
     expect(raw, contains('secrets'));
 
     // a second install, nothing carried over
     final (fresh, freshAi) = await boot();
-    final report = fresh.importBackupString(raw, overwrite: true);
+    final report = await fresh.importBackupString(raw, overwrite: true);
     expect(report.ai, isTrue);
     expect(freshAi.apiKeys.values, contains('sk-secret-value-1234'),
         reason: 'the whole point of the secrets section');
@@ -120,11 +120,11 @@ void main() {
     final (s, _) = await boot();
     final c = s.createChat('Her', 'p');
     c.msgs.add(Msg(id: 'm1', out: false, text: 'original', time: 1));
-    final raw = s.exportBackupString();
+    final raw = await s.exportBackupString();
 
     // the same conversation has moved on since the backup was taken
     c.msgs.add(Msg(id: 'm2', out: false, text: 'newer', time: 2));
-    final report = s.importBackupString(raw, overwrite: false);
+    final report = await s.importBackupString(raw, overwrite: false);
 
     expect(report.chats, 0);
     expect(report.warnings.single, contains('already here'));
@@ -139,7 +139,7 @@ void main() {
 
     // valid json throughout, and a persona that is a string where an object
     // belongs, so the record only fails when it is turned back into a Chat
-    final doc = jsonDecode(s.exportBackupString()) as Map<String, dynamic>;
+    final doc = jsonDecode(await s.exportBackupString()) as Map<String, dynamic>;
     final sections = doc['sections'] as Map<String, dynamic>;
     sections['chats'] = [
       ...(sections['chats'] as List),
@@ -147,7 +147,7 @@ void main() {
     ];
 
     final (fresh, _) = await boot();
-    final report = fresh.importBackupString(jsonEncode(doc), overwrite: true);
+    final report = await fresh.importBackupString(jsonEncode(doc), overwrite: true);
 
     expect(report.chats, 1, reason: 'the good conversation still arrived');
     expect(report.warnings.single, contains('broken'));
@@ -161,7 +161,7 @@ void main() {
     final (s, _) = await boot();
     s.createChat('Her', 'p');
     final (fresh, _) = await boot();
-    fresh.importBackupString(s.exportBackupString(), overwrite: true);
+    await fresh.importBackupString(await s.exportBackupString(), overwrite: true);
 
     final restored = fresh.chats.single;
     restored.msgs.add(Msg(id: 'm9', out: false, text: 'after restore', time: 9));
@@ -171,5 +171,22 @@ void main() {
     final prefs = await SharedPreferences.getInstance();
     final raw = prefs.getString('chats') ?? '';
     expect(raw, contains('after restore'));
+  });
+
+  test('the wallet and the assistant settings ride along', () async {
+    final (s, _) = await boot();
+    s.human!.wallet.balance = 4321;
+    s.human!.settings.enabled = false;
+    s.human!.changed();
+    final raw = s.exportBackupString();
+
+    final (fresh, _) = await boot();
+    expect(fresh.human!.wallet.balance, 1000, reason: 'a fresh install starts at its own default');
+
+    final report = fresh.importBackupString(raw, overwrite: true);
+    expect(report.wallet, isTrue);
+    expect(report.human, isTrue);
+    expect(fresh.human!.wallet.balance, 4321);
+    expect(fresh.human!.settings.enabled, isFalse, reason: 'the assistant settings came back too');
   });
 }

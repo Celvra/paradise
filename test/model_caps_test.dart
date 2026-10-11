@@ -128,6 +128,21 @@ void main() {
     expect(meta.contextWindow, 1000000);
   });
 
+  test('the runtime gate fills video from the catalog even when the stored entry is stale', () {
+    // a provider fetched before the catalog learned about video keeps the old
+    // flags on disk; capsOf must not trust that stale copy or deepseek v4.1
+    // flash keeps refusing clips the official API accepts
+    resetCatalog();
+    final s = _settings([
+      _m('deepseek-flash'),
+    ], [
+      ChainNode(id: 'n', providerId: 'p1', modelId: 'deepseek-flash'),
+    ]);
+    final caps = chainCaps(s, s.chain);
+    expect(caps.vision, isTrue);
+    expect(caps.video, isTrue);
+  });
+
   test('the feed cannot strip video from deepseek v4.1 flash', () async {
     // models.dev lists deepseek-flash as text+image only, but the official
     // API takes native video: the registry must not let the feed block a

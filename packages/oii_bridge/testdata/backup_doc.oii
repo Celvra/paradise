@@ -1,0 +1,15 @@
+chat [
+  id: #"c1"#,
+  title: ##"a {b} c "q" d # e "# f
+g"##,
+  muted: false,
+  unread: 3,
+  ratio: 1.5,
+  pinned: null,
+  tags: [#"a"#, #"b"#, #""#],
+  empty_list: [],
+  settings: (map)[[#"theme"#, #"dark"#], [#"font"#, 12], [#"nested"#, (map)[[#"a"#, 1], [#"b"#, [true, null]]]], [#"deep"#, (map)[[#"one"#, (map)[[#"two"#, (map)[[#"three"#, 4]]], [#"after"#, 5]]], [#"tail"#, 6]]]],
+  empty_map: (map)[],
+  messages: [(map)[[#"role"#, #"user"#], [#"text"#, #"hi"#]], (map)[[#"role"#, #"bot"#], [#"text"#, #"yo"#]]],
+  unicode: #"中文 🎉"#,
+]

@@ -4770,5 +4770,62 @@
   "worldBookEnabled": "啟用這本書",
   "@worldBookEnabled": {
     "description": "Switch that disables a whole book"
-  }
+  },
+  "humanChatSpeechStyle": "說話風格",
+  "@humanChatSpeechStyle": {
+    "description": "Field of the character card"
+  },
+  "humanChatCatchphrases": "口頭禪",
+  "@humanChatCatchphrases": {
+    "description": "Field of the character card"
+  },
+  "humanChatCatchphrasesHint": "口頭禪（以逗號分隔）",
+  "@humanChatCatchphrasesHint": {
+    "description": "Prompt title for the catchphrase list"
+  },
+  "humanChatValues": "價值觀",
+  "@humanChatValues": {
+    "description": "Field of the character card"
+  },
+  "humanChatTaboos": "禁忌",
+  "@humanChatTaboos": {
+    "description": "Field of the character card"
+  },
+  "humanChatAddressStranger": "稱呼：陌生人",
+  "@humanChatAddressStranger": {
+    "description": "Field of the character card"
+  },
+  "humanChatAddressAcquaintance": "稱呼：熟人",
+  "@humanChatAddressAcquaintance": {
+    "description": "Field of the character card"
+  },
+  "humanChatAddressClose": "稱呼：親近的人",
+  "@humanChatAddressClose": {
+    "description": "Field of the character card"
+  },
+  "humanChatExportCard": "匯出角色卡（chara_card_v2）",
+  "@humanChatExportCard": {
+    "description": "Row that copies the card as json"
+  },
+  "humanChatCardCopied": "角色卡已複製到剪貼簿",
+  "@humanChatCardCopied": {
+    "description": "Bulletin after copying the card"
+  },
+  "humanChatImportCard": "從剪貼簿匯入角色卡",
+  "@humanChatImportCard": {
+    "description": "Row that imports the card from the clipboard"
+  },
+  "humanChatImportCardTitle": "匯入角色卡",
+  "@humanChatImportCardTitle": {
+    "description": "Dialog title of the card import"
+  },
+  "humanChatImportCardFooter": "覆蓋會取代整張角色卡，合併只填補空白欄位。",
+  "@humanChatImportCardFooter": {
+    "description": "Body of the card import mode picker"
+  },
+  "humanChatInvalidCard": "角色卡無效",
+  "@humanChatInvalidCard": {
+    "description": "Bulletin when the card payload is broken"
+  },
+  "toolDescCharacterCard": "讓它緩慢微調自己的人設"
 }

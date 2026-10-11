@@ -8906,6 +8906,96 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Enable this book'**
   String get worldBookEnabled;
+
+  /// Field of the character card
+  ///
+  /// In en, this message translates to:
+  /// **'Speaking style'**
+  String get humanChatSpeechStyle;
+
+  /// Field of the character card
+  ///
+  /// In en, this message translates to:
+  /// **'Catchphrases'**
+  String get humanChatCatchphrases;
+
+  /// Prompt title for the catchphrase list
+  ///
+  /// In en, this message translates to:
+  /// **'Catchphrases (comma separated)'**
+  String get humanChatCatchphrasesHint;
+
+  /// Field of the character card
+  ///
+  /// In en, this message translates to:
+  /// **'Values'**
+  String get humanChatValues;
+
+  /// Field of the character card
+  ///
+  /// In en, this message translates to:
+  /// **'Taboos'**
+  String get humanChatTaboos;
+
+  /// Field of the character card
+  ///
+  /// In en, this message translates to:
+  /// **'Address: stranger'**
+  String get humanChatAddressStranger;
+
+  /// Field of the character card
+  ///
+  /// In en, this message translates to:
+  /// **'Address: acquaintance'**
+  String get humanChatAddressAcquaintance;
+
+  /// Field of the character card
+  ///
+  /// In en, this message translates to:
+  /// **'Address: close'**
+  String get humanChatAddressClose;
+
+  /// Row that copies the card as json
+  ///
+  /// In en, this message translates to:
+  /// **'Export card (chara_card_v2)'**
+  String get humanChatExportCard;
+
+  /// Bulletin after copying the card
+  ///
+  /// In en, this message translates to:
+  /// **'Card copied to the clipboard'**
+  String get humanChatCardCopied;
+
+  /// Row that imports the card from the clipboard
+  ///
+  /// In en, this message translates to:
+  /// **'Import card from clipboard'**
+  String get humanChatImportCard;
+
+  /// Dialog title of the card import
+  ///
+  /// In en, this message translates to:
+  /// **'Import card'**
+  String get humanChatImportCardTitle;
+
+  /// Body of the card import mode picker
+  ///
+  /// In en, this message translates to:
+  /// **'Overwrite replaces the card, merge only fills empty fields.'**
+  String get humanChatImportCardFooter;
+
+  /// Bulletin when the card payload is broken
+  ///
+  /// In en, this message translates to:
+  /// **'Not a valid card'**
+  String get humanChatInvalidCard;
+
+  /// No description provided for @toolDescCharacterCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Let it tune its own character sheet slowly'**
+  String get toolDescCharacterCard;
 }
 
 class _AppLocalizationsDelegate

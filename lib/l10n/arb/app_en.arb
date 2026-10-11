@@ -5926,5 +5926,62 @@
   "worldBookEnabled": "Enable this book",
   "@worldBookEnabled": {
     "description": "Switch that disables a whole book"
-  }
+  },
+  "humanChatSpeechStyle": "Speaking style",
+  "@humanChatSpeechStyle": {
+    "description": "Field of the character card"
+  },
+  "humanChatCatchphrases": "Catchphrases",
+  "@humanChatCatchphrases": {
+    "description": "Field of the character card"
+  },
+  "humanChatCatchphrasesHint": "Catchphrases (comma separated)",
+  "@humanChatCatchphrasesHint": {
+    "description": "Prompt title for the catchphrase list"
+  },
+  "humanChatValues": "Values",
+  "@humanChatValues": {
+    "description": "Field of the character card"
+  },
+  "humanChatTaboos": "Taboos",
+  "@humanChatTaboos": {
+    "description": "Field of the character card"
+  },
+  "humanChatAddressStranger": "Address: stranger",
+  "@humanChatAddressStranger": {
+    "description": "Field of the character card"
+  },
+  "humanChatAddressAcquaintance": "Address: acquaintance",
+  "@humanChatAddressAcquaintance": {
+    "description": "Field of the character card"
+  },
+  "humanChatAddressClose": "Address: close",
+  "@humanChatAddressClose": {
+    "description": "Field of the character card"
+  },
+  "humanChatExportCard": "Export card (chara_card_v2)",
+  "@humanChatExportCard": {
+    "description": "Row that copies the card as json"
+  },
+  "humanChatCardCopied": "Card copied to the clipboard",
+  "@humanChatCardCopied": {
+    "description": "Bulletin after copying the card"
+  },
+  "humanChatImportCard": "Import card from clipboard",
+  "@humanChatImportCard": {
+    "description": "Row that imports the card from the clipboard"
+  },
+  "humanChatImportCardTitle": "Import card",
+  "@humanChatImportCardTitle": {
+    "description": "Dialog title of the card import"
+  },
+  "humanChatImportCardFooter": "Overwrite replaces the card, merge only fills empty fields.",
+  "@humanChatImportCardFooter": {
+    "description": "Body of the card import mode picker"
+  },
+  "humanChatInvalidCard": "Not a valid card",
+  "@humanChatInvalidCard": {
+    "description": "Bulletin when the card payload is broken"
+  },
+  "toolDescCharacterCard": "Let it tune its own character sheet slowly"
 }

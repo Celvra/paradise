@@ -133,6 +133,16 @@ void main() {
       expect(back.proactive, isTrue);
     });
 
+    test('a gift message keeps its kind and data across a save', () {
+      // the shop card must survive an update or a restore: a missing case in
+      // the kind switch silently turned it back into an empty text bubble
+      final m = Msg(id: 'g1', out: true, text: '', time: 1, kind: MsgKind.gift, data: {'item': 'i1', 'title': 'Coffee', 'effect': 'energy'});
+      final back = Msg.fromJson(m.toJson());
+      expect(back.kind, MsgKind.gift);
+      expect(back.data['title'], 'Coffee');
+      expect(back.data['effect'], 'energy');
+    });
+
     test('a message read from storage does not report while it is being built', () {
       // the constructor fills fields before there is a listener, so a load must
       // not turn into a write of everything it just read

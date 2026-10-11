@@ -83,7 +83,6 @@ String remoteBackupFileName(DateTime at) {
   String p(int v) => v.toString().padLeft(2, '0');
   return 'paradise-${at.year}${p(at.month)}${p(at.day)}.$autoBackupExt';
 }
-
 /// The private fallback copy of the full snapshot. It lives under the
 /// documents directory, which is exactly why [FullBackup.isBackupArtifact]
 /// folds it back out of every zip it builds.
@@ -248,7 +247,7 @@ class DirFullBackupSink implements FullBackupSink {
 
   final Directory dir;
 
-  File get _file => File('${dir.path}/$fullBackupName');
+File get _file => File('${dir.path}/$fullBackupName');
 
   @override
   Future<void> writeFile(File file) async {
@@ -278,7 +277,7 @@ class MediaStoreFullBackupSink implements FullBackupSink {
   bool _broken = false;
 
   Future<FullBackupSink> _fb() async {
-    return _fallback ??= DirFullBackupSink(
+return _fallback ??= DirFullBackupSink(
         Directory('${(await getApplicationDocumentsDirectory()).path}/backup'));
   }
 
@@ -299,7 +298,7 @@ class MediaStoreFullBackupSink implements FullBackupSink {
   Future<Uint8List?> read() async {
     if (_broken) return (await _fb()).read();
     try {
-      // the platform streams the row to a cache file and hands back its
+// the platform streams the row to a cache file and hands back its
       // path: reading it here keeps the channel payload a string
       final path = await _ch.invokeMethod<String>('readFull');
       if (path == null) return null;

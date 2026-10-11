@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:oii_bridge/oii_bridge.dart';
 
@@ -64,5 +67,41 @@ void main() {
     expect(r.plugin['name'], 'demo');
     expect(r.plugin['desc'], 'does things');
     expect(r.funcs.map((f) => f['name']), contains('main'));
+  });
+
+  // The end to end half of the backup contract: this reads the same fixture the
+  // app's own encoder produced and the dart side of the contract pins, and
+  // checks that the oii parser agrees with it about what the file holds.
+  test('the shared backup fixture is real oii and folds to the same data', () {
+    final source = File('testdata/backup_doc.oii').readAsStringSync();
+    final expected = jsonDecode(File('testdata/backup_doc.json').readAsStringSync());
+
+    final r = oiiValidateBackupDoc(source);
+    expect(r.ok, isTrue, reason: r.error);
+    expect(r.name, 'chat');
+    // field by field rather than by encoded bytes: the rust side hands back a
+    // sorted map and json keeps insertion order, and neither order is wrong
+    expect(r.data, expected);
+  });
+
+  test('a map folds to an object and a pair array stays an array', () {
+    final r = oiiValidateBackupDoc('chat [ m: (map)[[#"a"#, 1]], pairs: [[#"a"#, 1]] ]');
+    expect(r.ok, isTrue, reason: r.error);
+    expect(r.data['m'], {'a': 1});
+    expect(r.data['pairs'], [
+      ['a', 1],
+    ]);
+  });
+
+  test('a broken document comes back as an error, not a crash', () {
+    // the shape a truncated or hand edited file has
+    final r = oiiValidateBackupDoc('chat [ id: ]');
+    expect(r.ok, isFalse);
+    expect(r.error, isNotEmpty);
+
+    // and one the encoder would never write, which still has to be refused
+    final nested = oiiValidateBackupDoc('chat [ m: (map)[[#"a"#, 1]] inner [ x: 1 ] ]');
+    expect(nested.ok, isFalse);
+    expect(nested.error, contains('child nodes'));
   });
 }

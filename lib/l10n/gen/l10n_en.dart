@@ -4914,4 +4914,51 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get worldBookEnabled => 'Enable this book';
+
+  @override
+  String get humanChatSpeechStyle => 'Speaking style';
+
+  @override
+  String get humanChatCatchphrases => 'Catchphrases';
+
+  @override
+  String get humanChatCatchphrasesHint => 'Catchphrases (comma separated)';
+
+  @override
+  String get humanChatValues => 'Values';
+
+  @override
+  String get humanChatTaboos => 'Taboos';
+
+  @override
+  String get humanChatAddressStranger => 'Address: stranger';
+
+  @override
+  String get humanChatAddressAcquaintance => 'Address: acquaintance';
+
+  @override
+  String get humanChatAddressClose => 'Address: close';
+
+  @override
+  String get humanChatExportCard => 'Export card (chara_card_v2)';
+
+  @override
+  String get humanChatCardCopied => 'Card copied to the clipboard';
+
+  @override
+  String get humanChatImportCard => 'Import card from clipboard';
+
+  @override
+  String get humanChatImportCardTitle => 'Import card';
+
+  @override
+  String get humanChatImportCardFooter =>
+      'Overwrite replaces the card, merge only fills empty fields.';
+
+  @override
+  String get humanChatInvalidCard => 'Not a valid card';
+
+  @override
+  String get toolDescCharacterCard =>
+      'Let it tune its own character sheet slowly';
 }

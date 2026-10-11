@@ -16,6 +16,25 @@ List<BrSegment> feed(List<String> chunks, {BrParser? parser}) {
 List<String> texts(List<BrSegment> segs) => [for (final s in segs) s.text];
 
 void main() {
+  group('auto split', () {
+    test('one long sentence ending in a stop does not hang', () {
+      // the only boundary past the threshold sat at the very end of the text,
+      // _cutAt refused it and _autoSplit spun forever: the reply-time freeze
+      final long = '字' * 80 + '。';
+      final segs = feed([long], parser: BrParser(autoSplitChars: 72));
+      expect(texts(segs), [long]);
+    });
+
+    test('a boundary past the threshold still splits', () {
+      // the comma sits past 72 and is not the last character, so it is a
+      // real cut even though the sentence stop at the end is not
+      final s = '字' * 80 + '，' + '字' * 10 + '。';
+      final segs = feed([s], parser: BrParser(autoSplitChars: 72));
+      expect(texts(segs), ['字' * 80 + '，', '字' * 10 + '。']);
+    });
+  });
+
+
   group('the tag the model was told to write', () {
     test('cuts the answer at the break', () {
       final segs = feed(['自己是真的<i-br_800>下午还有事吗']);

@@ -167,3 +167,10 @@ hooks:
   user_defines:
     sqlite3:
       source: system
+    # The oii bridge builds with cargo's release profile everywhere, so a
+    # release APK always ships the optimised library. That is affordable
+    # because the crate only needs oii's interpreter core (~40s a target).
+    # Flip this to `profile: debug` for a faster local build loop; nothing else
+    # has to change, and CI does not depend on it.
+    #   oii_bridge:
+    #     profile: debug

@@ -87,29 +87,82 @@ fn json_to_value(v: &serde_json::Value) -> Value {
     }
 }
 
-fn value_to_json(v: &Value) -> String {
-    fn walk(v: &Value) -> serde_json::Value {
-        match v {
-            Value::Bare(s) | Value::Str(s) | Value::RawStr(s) => {
-                serde_json::Value::String(s.clone())
-            }
-            Value::Int(i) => serde_json::json!(i),
-            Value::Float(f) => serde_json::json!(f),
-            Value::Bool(b) => serde_json::json!(b),
-            Value::Null => serde_json::Value::Null,
-            Value::Array(xs) => serde_json::Value::Array(xs.iter().map(walk).collect()),
-            Value::Map(m) => serde_json::Value::Object(
-                m.iter()
-                    .map(|(k, v)| (k.clone(), walk(v)))
-                    .collect::<serde_json::Map<String, serde_json::Value>>(),
-            ),
-            // a func has no json form, same as the cli dump
-            Value::Func(_) => serde_json::Value::Null,
-            Value::Typed { value, .. } => walk(value),
-            Value::Disabled(v) => walk(v),
-        }
+/// The `(map)` tag and its pair array, when this value is a tagged map.
+///
+/// oii has no map literal. A map is a runtime-only `Value::Map`, `fmt_value`
+/// renders one as an array of pairs, and the parser can only build one through
+/// a builtin -- so a doc read from disk has no way to say "object" except by
+/// convention. The backup codec's convention is `(map)[["k", v], ...]`, which
+/// keeps a map distinguishable from a genuine array of pairs. `oii::value_json`
+/// drops the tag and hands back the bare pair array; this keeps it.
+fn tagged_map(v: &Value) -> Option<&[Value]> {
+    match v {
+        Value::Typed { ty, value } if ty == "map" => match value.as_ref() {
+            Value::Array(items) => Some(items.as_slice()),
+            _ => None,
+        },
+        _ => None,
     }
-    serde_json::to_string(&walk(v)).unwrap_or_else(|_| "null".into())
+}
+
+fn pair_key(v: &Value) -> Option<&str> {
+    match v {
+        Value::Bare(s) | Value::Str(s) | Value::RawStr(s) => Some(s.as_str()),
+        _ => None,
+    }
+}
+
+/// Folds a value to json, keeping `(map)` tags as objects.
+///
+/// Strict on purpose: a tagged map whose body is not a list of
+/// `[key, value]` pairs is an error rather than something to skip, because a
+/// silently dropped entry in a backup is a silently lost chat.
+fn value_json_strict(v: &Value) -> Result<serde_json::Value, String> {
+    if let Some(items) = tagged_map(v) {
+        let mut m = serde_json::Map::new();
+        for item in items {
+            let pair = match item {
+                Value::Array(p) if p.len() == 2 => p,
+                other => return Err(format!("(map) entry is not a [key, value] pair: {other:?}")),
+            };
+            let k = pair_key(&pair[0])
+                .ok_or_else(|| format!("(map) key is not a string: {:?}", pair[0]))?;
+            m.insert(k.to_string(), value_json_strict(&pair[1])?);
+        }
+        return Ok(serde_json::Value::Object(m));
+    }
+    Ok(match v {
+        Value::Bare(s) | Value::Str(s) | Value::RawStr(s) => serde_json::Value::String(s.clone()),
+        Value::Int(i) => serde_json::json!(i),
+        // serde_json has no nan or infinity and folds them to null. The dart
+        // codec deliberately restores them, so this is a known one way
+        // divergence and not an accident.
+        Value::Float(f) if f.is_finite() => serde_json::json!(f),
+        Value::Float(_) => serde_json::Value::Null,
+        Value::Bool(b) => serde_json::json!(b),
+        Value::Null => serde_json::Value::Null,
+        Value::Array(xs) => {
+            serde_json::Value::Array(xs.iter().map(value_json_strict).collect::<Result<_, _>>()?)
+        }
+        Value::Map(m) => {
+            let mut out = serde_json::Map::new();
+            for (k, val) in m {
+                out.insert(k.clone(), value_json_strict(val)?);
+            }
+            serde_json::Value::Object(out)
+        }
+        // a func has no json form, same as the cli dump
+        Value::Func(_) => serde_json::Value::Null,
+        Value::Typed { value, .. } => value_json_strict(value)?,
+        Value::Disabled(v) => value_json_strict(v)?,
+    })
+}
+
+/// Lenient json for the describe and eval paths, where one odd value must not
+/// sink the whole reply.
+fn value_to_json(v: &Value) -> String {
+    let v = value_json_strict(v).unwrap_or(serde_json::Value::Null);
+    serde_json::to_string(&v).unwrap_or_else(|_| "null".into())
 }
 
 // ---------------------------------------------------------------- lifecycle
@@ -293,6 +346,103 @@ fn fold_attrs(n: &oii::Node) -> serde_json::Value {
         }
     }
     serde_json::Value::Object(m)
+}
+
+// ------------------------------------------------------------ backup validate
+
+/// Validates one backup `.oii` document.
+///
+/// The app writes and reads backups with a pure dart codec, on purpose: a
+/// backup must not depend on this library being built, and auto backup runs on
+/// a timer where an FFI round trip through json strings would only cost. That
+/// leaves one claim unchecked -- that the files are real oii and not merely
+/// oii shaped text. This is where it gets checked.
+///
+/// The text has to parse as oii, hold exactly one top level node with
+/// identifier keys and no children, and fold back to data through the same
+/// `(map)` rules the dart decoder uses. Answers
+/// `{"ok":true,"name":"backup","data":{...}}` or `{"ok":false,"error":"..."}`.
+#[no_mangle]
+pub extern "C" fn oii_bridge_backup_validate(source: *const c_char) -> *mut c_char {
+    str_out(backup_validate(str_in(source)).to_string())
+}
+
+fn err(e: impl std::fmt::Display) -> serde_json::Value {
+    serde_json::json!({ "ok": false, "error": e.to_string() })
+}
+
+fn is_ident(s: &str) -> bool {
+    let mut chars = s.chars();
+    match chars.next() {
+        Some(c) if c.is_ascii_alphabetic() || c == '_' => {}
+        _ => return false,
+    }
+    chars.all(|c| c.is_ascii_alphanumeric() || c == '_')
+}
+
+fn backup_validate(src: &str) -> serde_json::Value {
+    let mut opts = oii::ParseOptions::default();
+    opts.lang = oii::Lang::En;
+    let out = oii::parse_with(src, &opts);
+    if out.has_errors() {
+        let diags: Vec<String> = out
+            .diagnostics
+            .iter()
+            .map(|d| oii::diag::render_diag(src, d))
+            .collect();
+        return err(diags.join("\n"));
+    }
+    let doc = match &out.doc {
+        Some(d) => d,
+        None => return err("parsed to no document"),
+    };
+    if !doc.imports.is_empty() || !doc.funcs.is_empty() {
+        return err("a backup file holds one node, with no imports and no funcs");
+    }
+    if doc.nodes.len() != 1 {
+        return err(format!(
+            "a backup file holds exactly one top level node, found {}",
+            doc.nodes.len()
+        ));
+    }
+    let n = &doc.nodes[0];
+    if !n.enabled {
+        return err("the top level node is disabled");
+    }
+    if !n.children.is_empty() {
+        // the codec writes every value as a field, so a child node means the
+        // writer and the reader have drifted apart
+        return err(format!(
+            "`{}` has {} child nodes; a backup file holds fields only",
+            n.name,
+            n.children.len()
+        ));
+    }
+    if !n.args.is_empty() {
+        return err(format!(
+            "`{}` has {} arguments; a backup file holds fields only",
+            n.name,
+            n.args.len()
+        ));
+    }
+    let mut data = serde_json::Map::new();
+    for a in &n.attributes {
+        // the dart decoder unwraps a disabled value, but its encoder never
+        // writes one, so finding one means the file was edited by hand
+        if !a.enabled {
+            return err(format!("field `{}` is disabled", a.key));
+        }
+        if !is_ident(&a.key) {
+            return err(format!("`{}` is not an identifier", a.key));
+        }
+        match value_json_strict(&a.value) {
+            Ok(v) => {
+                data.insert(a.key.clone(), v);
+            }
+            Err(e) => return err(format!("field `{}`: {e}", a.key)),
+        }
+    }
+    serde_json::json!({ "ok": true, "name": n.name, "data": data })
 }
 
 /// json schema type for an oii value. Manifests may say `int` or `float` in
@@ -701,5 +851,153 @@ mod tests {
         let out = take(oii_bridge_eval(e, name.as_ptr(), args.as_ptr()));
         assert!(out.contains("E100"), "{out}");
         oii_bridge_engine_free(e);
+    }
+
+    // ------------------------------------------------------- backup documents
+
+    /// Written by the app's own codec, not by hand: see
+    /// `test/oii_contract_test.dart`, which asserts the dart side still emits
+    /// these exact bytes and reads them back. Together the two tests are the
+    /// contract -- neither language can drift without the other going red.
+    const FIXTURE_OII: &str = include_str!("../../testdata/backup_doc.oii");
+    const FIXTURE_JSON: &str = include_str!("../../testdata/backup_doc.json");
+
+    fn validate(src: &str) -> serde_json::Value {
+        let c = CString::new(src).unwrap();
+        let out = take(oii_bridge_backup_validate(c.as_ptr()));
+        serde_json::from_str(&out).unwrap()
+    }
+
+    #[test]
+    fn backup_validate_reads_the_dart_codec() {
+        let v = validate(FIXTURE_OII);
+        assert_eq!(v["ok"], true, "{v}");
+        assert_eq!(v["name"], "chat", "{v}");
+        let want: serde_json::Value = serde_json::from_str(FIXTURE_JSON).unwrap();
+        assert_eq!(v["data"], want);
+    }
+
+    #[test]
+    fn backup_validate_rejects_what_the_codec_never_writes() {
+        // the codec puts every value in a field, so a child node means the
+        // writer and this reader have drifted apart
+        let v = validate("chat [ id: #\"c1\"#, inner [ x: 1 ] ]");
+        assert_eq!(v["ok"], false, "{v}");
+        assert!(v["error"].as_str().unwrap().contains("child nodes"), "{v}");
+
+        let v = validate("a [ x: 1 ] b [ y: 2 ]");
+        assert_eq!(v["ok"], false, "{v}");
+        assert!(v["error"].as_str().unwrap().contains("exactly one"), "{v}");
+
+        let v = validate("fun main() [ return 1 ]");
+        assert_eq!(v["ok"], false, "{v}");
+        assert!(v["error"].as_str().unwrap().contains("funcs"), "{v}");
+
+        // a disabled field decodes fine on the dart side, but no encoder emits
+        // one, so seeing it means the file was edited by hand
+        let v = validate("chat [ /- id: #\"c1\"#, ]");
+        assert_eq!(v["ok"], false, "{v}");
+        assert!(v["error"].as_str().unwrap().contains("disabled"), "{v}");
+
+        let v = validate("chat [ 3: 1 ]");
+        assert_eq!(v["ok"], false, "{v}");
+    }
+
+    #[test]
+    fn backup_validate_reports_a_broken_map_instead_of_skipping_it() {
+        // a pair list with a short pair: dropping the entry silently would
+        // lose a chat, so this has to be an error
+        let v = validate("chat [ settings: (map)[[#\"theme\"#]] ]");
+        assert_eq!(v["ok"], false, "{v}");
+        assert!(v["error"].as_str().unwrap().contains("pair"), "{v}");
+
+        let v = validate("chat [ settings: (map)[1, 2] ]");
+        assert_eq!(v["ok"], false, "{v}");
+        assert!(v["error"].as_str().unwrap().contains("key"), "{v}");
+    }
+
+    #[test]
+    fn a_parse_error_surfaces_as_a_diagnostic() {
+        let v = validate("chat [ id: ]");
+        assert_eq!(v["ok"], false, "{v}");
+        assert!(!v["error"].as_str().unwrap().is_empty(), "{v}");
+    }
+
+    /// Builds `(map)[["k", v], ...]` from pairs. Constructing these by hand is
+    /// how you end up debugging a typo in a bracket count instead of the code,
+    /// so the tests below assemble their own source.
+    fn map_of(pairs: &[(&str, String)]) -> String {
+        let body: Vec<String> = pairs
+            .iter()
+            .map(|(k, v)| format!("[#\"{k}\"#, {v}]"))
+            .collect();
+        format!("(map)[{}]", body.join(", "))
+    }
+
+    fn doc_with(field: &str, value: &str) -> String {
+        format!("chat [ {field}: {value} ]")
+    }
+
+    #[test]
+    fn tagged_maps_fold_to_objects_and_nest() {
+        // a nested map in the last pair, in a middle pair and in the only pair
+        for (src, want) in [
+            (
+                map_of(&[("a", "1".into()), ("b", map_of(&[("c", "[true, null]".into())]))]),
+                serde_json::json!({"a": 1, "b": {"c": [true, null]}}),
+            ),
+            (
+                map_of(&[("a", map_of(&[("c", "1".into())])), ("b", "2".into())]),
+                serde_json::json!({"a": {"c": 1}, "b": 2}),
+            ),
+            (
+                map_of(&[("a", map_of(&[("c", "1".into())]))]),
+                serde_json::json!({"a": {"c": 1}}),
+            ),
+            // three deep, again with the deepest map last
+            (
+                map_of(&[("a", map_of(&[("b", map_of(&[("c", "1".into())])), ("z", "0".into())])), ("y", "2".into())]),
+                serde_json::json!({"a": {"b": {"c": 1}, "z": 0}, "y": 2}),
+            ),
+            // a map inside a plain array, first and last
+            (format!("[1, {}]", map_of(&[("c", "1".into())])), serde_json::json!([1, {"c": 1}])),
+            (format!("[{}, 2]", map_of(&[("c", "1".into())])), serde_json::json!([{"c": 1}, 2])),
+            // and an empty one
+            (map_of(&[]), serde_json::json!({})),
+        ] {
+            let v = validate(&doc_with("m", &src));
+            assert_eq!(v["ok"], true, "failed on {src}: {v}");
+            assert_eq!(v["data"]["m"], want, "wrong fold for {src}: {v}");
+        }
+    }
+
+    #[test]
+    fn an_untagged_pair_array_stays_an_array() {
+        // the whole reason the codec tags its maps
+        let v = validate("chat [ pairs: [[#\"a\"#, 1]] ]");
+        assert_eq!(v["ok"], true, "{v}");
+        assert_eq!(v["data"]["pairs"], serde_json::json!([["a", 1]]), "{v}");
+    }
+
+    #[test]
+    fn describe_keeps_a_tagged_map_as_an_object() {
+        // a plugin manifest may carry a map too, and describe folds attributes
+        let src = "plugin [ id: #\"p\"#, config: (map)[[#\"theme\"#, #\"dark\"#]] ]";
+        let out = take(oii_bridge_describe(CString::new(src).unwrap().as_ptr()));
+        let v: serde_json::Value = serde_json::from_str(&out).unwrap();
+        assert_eq!(v["ok"], true, "{v}");
+        assert_eq!(v["plugin"]["config"], serde_json::json!({"theme": "dark"}), "{v}");
+    }
+
+    #[test]
+    fn non_finite_folds_to_null_and_the_dart_side_keeps_it() {
+        // serde_json cannot hold these, and oii's own to_json drops them the
+        // same way. The dart decoder restores them, so this is the one known
+        // one way divergence between the two readers.
+        let v = validate("chat [ a: #nan, b: #inf, c: #-inf ]");
+        assert_eq!(v["ok"], true, "{v}");
+        assert_eq!(v["data"]["a"], serde_json::Value::Null, "{v}");
+        assert_eq!(v["data"]["b"], serde_json::Value::Null, "{v}");
+        assert_eq!(v["data"]["c"], serde_json::Value::Null, "{v}");
     }
 }
