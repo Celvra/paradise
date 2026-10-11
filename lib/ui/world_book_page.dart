@@ -116,51 +116,74 @@ class _WorldBookPickerState extends State<WorldBookPickerPage> {
   Widget build(BuildContext context) {
     final l = context.l;
     final st = Store.of(context);
+    final mq = MediaQuery.of(context);
     return TgSettingsPage(
       title: l.worldBookBindPicker,
-      builder: (c, _) => ListenableBuilder(
-        listenable: st.worldBooks,
-        builder: (c, _) {
-          final all = st.worldBooks.books;
-          return ListView(
-            physics: const ClampingScrollPhysics(),
-            children: [
-              if (all.isEmpty)
-                TgSection(footer: l.worldBookEmptyBody, children: [
-                  TgTextCell(title: l.worldBookEmpty, divider: false),
-                ]),
-              // one card for the whole list, the way every other picker in
-              // the app reads: a section per book made the page explode into
-              // a stack of floating rows with gaps between them
-              if (all.isNotEmpty)
-                TgSection(footer: l.worldBookBindSub, children: [
-                  for (var i = 0; i < all.length; i++)
-                    TgCheckCell(
-                      icon: Ic.book,
-                      title: all[i].name,
-                      subtitle: _bookSub(c, st.worldBooks, all[i]),
-                      value: _ids.contains(all[i].id),
-                      divider: i == all.length - 1,
-                      onChanged: (v) => setState(() {
-                        if (v) {
-                          _ids.add(all[i].id);
-                        } else {
-                          _ids.remove(all[i].id);
-                        }
-                      }),
-                    ),
-                ]),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
-                child: TgButton(
-                  label: l.actionSave,
-                  onTap: () => Navigator.of(context).pop(_ids.toList()),
+      builder: (c, _) {
+        final p = c.p;
+        return Stack(children: [
+          ListenableBuilder(
+            listenable: st.worldBooks,
+            builder: (c, _) {
+              final all = st.worldBooks.books;
+              return ListView(
+                physics: const ClampingScrollPhysics(),
+                // the button is pinned below, so the list stops above it
+                padding: EdgeInsets.only(bottom: mq.padding.bottom + 96),
+                children: [
+                  if (all.isEmpty)
+                    TgSection(footer: l.worldBookEmptyBody, children: [
+                      TgTextCell(title: l.worldBookEmpty, divider: false),
+                    ]),
+                  // one card for the whole list, the way every other picker in
+                  // the app reads: a section per book made the page explode into
+                  // a stack of floating rows with gaps between them
+                  if (all.isNotEmpty)
+                    TgSection(footer: l.worldBookBindSub, children: [
+                      for (var i = 0; i < all.length; i++)
+                        TgCheckCell(
+                          icon: Ic.book,
+                          title: all[i].name,
+                          subtitle: _bookSub(c, st.worldBooks, all[i]),
+                          value: _ids.contains(all[i].id),
+                          divider: i == all.length - 1,
+                          onChanged: (v) => setState(() {
+                            if (v) {
+                              _ids.add(all[i].id);
+                            } else {
+                              _ids.remove(all[i].id);
+                            }
+                          }),
+                        ),
+                    ]),
+                ],
+              );
+            },
+          ),
+          // the large bottom button, the way the persona card ends: pinned,
+          // over a fade, so a short list does not leave it floating mid page
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: Container(
+              padding: EdgeInsets.fromLTRB(16, 12, 16, mq.padding.bottom + 12),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [p.gray.withAlpha(0), p.gray, p.gray],
+                  stops: const [0, .35, 1],
                 ),
               ),
-            ],
-          );
-        },
-      ),
+              child: TgButton(
+                label: l.actionSave,
+                onTap: () => Navigator.of(context).pop(_ids.toList()),
+              ),
+            ),
+          ),
+        ]);
+      },
     );
   }
 

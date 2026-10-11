@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:paradise/core/theme.dart';
+import 'package:paradise/core/ui_kit.dart';
 import 'package:paradise/data/store.dart';
 import 'package:paradise/data/world_book/world_book.dart';
 import 'package:paradise/l10n/gen/l10n_en.dart';
@@ -59,7 +60,23 @@ void main() {
     }
     // the footer explains what binding means, inside the same card
     expect(find.text('The books this role lives in.'), findsOneWidget);
+  });
+
+  testWidgets('the save button is pinned to the bottom of the page', (t) async {
+    await show(t);
+
     expect(find.text('Save'), findsOneWidget);
+    final button = find.byType(TgButton).evaluate().single.findRenderObject() as RenderBox;
+    final top = button.localToGlobal(Offset.zero).dy;
+    final screen = t.view.physicalSize.height / t.view.devicePixelRatio;
+    // bottom of the button sits on the bottom inset padding of the page, not
+    // right under the books: a short list must not leave it floating mid screen
+    expect(top + button.size.height, closeTo(screen - 12, 1));
+    // and it clears the card above it
+    final section = find.byType(TgSection).evaluate().single.findRenderObject() as RenderBox;
+    final sectionBottom = section.localToGlobal(Offset.zero).dy + section.size.height;
+    expect(top, greaterThanOrEqualTo(sectionBottom));
+    expect(find.byType(TgSection), findsOneWidget);
   });
 
   testWidgets('ticking a row keeps the one-card layout and the pick', (t) async {
@@ -90,5 +107,7 @@ void main() {
     expect(find.byType(TgSection), findsOneWidget);
     expect(find.text('No world book yet'), findsOneWidget);
     expect(find.textContaining('Create one, or import'), findsOneWidget);
+    // the pinned save still closes an empty page
+    expect(find.text('Save'), findsOneWidget);
   });
 }
