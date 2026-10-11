@@ -430,6 +430,40 @@ class _DialogBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final p = context.p;
     final mq = MediaQuery.of(context);
+    final dir = Directionality.of(context);
+    final labelStyle = TextStyle(fontSize: 15, fontWeight: FontWeight.w500, decoration: TextDecoration.none);
+
+    /// True when the labels do not fit side by side on one line.
+    ///
+    /// Measured, not counted: two short answers stay a row the way every
+    /// Telegram dialog looks, and only a dialog whose answers are sentences
+    /// ("Delete the chat and its history") or whose option list is long goes
+    /// one per row, because a Wrap that spills reads as a ragged paragraph.
+    bool needsStack() {
+      var used = 0.0;
+      for (final a in actions) {
+        final tp = TextPainter(text: TextSpan(text: a.label, style: labelStyle), textDirection: dir, maxLines: 1)..layout();
+        used += tp.width + 24; // the 12pt breathing room on both sides
+        tp.dispose();
+      }
+      return used > math.min(mq.size.width - 56, 320) - 48; // inner width of the card
+    }
+
+    final taps = [
+      for (final a in actions)
+        Tap(
+          scale: .96,
+          onTap: a.enabled?.call() ?? true ? () => Navigator.of(context).pop(a.value) : null,
+          child: Opacity(
+            opacity: a.enabled?.call() ?? true ? 1 : .35,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+              child: Text(a.label, style: labelStyle.copyWith(color: a.danger ? p.danger : p.accent)),
+            ),
+          ),
+        ),
+    ];
+
     return Center(
       child: Padding(
         padding: EdgeInsets.only(bottom: mq.viewInsets.bottom),
@@ -442,28 +476,15 @@ class _DialogBody extends StatelessWidget {
             if (message != null) Padding(padding: const EdgeInsets.only(top: 12), child: Text(message!, style: TextStyle(color: p.title, fontSize: 16, height: 1.25, decoration: TextDecoration.none, fontWeight: FontWeight.w400))),
             if (content != null) Padding(padding: const EdgeInsets.only(top: 8), child: content),
             const SizedBox(height: 14),
-            // a Wrap so a dialog with four or five actions does not run off the
-            // edge of the sheet, with fewer actions it lays out as a Row did.
             // The SizedBox is load bearing: the Column above is
-            // crossAxisAlignment.start, so the Wrap would shrink to its own
-            // content and sit on the left, leaving WrapAlignment.end with
-            // nothing to align.
+            // crossAxisAlignment.start, so either layout would shrink to its
+            // own content and sit on the left, leaving the alignment below
+            // with nothing to align against.
             SizedBox(
               width: double.infinity,
-              child: Wrap(alignment: WrapAlignment.end, runAlignment: WrapAlignment.end, children: [
-                for (final a in actions)
-                  Tap(
-                    scale: .96,
-                    onTap: a.enabled?.call() ?? true ? () => Navigator.of(context).pop(a.value) : null,
-                    child: Opacity(
-                      opacity: a.enabled?.call() ?? true ? 1 : .35,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                        child: Text(a.label, style: TextStyle(color: a.danger ? p.danger : p.accent, fontSize: 15, fontWeight: FontWeight.w500, decoration: TextDecoration.none)),
-                      ),
-                    ),
-                  ),
-              ]),
+              child: needsStack()
+                  ? Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.end, children: taps)
+                  : Wrap(alignment: WrapAlignment.end, runAlignment: WrapAlignment.end, children: taps),
             ),
           ]),
         ),
