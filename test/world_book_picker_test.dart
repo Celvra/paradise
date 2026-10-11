@@ -4,6 +4,7 @@ import 'package:paradise/core/theme.dart';
 import 'package:paradise/core/ui_kit.dart';
 import 'package:paradise/data/store.dart';
 import 'package:paradise/data/world_book/world_book.dart';
+import 'package:paradise/data/world_book/world_store.dart';
 import 'package:paradise/l10n/gen/l10n_en.dart';
 import 'package:paradise/l10n/x.dart';
 import 'package:paradise/ui/tg_cells.dart';
@@ -109,5 +110,44 @@ void main() {
     expect(find.textContaining('Create one, or import'), findsOneWidget);
     // the pinned save still closes an empty page
     expect(find.text('Save'), findsOneWidget);
+  });
+
+  group('budget', () {
+    test('unlimited is a cap no authored world can reach, and it persists', () async {
+      expect(st.worldBooks.budgetUnlimited, isFalse);
+      await st.worldBooks.setBudget(WorldStore.unlimited);
+
+      expect(st.worldBooks.budgetUnlimited, isTrue);
+      expect(st.worldBooks.budgetChars, greaterThan(64 * 1000 * 1000));
+      // clamping still refuses nonsense in both directions
+      await st.worldBooks.setBudget(-5);
+      expect(st.worldBooks.budgetK, WorldStore.unlimited);
+      await st.worldBooks.setBudget(999);
+      expect(st.worldBooks.budgetK, st.worldBooks.maxBudgetK);
+    });
+
+    testWidgets('the books page shows the warning note where the cap is set', (t) async {
+      await st.worldBooks.setBudget(WorldStore.unlimited);
+      await t.pumpWidget(StoreScope(
+        store: st,
+        child: ThemeScope(
+          controller: themeCtl,
+          child: MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: const WorldBooksPage(),
+          ),
+        ),
+      ));
+      await t.pump();
+      await t.pump(const Duration(milliseconds: 400));
+
+      // the row says Unlimited, not "0 千字符"
+      expect(find.text('Unlimited'), findsOneWidget);
+      // and the footnote under the card is the RP-experience warning
+      expect(find.textContaining('may hurt the RP experience'), findsOneWidget);
+      // the ordinary explanation is gone while unlimited is on
+      expect(find.textContaining('Constant entries ignore the budget'), findsNothing);
+    });
   });
 }

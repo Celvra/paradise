@@ -5446,6 +5446,14 @@
   "@worldBookBudgetFooter": {
     "description": "World book UI"
   },
+  "worldBookBudgetUnlimited": "Unlimited",
+  "@worldBookBudgetUnlimited": {
+    "description": "World book UI"
+  },
+  "worldBookBudgetUnlimitedNote": "Unlimited: everything that fires is injected, which may hurt the RP experience (a crowded context, wandering attention).",
+  "@worldBookBudgetUnlimitedNote": {
+    "description": "World book UI"
+  },
   "worldBookBookHeader": "This book",
   "@worldBookBookHeader": {
     "description": "World book UI"

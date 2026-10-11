@@ -4347,6 +4347,13 @@ class AppLocalizationsZh extends AppLocalizations {
       '命中条目按优先级争夺这份预算，超出部分本轮会被丢弃；标记为常驻的条目不受预算限制。';
 
   @override
+  String get worldBookBudgetUnlimited => '无限制';
+
+  @override
+  String get worldBookBudgetUnlimitedNote =>
+      '无限制：所有命中条目都会注入，可能会导致 RP 体验不佳（上下文拥挤、注意力涣散）。';
+
+  @override
   String get worldBookBookHeader => '这本书';
 
   @override
@@ -9036,6 +9043,13 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   @override
   String get worldBookBudgetFooter =>
       '命中條目依優先權爭奪這份預算，超出部分本輪會被丟棄；標記為常駐的條目不受預算限制。';
+
+  @override
+  String get worldBookBudgetUnlimited => '無限制';
+
+  @override
+  String get worldBookBudgetUnlimitedNote =>
+      '無限制：所有命中條目都會注入，可能會導致 RP 體驗不佳（上下文擁擠、注意力渙散）。';
 
   @override
   String get worldBookBookHeader => '這本書';

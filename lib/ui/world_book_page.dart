@@ -239,16 +239,22 @@ class WorldBooksPage extends StatelessWidget {
                     onTap: () => hOpen(c, WorldBookPage(bookId: books[i].id)),
                   ),
               ]),
-              TgSection(header: l.worldBookSettingsHeader, footer: l.worldBookBudgetFooter, children: [
-                TgTextCell(
-                  icon: Ic.textSize,
-                  title: l.worldBookBudget,
-                  subtitle: l.worldBookBudgetValue(store.budgetK),
-                  value: l.actionEdit,
-                  divider: false,
-                  onTap: () => _pickBudget(c),
-                ),
-              ]),
+              TgSection(
+                header: l.worldBookSettingsHeader,
+                // an unlimited budget swaps the explanation for the warning
+                // right where the choice is shown
+                footer: store.budgetUnlimited ? l.worldBookBudgetUnlimitedNote : l.worldBookBudgetFooter,
+                children: [
+                  TgTextCell(
+                    icon: Ic.textSize,
+                    title: l.worldBookBudget,
+                    subtitle: store.budgetUnlimited ? l.worldBookBudgetUnlimited : l.worldBookBudgetValue(store.budgetK),
+                    value: l.actionEdit,
+                    divider: false,
+                    onTap: () => _pickBudget(c),
+                  ),
+                ],
+              ),
             ],
           );
         },
@@ -330,12 +336,21 @@ class WorldBooksPage extends StatelessWidget {
   Future<void> _pickBudget(BuildContext context) async {
     final l = context.l;
     final st = Store.of(context).worldBooks;
-    const options = [1, 2, 4, 8, 16, 32, 64];
+    const options = [1, 2, 4, 8, 16, 32, 64, WorldStore.unlimited];
     final v = await showAiSelect<int>(
       context,
       title: l.worldBookBudget,
       value: st.budgetK,
-      options: [for (final k in options) (value: k, label: l.worldBookBudgetValue(k), sub: null)],
+      options: [
+        for (final k in options)
+          (
+            value: k,
+            label: k == WorldStore.unlimited ? l.worldBookBudgetUnlimited : l.worldBookBudgetValue(k),
+            // the option carries its own warning: a world with no cap can
+            // crowd the context and pull the role off its own story
+            sub: k == WorldStore.unlimited ? l.worldBookBudgetUnlimitedNote : null,
+          ),
+      ],
     );
     if (v != null) st.setBudget(v);
   }

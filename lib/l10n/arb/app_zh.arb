@@ -4290,6 +4290,14 @@
   "@worldBookBudgetFooter": {
     "description": "World book UI"
   },
+  "worldBookBudgetUnlimited": "无限制",
+  "@worldBookBudgetUnlimited": {
+    "description": "World book UI"
+  },
+  "worldBookBudgetUnlimitedNote": "无限制：所有命中条目都会注入，可能会导致 RP 体验不佳（上下文拥挤、注意力涣散）。",
+  "@worldBookBudgetUnlimitedNote": {
+    "description": "World book UI"
+  },
   "worldBookBookHeader": "这本书",
   "@worldBookBookHeader": {
     "description": "World book UI"

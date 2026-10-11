@@ -30,10 +30,26 @@ class WorldStore extends ChangeNotifier {
   /// The in-memory view, ordered by name.
   List<WorldBook> get books => List.unmodifiable(_books);
 
-  /// Budget in kilo characters, 1..64.
+  /// Budget in kilo characters. [unlimited] disables the cap, any other value
+  /// is 1..maxBudgetK. Unlimited is a user choice with a warning attached:
+  /// everything that fires goes in, and a world large enough to need it
+  /// usually pays for it in attention.
   int budgetK = 4;
 
-  int get budgetChars => budgetK * 1000;
+  /// The "no cap" value of [budgetK].
+  static const int unlimited = 0;
+
+  bool get budgetUnlimited => budgetK <= unlimited;
+
+  /// The character cap the injector enforces.
+  ///
+  /// Unlimited is not infinity but a number no authored world can reach, so
+  /// `_assemble` keeps its plain int comparison instead of branching on a
+  /// flag, and a restored snapshot from before the option existed loads as
+  /// the cap it always had.
+  static const int _unlimitedBudgetChars = 1 << 62;
+
+  int get budgetChars => budgetUnlimited ? _unlimitedBudgetChars : budgetK * 1000;
   int get maxBudgetK => 64;
 
   static Future<WorldStore> load(SharedPreferences sp) async {
@@ -51,7 +67,7 @@ class WorldStore extends ChangeNotifier {
       }
     }
     store._books.sort((a, b) => a.name.compareTo(b.name));
-    store.budgetK = (sp.getInt(_budgetKey) ?? 4).clamp(1, store.maxBudgetK);
+    store.budgetK = (sp.getInt(_budgetKey) ?? 4).clamp(WorldStore.unlimited, store.maxBudgetK);
     return store;
   }
 
@@ -135,7 +151,7 @@ class WorldStore extends ChangeNotifier {
   }
 
   Future<void> setBudget(int kiloChars) async {
-    final next = kiloChars.clamp(1, maxBudgetK);
+    final next = kiloChars.clamp(WorldStore.unlimited, maxBudgetK);
     if (next == budgetK) return;
     budgetK = next;
     await _sp.setInt(_budgetKey, next);

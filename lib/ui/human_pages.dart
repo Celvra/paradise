@@ -15,7 +15,6 @@ import '../data/human/human_models.dart';
 import '../data/human/scheduler.dart';
 import '../data/models.dart';
 import '../data/store.dart';
-import '../data/world_book/world_book.dart';
 import 'world_book_page.dart';
 import '../l10n/x.dart';
 import 'human_data_pages.dart';

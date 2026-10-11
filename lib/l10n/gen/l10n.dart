@@ -8226,6 +8226,18 @@ abstract class AppLocalizations {
   /// World book UI
   ///
   /// In en, this message translates to:
+  /// **'Unlimited'**
+  String get worldBookBudgetUnlimited;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
+  /// **'Unlimited: everything that fires is injected, which may hurt the RP experience (a crowded context, wandering attention).'**
+  String get worldBookBudgetUnlimitedNote;
+
+  /// World book UI
+  ///
+  /// In en, this message translates to:
   /// **'This book'**
   String get worldBookBookHeader;
 

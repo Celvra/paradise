@@ -4540,6 +4540,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'Fired entries compete for this budget by priority; the rest is dropped this turn. Constant entries ignore the budget.';
 
   @override
+  String get worldBookBudgetUnlimited => 'Unlimited';
+
+  @override
+  String get worldBookBudgetUnlimitedNote =>
+      'Unlimited: everything that fires is injected, which may hurt the RP experience (a crowded context, wandering attention).';
+
+  @override
   String get worldBookBookHeader => 'This book';
 
   @override
