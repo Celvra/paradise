@@ -36,6 +36,14 @@ void main() {
 
   Msg msg(String text, {String id = ''}) => Msg(id: id.isEmpty ? text : id, out: false, text: text, time: 1);
 
+  test('DB head serialization matches the full chat without msgs', () {
+    final c = chat('a', draft: 'waiting')..msgs.add(msg('body'));
+    final full = c.toJson();
+    expect(full['msgs'], hasLength(1));
+    full.remove('msgs');
+    expect(c.toJson(includeMessages: false), full);
+  });
+
   group('incremental save', () {
     test('a dirty subset rewrites only those rows', () async {
       final c = chat('a');
