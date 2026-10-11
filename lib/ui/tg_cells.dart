@@ -119,8 +119,8 @@ class TgInfoCell extends StatelessWidget {
 /// TextCell / TextSettingsCell. An accent [color] paints both the icon and the
 /// label, which is how Telegram draws "Add ..." and "Set Profile Photo" rows.
 /// [iconColor] paints the icon alone, for a glyph that must not follow the
-/// label colour: the default persona's crown stays gold while its row goes
-/// accent.
+/// label colour: the default persona's crown is tinted like the rest of the
+/// app's markers while its row goes accent.
 class TgTextCell extends StatelessWidget {
   const TgTextCell({
     super.key,

@@ -14,9 +14,6 @@ import '../l10n/x.dart';
 import 'ai_widgets.dart';
 import 'tg_cells.dart';
 
-// crown, the default persona marker, drawn on the same 24 grid as every TgIcon
-const _crown = Color(0xFFFFC107);
-
 /// Order the picker lists the positions in. The wording comes from
 /// [positionOption], so the labels stay translatable and never drift.
 const _positionOptions = <PersonaPosition>[
@@ -568,7 +565,7 @@ class _PersonaCardsSectionState extends State<PersonaCardsSection> {
           // the icon slot, not leading: leading is the avatar column at 13,
           // which pulled the crown left of the chats and ai icons below
           icon: Ic.crown,
-          iconColor: isDefault ? _crown : p.icon,
+          iconColor: isDefault ? p.accent : p.icon,
           title: l.cardDefaultLabel,
           subtitle: isDefault ? l.cardFallbackSub : l.cardSetFallback,
           color: isDefault ? p.accent : null,
@@ -800,7 +797,7 @@ class _CardPickerSheet extends StatelessWidget {
               if (on)
                 TgIcon(Ic.check, color: p.accent, size: 22, stroke: 2.2)
               else if (c.id == fallback)
-                TgIcon(Ic.crown, color: _crown, size: 18, stroke: 1.8),
+                TgIcon(Ic.crown, color: p.accent, size: 18, stroke: 1.8),
               const SizedBox(width: 21),
             ]),
           ),
