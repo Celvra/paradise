@@ -27,6 +27,21 @@ void hOpen(BuildContext c, Widget page) => Navigator.of(c).push(TgRoute(builder:
 
 TextStyle hStyle(Pal p, {double size = 16, Color? color, FontWeight weight = FontWeight.w400}) => TextStyle(color: color ?? p.title, fontSize: size, fontWeight: weight, height: 1.25, decoration: TextDecoration.none);
 
+/// What the tools row counts.
+///
+/// It used to count the MCP tools alone, which read as "0 MCP" on every device
+/// that had not added a server of its own, even though the model can always
+/// call the built in ones. It counts both now: the enabled built in tools plus
+/// whatever the servers offered, with the MCP share in brackets when there is
+/// one, so the number predicts what the page behind the row holds.
+String toolsValue(BuildContext c, HumanHub h) {
+  final on = Store.read(c).workspace.toolsEnabled;
+  final builtin = kBuiltinTools.where((e) => on || !kWorkspaceTools.contains(e)).length;
+  final mcp = h.mcp.tools.length;
+  final total = builtin + mcp;
+  return mcp == 0 ? '$total' : '$total ($mcp MCP)';
+}
+
 /// Rebuilds when the hub changes, the hub is not part of the store notifier.
 class HLive extends StatelessWidget {
   const HLive({super.key, required this.builder});
@@ -116,7 +131,7 @@ class HumanSettingsPage extends StatelessWidget {
             TgTextCell(title: l.humanChatsRow, icon: Ic.user, divider: false, onTap: () => hOpen(c, const HumanChatsPage())),
           ]),
           TgSection(header: l.humanToolsHeader, children: [
-            TgTextCell(title: l.humanToolsRow, icon: Ic.gear, value: '${h.mcp.tools.length} MCP', onTap: () => hOpen(c, const ToolsPage())),
+            TgTextCell(title: l.humanToolsRow, icon: Ic.gear, value: toolsValue(c, h), onTap: () => hOpen(c, const ToolsPage())),
             TgTextCell(title: l.humanWalletRow, icon: Ic.crown, value: h.wallet.balance.toStringAsFixed(2), divider: false, onTap: () => hOpen(c, const WalletPage())),
           ]),
           TgSection(header: l.humanDataHeader, children: [
