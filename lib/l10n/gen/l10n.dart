@@ -531,6 +531,144 @@ abstract class AppLocalizations {
   /// **'Summary length'**
   String get aiSummaryLength;
 
+  /// Row that opens the compaction test screen
+  ///
+  /// In en, this message translates to:
+  /// **'Test compaction'**
+  String get aiCompactTestRow;
+
+  /// Title of the compaction test screen
+  ///
+  /// In en, this message translates to:
+  /// **'Compaction test'**
+  String get aiCompactTestTitle;
+
+  /// Section header of the chat list on the compaction test screen
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a chat'**
+  String get aiCompactTestChats;
+
+  /// Section footer of the chat list on the compaction test screen
+  ///
+  /// In en, this message translates to:
+  /// **'Summarizes the chat now, the same way a reply would, and writes the checkpoint the next reply would use. It costs one request to the summary model.'**
+  String get aiCompactTestFooter;
+
+  /// Shown on the compaction test screen when the app holds no chats
+  ///
+  /// In en, this message translates to:
+  /// **'No chats yet'**
+  String get aiCompactTestNoChats;
+
+  /// Marker on a chat that already carries a compaction checkpoint
+  ///
+  /// In en, this message translates to:
+  /// **'compacted'**
+  String get aiCompactTestCompacted;
+
+  /// Section header of the compaction result
+  ///
+  /// In en, this message translates to:
+  /// **'Run'**
+  String get aiCompactTestReport;
+
+  /// Section footer of the compaction result
+  ///
+  /// In en, this message translates to:
+  /// **'The summary is what the model is told the earlier conversation was. The budget is cut at a sentence boundary when the model runs past it.'**
+  String get aiCompactTestReportFooter;
+
+  /// Row label for the request before compaction
+  ///
+  /// In en, this message translates to:
+  /// **'Before'**
+  String get aiCompactTestBefore;
+
+  /// Row label for the request after compaction
+  ///
+  /// In en, this message translates to:
+  /// **'After'**
+  String get aiCompactTestAfter;
+
+  /// Row label for the summary itself
+  ///
+  /// In en, this message translates to:
+  /// **'Summary'**
+  String get aiCompactTestSummary;
+
+  /// Subtitle of the summary row, the configured character budget
+  ///
+  /// In en, this message translates to:
+  /// **'Budget {chars}'**
+  String aiCompactTestTarget(String chars);
+
+  /// Row label for how many messages were summarized and how many stayed
+  ///
+  /// In en, this message translates to:
+  /// **'Messages'**
+  String get aiCompactTestFolded;
+
+  /// Subtitle of the message count row
+  ///
+  /// In en, this message translates to:
+  /// **'Summarized, then kept verbatim'**
+  String get aiCompactTestKeptNote;
+
+  /// Row label for the model that wrote the summary
+  ///
+  /// In en, this message translates to:
+  /// **'Summary model'**
+  String get aiCompactTestModel;
+
+  /// Subtitle of the summary model row
+  ///
+  /// In en, this message translates to:
+  /// **'Context window {window}'**
+  String aiCompactTestWindow(String window);
+
+  /// Row label for how long the compaction took
+  ///
+  /// In en, this message translates to:
+  /// **'Took'**
+  String get aiCompactTestDuration;
+
+  /// Row label for whether the chat was already due for compaction
+  ///
+  /// In en, this message translates to:
+  /// **'Over the 75% threshold'**
+  String get aiCompactTestTrigger;
+
+  /// Value of the threshold row when the chat was already due
+  ///
+  /// In en, this message translates to:
+  /// **'already due'**
+  String get aiCompactTestFired;
+
+  /// Value of the threshold row when the chat was not due
+  ///
+  /// In en, this message translates to:
+  /// **'under the threshold'**
+  String get aiCompactTestIdle;
+
+  /// The failure line of a compaction run
+  ///
+  /// In en, this message translates to:
+  /// **'Failed: {reason}'**
+  String aiCompactTestFailed(String reason);
+
+  /// Row that drops the compaction checkpoint and runs again
+  ///
+  /// In en, this message translates to:
+  /// **'Clear this checkpoint'**
+  String get aiCompactTestClear;
+
+  /// Section footer of the clear checkpoint row
+  ///
+  /// In en, this message translates to:
+  /// **'Drops the summary so the next run starts from the full transcript again.'**
+  String get aiCompactTestClearFooter;
+
   /// Section header of the history picture settings
   ///
   /// In en, this message translates to:
@@ -2618,6 +2756,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count, plural, other{{count} pictures}}'**
   String pluralImages(int count);
+
+  /// Count of chat messages
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 message} other{{count} messages}}'**
+  String pluralMessages(int count);
 
   /// No description provided for @cardCreate.
   ///

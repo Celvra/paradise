@@ -27,6 +27,7 @@ import 'ai/prompt.dart';
 import 'ai/speech.dart';
 import 'ai/provider_model.dart';
 import 'ai/segmenter.dart' show Segmenter, humanDelay, jitterMs, typingMs;
+import 'ai/tokenizer.dart';
 import 'ai/adapter.dart';
 import 'ai_client.dart';
 import 'ai/tool_wire.dart';
@@ -2363,6 +2364,7 @@ void editPersona(Chat c, String name, String prompt, {String? bio, String? greet
         history: _historyItems(c),
         previous: cfg.compactionOf(c.id),
         node: node,
+        targetChars: cfg.settings.compaction.targetChars,
         cancel: cancel,
       );
       cfg.setCompaction(c.id, result);
@@ -2372,6 +2374,114 @@ void editPersona(Chat c, String name, String prompt, {String? bio, String? greet
       // reply the user is waiting for
       return null;
     }
+  }
+
+  /// Runs one compaction on demand and reports what it cost, for the test
+  /// screen behind Settings > AI.
+  ///
+  /// The same path a reply takes, not a simulation of it: the checkpoint it
+  /// writes is the one the next reply would use, and the numbers are the ones
+  /// that reply would have paid. A run that fails reports the failure and
+  /// leaves the chat exactly as it was.
+  Future<CompactionReport> compactForTest(Chat c) async {
+    final started = DateTime.now();
+    final cfg = _ai;
+    final system = _systemPrompt(c);
+    final items = _historyItems(c);
+    final before = await _history(c);
+    final node = cfg?.summaryNode(chainFor(c).firstOrNull);
+    final window = cfg == null || node == null ? unknownContext : contextWindowOf(cfg.settings, node);
+    final beforeTokens = estimateRequestTokens(before, system: system);
+    int ms() => DateTime.now().difference(started).inMilliseconds;
+
+    if (cfg == null || node == null) {
+      return CompactionReport(
+        chatId: c.id,
+        ok: false,
+        error: StateError('No model is on the chain to write a summary with'),
+        beforeTokens: beforeTokens,
+        afterTokens: beforeTokens,
+        beforeChars: _transcriptChars(before),
+        afterChars: _transcriptChars(before),
+        summaryChars: 0,
+        summaryTokens: 0,
+        targetChars: cfg?.settings.compaction.targetChars ?? 0,
+        folded: 0,
+        kept: items.length,
+        model: '',
+        contextWindow: window,
+        wouldFire: false,
+        ms: ms(),
+      );
+    }
+
+    CompactionReport fail(Object error) => CompactionReport(
+          chatId: c.id,
+          ok: false,
+          error: error,
+          beforeTokens: beforeTokens,
+          afterTokens: beforeTokens,
+          beforeChars: _transcriptChars(before),
+          afterChars: _transcriptChars(before),
+          summaryChars: 0,
+          summaryTokens: 0,
+          targetChars: cfg.settings.compaction.targetChars,
+          folded: 0,
+          kept: items.length,
+          model: node.modelId,
+          contextWindow: window,
+          wouldFire: needsCompaction(before, window, cfg.settings.compaction.triggerRatio, system: system),
+          ms: ms(),
+        );
+
+    try {
+      final result = await compactHistory(
+        settings: cfg.settings,
+        apiKeys: cfg.apiKeys,
+        system: system,
+        history: items,
+        previous: cfg.compactionOf(c.id),
+        node: node,
+        targetChars: cfg.settings.compaction.targetChars,
+      );
+      cfg.setCompaction(c.id, result);
+      final after = await _history(c);
+      // the checkpoint names the last row it swallowed, so the split between
+      // what was summarized and what stayed is read back rather than guessed
+      final cut = items.indexWhere((h) => h.id == result.upToMessageId);
+      final folded = cut < 0 ? 0 : cut + 1;
+      return CompactionReport(
+        chatId: c.id,
+        ok: true,
+        beforeTokens: beforeTokens,
+        afterTokens: estimateRequestTokens(after, system: system),
+        beforeChars: _transcriptChars(before),
+        afterChars: _transcriptChars(after),
+        summaryChars: result.summary.length,
+        summaryTokens: estimateTokens(result.summary),
+        targetChars: cfg.settings.compaction.targetChars,
+        folded: folded,
+        kept: items.length - folded,
+        model: node.modelId,
+        contextWindow: window,
+        wouldFire: needsCompaction(before, window, cfg.settings.compaction.triggerRatio, system: system),
+        ms: ms(),
+        summary: result.summary,
+      );
+    } catch (e) {
+      return fail(e);
+    }
+  }
+
+  /// Characters the transcript contributes to a request, for the compaction
+  /// report. Pictures are counted by their pixels, not by a file size the model
+  /// never sees, so they sit out of this.
+  static int _transcriptChars(List<ChatTurn> turns) {
+    var total = 0;
+    for (final turn in turns) {
+      total += partsToText(turn.content).length;
+    }
+    return total;
   }
 
   Future<void> _reply(Chat c) async {

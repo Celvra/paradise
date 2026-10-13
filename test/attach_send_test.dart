@@ -263,6 +263,36 @@ void main() {
     expect(rec.requests[0].images.first.width, 1, reason: 'the probe reads the png header');
     expect(rec.requests[0].images.first.height, 1);
   });
+
+  // the report behind Settings > AI > Test compaction, which is the only place
+  // the numbers a compaction produces are ever visible
+  test('the compaction test reports what the summary bought', () async {
+    final s = await boot();
+    final r = rig(s);
+    // written straight into the transcript: this is about the report, and
+    // twenty real replies would only spend twenty paced seconds getting there
+    for (var i = 0; i < 20; i++) {
+      s.addOut(r.chat, text: 'turn $i, and a good deal more talk than one line ${'padding' * 20}');
+      r.chat.msgs.add(Msg(id: 'a$i', out: false, text: 'answer $i ${'padding' * 20}', time: i));
+    }
+
+    final report = await s.compactForTest(r.chat);
+    expect(report.ok, isTrue, reason: 'compaction failed: ${report.error}');
+    expect(report.afterTokens, lessThan(report.beforeTokens), reason: 'the point of the whole thing');
+    expect(report.summary, 'ok', reason: 'the fake model answers with one word');
+    expect(report.folded, 34, reason: 'everything but the six newest rows');
+    expect(report.kept, 6, reason: 'the live thread stays verbatim');
+    expect(report.targetChars, 1200);
+    expect(report.model, 'vision-model');
+    expect(rec.requests.length, 3, reason: 'the transcript is longer than one chunk, so it goes out twice and comes back through the merge prompt');
+    expect(rec.requests.first.texts.single, contains('within 1200 characters'), reason: 'the budget reaches the model');
+    expect(rec.requests.last.texts.single, contains('partial summaries'), reason: 'and the halves are merged by the other prompt');
+
+    // and the chat now carries the checkpoint the next reply would use
+    final again = await s.compactForTest(r.chat);
+    expect(again.ok, isTrue);
+    expect(again.beforeTokens, lessThan(report.beforeTokens), reason: 'the second run starts from the compacted window');
+  });
 }
 
 class _RecorderAdapter implements ProviderAdapter {

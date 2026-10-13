@@ -252,6 +252,83 @@ class AppLocalizationsZh extends AppLocalizations {
   String get aiSummaryLength => '摘要长度';
 
   @override
+  String get aiCompactTestRow => '测试压缩';
+
+  @override
+  String get aiCompactTestTitle => '测试压缩';
+
+  @override
+  String get aiCompactTestChats => '选一个会话';
+
+  @override
+  String get aiCompactTestFooter =>
+      '现在就把这个会话摘要掉，走的是回复时同一条路径，并写入下一轮回复会用的压缩点。会消耗一次摘要模型的请求。';
+
+  @override
+  String get aiCompactTestNoChats => '还没有会话';
+
+  @override
+  String get aiCompactTestCompacted => '已压缩';
+
+  @override
+  String get aiCompactTestReport => '本次结果';
+
+  @override
+  String get aiCompactTestReportFooter =>
+      '这段摘要就是模型被告知的「之前聊过什么」。超预算时按句子边界裁掉，不会拦腰截断。';
+
+  @override
+  String get aiCompactTestBefore => '压缩前';
+
+  @override
+  String get aiCompactTestAfter => '压缩后';
+
+  @override
+  String get aiCompactTestSummary => '摘要';
+
+  @override
+  String aiCompactTestTarget(String chars) {
+    return '预算 $chars';
+  }
+
+  @override
+  String get aiCompactTestFolded => '消息';
+
+  @override
+  String get aiCompactTestKeptNote => '左边被摘要，右边原样保留';
+
+  @override
+  String get aiCompactTestModel => '摘要模型';
+
+  @override
+  String aiCompactTestWindow(String window) {
+    return '上下文窗口 $window';
+  }
+
+  @override
+  String get aiCompactTestDuration => '耗时';
+
+  @override
+  String get aiCompactTestTrigger => '超过 75% 阈值';
+
+  @override
+  String get aiCompactTestFired => '本该自动触发';
+
+  @override
+  String get aiCompactTestIdle => '未到阈值';
+
+  @override
+  String aiCompactTestFailed(String reason) {
+    return '失败：$reason';
+  }
+
+  @override
+  String get aiCompactTestClear => '清掉这个压缩点';
+
+  @override
+  String get aiCompactTestClearFooter => '丢掉摘要，下次测试就从完整记录重新开始。';
+
+  @override
   String get aiHistoryImagesHeader => '历史图片';
 
   @override
@@ -1407,6 +1484,16 @@ class AppLocalizationsZh extends AppLocalizations {
       count,
       locale: localeName,
       other: '$count 张图片',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String pluralMessages(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 条消息',
     );
     return '$_temp0';
   }
@@ -5024,6 +5111,83 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get aiSummaryLength => '摘要長度';
 
   @override
+  String get aiCompactTestRow => '測試壓縮';
+
+  @override
+  String get aiCompactTestTitle => '測試壓縮';
+
+  @override
+  String get aiCompactTestChats => '選一個對話';
+
+  @override
+  String get aiCompactTestFooter =>
+      '現在就把這個對話摘要掉，走的是回覆時同一條路徑，並寫入下一輪回覆會用的壓縮點。會消耗一次摘要模型的請求。';
+
+  @override
+  String get aiCompactTestNoChats => '還沒有對話';
+
+  @override
+  String get aiCompactTestCompacted => '已壓縮';
+
+  @override
+  String get aiCompactTestReport => '本次結果';
+
+  @override
+  String get aiCompactTestReportFooter =>
+      '這段摘要就是模型被告知的「之前聊過什麼」。超預算時按句子邊界裁掉，不會攔腰截斷。';
+
+  @override
+  String get aiCompactTestBefore => '壓縮前';
+
+  @override
+  String get aiCompactTestAfter => '壓縮後';
+
+  @override
+  String get aiCompactTestSummary => '摘要';
+
+  @override
+  String aiCompactTestTarget(String chars) {
+    return '預算 $chars';
+  }
+
+  @override
+  String get aiCompactTestFolded => '訊息';
+
+  @override
+  String get aiCompactTestKeptNote => '左邊被摘要，右邊原樣保留';
+
+  @override
+  String get aiCompactTestModel => '摘要模型';
+
+  @override
+  String aiCompactTestWindow(String window) {
+    return '上下文視窗 $window';
+  }
+
+  @override
+  String get aiCompactTestDuration => '耗時';
+
+  @override
+  String get aiCompactTestTrigger => '超過 75% 閾值';
+
+  @override
+  String get aiCompactTestFired => '本該自動觸發';
+
+  @override
+  String get aiCompactTestIdle => '未到閾值';
+
+  @override
+  String aiCompactTestFailed(String reason) {
+    return '失敗：$reason';
+  }
+
+  @override
+  String get aiCompactTestClear => '清掉這個壓縮點';
+
+  @override
+  String get aiCompactTestClearFooter => '丟掉摘要，下次測試就從完整記錄重新開始。';
+
+  @override
   String get aiHistoryImagesHeader => '歷史圖片';
 
   @override
@@ -6179,6 +6343,16 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
       count,
       locale: localeName,
       other: '$count 張圖片',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String pluralMessages(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 則訊息',
     );
     return '$_temp0';
   }

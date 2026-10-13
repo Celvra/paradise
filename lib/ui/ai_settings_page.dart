@@ -12,6 +12,7 @@ import '../data/ai_config.dart';
 import '../l10n/x.dart';
 import 'ai_model_picker.dart';
 import 'ai_widgets.dart';
+import 'compaction_page.dart';
 import 'provider_detail_page.dart';
 import 'tg_cells.dart';
 
@@ -338,8 +339,13 @@ class _ChainTab extends StatelessWidget {
             TgTextCell(
               title: l.aiSummaryLength,
               value: l.pluralChars(c.targetChars),
-              divider: false,
               onTap: () => _pickTarget(context),
+            ),
+            TgTextCell(
+              title: l.aiCompactTestRow,
+              icon: Ic.list,
+              divider: false,
+              onTap: () => openCompactionTest(context),
             ),
           ],
         ),

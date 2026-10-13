@@ -288,6 +288,113 @@
   "@aiSummaryLength": {
     "description": "Row that picks the summary budget"
   },
+  "aiCompactTestRow": "测试压缩",
+  "@aiCompactTestRow": {
+    "description": "Row that opens the compaction test screen"
+  },
+  "aiCompactTestTitle": "测试压缩",
+  "@aiCompactTestTitle": {
+    "description": "Title of the compaction test screen"
+  },
+  "aiCompactTestChats": "选一个会话",
+  "@aiCompactTestChats": {
+    "description": "Section header of the chat list on the compaction test screen"
+  },
+  "aiCompactTestFooter": "现在就把这个会话摘要掉，走的是回复时同一条路径，并写入下一轮回复会用的压缩点。会消耗一次摘要模型的请求。",
+  "@aiCompactTestFooter": {
+    "description": "Section footer of the chat list on the compaction test screen"
+  },
+  "aiCompactTestNoChats": "还没有会话",
+  "@aiCompactTestNoChats": {
+    "description": "Shown on the compaction test screen when the app holds no chats"
+  },
+  "aiCompactTestCompacted": "已压缩",
+  "@aiCompactTestCompacted": {
+    "description": "Marker on a chat that already carries a compaction checkpoint"
+  },
+  "aiCompactTestReport": "本次结果",
+  "@aiCompactTestReport": {
+    "description": "Section header of the compaction result"
+  },
+  "aiCompactTestReportFooter": "这段摘要就是模型被告知的「之前聊过什么」。超预算时按句子边界裁掉，不会拦腰截断。",
+  "@aiCompactTestReportFooter": {
+    "description": "Section footer of the compaction result"
+  },
+  "aiCompactTestBefore": "压缩前",
+  "@aiCompactTestBefore": {
+    "description": "Row label for the request before compaction"
+  },
+  "aiCompactTestAfter": "压缩后",
+  "@aiCompactTestAfter": {
+    "description": "Row label for the request after compaction"
+  },
+  "aiCompactTestSummary": "摘要",
+  "@aiCompactTestSummary": {
+    "description": "Row label for the summary itself"
+  },
+  "aiCompactTestTarget": "预算 {chars}",
+  "@aiCompactTestTarget": {
+    "description": "Subtitle of the summary row, the configured character budget",
+    "placeholders": {
+      "chars": {
+        "type": "String"
+      }
+    }
+  },
+  "aiCompactTestFolded": "消息",
+  "@aiCompactTestFolded": {
+    "description": "Row label for how many messages were summarized and how many stayed"
+  },
+  "aiCompactTestKeptNote": "左边被摘要，右边原样保留",
+  "@aiCompactTestKeptNote": {
+    "description": "Subtitle of the message count row"
+  },
+  "aiCompactTestModel": "摘要模型",
+  "@aiCompactTestModel": {
+    "description": "Row label for the model that wrote the summary"
+  },
+  "aiCompactTestWindow": "上下文窗口 {window}",
+  "@aiCompactTestWindow": {
+    "description": "Subtitle of the summary model row",
+    "placeholders": {
+      "window": {
+        "type": "String"
+      }
+    }
+  },
+  "aiCompactTestDuration": "耗时",
+  "@aiCompactTestDuration": {
+    "description": "Row label for how long the compaction took"
+  },
+  "aiCompactTestTrigger": "超过 75% 阈值",
+  "@aiCompactTestTrigger": {
+    "description": "Row label for whether the chat was already due for compaction"
+  },
+  "aiCompactTestFired": "本该自动触发",
+  "@aiCompactTestFired": {
+    "description": "Value of the threshold row when the chat was already due"
+  },
+  "aiCompactTestIdle": "未到阈值",
+  "@aiCompactTestIdle": {
+    "description": "Value of the threshold row when the chat was not due"
+  },
+  "aiCompactTestFailed": "失败：{reason}",
+  "@aiCompactTestFailed": {
+    "description": "The failure line of a compaction run",
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "aiCompactTestClear": "清掉这个压缩点",
+  "@aiCompactTestClear": {
+    "description": "Row that drops the compaction checkpoint and runs again"
+  },
+  "aiCompactTestClearFooter": "丢掉摘要，下次测试就从完整记录重新开始。",
+  "@aiCompactTestClearFooter": {
+    "description": "Section footer of the clear checkpoint row"
+  },
   "aiHistoryImagesHeader": "历史图片",
   "@aiHistoryImagesHeader": {
     "description": "Section header of the history picture settings"
@@ -1740,6 +1847,10 @@
   "pluralImages": "{count, plural, other{{count} 张图片}}",
   "@pluralImages": {
     "description": "Count of pictures the app sends along with a request"
+  },
+  "pluralMessages": "{count, plural, other{{count} 条消息}}",
+  "@pluralMessages": {
+    "description": "Count of chat messages"
   },
   "cardCreate": "创建卡片",
   "@cardCreate": {
