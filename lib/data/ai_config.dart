@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../l10n/x.dart';
+import 'ai/adapter.dart';
 import 'ai/compaction.dart';
 import 'ai/fetcher.dart';
 import 'ai/provider_model.dart';
@@ -386,6 +387,8 @@ class AiConfig extends ChangeNotifier {
 
   void patchCompaction(CompactionSettings Function(CompactionSettings) patch) => update((s) => s.copyWith(compaction: patch(s.compaction)));
 
+  void setHistoryImages(int count) => update((s) => s.copyWith(historyImages: count.clamp(0, maxHistoryImages)));
+
   String _newId(String prefix) => '$prefix${DateTime.now().microsecondsSinceEpoch}_${_seq++}';
 
   Compaction? compactionOf(String chatId) => _compactions[chatId];
@@ -400,17 +403,37 @@ class AiConfig extends ChangeNotifier {
     }
   }
 
+  /// The node a summary is written by: the one the user picked in the settings,
+  /// or the model that is answering when they picked none.
+  ///
+  /// The row existed but nothing read it, so a chat set to summarise with a
+  /// cheap model quietly paid for the expensive one instead. A pick that cannot
+  /// run at all falls back rather than failing: the reply matters more than the
+  /// summary it was going to be written by.
+  ChainNode? summaryNode(ChainNode? fallback) {
+    final cp = _settings.compaction;
+    if (cp.providerId.isEmpty || cp.modelId.isEmpty) return fallback;
+    if (keyOf(cp.providerId).trim().isEmpty) return fallback;
+    if (findModel(_settings, cp.providerId, cp.modelId) == null) return fallback;
+    return ChainNode(id: 'compaction', providerId: cp.providerId, modelId: cp.modelId, retries: 1, enabled: true);
+  }
+
   /// Everything one reply needs, assembled in a single place.
+  ///
+  /// [node] is the model this chat would actually answer with, which a persona
+  /// override may have replaced; the window it reports is the one the
+  /// transcript has to fit, not the global chain's first entry.
   ChatPlan planFor({
+    required List<ChatTurn> turns,
     required String system,
-    required List<HistoryItem> history,
+    ChainNode? node,
     bool allowCompaction = true,
   }) {
     final nodes = activeChain(_settings);
-    final first = nodes.isEmpty ? null : nodes.first;
+    final first = node ?? (nodes.isEmpty ? null : nodes.first);
     final window = first == null ? unknownContext : contextWindowOf(_settings, first);
     final cp = _settings.compaction;
-    final shouldCompact = allowCompaction && cp.enabled && window > 0 && needsCompaction(history, window, cp.triggerRatio);
+    final shouldCompact = allowCompaction && cp.enabled && window > 0 && needsCompaction(turns, window, cp.triggerRatio, system: system);
     return ChatPlan(
       nodes: nodes,
       contextWindow: window,

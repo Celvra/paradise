@@ -252,6 +252,25 @@ class AppLocalizationsZh extends AppLocalizations {
   String get aiSummaryLength => '摘要长度';
 
   @override
+  String get aiHistoryImagesHeader => '历史图片';
+
+  @override
+  String get aiHistoryImagesFooter =>
+      '每回复一次都要重发整个上下文，窗口里的图片就会跟着再传一遍。只有最新的几张会随请求发送，更早的只保留文字描述。刚刚发的那几张一定会带上。';
+
+  @override
+  String get aiHistoryImages => '随请求发送的图片';
+
+  @override
+  String get aiHistoryImagesTitle => '随请求发送的图片';
+
+  @override
+  String get aiHistoryImagesOff => '关闭';
+
+  @override
+  String get aiHistoryImagesOffSub => '只留文字';
+
+  @override
   String get aiAddToChainTitle => '添加到兜底链';
 
   @override
@@ -1378,6 +1397,16 @@ class AppLocalizationsZh extends AppLocalizations {
       count,
       locale: localeName,
       other: '$count 个 token',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String pluralImages(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 张图片',
     );
     return '$_temp0';
   }
@@ -4995,6 +5024,25 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get aiSummaryLength => '摘要長度';
 
   @override
+  String get aiHistoryImagesHeader => '歷史圖片';
+
+  @override
+  String get aiHistoryImagesFooter =>
+      '每回覆一次都要重送整個上下文，視窗裡的圖片就會跟著再傳一次。只有最新的幾張會隨請求送出，更早的只保留文字描述。剛剛傳的那幾張一定會帶上。';
+
+  @override
+  String get aiHistoryImages => '隨請求送出的圖片';
+
+  @override
+  String get aiHistoryImagesTitle => '隨請求送出的圖片';
+
+  @override
+  String get aiHistoryImagesOff => '關閉';
+
+  @override
+  String get aiHistoryImagesOffSub => '只留文字';
+
+  @override
   String get aiAddToChainTitle => '新增至兜底鏈';
 
   @override
@@ -6121,6 +6169,16 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
       count,
       locale: localeName,
       other: '$count 個 token',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String pluralImages(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 張圖片',
     );
     return '$_temp0';
   }

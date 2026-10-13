@@ -422,6 +422,17 @@ class CompactionSettings {
       );
 }
 
+/// Pictures from the transcript that ride along with a request.
+///
+/// Chat Completions is stateless, so a reply resends the whole window and every
+/// picture in it goes up again, base64 and all. That is the protocol; what the
+/// client owes the user is a ceiling, and this is it. Older pictures keep their
+/// `[Photo attached]` line so the model still knows a photo was there, it just
+/// no longer pays to look at it again. The pictures the user is replying to
+/// right now are never counted against it: they are the question, not history.
+const int defaultHistoryImages = 3;
+const int maxHistoryImages = 12;
+
 class AiSettings {
   const AiSettings({
     required this.providers,
@@ -439,6 +450,7 @@ class AiSettings {
     this.imageProviderId = '',
     this.imageModelId = '',
     this.imageSize = '1024x1024',
+    this.historyImages = defaultHistoryImages,
   });
 
   final List<Provider> providers;
@@ -478,6 +490,9 @@ class AiSettings {
   final String imageModelId;
   final String imageSize;
 
+  /// Ceiling on the pictures a request carries, see [defaultHistoryImages].
+  /// Zero sends none at all, not even the ones the user just sent.
+  final int historyImages;
 
   AiSettings copyWith({
     List<Provider>? providers,
@@ -495,6 +510,7 @@ class AiSettings {
     String? imageProviderId,
     String? imageModelId,
     String? imageSize,
+    int? historyImages,
   }) =>
       AiSettings(
         providers: providers ?? this.providers,
@@ -512,6 +528,7 @@ class AiSettings {
         imageProviderId: imageProviderId ?? this.imageProviderId,
         imageModelId: imageModelId ?? this.imageModelId,
         imageSize: imageSize ?? this.imageSize,
+        historyImages: historyImages ?? this.historyImages,
       );
 
   Map<String, dynamic> toJson() => {
@@ -530,6 +547,7 @@ class AiSettings {
         'imageProviderId': imageProviderId,
         'imageModelId': imageModelId,
         'imageSize': imageSize,
+        'historyImages': historyImages,
       };
 
   static AiSettings fromJson(Map<String, dynamic> j) => AiSettings(
@@ -548,6 +566,10 @@ class AiSettings {
         imageProviderId: j['imageProviderId'] as String? ?? '',
         imageModelId: j['imageModelId'] as String? ?? '',
         imageSize: j['imageSize'] as String? ?? '1024x1024',
+        // a settings blob written before this knob existed, or one edited by
+        // hand, must not be able to talk the app into sending a thousand
+        // pictures or none at all by accident
+        historyImages: ((j['historyImages'] as num?)?.toInt() ?? defaultHistoryImages).clamp(0, maxHistoryImages),
       );
 }
 

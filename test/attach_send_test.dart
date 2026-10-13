@@ -52,7 +52,7 @@ void main() {
     'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==',
   );
 
-  Future<Store> boot({bool blind = false}) async {
+  Future<Store> boot({bool blind = false, int historyImages = defaultHistoryImages}) async {
     final s = await Store.load(dbPath: p.join(device.path, 'paradise.db'));
     final ai = await AiConfig.load();
     // the chain model must advertise what it can take or the history rebuild
@@ -70,7 +70,7 @@ void main() {
           else
             p,
       ];
-      return s.copyWith(providers: providers);
+      return s.copyWith(providers: providers, historyImages: historyImages);
     });
     s.attachAi(ai);
     return s;
@@ -157,12 +157,123 @@ void main() {
     expect(rec.seenText.join(), contains('[Photo attached]'), reason: 'the placeholder line still describes the picture');
     expect(rec.seenText.join(), contains('look at this'));
   });
+
+  // ── issue 19: the window goes up whole every turn, so what travels inside
+  // it is the only thing the client gets to decide about
+
+  File photo(String name) => File(p.join(device.path, name))..writeAsBytesSync(png);
+
+  /// Waits for the nth request to reach the wire and for the bubble it
+  /// produced to land, then lets the run release the chat so the next send is
+  /// not swallowed by the one still in flight. The reply is paced, so waiting
+  /// on the request alone would build the next window mid answer.
+  Future<void> awaitTurn(int n, Chat chat) async {
+    final answered = () => chat.msgs.where((m) => !m.out && !m.service && m.text.isNotEmpty).length;
+    final before = answered();
+    var waited = 0;
+    while (waited < 8000 && (rec.requests.length < n || answered() <= before)) {
+      await Future<void>.delayed(const Duration(milliseconds: 50));
+      waited += 50;
+    }
+    expect(rec.requests.length, greaterThanOrEqualTo(n), reason: 'request $n never ran: ${rec.log.join(' | ')}');
+    expect(answered(), greaterThan(before), reason: 'the reply to request $n never landed');
+    await Future<void>.delayed(const Duration(milliseconds: 150));
+  }
+
+  test('only the newest pictures ride along, and the batch just sent all does', () async {
+    final s = await boot();
+    final r = rig(s);
+
+    s.sendBatch(r.chat, [
+      for (var i = 1; i <= 4; i++) (kind: MsgKind.photo, data: {'path': photo('p$i.png').path, 'name': 'p$i.png'}, text: i == 1 ? 'four shots' : ''),
+    ]);
+    await awaitTurn(1, r.chat);
+    expect(rec.requests[0].images.length, 4, reason: 'the pictures the user just sent are the question, not history');
+
+    s.send(r.chat, 'now just words');
+    await awaitTurn(2, r.chat);
+    expect(rec.requests[1].images.length, defaultHistoryImages, reason: 'older pictures must not ride every single reply');
+    expect(rec.requests[1].texts.where((t) => t.contains('[Photo attached]')).length, 4, reason: 'every picture still leaves a line the model can read');
+  });
+
+  test('the ceiling the user picked is the one that applies', () async {
+    final s = await boot(historyImages: 1);
+    final r = rig(s);
+
+    s.sendBatch(r.chat, [
+      for (var i = 1; i <= 2; i++) (kind: MsgKind.photo, data: {'path': photo('q$i.png').path, 'name': 'q$i.png'}, text: i == 1 ? 'two shots' : ''),
+    ]);
+    await awaitTurn(1, r.chat);
+    expect(rec.requests[0].images.length, 2, reason: 'both are still the pending turn');
+
+    s.send(r.chat, 'and now words');
+    await awaitTurn(2, r.chat);
+    expect(rec.requests[1].images.length, 1, reason: 'the setting is not a constant the code ignores');
+  });
+
+  test('the off setting sends text only, even for the pictures just sent', () async {
+    final s = await boot(historyImages: 0);
+    final r = rig(s);
+
+    s.sendBatch(r.chat, [
+      (kind: MsgKind.photo, data: {'path': photo('off.png').path, 'name': 'off.png'}, text: 'look at this'),
+    ]);
+    await awaitTurn(1, r.chat);
+    expect(rec.requests[0].images, isEmpty, reason: 'zero means no picture at all, including the pending one');
+    expect(rec.requests[0].texts.join(), contains('[Photo attached]'));
+  });
+
+  test('a picture is read and encoded once, not once per reply', () async {
+    final s = await boot();
+    final r = rig(s);
+    final img = photo('once.png');
+
+    s.sendBatch(r.chat, [
+      (kind: MsgKind.photo, data: {'path': img.path, 'name': 'once.png'}, text: 'what is this'),
+    ]);
+    await awaitTurn(1, r.chat);
+    expect(rec.requests[0].images.length, 1);
+    if (Platform.isWindows) {
+      markTestSkipped('file modes do not gate reads on this platform');
+      return;
+    }
+    // the proof that the second reply never opened the file: make it
+    // unreadable and see that the picture still rides
+    await Process.run('chmod', ['000', img.path]);
+    try {
+      await img.readAsBytes();
+      markTestSkipped('this user can still read a mode 000 file, so the proof does not hold');
+      return;
+    } catch (_) {}
+
+    s.send(r.chat, 'and again');
+    await awaitTurn(2, r.chat);
+    expect(rec.requests[1].images.map((e) => e.data), rec.requests[0].images.map((e) => e.data), reason: 'the encoding came back out of the cache');
+    expect(rec.requests[1].images.length, 1);
+  });
+
+  test('the resolution of a sent picture rides along for the context estimate', () async {
+    final s = await boot();
+    final r = rig(s);
+
+    s.sendBatch(r.chat, [
+      (kind: MsgKind.photo, data: {'path': photo('size.png').path, 'name': 'size.png'}, text: 'what is this'),
+    ]);
+    await awaitTurn(1, r.chat);
+    expect(rec.requests[0].images.first.width, 1, reason: 'the probe reads the png header');
+    expect(rec.requests[0].images.first.height, 1);
+  });
 }
 
 class _RecorderAdapter implements ProviderAdapter {
   final done = Completer<void>();
   final seenText = <String>[];
   final log = <String>[];
+
+  /// One row per request: what it carried. Counting per request is the whole
+  /// point of issue 19, a running total cannot show that a later reply carries
+  /// less than an earlier one.
+  final requests = <({List<String> texts, List<({String data, int? width, int? height})> images, List<String> videos})>[];
   var imageParts = 0;
   var videoParts = 0;
   var streamRan = false;
@@ -171,6 +282,9 @@ class _RecorderAdapter implements ProviderAdapter {
   @override
   Stream<StreamChunk> stream(StreamRequest req) async* {
     streamRan = true;
+    final texts = <String>[];
+    final images = <({String data, int? width, int? height})>[];
+    final videos = <String>[];
     try {
       log.add('model=${req.model} turns=${req.messages.length} system=${req.system.length}');
       for (final t in req.messages) {
@@ -178,16 +292,20 @@ class _RecorderAdapter implements ProviderAdapter {
         for (final part in t.content) {
           switch (part) {
             case TextPart(:final text):
+              texts.add(text);
               seenText.add(text);
-            case ImagePart():
+            case ImagePart(:final data, :final pixelWidth, :final pixelHeight):
+              images.add((data: data, width: pixelWidth, height: pixelHeight));
               imageParts++;
-            case VideoPart():
+            case VideoPart(:final data):
+              videos.add(data);
               videoParts++;
             default:
               break;
           }
         }
       }
+      requests.add((texts: texts, images: images, videos: videos));
       yield const StreamChunk.text('ok');
     } catch (e) {
       error = e;

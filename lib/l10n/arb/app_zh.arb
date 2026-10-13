@@ -288,6 +288,30 @@
   "@aiSummaryLength": {
     "description": "Row that picks the summary budget"
   },
+  "aiHistoryImagesHeader": "历史图片",
+  "@aiHistoryImagesHeader": {
+    "description": "Section header of the history picture settings"
+  },
+  "aiHistoryImagesFooter": "每回复一次都要重发整个上下文，窗口里的图片就会跟着再传一遍。只有最新的几张会随请求发送，更早的只保留文字描述。刚刚发的那几张一定会带上。",
+  "@aiHistoryImagesFooter": {
+    "description": "Section footer of the history picture settings"
+  },
+  "aiHistoryImages": "随请求发送的图片",
+  "@aiHistoryImages": {
+    "description": "Row that picks how many history pictures ride along"
+  },
+  "aiHistoryImagesTitle": "随请求发送的图片",
+  "@aiHistoryImagesTitle": {
+    "description": "Picker title for the history picture ceiling"
+  },
+  "aiHistoryImagesOff": "关闭",
+  "@aiHistoryImagesOff": {
+    "description": "Value of the history picture ceiling when no picture is sent"
+  },
+  "aiHistoryImagesOffSub": "只留文字",
+  "@aiHistoryImagesOffSub": {
+    "description": "Subtitle of the off option for the history picture ceiling"
+  },
   "aiAddToChainTitle": "添加到兜底链",
   "@aiAddToChainTitle": {
     "description": "Model picker title when appending to the chain"
@@ -1712,6 +1736,10 @@
   "pluralTokens": "{count, plural, other{{count} 个 token}}",
   "@pluralTokens": {
     "description": "Count of tokens"
+  },
+  "pluralImages": "{count, plural, other{{count} 张图片}}",
+  "@pluralImages": {
+    "description": "Count of pictures the app sends along with a request"
   },
   "cardCreate": "创建卡片",
   "@cardCreate": {

@@ -22,6 +22,7 @@ import 'ai/compaction.dart';
 import 'ai/content.dart';
 import 'ai/errors.dart';
 import 'ai/image_gen.dart';
+import 'ai/media_probe.dart';
 import 'ai/prompt.dart';
 import 'ai/speech.dart';
 import 'ai/provider_model.dart';
@@ -104,6 +105,41 @@ class _InlineBudget {
   _InlineBudget(this.left);
   int left;
 }
+
+/// One media file, encoded and ready for a request: the base64 payload with no
+/// `data:` wrapper, because every adapter writes the mime beside it anyway.
+final class _Encoded {
+  const _Encoded({required this.payload, required this.mime, this.width, this.height});
+  final String payload;
+  final String mime;
+
+  /// Resolution, read from the encoded header. Only the context estimate reads
+  /// it: the wire payload is the base64 either way.
+  final int? width;
+  final int? height;
+}
+
+/// Encoded attachments, kept so a picture is read and base64 encoded once per
+/// file instead of once per reply.
+///
+/// Budgeted by what the value costs the heap rather than by the file on disk:
+/// base64 is four thirds of the file and a Dart string is two bytes a
+/// character, so one 5 MB photo sits here as about 13 MB. The budget is set to
+/// hold a default window of ordinary phone photos, and overrunning it costs
+/// nothing but a re-encode, so a stingier number would only be a different
+/// guess at the same thing.
+final ByteLruCache<String, _Encoded> _mediaCache = ByteLruCache<String, _Encoded>(
+  maxBytes: 32 * 1024 * 1024,
+  sizeOf: (_, v) => v.payload.length * 2,
+);
+
+/// Ceiling on one picture, above which the bytes are dropped rather than
+/// shrunk: a request the provider rejects costs the whole reply.
+const _maxImageBytes = 5 * 1024 * 1024;
+
+/// Same ceiling for a clip, which Gemini caps far higher than a picture but
+/// not without limit.
+const _maxVideoBytes = 15 * 1024 * 1024;
 
 // single source of truth for chats and settings
 class Store extends ChangeNotifier {
@@ -1921,42 +1957,58 @@ void editPersona(Chat c, String name, String prompt, {String? bio, String? greet
     }
   }
 
-  Future<String?> _dataUrl(String? path) async {
-    if (path == null) return null;
-    try {
-      final f = File(path);
-      if (await f.length() > 5 * 1024 * 1024) return null;
-      final ext = path.split('.').last.toLowerCase();
-      final mime = ext == 'png' ? 'image/png' : (ext == 'webp' ? 'image/webp' : (ext == 'gif' ? 'image/gif' : 'image/jpeg'));
-      return 'data:$mime;base64,${base64Encode(await f.readAsBytes())}';
-    } catch (_) {
-      return null;
-    }
-  }
-
+  /// The mime types named by extension. A picture that is not one of the three
+  /// still rides as a jpeg, which is what a phone camera and every gallery
+  /// picker hand over; a video has no such fallback, so an unknown container is
+  /// dropped rather than announced as something the provider cannot read.
+  ///
   /// Gemini takes inline video but caps the whole request near 20 MB, and
   /// base64 inflates by 4/3, so phone clips above 15 MB stay text-only rather
-  /// than failing the request
-  Future<String?> _videoDataUrl(String? path) async {
+  /// than failing the request.
+  static const _imageMimes = {'png': 'image/png', 'webp': 'image/webp', 'gif': 'image/gif'};
+  static const _videoMimes = {
+    'mp4': 'video/mp4',
+    'webm': 'video/webm',
+    'mov': 'video/quicktime',
+    'mkv': 'video/x-matroska',
+    'avi': 'video/x-msvideo',
+    '3gp': 'video/3gpp',
+    'm4v': 'video/mp4',
+    'mpeg': 'video/mpeg',
+    'mpg': 'video/mpeg',
+  };
+
+  /// Reads a media file, encodes it once, and hands back everything the request
+  /// needs from it.
+  ///
+  /// Chat Completions is stateless, so the same picture used to be read off the
+  /// disk and base64 encoded again for every single reply: once per turn the
+  /// user typed anything at all. [_mediaCache] keeps the encoding, so the second
+  /// and later replies over a picture cost nothing but the bytes on the wire.
+  Future<_Encoded?> _encoded(String? path, {required bool video}) async {
     if (path == null) return null;
-    const mimes = {
-      'mp4': 'video/mp4',
-      'webm': 'video/webm',
-      'mov': 'video/quicktime',
-      'mkv': 'video/x-matroska',
-      'avi': 'video/x-msvideo',
-      '3gp': 'video/3gpp',
-      'm4v': 'video/mp4',
-      'mpeg': 'video/mpeg',
-      'mpg': 'video/mpeg',
-    };
     try {
       final f = File(path);
-      if (await f.length() > 15 * 1024 * 1024) return null;
+      final length = await f.length();
+      if (length > (video ? _maxVideoBytes : _maxImageBytes)) return null;
       final ext = path.split('.').last.toLowerCase();
-      final mime = mimes[ext];
+      final mime = video ? _videoMimes[ext] : (_imageMimes[ext] ?? 'image/jpeg');
       if (mime == null) return null;
-      return 'data:$mime;base64,${base64Encode(await f.readAsBytes())}';
+      // the key carries size and mtime, so a path the system later hands out
+      // for a different file cannot serve the previous file's bytes
+      final key = '$path|$length|${(await f.lastModified()).millisecondsSinceEpoch}';
+      final cached = _mediaCache.get(key);
+      if (cached != null) return cached;
+      final bytes = await f.readAsBytes();
+      final size = video ? null : imagePixelSize(bytes);
+      final hit = _Encoded(
+        payload: base64Encode(bytes),
+        mime: mime,
+        width: size?.width,
+        height: size?.height,
+      );
+      _mediaCache.put(key, hit);
+      return hit;
     } catch (_) {
       return null;
     }
@@ -2180,84 +2232,46 @@ void editPersona(Chat c, String name, String prompt, {String? bio, String? greet
     }
   }
 
-  /// Rebuilds the request turns, loading base64 for recent photos.
+  /// Rebuilds the request turns, carrying real attachments for the pictures
+  /// that are worth their bytes.
+  ///
+  /// The protocol is stateless, so the window goes up whole every turn; what
+  /// the client decides is how much of it is media. Every picture the user ever
+  /// sent used to be re-encoded into each request, which made one message cost
+  /// 1.33x every byte the chat had ever been shown and the bill grow with the
+  /// square of the photo count. Now only the newest few ride along and the rest
+  /// keep their `[Photo attached]` line.
   Future<List<ChatTurn>> _history(Chat c) async {
     final items = _historyItems(c);
     final cfg = _ai;
+    final byItem = {for (final h in items) h.id: h};
+    final byMsg = {for (final m in c.msgs) m.id: m};
     var turns = assembleTurns(items, cfg?.compactionOf(c.id));
 
-    // rebuild the tail with real attachments, the summary head stays text only
-    final rebuilt = <ChatTurn>[];
     // sticker images ride the same path as photos but only into a chain that
     // can see: handing an image part to a text model fails the whole request,
     // and the same gate covers photos and videos or a fallback that answers
     // blind brings the whole run down with a 400
     final caps = cfg == null ? const ModelCaps() : chainCaps(cfg.settings, chainFor(c));
-    final vision = caps.vision;
-    final videoOk = caps.video;
+    final media = await _loadMedia(turns, byMsg, vision: caps.vision, video: caps.video, limit: cfg?.settings.historyImages ?? defaultHistoryImages);
+
+    // rebuild the tail with the media that made the cut, the summary head stays
+    // text only and a picture that did not simply keeps its placeholder
+    final rebuilt = <ChatTurn>[];
     for (final turn in turns) {
-      final source = turn.sourceId == null ? null : items.where((h) => h.id == turn.sourceId).firstOrNull;
-      if (source == null) {
+      final source = turn.sourceId == null ? null : byItem[turn.sourceId];
+      final msg = turn.sourceId == null ? null : byMsg[turn.sourceId];
+      final encoded = msg == null ? null : media[msg.id];
+      // the assistant's own media never goes up: the provider already has it,
+      // and the describe line is what tells the model it is there
+      if (source == null || msg == null || !msg.out || encoded == null) {
         rebuilt.add(turn);
         continue;
       }
-      final msg = c.msgs.where((m) => m.id == source.id).firstOrNull;
-      if (msg == null || !msg.out) {
-        rebuilt.add(turn);
-        continue;
-      }
-      if (msg.kind == MsgKind.sticker) {
-        // emoji stickers are already glyphs in the text; image and gif ones
-        // only add bytes when a local file exists and the model has vision
-        final isGlyph = '${msg.data['emoji'] ?? ''}'.isNotEmpty;
-        if (isGlyph || !vision) {
-          rebuilt.add(turn);
-          continue;
-        }
-        final loaded = await _dataUrl(msg.data['path'] as String?);
-        if (loaded == null) {
-          rebuilt.add(turn);
-          continue;
-        }
-        final comma = loaded.indexOf(',');
-        final mime = comma > 0 ? loaded.substring(5, comma) : 'image/jpeg';
-        rebuilt.add(ChatTurn(turn.role, [TextPart(source.content), ImagePart(loaded.substring(comma + 1), mime)], sourceId: turn.sourceId));
-        continue;
-      }
-      if (msg.kind != MsgKind.photo && msg.kind != MsgKind.video) {
-        rebuilt.add(turn);
-        continue;
-      }
-      if (msg.kind == MsgKind.video) {
-        if (!videoOk) {
-          // the chain cannot watch: keep the text placeholder, drop the bytes
-          rebuilt.add(turn);
-          continue;
-        }
-        final loaded = await _videoDataUrl(msg.data['path'] as String?);
-        if (loaded == null) {
-          rebuilt.add(turn);
-          continue;
-        }
-        final comma = loaded.indexOf(',');
-        final mime = comma > 0 ? loaded.substring(5, comma) : 'video/mp4';
-        rebuilt.add(ChatTurn(turn.role, [TextPart(source.content), VideoPart(loaded.substring(comma + 1), mime)], sourceId: turn.sourceId));
-        continue;
-      }
-      if (!vision) {
-        // same blind-chain guard for photos: the placeholder line already
-        // tells the model a picture was here, the bytes would only 400
-        rebuilt.add(turn);
-        continue;
-      }
-      final loaded = await _dataUrl(msg.data['path'] as String?);
-      if (loaded == null) {
-        rebuilt.add(turn);
-        continue;
-      }
-      final comma = loaded.indexOf(',');
-      final mime = comma > 0 ? loaded.substring(5, comma) : 'image/jpeg';
-      rebuilt.add(ChatTurn(turn.role, [TextPart(source.content), ImagePart(loaded.substring(comma + 1), mime)], sourceId: turn.sourceId));
+      final part = msg.kind == MsgKind.video
+          ? VideoPart(encoded.payload, encoded.mime, seconds: (msg.data['duration'] as num?)?.toInt())
+          : ImagePart(encoded.payload, encoded.mime, pixelWidth: encoded.width, pixelHeight: encoded.height);
+      rebuilt.add(ChatTurn(turn.role, [TextPart(source.content), part], sourceId: turn.sourceId));
     }
     turns = rebuilt;
 
@@ -2273,6 +2287,91 @@ void editPersona(Chat c, String name, String prompt, {String? bio, String? greet
       if (node != null) turns = truncateHistory(turns, contextWindowOf(active, node));
     }
     return turns;
+  }
+
+  /// The attachments one request carries, keyed by the message they came from.
+  ///
+  /// Newest first, and only [limit] of the answered ones: a picture the user is
+  /// replying to is the question rather than history, so a batch of ten photos
+  /// still all go up, but the tenth photo from last week does not. A file that
+  /// cannot be encoded hands its slot down to the next picture back instead of
+  /// wasting it, so one oversized original cannot starve the ones behind it.
+  Future<Map<String, _Encoded>> _loadMedia(
+    List<ChatTurn> turns,
+    Map<String, Msg> byMsg, {
+    required bool vision,
+    required bool video,
+    required int limit,
+  }) async {
+    final out = <String, _Encoded>{};
+    if (limit <= 0 || (!vision && !video)) return out;
+    // everything after the last thing the assistant said is still the pending
+    // turn, whatever the ceiling says
+    var lastAnswer = -1;
+    for (var i = 0; i < turns.length; i++) {
+      if (turns[i].role != 'user') lastAnswer = i;
+    }
+    var carried = 0;
+    for (var i = turns.length - 1; i >= 0; i--) {
+      final pending = i > lastAnswer;
+      if (!pending && carried >= limit) break;
+      final msg = turns[i].sourceId == null ? null : byMsg[turns[i].sourceId];
+      if (msg == null || !msg.out) continue;
+      final isVideo = msg.kind == MsgKind.video;
+      if (msg.kind != MsgKind.photo && !isVideo && msg.kind != MsgKind.sticker) continue;
+      // emoji stickers are already glyphs in the text, and nothing rides a
+      // chain that cannot see it
+      if (!isVideo && !vision) continue;
+      if (isVideo && !video) continue;
+      if (msg.kind == MsgKind.sticker && '${msg.data['emoji'] ?? ''}'.isNotEmpty) continue;
+      final hit = await _encoded(msg.data['path'] as String?, video: isVideo);
+      if (hit == null) continue;
+      if (!pending) carried++;
+      out[msg.id] = hit;
+    }
+    return out;
+  }
+
+  /// The history a reply goes out with, compacted first when the chat's own
+  /// accounting says the window is nearly full.
+  ///
+  /// Compaction used to run only as the answer to a provider refusing the
+  /// request, so the way a user found out their window was too small was by
+  /// being refused. [AiConfig.planFor] already knew when a chat was near its
+  /// limit and nothing called it.
+  Future<List<ChatTurn>> _preparedHistory(Chat c, String system, {AiCancel? cancel}) async {
+    final turns = await _history(c);
+    final cfg = _ai;
+    final node = cfg == null ? null : chainFor(c).firstOrNull;
+    if (cfg == null || node == null) return turns;
+    if (!cfg.planFor(turns: turns, system: system, node: node).needsCompaction) return turns;
+    return await _compact(c, node, cancel: cancel) ?? turns;
+  }
+
+  /// Summarises the head of a chat and rebuilds the request around it, or null
+  /// when no summary could be produced. Every compaction goes through here so
+  /// the proactive one and the one a provider 400 triggers cannot drift apart.
+  Future<List<ChatTurn>?> _compact(Chat c, ChainNode? fallback, {AiCancel? cancel}) async {
+    final cfg = _ai;
+    final node = cfg?.summaryNode(fallback);
+    if (cfg == null || node == null) return null;
+    try {
+      final result = await compactHistory(
+        settings: cfg.settings,
+        apiKeys: cfg.apiKeys,
+        system: _systemPrompt(c),
+        history: _historyItems(c),
+        previous: cfg.compactionOf(c.id),
+        node: node,
+        cancel: cancel,
+      );
+      cfg.setCompaction(c.id, result);
+      return await _history(c);
+    } catch (_) {
+      // a summary that failed costs one re-encode of the request, never the
+      // reply the user is waiting for
+      return null;
+    }
   }
 
   Future<void> _reply(Chat c) async {
@@ -2503,8 +2602,8 @@ void editPersona(Chat c, String name, String prompt, {String? bio, String? greet
     }
 
     try {
-      var turns = await _history(c);
       final system = agent ? await agentSystem(c) : _systemPrompt(c);
+      var turns = await _preparedHistory(c, system, cancel: run.token);
       // a plain reply is one pass, an agent reply keeps going while the model
       // asks for tools. The cap is the agentMaxPass setting: a confused model
       // cannot spin forever unless the user opened the cap to none.
@@ -2530,20 +2629,11 @@ void editPersona(Chat c, String name, String prompt, {String? bio, String? greet
               }
             },
             onCompact: () async {
-              // summaries go through whatever this chat would answer with, so an
-              // override is summarised by the same model that carries the chat
-              final node = nodes.firstOrNull;
-              if (node == null) return;
-              final result = await compactHistory(
-                settings: cfg.settings,
-                apiKeys: cfg.apiKeys,
-                system: _systemPrompt(c),
-                history: _historyItems(c),
-                previous: cfg.compactionOf(c.id),
-                node: node,
-              );
-              cfg.setCompaction(c.id, result);
-              turns = await _history(c);
+              // the overflow path lands here too: a summary is written by the
+              // model the user picked for it, or by whatever is answering when
+              // they picked none
+              final rebuilt = await _compact(c, nodes.firstOrNull, cancel: run.token);
+              if (rebuilt != null) turns = rebuilt;
             },
             onEvent: (e) {
               // a node gave up, note which one answered instead

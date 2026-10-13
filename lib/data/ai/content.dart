@@ -12,18 +12,30 @@ class TextPart extends ContentPart {
 
 // base64 image with its mime, loaded on demand and never written to storage
 class ImagePart extends ContentPart {
-  const ImagePart(this.data, this.mime);
+  const ImagePart(this.data, this.mime, {this.pixelWidth, this.pixelHeight});
   final String data;
   final String mime;
+
+  /// Resolution read out of the encoded header, null for a format nobody
+  /// here can parse. Nothing on the wire reads these; they exist so the
+  /// context estimate can price the picture the way the provider bills it,
+  /// which is by pixel count rather than by byte count.
+  final int? pixelWidth;
+  final int? pixelHeight;
 }
 
 // base64 video with its mime, same on-demand loading as ImagePart. Only Gemini
 // endpoints accept it today; the other adapters drop the part and keep the
 // text lead, so a fallback chain that degrades to a text model stays valid
 class VideoPart extends ContentPart {
-  const VideoPart(this.data, this.mime);
+  const VideoPart(this.data, this.mime, {this.seconds});
   final String data;
   final String mime;
+
+  /// Length in whole seconds when the message recorded one. Video endpoints
+  /// bill by sampled frame, so this is what the estimate needs; the byte
+  /// length stands in when the clip came from somewhere that did not time it.
+  final int? seconds;
 }
 
 /// A tool invocation the model asked for. Kept in the turn history so the next

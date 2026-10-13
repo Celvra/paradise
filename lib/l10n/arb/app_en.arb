@@ -311,6 +311,30 @@
   "@aiSummaryLength": {
     "description": "Row that picks the summary budget"
   },
+  "aiHistoryImagesHeader": "History images",
+  "@aiHistoryImagesHeader": {
+    "description": "Section header of the history picture settings"
+  },
+  "aiHistoryImagesFooter": "Every reply resends the whole window, so every picture in it is uploaded again. Only the newest few travel with the request; older ones keep their text line. The pictures you just sent always travel.",
+  "@aiHistoryImagesFooter": {
+    "description": "Section footer of the history picture settings"
+  },
+  "aiHistoryImages": "Pictures sent along",
+  "@aiHistoryImages": {
+    "description": "Row that picks how many history pictures ride along"
+  },
+  "aiHistoryImagesTitle": "Pictures sent along",
+  "@aiHistoryImagesTitle": {
+    "description": "Picker title for the history picture ceiling"
+  },
+  "aiHistoryImagesOff": "Off",
+  "@aiHistoryImagesOff": {
+    "description": "Value of the history picture ceiling when no picture is sent"
+  },
+  "aiHistoryImagesOffSub": "Text placeholders only",
+  "@aiHistoryImagesOffSub": {
+    "description": "Subtitle of the off option for the history picture ceiling"
+  },
   "aiAddToChainTitle": "Add to chain",
   "@aiAddToChainTitle": {
     "description": "Model picker title when appending to the chain"
@@ -1794,6 +1818,15 @@
   "pluralTokens": "{count, plural, other{{count} tokens}}",
   "@pluralTokens": {
     "description": "Count of tokens",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pluralImages": "{count, plural, other{{count} pictures}}",
+  "@pluralImages": {
+    "description": "Count of pictures the app sends along with a request",
     "placeholders": {
       "count": {
         "type": "int"

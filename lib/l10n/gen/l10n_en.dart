@@ -261,6 +261,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aiSummaryLength => 'Summary length';
 
   @override
+  String get aiHistoryImagesHeader => 'History images';
+
+  @override
+  String get aiHistoryImagesFooter =>
+      'Every reply resends the whole window, so every picture in it is uploaded again. Only the newest few travel with the request; older ones keep their text line. The pictures you just sent always travel.';
+
+  @override
+  String get aiHistoryImages => 'Pictures sent along';
+
+  @override
+  String get aiHistoryImagesTitle => 'Pictures sent along';
+
+  @override
+  String get aiHistoryImagesOff => 'Off';
+
+  @override
+  String get aiHistoryImagesOffSub => 'Text placeholders only';
+
+  @override
   String get aiAddToChainTitle => 'Add to chain';
 
   @override
@@ -1427,6 +1446,16 @@ class AppLocalizationsEn extends AppLocalizations {
       count,
       locale: localeName,
       other: '$count tokens',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String pluralImages(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count pictures',
     );
     return '$_temp0';
   }

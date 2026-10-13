@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'chain.dart';
 import 'content.dart';
+import 'errors.dart';
 import 'provider_model.dart';
 import 'tokenizer.dart';
 import 'adapter.dart';
@@ -67,17 +68,29 @@ List<ChatTurn> assembleTurns(List<HistoryItem> history, Compaction? checkpoint) 
   return turns;
 }
 
-int estimateHistoryTokens(List<HistoryItem> history) {
-  var total = 0;
-  for (final item in history) {
-    total += 4 + estimateTokens(item.content);
+/// What one request costs the window, pictures included.
+///
+/// This walks the assembled turns rather than the text transcript on purpose.
+/// The transcript describes a photo as five words, so counting it there prices
+/// a window full of pictures at nothing; the turns are what actually goes over
+/// the wire, and each [ImagePart] carries the resolution its own cost is
+/// derived from. [system] is counted too, because a persona, a world book and
+/// a skill listing are the part of the request the transcript never sees.
+int estimateRequestTokens(List<ChatTurn> turns, {String system = '', int overheadPerTurn = 4}) {
+  var total = system.isEmpty ? 0 : overheadPerTurn + estimateTokens(system);
+  for (final turn in turns) {
+    var own = 0;
+    for (final part in turn.content) {
+      own += estimatePartTokens(part);
+    }
+    total += overheadPerTurn + own;
   }
   return total;
 }
 
-bool needsCompaction(List<HistoryItem> history, int contextWindow, double triggerRatio) {
+bool needsCompaction(List<ChatTurn> turns, int contextWindow, double triggerRatio, {String system = ''}) {
   if (contextWindow <= 0) return false;
-  return estimateHistoryTokens(history) > contextWindow * triggerRatio;
+  return estimateRequestTokens(turns, system: system) > contextWindow * triggerRatio;
 }
 
 List<List<HistoryItem>> _chunk(List<HistoryItem> items, int size) {
@@ -108,6 +121,7 @@ Future<String> _summarizeOnce({
   required String system,
   required ChainNode node,
   required String prompt,
+  AiCancel? cancel,
 }) async {
   var collected = '';
   final outcome = await runChain(
@@ -118,7 +132,7 @@ Future<String> _summarizeOnce({
     nodes: [node],
     // the same node keeps one session id so a gateway that routes on it
     // keeps every summary for this model on one warm backend
-    options: ChainOptions(sessionId: 'compact:${node.providerId}:${node.modelId}', onChunk: (chunk) {
+    options: ChainOptions(sessionId: 'compact:${node.providerId}:${node.modelId}', cancel: cancel, onChunk: (chunk) {
       if (chunk.isText) collected += chunk.delta;
     }, backoffMs: const [800, 1600]),
   );
@@ -133,6 +147,7 @@ Future<Compaction> compactHistory({
   required List<HistoryItem> history,
   required Compaction? previous,
   required ChainNode node,
+  AiCancel? cancel,
 }) async {
   final cutIndex = previous == null ? -1 : history.indexWhere((m) => m.id == previous.upToMessageId);
   final start = cutIndex >= 0 ? cutIndex : 0;
@@ -145,15 +160,15 @@ Future<Compaction> compactHistory({
 
   String summary;
   if (parts.length == 1) {
-    summary = await _summarizeOnce(settings: settings, apiKeys: apiKeys, system: system, node: node, prompt: '$_mapPrompt\n\n${_transcript(parts[0])}');
+    summary = await _summarizeOnce(settings: settings, apiKeys: apiKeys, system: system, node: node, cancel: cancel, prompt: '$_mapPrompt\n\n${_transcript(parts[0])}');
   } else {
     // long histories are summarized in bounded chunks then merged
     final partials = <String>[];
     for (final part in parts) {
-      partials.add(await _summarizeOnce(settings: settings, apiKeys: apiKeys, system: system, node: node, prompt: '$_mapPrompt\n\n${_transcript(part)}'));
+      partials.add(await _summarizeOnce(settings: settings, apiKeys: apiKeys, system: system, node: node, cancel: cancel, prompt: '$_mapPrompt\n\n${_transcript(part)}'));
     }
     final merged = partials.asMap().entries.map((e) => '[Part ${e.key + 1}]${e.value}').join('\n\n');
-    summary = await _summarizeOnce(settings: settings, apiKeys: apiKeys, system: system, node: node, prompt: '$_reducePrompt\n\n$merged');
+    summary = await _summarizeOnce(settings: settings, apiKeys: apiKeys, system: system, node: node, cancel: cancel, prompt: '$_reducePrompt\n\n$merged');
   }
 
   final digest = target
@@ -178,11 +193,7 @@ Future<Compaction> compactHistory({
 // hysteresis keeps the cut point still instead of moving every turn
 List<ChatTurn> truncateHistory(List<ChatTurn> turns, int contextWindow, {double keepRatio = 0.5}) {
   if (contextWindow <= 0) return turns;
-  var total = 0;
-  for (final turn in turns) {
-    total += 4 + estimateTokens(partsToText(turn.content));
-  }
-  if (total <= contextWindow * 0.9) return turns;
+  if (estimateRequestTokens(turns) <= contextWindow * 0.9) return turns;
   final targetCount = max(4, (turns.length * keepRatio).round());
   // do not orphan a reply from its question
   var cut = max(0, turns.length - targetCount);

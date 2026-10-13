@@ -531,6 +531,42 @@ abstract class AppLocalizations {
   /// **'Summary length'**
   String get aiSummaryLength;
 
+  /// Section header of the history picture settings
+  ///
+  /// In en, this message translates to:
+  /// **'History images'**
+  String get aiHistoryImagesHeader;
+
+  /// Section footer of the history picture settings
+  ///
+  /// In en, this message translates to:
+  /// **'Every reply resends the whole window, so every picture in it is uploaded again. Only the newest few travel with the request; older ones keep their text line. The pictures you just sent always travel.'**
+  String get aiHistoryImagesFooter;
+
+  /// Row that picks how many history pictures ride along
+  ///
+  /// In en, this message translates to:
+  /// **'Pictures sent along'**
+  String get aiHistoryImages;
+
+  /// Picker title for the history picture ceiling
+  ///
+  /// In en, this message translates to:
+  /// **'Pictures sent along'**
+  String get aiHistoryImagesTitle;
+
+  /// Value of the history picture ceiling when no picture is sent
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get aiHistoryImagesOff;
+
+  /// Subtitle of the off option for the history picture ceiling
+  ///
+  /// In en, this message translates to:
+  /// **'Text placeholders only'**
+  String get aiHistoryImagesOffSub;
+
   /// Model picker title when appending to the chain
   ///
   /// In en, this message translates to:
@@ -2576,6 +2612,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count, plural, other{{count} tokens}}'**
   String pluralTokens(int count);
+
+  /// Count of pictures the app sends along with a request
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, other{{count} pictures}}'**
+  String pluralImages(int count);
 
   /// No description provided for @cardCreate.
   ///
