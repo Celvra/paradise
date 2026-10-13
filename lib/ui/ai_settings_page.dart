@@ -12,6 +12,7 @@ import '../data/ai_config.dart';
 import '../l10n/x.dart';
 import 'ai_model_picker.dart';
 import 'ai_widgets.dart';
+import 'compaction_page.dart';
 import 'provider_detail_page.dart';
 import 'tg_cells.dart';
 
@@ -338,8 +339,25 @@ class _ChainTab extends StatelessWidget {
             TgTextCell(
               title: l.aiSummaryLength,
               value: l.pluralChars(c.targetChars),
-              divider: false,
               onTap: () => _pickTarget(context),
+            ),
+            TgTextCell(
+              title: l.aiCompactTestRow,
+              icon: Ic.list,
+              divider: false,
+              onTap: () => openCompactionTest(context),
+            ),
+          ],
+        ),
+        TgSection(
+          header: l.aiHistoryImagesHeader,
+          footer: l.aiHistoryImagesFooter,
+          children: [
+            TgTextCell(
+              title: l.aiHistoryImages,
+              value: s.historyImages == 0 ? l.aiHistoryImagesOff : l.pluralImages(s.historyImages),
+              divider: false,
+              onTap: () => _pickHistoryImages(context),
             ),
           ],
         ),
@@ -374,6 +392,23 @@ class _ChainTab extends StatelessWidget {
     );
     if (v == null) return;
     cfg.patchCompaction((c) => c.copyWith(targetChars: v));
+  }
+
+  Future<void> _pickHistoryImages(BuildContext context) async {
+    const options = [0, 1, 2, 3, 4, 6, 8, 12];
+    final cur = cfg.settings.historyImages;
+    final l = context.l;
+    final v = await showAiSelect<int>(
+      context,
+      title: l.aiHistoryImagesTitle,
+      value: cur,
+      options: [
+        if (!options.contains(cur)) (value: cur, label: l.pluralImages(cur), sub: l.actionCurrent),
+        for (final o in options) (value: o, label: o == 0 ? l.aiHistoryImagesOff : l.pluralImages(o), sub: o == 0 ? l.aiHistoryImagesOffSub : (o <= 2 ? l.aiLengthTight : (o <= 4 ? l.aiLengthBalanced : l.aiLengthDetailed))),
+      ],
+    );
+    if (v == null) return;
+    cfg.setHistoryImages(v);
   }
 }
 

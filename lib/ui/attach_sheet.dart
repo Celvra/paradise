@@ -36,6 +36,11 @@ enum _FileClass { image, video, other }
 const _imgExts = {'jpg', 'jpeg', 'png', 'webp', 'gif', 'bmp', 'heic', 'heif', 'avif'};
 const _vidExts = {'mp4', 'mkv', 'webm', 'mov', 'avi', '3gp', '3g2', 'm4v', 'mpeg', 'mpg'};
 
+/// The long edge a picture is shot at. Anthropic resizes anything larger to
+/// 1568 px before it counts tokens, so sending the original pays the upload and
+/// keeps the detail only for the model to throw away.
+const _maxEdge = 1568.0;
+
 _FileClass classifyFile(String name) {
   final ext = name.contains('.') ? name.split('.').last.toLowerCase() : '';
   if (_imgExts.contains(ext)) return _FileClass.image;
@@ -117,7 +122,10 @@ class _AttachSheetState extends State<_AttachSheet> {
 
   Future<void> _camera() async {
     try {
-      final x = await ip.ImagePicker().pickImage(source: ip.ImageSource.camera, imageQuality: 92);
+      // capped to the long edge every vision provider downscales to anyway:
+      // a 12 megapixel original costs the same upload as a 1568 px one and is
+      // billed by the model at several times the visual tokens
+      final x = await ip.ImagePicker().pickImage(source: ip.ImageSource.camera, imageQuality: 92, maxWidth: _maxEdge, maxHeight: _maxEdge);
       if (x != null && mounted) setState(() => _sel.add(_Pick.file(x.path)));
     } catch (_) {
       if (mounted) showBulletin(context, context.l.attachCameraUnavailable);

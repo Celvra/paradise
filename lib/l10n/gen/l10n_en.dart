@@ -261,6 +261,103 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aiSummaryLength => 'Summary length';
 
   @override
+  String get aiCompactTestRow => 'Test compaction';
+
+  @override
+  String get aiCompactTestTitle => 'Compaction test';
+
+  @override
+  String get aiCompactTestChats => 'Pick a chat';
+
+  @override
+  String get aiCompactTestFooter =>
+      'Summarizes the chat now, the same way a reply would, and writes the checkpoint the next reply would use. It costs one request to the summary model.';
+
+  @override
+  String get aiCompactTestNoChats => 'No chats yet';
+
+  @override
+  String get aiCompactTestCompacted => 'compacted';
+
+  @override
+  String get aiCompactTestReport => 'Run';
+
+  @override
+  String get aiCompactTestReportFooter =>
+      'The summary is what the model is told the earlier conversation was. The budget is cut at a sentence boundary when the model runs past it.';
+
+  @override
+  String get aiCompactTestBefore => 'Before';
+
+  @override
+  String get aiCompactTestAfter => 'After';
+
+  @override
+  String get aiCompactTestSummary => 'Summary';
+
+  @override
+  String aiCompactTestTarget(String chars) {
+    return 'Budget $chars';
+  }
+
+  @override
+  String get aiCompactTestFolded => 'Messages';
+
+  @override
+  String get aiCompactTestKeptNote => 'Summarized, then kept verbatim';
+
+  @override
+  String get aiCompactTestModel => 'Summary model';
+
+  @override
+  String aiCompactTestWindow(String window) {
+    return 'Context window $window';
+  }
+
+  @override
+  String get aiCompactTestDuration => 'Took';
+
+  @override
+  String get aiCompactTestTrigger => 'Over the 75% threshold';
+
+  @override
+  String get aiCompactTestFired => 'already due';
+
+  @override
+  String get aiCompactTestIdle => 'under the threshold';
+
+  @override
+  String aiCompactTestFailed(String reason) {
+    return 'Failed: $reason';
+  }
+
+  @override
+  String get aiCompactTestClear => 'Clear this checkpoint';
+
+  @override
+  String get aiCompactTestClearFooter =>
+      'Drops the summary so the next run starts from the full transcript again.';
+
+  @override
+  String get aiHistoryImagesHeader => 'History images';
+
+  @override
+  String get aiHistoryImagesFooter =>
+      'Every reply resends the whole window, so every picture in it is uploaded again. Only the newest few travel with the request; older ones keep their text line. The pictures you just sent always travel.';
+
+  @override
+  String get aiHistoryImages => 'Pictures sent along';
+
+  @override
+  String get aiHistoryImagesTitle => 'Pictures sent along';
+
+  @override
+  String get aiHistoryImagesOff => 'Off';
+
+  @override
+  String get aiHistoryImagesOffSub => 'Text placeholders only';
+
+  @override
   String get aiAddToChainTitle => 'Add to chain';
 
   @override
@@ -1427,6 +1524,27 @@ class AppLocalizationsEn extends AppLocalizations {
       count,
       locale: localeName,
       other: '$count tokens',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String pluralImages(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count pictures',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String pluralMessages(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count messages',
+      one: '1 message',
     );
     return '$_temp0';
   }

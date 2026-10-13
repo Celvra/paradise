@@ -435,21 +435,45 @@ void main() {
 
   group('compaction', () {
     List<HistoryItem> historyOf(int n) => List.generate(n, (i) => HistoryItem(id: 'm$i', role: i.isEven ? 'user' : 'assistant', content: 'line $i'));
+    List<ChatTurn> turnsOf(int n) => List.generate(n, (i) => ChatTurn(i.isEven ? 'user' : 'assistant', [TextPart('line $i')]));
 
     test('token estimate grows with history', () {
-      expect(estimateHistoryTokens(historyOf(10)), greaterThan(estimateHistoryTokens(historyOf(2))));
+      expect(estimateRequestTokens(turnsOf(10)), greaterThan(estimateRequestTokens(turnsOf(2))));
     });
 
     test('a known window does not need compaction', () {
-      expect(needsCompaction(historyOf(4), 128000, 0.75), isFalse);
+      expect(needsCompaction(turnsOf(4), 128000, 0.75), isFalse);
     });
 
     test('a tiny window needs compaction', () {
-      expect(needsCompaction(historyOf(400), 1000, 0.75), isTrue);
+      expect(needsCompaction(turnsOf(400), 1000, 0.75), isTrue);
     });
 
     test('an unknown window never triggers compaction', () {
-      expect(needsCompaction(historyOf(400), 0, 0.75), isFalse);
+      expect(needsCompaction(turnsOf(400), 0, 0.75), isFalse);
+    });
+
+    // the picture a transcript line describes in five words used to cost five
+    // words, so a window full of photos looked empty to the app's own
+    // accounting and neither compaction nor truncation ever fired
+    test('a picture costs what the provider bills, not what the placeholder says', () {
+      final placeholder = ChatTurn('user', [const TextPart('[Photo attached]')]);
+      // a 3 megapixel shot: four by three tiles of 512 px, the shape every
+      // phone camera hands over before the app resizes anything
+      final photo = ChatTurn('user', [const TextPart('[Photo attached]'), const ImagePart('AAAA', 'image/jpeg', pixelWidth: 2048, pixelHeight: 1536)]);
+      expect(estimateRequestTokens([photo]), greaterThan(estimateRequestTokens([placeholder]) * 10));
+      expect(needsCompaction([photo], 1000, 0.75), isTrue, reason: 'a single photo can outfill a small window');
+    });
+
+    test('an unreadable header is still billed rather than free', () {
+      final unknown = ChatTurn('user', [const ImagePart('AAAA', 'image/jpeg')]);
+      final tiny = ChatTurn('user', [const ImagePart('AAAA', 'image/jpeg', pixelWidth: 8, pixelHeight: 8)]);
+      expect(estimateRequestTokens([unknown]), greaterThan(estimateRequestTokens([tiny])));
+    });
+
+    test('the system prompt counts toward the window', () {
+      final turns = turnsOf(4);
+      expect(estimateRequestTokens(turns, system: 'word ' * 500), greaterThan(estimateRequestTokens(turns)));
     });
 
     test('a checkpoint puts the summary ahead of the tail', () {
@@ -480,6 +504,17 @@ void main() {
     test('truncation leaves a comfortable history alone', () {
       final turns = [const ChatTurn('user', []), const ChatTurn('assistant', [])];
       expect(truncateHistory(turns, 128000).length, 2);
+    });
+
+    // the pictures that make a request heavy are now counted, so a window of them
+    // gets cut instead of being sent until the provider refuses it
+    test('truncation counts the pictures it drops', () {
+      List<ChatTurn> turnsOf(int n) => [
+            for (var i = 0; i < n; i++) ChatTurn(i.isEven ? 'user' : 'assistant', [TextPart('line $i padding'), if (i.isEven) const ImagePart('AAAA', 'image/jpeg', pixelWidth: 3000, pixelHeight: 2000)])
+          ];
+      final turns = turnsOf(10);
+      expect(truncateHistory(turns, 128000).length, 10, reason: 'a roomy window still keeps everything');
+      expect(truncateHistory(turns, 8000).length, lessThan(10), reason: 'photos have to cost something');
     });
   });
 

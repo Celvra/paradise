@@ -620,10 +620,6 @@ extension StoreHuman on Store {
 
     try {
       final lastUser = c.msgs.lastWhere((m) => m.out && !m.service, orElse: () => Msg(id: 'x', out: true, text: '', time: 0)).text;
-      var turns = await _history(c);
-      if (proactive) {
-        turns.add(ChatTurn('user', [TextPart('[system event: proactive turn] ${templateFor(task.type)}\nYour own note: ${task.prompt}')]));
-      }
       final table = <String, HTool>{for (final t in humanTools(c, env)) t.name: t};
       final specs = [for (final t in table.values) t.spec];
       final wsBlock = await wsPrompt(c);
@@ -632,6 +628,12 @@ extension StoreHuman on Store {
         humanContext(c, rng: rng, task: task, lastUserText: lastUser),
         if (wsBlock != null) wsBlock,
       ].join('\n\n');
+      // a proactive turn adds its note after the history is built, so it is
+      // never part of what the window check looks at
+      var turns = await _preparedHistory(c, system, cancel: run.token);
+      if (proactive) {
+        turns.add(ChatTurn('user', [TextPart('[system event: proactive turn] ${templateFor(task.type)}\nYour own note: ${task.prompt}')]));
+      }
 
       // the same cap the agent loop uses, read live so a change in the
       // settings lands on the next reply without a restart
@@ -655,11 +657,8 @@ extension StoreHuman on Store {
               }
             },
             onCompact: () async {
-              final node = nodes.firstOrNull;
-              if (node == null) return;
-              final result = await compactHistory(settings: cfg.settings, apiKeys: cfg.apiKeys, system: _systemPrompt(c), history: _historyItems(c), previous: cfg.compactionOf(c.id), node: node);
-              cfg.setCompaction(c.id, result);
-              turns = await _history(c);
+              final rebuilt = await _compact(c, nodes.firstOrNull, cancel: run.token);
+              if (rebuilt != null) turns = rebuilt;
             },
             onEvent: (e) {
               if (e.kind == ChainEventKind.node && e.node != null) lastServedBy = e.node!.modelId;

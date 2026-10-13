@@ -288,6 +288,137 @@
   "@aiSummaryLength": {
     "description": "Row that picks the summary budget"
   },
+  "aiCompactTestRow": "測試壓縮",
+  "@aiCompactTestRow": {
+    "description": "Row that opens the compaction test screen"
+  },
+  "aiCompactTestTitle": "測試壓縮",
+  "@aiCompactTestTitle": {
+    "description": "Title of the compaction test screen"
+  },
+  "aiCompactTestChats": "選一個對話",
+  "@aiCompactTestChats": {
+    "description": "Section header of the chat list on the compaction test screen"
+  },
+  "aiCompactTestFooter": "現在就把這個對話摘要掉，走的是回覆時同一條路徑，並寫入下一輪回覆會用的壓縮點。會消耗一次摘要模型的請求。",
+  "@aiCompactTestFooter": {
+    "description": "Section footer of the chat list on the compaction test screen"
+  },
+  "aiCompactTestNoChats": "還沒有對話",
+  "@aiCompactTestNoChats": {
+    "description": "Shown on the compaction test screen when the app holds no chats"
+  },
+  "aiCompactTestCompacted": "已壓縮",
+  "@aiCompactTestCompacted": {
+    "description": "Marker on a chat that already carries a compaction checkpoint"
+  },
+  "aiCompactTestReport": "本次結果",
+  "@aiCompactTestReport": {
+    "description": "Section header of the compaction result"
+  },
+  "aiCompactTestReportFooter": "這段摘要就是模型被告知的「之前聊過什麼」。超預算時按句子邊界裁掉，不會攔腰截斷。",
+  "@aiCompactTestReportFooter": {
+    "description": "Section footer of the compaction result"
+  },
+  "aiCompactTestBefore": "壓縮前",
+  "@aiCompactTestBefore": {
+    "description": "Row label for the request before compaction"
+  },
+  "aiCompactTestAfter": "壓縮後",
+  "@aiCompactTestAfter": {
+    "description": "Row label for the request after compaction"
+  },
+  "aiCompactTestSummary": "摘要",
+  "@aiCompactTestSummary": {
+    "description": "Row label for the summary itself"
+  },
+  "aiCompactTestTarget": "預算 {chars}",
+  "@aiCompactTestTarget": {
+    "description": "Subtitle of the summary row, the configured character budget",
+    "placeholders": {
+      "chars": {
+        "type": "String"
+      }
+    }
+  },
+  "aiCompactTestFolded": "訊息",
+  "@aiCompactTestFolded": {
+    "description": "Row label for how many messages were summarized and how many stayed"
+  },
+  "aiCompactTestKeptNote": "左邊被摘要，右邊原樣保留",
+  "@aiCompactTestKeptNote": {
+    "description": "Subtitle of the message count row"
+  },
+  "aiCompactTestModel": "摘要模型",
+  "@aiCompactTestModel": {
+    "description": "Row label for the model that wrote the summary"
+  },
+  "aiCompactTestWindow": "上下文視窗 {window}",
+  "@aiCompactTestWindow": {
+    "description": "Subtitle of the summary model row",
+    "placeholders": {
+      "window": {
+        "type": "String"
+      }
+    }
+  },
+  "aiCompactTestDuration": "耗時",
+  "@aiCompactTestDuration": {
+    "description": "Row label for how long the compaction took"
+  },
+  "aiCompactTestTrigger": "超過 75% 閾值",
+  "@aiCompactTestTrigger": {
+    "description": "Row label for whether the chat was already due for compaction"
+  },
+  "aiCompactTestFired": "本該自動觸發",
+  "@aiCompactTestFired": {
+    "description": "Value of the threshold row when the chat was already due"
+  },
+  "aiCompactTestIdle": "未到閾值",
+  "@aiCompactTestIdle": {
+    "description": "Value of the threshold row when the chat was not due"
+  },
+  "aiCompactTestFailed": "失敗：{reason}",
+  "@aiCompactTestFailed": {
+    "description": "The failure line of a compaction run",
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "aiCompactTestClear": "清掉這個壓縮點",
+  "@aiCompactTestClear": {
+    "description": "Row that drops the compaction checkpoint and runs again"
+  },
+  "aiCompactTestClearFooter": "丟掉摘要，下次測試就從完整記錄重新開始。",
+  "@aiCompactTestClearFooter": {
+    "description": "Section footer of the clear checkpoint row"
+  },
+  "aiHistoryImagesHeader": "歷史圖片",
+  "@aiHistoryImagesHeader": {
+    "description": "Section header of the history picture settings"
+  },
+  "aiHistoryImagesFooter": "每回覆一次都要重送整個上下文，視窗裡的圖片就會跟著再傳一次。只有最新的幾張會隨請求送出，更早的只保留文字描述。剛剛傳的那幾張一定會帶上。",
+  "@aiHistoryImagesFooter": {
+    "description": "Section footer of the history picture settings"
+  },
+  "aiHistoryImages": "隨請求送出的圖片",
+  "@aiHistoryImages": {
+    "description": "Row that picks how many history pictures ride along"
+  },
+  "aiHistoryImagesTitle": "隨請求送出的圖片",
+  "@aiHistoryImagesTitle": {
+    "description": "Picker title for the history picture ceiling"
+  },
+  "aiHistoryImagesOff": "關閉",
+  "@aiHistoryImagesOff": {
+    "description": "Value of the history picture ceiling when no picture is sent"
+  },
+  "aiHistoryImagesOffSub": "只留文字",
+  "@aiHistoryImagesOffSub": {
+    "description": "Subtitle of the off option for the history picture ceiling"
+  },
   "aiAddToChainTitle": "新增至兜底鏈",
   "@aiAddToChainTitle": {
     "description": "Model picker title when appending to the chain"
@@ -1712,6 +1843,14 @@
   "pluralTokens": "{count, plural, other{{count} 個 token}}",
   "@pluralTokens": {
     "description": "Count of tokens"
+  },
+  "pluralImages": "{count, plural, other{{count} 張圖片}}",
+  "@pluralImages": {
+    "description": "Count of pictures the app sends along with a request"
+  },
+  "pluralMessages": "{count, plural, other{{count} 則訊息}}",
+  "@pluralMessages": {
+    "description": "Count of chat messages"
   },
   "cardCreate": "建立卡片",
   "@cardCreate": {

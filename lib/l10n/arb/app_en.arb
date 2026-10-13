@@ -311,6 +311,137 @@
   "@aiSummaryLength": {
     "description": "Row that picks the summary budget"
   },
+  "aiCompactTestRow": "Test compaction",
+  "@aiCompactTestRow": {
+    "description": "Row that opens the compaction test screen"
+  },
+  "aiCompactTestTitle": "Compaction test",
+  "@aiCompactTestTitle": {
+    "description": "Title of the compaction test screen"
+  },
+  "aiCompactTestChats": "Pick a chat",
+  "@aiCompactTestChats": {
+    "description": "Section header of the chat list on the compaction test screen"
+  },
+  "aiCompactTestFooter": "Summarizes the chat now, the same way a reply would, and writes the checkpoint the next reply would use. It costs one request to the summary model.",
+  "@aiCompactTestFooter": {
+    "description": "Section footer of the chat list on the compaction test screen"
+  },
+  "aiCompactTestNoChats": "No chats yet",
+  "@aiCompactTestNoChats": {
+    "description": "Shown on the compaction test screen when the app holds no chats"
+  },
+  "aiCompactTestCompacted": "compacted",
+  "@aiCompactTestCompacted": {
+    "description": "Marker on a chat that already carries a compaction checkpoint"
+  },
+  "aiCompactTestReport": "Run",
+  "@aiCompactTestReport": {
+    "description": "Section header of the compaction result"
+  },
+  "aiCompactTestReportFooter": "The summary is what the model is told the earlier conversation was. The budget is cut at a sentence boundary when the model runs past it.",
+  "@aiCompactTestReportFooter": {
+    "description": "Section footer of the compaction result"
+  },
+  "aiCompactTestBefore": "Before",
+  "@aiCompactTestBefore": {
+    "description": "Row label for the request before compaction"
+  },
+  "aiCompactTestAfter": "After",
+  "@aiCompactTestAfter": {
+    "description": "Row label for the request after compaction"
+  },
+  "aiCompactTestSummary": "Summary",
+  "@aiCompactTestSummary": {
+    "description": "Row label for the summary itself"
+  },
+  "aiCompactTestTarget": "Budget {chars}",
+  "@aiCompactTestTarget": {
+    "description": "Subtitle of the summary row, the configured character budget",
+    "placeholders": {
+      "chars": {
+        "type": "String"
+      }
+    }
+  },
+  "aiCompactTestFolded": "Messages",
+  "@aiCompactTestFolded": {
+    "description": "Row label for how many messages were summarized and how many stayed"
+  },
+  "aiCompactTestKeptNote": "Summarized, then kept verbatim",
+  "@aiCompactTestKeptNote": {
+    "description": "Subtitle of the message count row"
+  },
+  "aiCompactTestModel": "Summary model",
+  "@aiCompactTestModel": {
+    "description": "Row label for the model that wrote the summary"
+  },
+  "aiCompactTestWindow": "Context window {window}",
+  "@aiCompactTestWindow": {
+    "description": "Subtitle of the summary model row",
+    "placeholders": {
+      "window": {
+        "type": "String"
+      }
+    }
+  },
+  "aiCompactTestDuration": "Took",
+  "@aiCompactTestDuration": {
+    "description": "Row label for how long the compaction took"
+  },
+  "aiCompactTestTrigger": "Over the 75% threshold",
+  "@aiCompactTestTrigger": {
+    "description": "Row label for whether the chat was already due for compaction"
+  },
+  "aiCompactTestFired": "already due",
+  "@aiCompactTestFired": {
+    "description": "Value of the threshold row when the chat was already due"
+  },
+  "aiCompactTestIdle": "under the threshold",
+  "@aiCompactTestIdle": {
+    "description": "Value of the threshold row when the chat was not due"
+  },
+  "aiCompactTestFailed": "Failed: {reason}",
+  "@aiCompactTestFailed": {
+    "description": "The failure line of a compaction run",
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "aiCompactTestClear": "Clear this checkpoint",
+  "@aiCompactTestClear": {
+    "description": "Row that drops the compaction checkpoint and runs again"
+  },
+  "aiCompactTestClearFooter": "Drops the summary so the next run starts from the full transcript again.",
+  "@aiCompactTestClearFooter": {
+    "description": "Section footer of the clear checkpoint row"
+  },
+  "aiHistoryImagesHeader": "History images",
+  "@aiHistoryImagesHeader": {
+    "description": "Section header of the history picture settings"
+  },
+  "aiHistoryImagesFooter": "Every reply resends the whole window, so every picture in it is uploaded again. Only the newest few travel with the request; older ones keep their text line. The pictures you just sent always travel.",
+  "@aiHistoryImagesFooter": {
+    "description": "Section footer of the history picture settings"
+  },
+  "aiHistoryImages": "Pictures sent along",
+  "@aiHistoryImages": {
+    "description": "Row that picks how many history pictures ride along"
+  },
+  "aiHistoryImagesTitle": "Pictures sent along",
+  "@aiHistoryImagesTitle": {
+    "description": "Picker title for the history picture ceiling"
+  },
+  "aiHistoryImagesOff": "Off",
+  "@aiHistoryImagesOff": {
+    "description": "Value of the history picture ceiling when no picture is sent"
+  },
+  "aiHistoryImagesOffSub": "Text placeholders only",
+  "@aiHistoryImagesOffSub": {
+    "description": "Subtitle of the off option for the history picture ceiling"
+  },
   "aiAddToChainTitle": "Add to chain",
   "@aiAddToChainTitle": {
     "description": "Model picker title when appending to the chain"
@@ -1794,6 +1925,24 @@
   "pluralTokens": "{count, plural, other{{count} tokens}}",
   "@pluralTokens": {
     "description": "Count of tokens",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pluralImages": "{count, plural, other{{count} pictures}}",
+  "@pluralImages": {
+    "description": "Count of pictures the app sends along with a request",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pluralMessages": "{count, plural, =1{1 message} other{{count} messages}}",
+  "@pluralMessages": {
+    "description": "Count of chat messages",
     "placeholders": {
       "count": {
         "type": "int"

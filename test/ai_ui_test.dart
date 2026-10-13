@@ -8,6 +8,7 @@ import 'package:paradise/data/store.dart';
 import 'package:paradise/main.dart';
 import 'package:paradise/ui/ai_model_picker.dart';
 import 'package:paradise/ui/ai_settings_page.dart';
+import 'package:paradise/ui/compaction_page.dart';
 import 'package:paradise/ui/provider_detail_page.dart';
 
 Future<void> settle(WidgetTester t, [int ms = 600]) async {
@@ -97,6 +98,28 @@ void main() {
     expect(ai.settings.chain, isEmpty);
     expect(find.textContaining('chain is empty'), findsOneWidget);
     expect(find.text('Compact long conversations'), findsOneWidget);
+  });
+
+  // compaction runs where the user sees nothing, so the one screen that shows
+  // what it cost has to be reachable from the settings that configure it
+  testWidgets('the compaction test screen opens from the compaction section', (t) async {
+    await boot(t);
+    await t.tap(find.text('Settings').last);
+    await settle(t, 700);
+    await t.tap(find.text('AI'));
+    await settle(t, 700);
+    await t.tap(find.text('Chain'));
+    await settle(t, 500);
+
+    await t.scrollUntilVisible(find.text('Test compaction'), 160, scrollable: find.byType(Scrollable).last);
+    await settle(t, 300);
+    await t.tap(find.text('Test compaction'));
+    await settle(t, 700);
+
+    expect(find.byType(CompactionTestPage), findsOneWidget);
+    // the chat list behind the route is still in the tree and reads the same as
+    // the empty state here, so the page is pinned by its own section header
+    expect(find.text('Pick a chat'), findsOneWidget);
   });
 
   testWidgets('advanced tab lists reply and sampling knobs', (t) async {
