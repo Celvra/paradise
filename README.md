@@ -12,9 +12,9 @@
 
 </div>
 
-> [!WARNING]
-> 本项目 99% 使用 AI 开发。若对 AI Generated 代码有不适的建议使用其他更好的 LLM 应用例如 Kelivo, Rikkahub，你值得拥有更美好的生活，我会在 AI 每一次完成任务后手动审查但是对于 Slop 部分我无法完全知晓因为我并不精通 Dart。即便如此我不会在 Git 提交里或者类似你所读的[读我.妈的](https://github.com/Celvra/paradise/main/README.md)中瞎寄吧拉屎，我也极其厌恶 AI 拉出来的屎你总不可能喜欢 AI 往你的文档里塞一大坨破折号和狗屁不通的 AIGC 风格大粪. 至于为什么几乎每一次提交我都要开 PR 不是因为我在刷 PR 次数，是我特么需要知道能不能过 CI 以及我不保证 AI 拉出来的肥美雷霆大屎与其他人的会不会有冲突，本人玻璃心别骂我，同时欢迎任何人提交 Issues 和 PR。<br>
-> 以及 Telegram 没有官方 Flutter 客户端 我的项目是完全使用 AI 一比一复刻 Telegram 的，不基于其原版别骂我了
+> [!NOTE]
+> 欢迎任何人提交 Issues 和 PR。<br>
+> 请注意 Telegram 没有官方 Flutter 客户端 我的项目是完全使用 AI 复刻 Telegram 的 UI
 
 ---
 
